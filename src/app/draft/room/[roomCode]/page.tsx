@@ -44,6 +44,8 @@ import {
   RefreshCw,
   LogOut,
   Swords,
+  Layers,
+  Gamepad2,
 } from 'lucide-react';
 
 interface RoomPageProps {
@@ -58,6 +60,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
   const [hydrationResult, setHydrationResult] = useState<HydratedRoomResult>({ status: 'LOADING' });
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
   const [isRulesOpen, setIsRulesOpen] = useState(false);
@@ -139,7 +142,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
   // Loading state (initial only, max 7s)
   if (!hasLoadedOnce && hydrationResult.status === 'LOADING' && elapsedSeconds < 7) {
     return (
-      <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden">
+      <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden select-none font-sans">
         <div
           className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
@@ -147,25 +150,25 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
           <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
         </div>
-        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F17]/95 border border-zinc-800 max-w-md w-full text-center space-y-5 shadow-2xl">
+        <div className="relative z-10 p-8 sm:p-10 bg-[#070D14]/95 border-2 border-zinc-800 max-w-md w-full text-center space-y-6 shadow-2xl backdrop-blur-md">
           <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
-            <div className="absolute inset-0 bg-[#00F5A0]/20 animate-ping" />
-            <div className="relative w-14 h-14 bg-zinc-900 border border-[#00F5A0]/40 flex items-center justify-center text-2xl shadow-lg">
-              ⚽
+            <div className="absolute inset-0 bg-[#00F5A0]/20 rounded-2xl animate-ping" />
+            <div className="relative w-14 h-14 bg-zinc-950 border border-[#00F5A0]/50 rounded-2xl flex items-center justify-center text-2xl shadow-lg text-[#00F5A0]">
+              <Zap className="w-7 h-7 animate-pulse" />
             </div>
           </div>
           <div>
-            <h2 className="text-xl font-black tracking-wider uppercase text-white italic">
+            <h2 className="text-xl font-black tracking-wider uppercase text-white font-display italic">
               LOBİYE BAĞLANILIYOR
             </h2>
             <p className="text-xs text-zinc-400 mt-1">
               <span className="font-mono text-[#00F5A0] font-bold">{roomCode}</span> kodlu maç odası senkronize ediliyor...
             </p>
           </div>
-          <div className="w-full bg-zinc-900 h-2 overflow-hidden border border-zinc-800">
+          <div className="w-full bg-zinc-950 h-2 overflow-hidden border border-zinc-800 rounded-full">
             <div
-              className="bg-[#00F5A0] h-full transition-all duration-1000 shadow-[0_0_12px_#00F5A0]"
-              style={{ width: `${Math.min(100, (elapsedSeconds / 5) * 100)}%` }}
+              className="bg-gradient-to-r from-[#00D4FF] to-[#00F5A0] h-full transition-all duration-500 rounded-full shadow-[0_0_12px_#00F5A0]"
+              style={{ width: `${Math.min(100, (elapsedSeconds / 4) * 100)}%` }}
             />
           </div>
         </div>
@@ -176,7 +179,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
   // Timeout or Error State (Only before first load)
   if (!hasLoadedOnce && (hydrationResult.status === 'TIMEOUT' || hydrationResult.status === 'ERROR')) {
     return (
-      <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden">
+      <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden select-none font-sans">
         <div
           className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
@@ -184,12 +187,12 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
           <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
         </div>
-        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F17]/95 border border-rose-600/50 max-w-lg w-full text-center space-y-5 shadow-2xl">
-          <div className="w-14 h-14 mx-auto bg-zinc-900 border border-rose-500/50 flex items-center justify-center text-rose-400 text-2xl">
+        <div className="relative z-10 p-8 sm:p-10 bg-[#070D14]/95 border-2 border-rose-600/50 max-w-lg w-full text-center space-y-5 shadow-2xl backdrop-blur-md">
+          <div className="w-14 h-14 mx-auto bg-zinc-950 border border-rose-500/50 rounded-2xl flex items-center justify-center text-rose-400 text-2xl">
             <AlertCircle className="w-7 h-7" />
           </div>
           <div>
-            <h2 className="text-xl font-black text-rose-300 uppercase tracking-wide italic">
+            <h2 className="text-xl font-black text-rose-300 uppercase tracking-wide font-display italic">
               Lobi Ekranı Yüklenemedi
             </h2>
             <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
@@ -203,7 +206,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                 setElapsedSeconds(0);
                 fetchState();
               }}
-              className="w-full sm:w-auto px-6 py-3 bg-[#00F5A0] hover:bg-[#00D485] text-black text-xs font-black uppercase tracking-wider transition flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-3 bg-[#00F5A0] hover:bg-[#00D485] text-black text-xs font-black uppercase tracking-wider transition flex items-center justify-center gap-2 active:scale-95 shadow-lg shadow-[#00F5A0]/20"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>TEKRAR DENE</span>
@@ -246,7 +249,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
   // Not Found State
   if (hydrationResult.status === 'NOT_FOUND') {
     return (
-      <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden">
+      <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden select-none font-sans">
         <div
           className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
@@ -254,12 +257,12 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
           <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
         </div>
-        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F17]/95 border border-zinc-800 max-w-md w-full text-center space-y-5 shadow-2xl">
-          <div className="w-14 h-14 mx-auto bg-zinc-900 border border-zinc-700 flex items-center justify-center text-rose-400 text-2xl font-black">
+        <div className="relative z-10 p-8 sm:p-10 bg-[#070D14]/95 border-2 border-zinc-800 max-w-md w-full text-center space-y-5 shadow-2xl backdrop-blur-md">
+          <div className="w-14 h-14 mx-auto bg-zinc-950 border border-zinc-700 rounded-2xl flex items-center justify-center text-rose-400 text-2xl font-black">
             ✕
           </div>
           <div>
-            <h2 className="text-xl font-black text-white uppercase tracking-wide italic">
+            <h2 className="text-xl font-black text-white uppercase tracking-wide font-display italic">
               ODA BULUNAMADI
             </h2>
             <p className="text-xs text-rose-400 bg-rose-950/60 p-3 border border-rose-900/50 mt-2">
@@ -316,7 +319,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
     };
 
     return (
-      <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden">
+      <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden select-none font-sans">
         <div
           className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
@@ -324,12 +327,12 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
           <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
         </div>
-        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F17]/95 border border-zinc-800 max-w-md w-full text-center space-y-5 shadow-2xl">
-          <div className="w-14 h-14 mx-auto bg-zinc-900 border border-[#00F5A0]/40 flex items-center justify-center text-[#00F5A0] text-2xl">
+        <div className="relative z-10 p-8 sm:p-10 bg-[#070D14]/95 border-2 border-zinc-800 max-w-md w-full text-center space-y-5 shadow-2xl backdrop-blur-md">
+          <div className="w-14 h-14 mx-auto bg-zinc-950 border border-[#00F5A0]/40 rounded-2xl flex items-center justify-center text-[#00F5A0] text-2xl">
             🏟️
           </div>
           <div>
-            <h2 className="text-xl font-black text-white uppercase tracking-wide italic">
+            <h2 className="text-xl font-black text-white uppercase tracking-wide font-display italic">
               {rState.room.name}
             </h2>
             <div className="inline-block px-3 py-1 bg-emerald-950/80 border border-emerald-500/40 text-xs font-mono font-bold text-[#00F5A0] mt-2">
@@ -375,7 +378,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
             <button
               type="submit"
               disabled={isJoiningInline}
-              className="w-full py-3.5 bg-[#00F5A0] hover:bg-[#00D485] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full py-3.5 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] hover:to-[#00C475] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 flex items-center justify-center gap-2 disabled:opacity-60 active:scale-95"
             >
               {isJoiningInline ? 'Odaya Giriliyor...' : '⚽ Odaya Katıl & Lobiye Gir'}
             </button>
@@ -409,6 +412,15 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
     navigator.clipboard.writeText(roomCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyLink = () => {
+    if (typeof window !== 'undefined') {
+      const url = `${window.location.origin}/draft/room/${roomCode}`;
+      navigator.clipboard.writeText(url);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2000);
+    }
   };
 
   const handleToggleReady = async () => {
@@ -486,20 +498,20 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
   return (
     <div className="relative min-h-screen w-full bg-[#04060A] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* ==================================================================== */}
-      {/* 1. SHARP STADIUM ARENA BACKGROUND (FULL VIEWPORT)                    */}
+      {/* 1. HIGH-CONTRAST STADIUM ARENA BACKGROUND (FULL VIEWPORT)            */}
       {/* ==================================================================== */}
       <div
         className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-[#04060A]/90 to-[#04060A]" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/50 to-[#04060A]" />
       </div>
 
       {/* ==================================================================== */}
-      {/* 2. SQUADCRAFT BROADCAST TOP NAVIGATION BAR                           */}
+      {/* 2. SQUADCRAFT ORIGINAL DRAFT COMMAND CENTER TOP HUD                  */}
       {/* ==================================================================== */}
-      <header className="relative z-20 w-full border-b border-zinc-800 bg-[#070A0F] px-4 sm:px-8 py-2.5">
+      <header className="relative z-20 w-full border-b border-zinc-800 bg-[#070D14]/95 backdrop-blur-md px-4 sm:px-8 py-3 shadow-2xl">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
           {/* Left: Brand Plate & Back Button */}
           <div className="flex items-center gap-3.5">
@@ -525,23 +537,40 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                 />
               </div>
               <div className="flex flex-col justify-center">
-                <div className="flex items-center gap-2">
-                  <span className="text-white font-black uppercase italic tracking-tighter text-base sm:text-lg leading-none truncate max-w-[200px] sm:max-w-md">
-                    {room.name}
-                  </span>
-                  <span className="px-2 py-0.5 bg-[#00F5A0] text-black text-[9px] font-black uppercase tracking-widest shrink-0">
-                    CANLI LOBİ
-                  </span>
+                <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-lg sm:text-xl leading-none">
+                  <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
+                  <span className="text-[#00F5A0]">26</span>
                 </div>
-                <span className="text-[9px] font-mono font-bold tracking-widest text-[#00F5A0] uppercase mt-0.5">
-                  {room.rules.format === 'DOUBLE_ROUND' ? 'ÇİFT DEVRE LİGİ' : 'TEK DEVRE LİGİ'} • {room.rules.squadSize} FUTBOLCU • {room.rules.pickTimerSeconds > 0 ? `${room.rules.pickTimerSeconds}S SÜRE` : 'SÜRESİZ'}
+                <span className="text-[9px] font-mono font-bold tracking-widest text-[#00D4FF] uppercase mt-0.5">
+                  DRAFT MATCH LOBBY
                 </span>
               </div>
             </Link>
           </div>
 
-          {/* Right: Room Code & Actions */}
+          {/* Center: Live Match Stats & Room Status */}
+          <div className="hidden lg:flex items-center gap-3 bg-zinc-950/80 border border-zinc-800 px-4 py-1.5">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse" />
+              <span className="text-xs font-black uppercase tracking-wider text-white font-display">
+                {room.name}
+              </span>
+            </div>
+            <span className="text-zinc-600">|</span>
+            <span className="text-[11px] font-mono font-bold text-zinc-400 uppercase">
+              {room.rules.maxManagers} TAKIMLI ALFA LİGİ • {room.rules.squadSize} FUTBOLCU • {room.rules.pickTimerSeconds > 0 ? `${room.rules.pickTimerSeconds}S SÜRE` : 'SÜRESİZ'}
+            </span>
+          </div>
+
+          {/* Right: Telemetry & Room Code Badge */}
           <div className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-zinc-950 border border-zinc-800 text-[10px] font-mono font-bold text-zinc-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00F5A0]" />
+              <span>SUNUCU: AKTİF</span>
+              <span className="text-zinc-600">•</span>
+              <span className="text-[#00D4FF]">14ms TR</span>
+            </div>
+
             <button
               onClick={() => setIsFeedbackOpen(true)}
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-zinc-700 hover:border-zinc-500 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
@@ -560,7 +589,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
               }`}
               title="Kodu Kopyalamak İçin Tıklayın"
             >
-              <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-sans font-bold">ODA KODU:</span>
+              <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-sans font-bold">ODA:</span>
               <span className="font-black text-sm tracking-wider">{roomCode}</span>
               {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-[#00F5A0]" />}
             </button>
@@ -587,34 +616,40 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
       )}
 
       {/* ==================================================================== */}
-      {/* 3. MAIN LOBBY GRID (FULL SCREEN EXPERIENCE)                          */}
+      {/* 3. MAIN COMMAND CENTER LOBBY GRID                                    */}
       {/* ==================================================================== */}
-      <main className="relative z-20 max-w-[1600px] w-full mx-auto px-4 sm:px-8 py-6 flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <main className="relative z-20 max-w-[1600px] w-full mx-auto px-4 sm:px-8 py-5 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* ==================================================================== */}
-        {/* LEFT 2-COLS: MANAGER ROSTER & PODIUM CARDS                           */}
+        {/* LEFT 8-COLS: MANAGER ROSTER & PODIUM DECK                            */}
         {/* ==================================================================== */}
-        <div className="lg:col-span-2 space-y-5">
+        <div className="lg:col-span-8 space-y-4">
           {/* Section Header Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0B0F17]/95 border border-zinc-800 p-4 shadow-2xl">
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-[#070D14]/95 border border-zinc-800 p-4 shadow-2xl">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[#00F5A0] font-bold text-sm">
+              <div className="w-10 h-10 bg-zinc-950 border border-zinc-700 flex items-center justify-center text-[#00F5A0] font-bold text-sm">
                 <Users className="w-5 h-5" />
               </div>
               <div>
-                <h2 className="text-base font-black tracking-wide text-white uppercase italic">
-                  KATILAN MENAJERLER & KADROLAR
-                </h2>
-                <div className="flex items-center gap-2 text-xs text-zinc-400">
-                  <span className="font-bold text-[#00F5A0]">{activeManagers.length} / {room.rules.maxManagers} Slot Dolu</span>
+                <div className="flex items-center gap-2">
+                  <h2 className="text-base font-black tracking-wide text-white uppercase italic font-display">
+                    KATILAN MENAJERLER & KULÜPLER
+                  </h2>
+                  <span className="px-2 py-0.5 text-[9px] font-mono font-black bg-[#00F5A0]/10 border border-[#00F5A0]/30 text-[#00F5A0] uppercase">
+                    {activeManagers.length} / {room.rules.maxManagers} DOLU
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-zinc-400 mt-0.5">
+                  <span className="font-bold text-white">{humanManagers.length} Gerçek Menajer</span>
                   <span>•</span>
-                  <span>{humanManagers.length} Gerçek Menajer</span>
-                  {botManagers.length > 0 && <span>• {botManagers.length} Yapay Zeka Bot</span>}
+                  <span>{botManagers.length} Yapay Zeka Bot</span>
+                  <span>•</span>
+                  <span className="text-zinc-500">18 Tur Snake Draft</span>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-2.5">
-              {/* Bot Addition Bar for Host */}
+              {/* Quick Bot Addition for Host */}
               {isHost && activeManagers.length < room.rules.maxManagers && (
                 <div className="flex items-center bg-zinc-950 border border-zinc-800 p-1.5 gap-1.5">
                   <span className="text-[11px] font-bold text-zinc-400 px-2 flex items-center gap-1.5">
@@ -648,14 +683,14 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                   className="px-3.5 py-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-bold text-[#00F5A0] hover:text-white transition flex items-center gap-2 shadow-sm"
                 >
                   <Palette className="w-4 h-4" />
-                  <span>Kulübümü Düzenle</span>
+                  <span>Kulübümü Özelleştir</span>
                 </button>
               )}
             </div>
           </div>
 
           {/* Members Tactical Grid Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {members.map((member) => {
               const club = clubs.find((c) => c.memberId === member.id);
               const isMe = member.sessionId === sessionId;
@@ -663,12 +698,12 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
               return (
                 <div
                   key={member.id}
-                  className={`relative p-5 border transition-all duration-200 shadow-2xl ${
+                  className={`relative p-4 sm:p-5 border transition-all duration-200 shadow-2xl flex flex-col justify-between min-h-[140px] ${
                     isMe
-                      ? 'bg-[#0E1522] border-[#00F5A0] shadow-[0_0_20px_rgba(0,245,160,0.15)] ring-1 ring-[#00F5A0]/40'
+                      ? 'bg-[#0A121E]/95 border-[#00F5A0] shadow-[0_0_25px_rgba(0,245,160,0.15)] ring-1 ring-[#00F5A0]/40'
                       : member.isBot
-                      ? 'bg-[#0B0F17]/95 border-zinc-800 hover:border-zinc-700'
-                      : 'bg-[#0B0F17]/95 border-zinc-800 hover:border-zinc-700'
+                      ? 'bg-[#070D14]/95 border-zinc-800 hover:border-zinc-700'
+                      : 'bg-[#070D14]/95 border-zinc-800 hover:border-zinc-700'
                   }`}
                 >
                   {/* Top Color Accent Line */}
@@ -679,16 +714,16 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                     }}
                   />
 
-                  <div className="flex items-center justify-between gap-3 pt-1">
+                  <div className="flex items-start justify-between gap-3 pt-1">
                     {/* Club Crest & Info */}
-                    <div className="flex items-center gap-4 min-w-0">
+                    <div className="flex items-center gap-3.5 min-w-0">
                       <div className="relative shrink-0">
                         {club ? (
-                          <div className="p-1.5 bg-black/60 border border-zinc-700 shadow-inner">
-                            <BadgePreview badge={club.badge} clubCode={club.code} size={52} />
+                          <div className="p-2 bg-black/80 border border-zinc-700 shadow-inner">
+                            <BadgePreview badge={club.badge} clubCode={club.code} size={48} />
                           </div>
                         ) : (
-                          <div className="w-14 h-14 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-lg text-zinc-500">
+                          <div className="w-13 h-13 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-lg text-zinc-500">
                             👁️
                           </div>
                         )}
@@ -713,10 +748,10 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                         </div>
 
                         <div className="text-xs text-zinc-400 font-medium flex items-center gap-1.5 mt-1">
-                          <span>{member.username}</span>
+                          <span className="text-zinc-300 font-semibold">{member.username}</span>
                           {club && (
                             <>
-                              <span>•</span>
+                              <span className="text-zinc-600">•</span>
                               <span className="font-mono text-[#00F5A0] font-bold">{club.code}</span>
                             </>
                           )}
@@ -751,11 +786,11 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                     </div>
 
                     {/* Status Badge & Actions */}
-                    <div className="flex flex-col items-end gap-2.5 shrink-0">
+                    <div className="flex flex-col items-end gap-2 shrink-0">
                       {member.isBot && isHost ? (
                         <button
                           onClick={() => handleRemoveBot(member.id)}
-                          className="px-3 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-600/40 text-rose-300 text-xs font-bold transition shadow-sm"
+                          className="px-2.5 py-1 bg-rose-950/80 hover:bg-rose-900 border border-rose-600/40 text-rose-300 text-xs font-bold transition shadow-sm"
                           title="Botu Odadan Çıkar"
                         >
                           ✕ Kaldır
@@ -785,9 +820,9 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                       {isMe && myClub && (
                         <button
                           onClick={() => setIsCustomizerOpen(true)}
-                          className="text-[10px] text-[#00F5A0] hover:underline font-bold flex items-center gap-1"
+                          className="text-[11px] text-[#00F5A0] hover:underline font-bold flex items-center gap-1 mt-1"
                         >
-                          <Palette className="w-3 h-3" />
+                          <Palette className="w-3.5 h-3.5" />
                           <span>Armayı Düzenle</span>
                         </button>
                       )}
@@ -801,17 +836,17 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
             {Array.from({ length: Math.max(0, room.rules.maxManagers - activeManagers.length) }).map((_, idx) => (
               <div
                 key={`empty-slot-${idx}`}
-                className="p-5 border border-dashed border-zinc-800 bg-[#0B0F17]/40 hover:bg-[#0B0F17]/60 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl"
+                className="p-4 sm:p-5 border border-dashed border-zinc-800 bg-[#070D14]/50 hover:bg-[#070D14]/80 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl min-h-[140px]"
               >
                 <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 bg-zinc-900/90 border border-zinc-800 flex items-center justify-center text-zinc-600 font-black text-lg">
+                  <div className="w-12 h-12 bg-zinc-950 border border-zinc-800 flex items-center justify-center text-zinc-600 font-black text-lg">
                     +
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-zinc-300 uppercase tracking-wide">
+                    <div className="text-sm font-bold text-zinc-300 uppercase tracking-wide font-display">
                       Boş Menajer Slotu
                     </div>
-                    <div className="text-xs text-zinc-500">
+                    <div className="text-xs text-zinc-500 mt-0.5">
                       Arkadaşınızı davet edin veya Bot ekleyin
                     </div>
                   </div>
@@ -821,19 +856,19 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                   <div className="flex items-center gap-1.5 w-full sm:w-auto">
                     <button
                       onClick={() => handleAddBot('KOLAY')}
-                      className="flex-1 sm:flex-initial px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#00F5A0] text-[11px] font-bold transition"
+                      className="flex-1 sm:flex-initial px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#00F5A0] text-xs font-bold transition"
                     >
                       + Kolay
                     </button>
                     <button
                       onClick={() => handleAddBot('ORTA')}
-                      className="flex-1 sm:flex-initial px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#00D4FF] text-[11px] font-bold transition"
+                      className="flex-1 sm:flex-initial px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#00D4FF] text-xs font-bold transition"
                     >
                       + Orta
                     </button>
                     <button
                       onClick={() => handleAddBot('ZOR')}
-                      className="flex-1 sm:flex-initial px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#FFB800] text-[11px] font-bold transition"
+                      className="flex-1 sm:flex-initial px-2.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#FFB800] text-xs font-bold transition"
                     >
                       + Zor
                     </button>
@@ -849,13 +884,13 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
 
           {/* User Readiness Interactive Bar */}
           {currentMember && !currentMember.isSpectator && (
-            <div className="p-5 bg-[#0B0F17]/95 border border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl">
+            <div className="p-5 bg-[#070D14]/95 border border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xl">
               <div className="flex items-center gap-3.5 text-center sm:text-left">
-                <div className="w-11 h-11 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[#00F5A0] shrink-0">
+                <div className="w-11 h-11 bg-zinc-950 border border-zinc-700 flex items-center justify-center text-[#00F5A0] shrink-0">
                   <UserCheck className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="text-sm font-black text-white uppercase tracking-wider italic">
+                  <div className="text-sm font-black text-white uppercase tracking-wider italic font-display">
                     {currentMember.isReady ? 'KADRONUZ DRAFT İÇİN ONAYLANDI' : 'DRAFT HAZIRLIK DURUMU'}
                   </div>
                   <p className="text-xs text-zinc-400 mt-0.5">
@@ -868,10 +903,10 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
 
               <button
                 onClick={handleToggleReady}
-                className={`w-full sm:w-auto px-7 py-3.5 font-black text-xs uppercase tracking-wider transition shadow-xl flex items-center justify-center gap-2 ${
+                className={`w-full sm:w-auto px-8 py-3.5 font-black text-xs uppercase tracking-wider transition shadow-xl flex items-center justify-center gap-2 ${
                   currentMember.isReady
                     ? 'bg-[#FFB800] hover:bg-[#E5A700] text-black shadow-[#FFB800]/20 active:scale-95'
-                    : 'bg-[#00F5A0] hover:bg-[#00D485] text-black shadow-[#00F5A0]/20 active:scale-95'
+                    : 'bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] hover:to-[#00C475] text-black shadow-[#00F5A0]/20 active:scale-95'
                 }`}
               >
                 {currentMember.isReady ? (
@@ -881,7 +916,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4" />
+                    <Check className="w-4 h-4 stroke-[3]" />
                     <span>MAÇA HAZIRIM!</span>
                   </>
                 )}
@@ -891,21 +926,21 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
         </div>
 
         {/* ==================================================================== */}
-        {/* RIGHT COLUMN: LEAGUE RULES & DRAFT LAUNCHPAD                         */}
+        {/* RIGHT 4-COLS: LEAGUE RULES & DRAFT LAUNCHPAD                         */}
         {/* ==================================================================== */}
-        <div className="space-y-5">
+        <div className="lg:col-span-4 space-y-4">
           {/* Lig Kuralları Paneli */}
-          <div className="bg-[#0B0F17]/95 border border-zinc-800 p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-4">
+          <div className="bg-[#070D14]/95 border border-zinc-800 p-5 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3.5">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[#FFB800]">
+                <div className="w-10 h-10 bg-zinc-950 border border-zinc-700 flex items-center justify-center text-[#FFB800]">
                   <Trophy className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-white uppercase tracking-wider italic">
+                  <h3 className="text-sm font-black text-white uppercase tracking-wider italic font-display">
                     LİG FORMATI & KURALLAR
                   </h3>
-                  <span className="text-[10px] font-mono text-zinc-500">SquadCraft Alpha 4</span>
+                  <span className="text-[10px] font-mono text-zinc-500">SquadCraft {room.rules.maxManagers} Takımlı Lig</span>
                 </div>
               </div>
 
@@ -921,35 +956,35 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
             </div>
 
             <div className="space-y-2.5 text-xs">
-              <div className="flex justify-between py-2 border-b border-zinc-900">
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
                 <span className="text-zinc-400">Lig Türü</span>
                 <span className="font-black text-white">
-                  {room.rules.format === 'DOUBLE_ROUND' ? 'Çift Devre (12 Maç - Rövanşlı)' : 'Tek Devre (6 Maç - Hızlı)'}
+                  {room.rules.format === 'DOUBLE_ROUND' ? 'Çift Devre (Rövanşlı Lig)' : 'Tek Devre (Hızlı Lig)'}
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-b border-zinc-900">
-                <span className="text-zinc-400">Kadro Kotası</span>
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
+                <span className="text-zinc-400">Kadro Büyüklüğü</span>
                 <span className="font-black text-white">{room.rules.squadSize} Futbolcu</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-zinc-900">
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
                 <span className="text-zinc-400">Seçim Tur Süresi</span>
                 <span className="font-black text-[#00F5A0]">
                   {room.rules.pickTimerSeconds > 0 ? `${room.rules.pickTimerSeconds} Saniye` : 'Sınırsız'}
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-b border-zinc-900">
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
                 <span className="text-zinc-400">Kondisyon Ayarı</span>
                 <span className="font-black text-white">{room.rules.fitness}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-zinc-900">
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
                 <span className="text-zinc-400">Sakatlık & Ceza</span>
                 <span className="font-black text-white">
                   {room.rules.injuries ? 'Açık' : 'Kapalı'} / {room.rules.suspensions ? 'Açık' : 'Kapalı'}
                 </span>
               </div>
-              <div className="flex justify-between py-2">
+              <div className="flex justify-between py-1.5">
                 <span className="text-zinc-400">Maç Motoru</span>
-                <span className="font-black text-[#FFB800]">2D Canlı Taktik Radarı</span>
+                <span className="font-black text-[#00D4FF]">2D Canlı Taktik Radarı</span>
               </div>
             </div>
 
@@ -962,7 +997,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                     disabled={!canStartDraft || isStartingDraft}
                     className={`w-full py-4 font-black text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 shadow-2xl ${
                       canStartDraft && !isStartingDraft
-                        ? 'bg-[#00F5A0] hover:bg-[#00D485] text-black shadow-[#00F5A0]/30 cursor-pointer animate-pulse'
+                        ? 'bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] hover:to-[#00C475] text-black shadow-[#00F5A0]/30 cursor-pointer animate-pulse active:scale-98'
                         : 'bg-zinc-900 text-zinc-600 cursor-not-allowed border border-zinc-800'
                     }`}
                   >
@@ -1012,35 +1047,44 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
           </div>
 
           {/* Davet ve Paylaşım Kartı */}
-          <div className="bg-[#0B0F17]/95 border border-zinc-800 p-5 space-y-3 shadow-2xl">
-            <div className="flex items-center gap-2 text-xs font-black text-white uppercase italic">
+          <div className="bg-[#070D14]/95 border border-zinc-800 p-5 space-y-3 shadow-2xl">
+            <div className="flex items-center gap-2 text-xs font-black text-white uppercase italic font-display">
               <Share2 className="w-4 h-4 text-[#00F5A0]" />
               <span>ARKADAŞLARINI DAVET ET</span>
             </div>
             <p className="text-xs text-zinc-400">
-              Bu odaya katılmak isteyen arkadaşlarınıza aşağıdaki kodu iletmeniz yeterlidir:
+              Bu odaya katılmak isteyen arkadaşlarınıza aşağıdaki kodu veya davet linkini iletebilirsiniz:
             </p>
             <div className="p-3 bg-zinc-950 border border-zinc-800 flex items-center justify-between font-mono">
               <span className="text-[#00F5A0] font-black text-sm tracking-widest">{roomCode}</span>
-              <button
-                onClick={handleCopyCode}
-                className="text-xs font-bold text-zinc-300 hover:text-white px-3 py-1 bg-zinc-900 border border-zinc-700 transition"
-              >
-                {copied ? 'Kopyalandı!' : 'Kopyala'}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleCopyLink}
+                  className="text-xs font-bold text-zinc-300 hover:text-white px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-[#00D4FF] transition"
+                  title="Oda Bağlantısını Kopyala"
+                >
+                  {copiedLink ? 'Link Kopyalandı!' : 'Linki Kopyala'}
+                </button>
+                <button
+                  onClick={handleCopyCode}
+                  className="text-xs font-bold text-black px-3 py-1 bg-[#00F5A0] hover:bg-[#00D485] transition shadow-md"
+                >
+                  {copied ? 'Kopyalandı!' : 'Kopyala'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </main>
 
       {/* ==================================================================== */}
-      {/* 4. SQUADCRAFT BROADCAST FOOTER & TICKER                              */}
+      {/* 4. SQUADCRAFT BROADCAST TICKER FOOTER                                */}
       {/* ==================================================================== */}
       <footer className="relative z-20 w-full border-t border-zinc-800 bg-[#070A0F] py-2 px-4 sm:px-8 text-xs text-zinc-400">
         <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
           <div className="flex items-center gap-2">
             <span className="font-mono text-[10px] text-zinc-400 tracking-wider">
-              ODA KODU: <span className="text-[#00F5A0] font-bold">{roomCode}</span> • SQUADCRAFT REALTIME MATCH ENGINE
+              ODA KODU: <span className="text-[#00F5A0] font-bold">{roomCode}</span> • SQUADCRAFT DRAFT ENGINE • VERCEL PRODUCTION
             </span>
           </div>
 
