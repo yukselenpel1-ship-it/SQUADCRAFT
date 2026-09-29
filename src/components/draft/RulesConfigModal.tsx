@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { DraftRules, PRESET_CLOSED_ALPHA_4, SquadSizeOption, PickTimerOption, FitnessSetting, LeagueFormat } from '@/lib/draft/types';
-import { Trophy, Settings, Zap, Check, X, Shield, Clock, Flame } from 'lucide-react';
+import { DraftRules, PRESET_4_MANAGERS, PRESET_6_MANAGERS, PRESET_8_MANAGERS, SquadSizeOption, PickTimerOption, FitnessSetting, LeagueFormat } from '@/lib/draft/types';
+import { Trophy, Settings, Zap, Check, X, Shield, Clock, Flame, Users } from 'lucide-react';
 
 interface RulesConfigModalProps {
   rules: DraftRules;
@@ -19,8 +19,8 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handlePresetAlpha = () => {
-    setCurrent({ ...PRESET_CLOSED_ALPHA_4 });
+  const handleApplyPreset = (preset: DraftRules) => {
+    setCurrent({ ...preset });
   };
 
   const handleSave = () => {
@@ -35,7 +35,7 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
 
-        <div className="relative flex items-center justify-between border-b border-white/[0.08] pb-5 mb-6">
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/[0.08] pb-5 mb-6 gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold">
               <Settings className="w-5 h-5" />
@@ -45,18 +45,46 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
                 Lig & Draft Kuralları
               </h2>
               <p className="text-xs text-slate-400">
-                Oda kuralları, seçim süreleri ve lig formatını özelleştirin
+                Menajer sayısı, seçim süreleri ve lig formatını belirleyin
               </p>
             </div>
           </div>
 
-          <button
-            onClick={handlePresetAlpha}
-            className="px-3 py-1.5 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/50 rounded-xl text-xs font-bold text-emerald-300 transition flex items-center gap-1.5 shadow-sm"
-          >
-            <Zap className="w-3.5 h-3.5 text-emerald-400" />
-            <span>ALFA (4 KİŞİ)</span>
-          </button>
+          <div className="flex items-center gap-1.5 self-start sm:self-auto flex-wrap">
+            <button
+              onClick={() => handleApplyPreset(PRESET_4_MANAGERS)}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 border ${
+                current.maxManagers === 4
+                  ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow-sm'
+                  : 'bg-slate-900/80 text-slate-300 border-white/10 hover:border-emerald-500/50'
+              }`}
+            >
+              <Users className="w-3 h-3" />
+              <span>4 KİŞİ</span>
+            </button>
+            <button
+              onClick={() => handleApplyPreset(PRESET_6_MANAGERS)}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 border ${
+                current.maxManagers === 6
+                  ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow-sm'
+                  : 'bg-slate-900/80 text-slate-300 border-white/10 hover:border-emerald-500/50'
+              }`}
+            >
+              <Users className="w-3 h-3" />
+              <span>6 KİŞİ</span>
+            </button>
+            <button
+              onClick={() => handleApplyPreset(PRESET_8_MANAGERS)}
+              className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 border ${
+                current.maxManagers === 8
+                  ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-extrabold shadow-sm'
+                  : 'bg-slate-900/80 text-slate-300 border-white/10 hover:border-emerald-500/50'
+              }`}
+            >
+              <Users className="w-3 h-3" />
+              <span>8 KİŞİ</span>
+            </button>
+          </div>
         </div>
 
         <div className="space-y-4">

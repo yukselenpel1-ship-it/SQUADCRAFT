@@ -2093,6 +2093,34 @@ export class DraftMultiplayerStore {
   }
 
   /**
+   * Mutex lock map for draft picks to prevent concurrency collisions.
+   */
+  private static pickLockMap: Record<string, boolean> = {};
+
+  /**
+   * Asynchronously makes an atomic draft pick with in-flight concurrency lock.
+   */
+  public static async makePickAsync(
+    roomId: string,
+    memberId: string,
+    playerId: string,
+    isAutoPick: boolean = false
+  ): Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode }> {
+    const lockKey = roomId;
+    if (this.pickLockMap[lockKey]) {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+    }
+    this.pickLockMap[lockKey] = true;
+
+    try {
+      const res = this.makePick(roomId, memberId, playerId, isAutoPick);
+      return res;
+    } finally {
+      this.pickLockMap[lockKey] = false;
+    }
+  }
+
+  /**
    * Makes an atomic draft pick.
    */
   public static makePick(

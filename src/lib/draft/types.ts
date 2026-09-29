@@ -54,7 +54,7 @@ export const DEFAULT_DRAFT_RULES: DraftRules = {
   autoPickMode: 'AUTO_PICK',
 };
 
-export const PRESET_CLOSED_ALPHA_4: DraftRules = {
+export const PRESET_4_MANAGERS: DraftRules = {
   maxManagers: 4,
   format: 'DOUBLE_ROUND',
   squadSize: 18,
@@ -67,7 +67,36 @@ export const PRESET_CLOSED_ALPHA_4: DraftRules = {
   autoPickMode: 'AUTO_PICK',
 };
 
-export const PRESET_FRIENDS_LEAGUE: DraftRules = PRESET_CLOSED_ALPHA_4;
+export const PRESET_6_MANAGERS: DraftRules = {
+  maxManagers: 6,
+  format: 'DOUBLE_ROUND',
+  squadSize: 18,
+  pickTimerSeconds: 60,
+  injuries: true,
+  suspensions: true,
+  fitness: 'SIMPLIFIED',
+  transferWindow: 'CLOSED',
+  matchType: 'FAST_SIM',
+  autoPickMode: 'AUTO_PICK',
+};
+
+export const PRESET_8_MANAGERS: DraftRules = {
+  maxManagers: 8,
+  format: 'SINGLE_ROUND',
+  squadSize: 18,
+  pickTimerSeconds: 60,
+  injuries: true,
+  suspensions: true,
+  fitness: 'SIMPLIFIED',
+  transferWindow: 'CLOSED',
+  matchType: 'FAST_SIM',
+  autoPickMode: 'AUTO_PICK',
+};
+
+export const PRESET_CLOSED_ALPHA_4: DraftRules = PRESET_4_MANAGERS;
+export const PRESET_CLOSED_ALPHA_6: DraftRules = PRESET_6_MANAGERS;
+export const PRESET_CLOSED_ALPHA_8: DraftRules = PRESET_8_MANAGERS;
+export const PRESET_FRIENDS_LEAGUE: DraftRules = PRESET_4_MANAGERS;
 
 export type BotDifficulty = 'KOLAY' | 'ORTA' | 'ZOR';
 export type BotPersonality = 'Kontrollü' | 'Hücumcu' | 'Kontratakçı' | 'Presçi' | 'Dengeli';

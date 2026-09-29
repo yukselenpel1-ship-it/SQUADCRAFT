@@ -10,7 +10,7 @@ import {
   getStoredMultiplayerUsername,
   setStoredMultiplayerUsername,
 } from '@/lib/draft/sessionManager';
-import { PRESET_CLOSED_ALPHA_4 } from '@/lib/draft/types';
+import { PRESET_4_MANAGERS, PRESET_6_MANAGERS, PRESET_8_MANAGERS } from '@/lib/draft/types';
 import { APP_VERSION } from '@/lib/version';
 import { FeedbackModal } from '@/components/draft/FeedbackModal';
 import {
@@ -44,6 +44,7 @@ export default function DraftRoomHubPage() {
   const [username, setUsername] = useState('');
   const [joinCode, setJoinCode] = useState('');
   const [roomName, setRoomName] = useState('');
+  const [managerCount, setManagerCount] = useState<4 | 6 | 8>(4);
   const [isSpectator, setIsSpectator] = useState(false);
   const [recentRooms, setRecentRooms] = useState<string[]>([]);
   const [createError, setCreateError] = useState<string | null>(null);
@@ -70,10 +71,17 @@ export default function DraftRoomHubPage() {
     try {
       setStoredMultiplayerUsername(username.trim());
       const sessionId = getMultiplayerSessionId();
+      const selectedPreset =
+        managerCount === 8
+          ? PRESET_8_MANAGERS
+          : managerCount === 6
+          ? PRESET_6_MANAGERS
+          : PRESET_4_MANAGERS;
+
       const res = await DraftMultiplayerStore.createRoomAsync(
         username.trim(),
         sessionId,
-        PRESET_CLOSED_ALPHA_4,
+        selectedPreset,
         roomName.trim() || undefined
       );
 
@@ -469,14 +477,37 @@ export default function DraftRoomHubPage() {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-1.5">
+                    Menajer Sayısı (Takım Kotası)
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([4, 6, 8] as const).map((count) => (
+                      <button
+                        key={count}
+                        type="button"
+                        onClick={() => setManagerCount(count)}
+                        className={`py-2 px-3 text-xs font-black uppercase tracking-wider border transition-all flex items-center justify-center gap-1.5 ${
+                          managerCount === count
+                            ? 'bg-[#FFB800] text-black border-[#FFB800] shadow-md shadow-[#FFB800]/20 font-black'
+                            : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:border-zinc-600 hover:text-white'
+                        }`}
+                      >
+                        <Users className="w-3.5 h-3.5" />
+                        <span>{count} Menajer</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Preset Specs Showcase */}
                 <div className="p-3 bg-zinc-950 border border-zinc-800 space-y-2">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-[#FFB800] uppercase tracking-wider text-[11px]">
-                      Varsayılan Format
+                      Seçilen Format
                     </span>
                     <span className="text-[10px] font-mono text-zinc-400">
-                      Kapalı Alfa (4 Takım)
+                      Alfa ({managerCount} Takım)
                     </span>
                   </div>
                   <div className="grid grid-cols-3 gap-2 text-center text-xs">
@@ -490,7 +521,9 @@ export default function DraftRoomHubPage() {
                     </div>
                     <div className="p-2 bg-zinc-900/80 border border-zinc-800">
                       <div className="text-[9px] font-bold text-zinc-400 uppercase">Lig</div>
-                      <div className="font-black text-[#00F5A0]">Çift Devre</div>
+                      <div className="font-black text-[#00F5A0]">
+                        {managerCount === 8 ? 'Tek Devre (7H)' : managerCount === 6 ? 'Çift Devre (10H)' : 'Çift Devre (6H)'}
+                      </div>
                     </div>
                   </div>
                 </div>

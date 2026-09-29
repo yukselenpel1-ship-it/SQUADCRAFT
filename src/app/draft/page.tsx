@@ -10,7 +10,7 @@ import {
   getStoredMultiplayerUsername,
   setStoredMultiplayerUsername,
 } from '@/lib/draft/sessionManager';
-import { PRESET_CLOSED_ALPHA_4 } from '@/lib/draft/types';
+import { PRESET_4_MANAGERS, PRESET_6_MANAGERS, PRESET_8_MANAGERS } from '@/lib/draft/types';
 import { APP_VERSION } from '@/lib/version';
 import { FeedbackModal } from '@/components/draft/FeedbackModal';
 import {
@@ -35,6 +35,7 @@ export default function DraftHomePage() {
   const [username, setUsername] = useState('');
   const [joinCode, setJoinCode] = useState('');
   const [roomName, setRoomName] = useState('');
+  const [managerCount, setManagerCount] = useState<4 | 6 | 8>(4);
   const [isSpectator, setIsSpectator] = useState(false);
   const [recentRooms, setRecentRooms] = useState<string[]>([]);
   const [createError, setCreateError] = useState<string | null>(null);
@@ -61,10 +62,17 @@ export default function DraftHomePage() {
     try {
       setStoredMultiplayerUsername(username.trim());
       const sessionId = getMultiplayerSessionId();
+      const selectedPreset =
+        managerCount === 8
+          ? PRESET_8_MANAGERS
+          : managerCount === 6
+          ? PRESET_6_MANAGERS
+          : PRESET_4_MANAGERS;
+
       const res = await DraftMultiplayerStore.createRoomAsync(
         username.trim(),
         sessionId,
-        PRESET_CLOSED_ALPHA_4,
+        selectedPreset,
         roomName.trim() || undefined
       );
 
@@ -333,15 +341,38 @@ export default function DraftHomePage() {
                   />
                 </div>
 
+                <div>
+                  <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
+                    Menajer Sayısı (Takım Kotası)
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([4, 6, 8] as const).map((count) => (
+                      <button
+                        key={count}
+                        type="button"
+                        onClick={() => setManagerCount(count)}
+                        className={`py-2 px-3 text-xs font-black uppercase tracking-wider border transition-all flex items-center justify-center gap-1.5 ${
+                          managerCount === count
+                            ? 'bg-[#00D4FF] text-black border-[#00D4FF] shadow-md shadow-[#00D4FF]/20 font-black'
+                            : 'bg-[#05090F] text-zinc-400 border-zinc-800 hover:border-zinc-600 hover:text-white'
+                        }`}
+                      >
+                        <Users className="w-3.5 h-3.5" />
+                        <span>{count} Menajer</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Preset Specs Box */}
                 <div className="p-3.5 bg-[#040A10] border border-zinc-800 space-y-2">
                   <div className="text-[11px] font-mono font-bold text-[#00D4FF] uppercase flex items-center gap-1.5">
                     <Zap className="w-3.5 h-3.5 text-[#00D4FF]" />
-                    <span>LİG AYARLARI // KAPALI ALFA</span>
+                    <span>LİG AYARLARI // {managerCount} KİŞİLİK ALFA</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-300">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">👥</span> 4 Menajer (İnsan/Bot)
+                      <span className="text-[#00D4FF]">👥</span> {managerCount} Menajer (İnsan/Bot)
                     </div>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[#00D4FF]">⚡</span> 18 Oyuncu Kadro
@@ -350,7 +381,7 @@ export default function DraftHomePage() {
                       <span className="text-[#00D4FF]">⏱️</span> 60sn Snake Draft
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">🏆</span> 6 Hafta (12 Maç)
+                      <span className="text-[#00D4FF]">🏆</span> {managerCount === 8 ? '7 Hafta (Tek Devre)' : managerCount === 6 ? '10 Hafta (Çift Devre)' : '6 Hafta (Çift Devre)'}
                     </div>
                   </div>
                 </div>
