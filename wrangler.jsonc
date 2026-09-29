@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "squadcraft",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2024-09-23",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    "NEXT_PUBLIC_SUPABASE_URL": "https://dckmdasacvypfjtgbalz.supabase.co",
+    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRja21kYXNhY3Z5cGZqdGdiYWx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA2MjIyNTAsImV4cCI6MjEwNjE5ODI1MH0.z21QDFzDLEh1Evg3S0sBXxGTWKVEFzPFB8XB0kCyTa0"
+  }
+}
