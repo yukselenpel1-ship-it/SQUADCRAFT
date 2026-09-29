@@ -3,6 +3,7 @@
 import React, { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { DraftMultiplayerStore, RoomFullState, HydratedRoomResult } from '@/lib/draft/multiplayerStore';
 import { getMultiplayerSessionId, getStoredMultiplayerUsername, setStoredMultiplayerUsername } from '@/lib/draft/sessionManager';
 import { DraftClub, DraftRules } from '@/lib/draft/types';
@@ -11,6 +12,7 @@ import { ClubCustomizerModal } from '@/components/draft/ClubCustomizerModal';
 import { RulesConfigModal } from '@/components/draft/RulesConfigModal';
 import { FeedbackModal } from '@/components/draft/FeedbackModal';
 import { AlphaDebugOverlay } from '@/components/draft/AlphaDebugOverlay';
+import { APP_VERSION } from '@/lib/version';
 import {
   Trophy,
   Shield,
@@ -132,27 +134,29 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
     return (
       <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden">
         <div
-          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-25"
-          style={{ backgroundImage: `url('/stadium-draft-bg.webp')` }}
-        />
-        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F19]/90 border border-white/10 rounded-3xl max-w-md w-full text-center space-y-6 shadow-2xl backdrop-blur-xl">
-          <div className="relative w-16 h-16 mx-auto flex items-center justify-center">
-            <div className="absolute inset-0 rounded-2xl bg-emerald-500/20 animate-ping opacity-50" />
-            <div className="relative w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center text-2xl shadow-lg">
+          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
+        </div>
+        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F17]/95 border border-zinc-800 max-w-md w-full text-center space-y-5 shadow-2xl">
+          <div className="relative w-14 h-14 mx-auto flex items-center justify-center">
+            <div className="absolute inset-0 bg-[#00F5A0]/20 animate-ping" />
+            <div className="relative w-12 h-12 bg-zinc-900 border border-[#00F5A0]/40 flex items-center justify-center text-xl">
               ⚽
             </div>
           </div>
           <div>
-            <h2 className="text-xl font-black tracking-wider uppercase text-white font-display">
-              Lobiye Bağlanılıyor
+            <h2 className="text-lg font-black tracking-wider uppercase text-white italic">
+              LOBİYE BAĞLANILIYOR
             </h2>
-            <p className="text-xs text-slate-400 mt-1">
-              <span className="font-mono text-emerald-400 font-bold">{roomCode}</span> kodlu maç odası senkronize ediliyor ({elapsedSeconds}s)
+            <p className="text-xs text-zinc-400 mt-1">
+              <span className="font-mono text-[#00F5A0] font-bold">{roomCode}</span> kodlu maç odası senkronize ediliyor ({elapsedSeconds}s)
             </p>
           </div>
-          <div className="w-full bg-slate-800/80 h-2 rounded-full overflow-hidden p-0.5 border border-white/5">
+          <div className="w-full bg-zinc-900 h-1.5 overflow-hidden border border-zinc-800">
             <div
-              className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-1000 rounded-full shadow-lg shadow-emerald-500/50"
+              className="bg-[#00F5A0] h-full transition-all duration-1000"
               style={{ width: `${Math.min(100, (elapsedSeconds / 8) * 100)}%` }}
             />
           </div>
@@ -166,18 +170,20 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
     return (
       <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden">
         <div
-          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-25"
-          style={{ backgroundImage: `url('/stadium-draft-bg.webp')` }}
-        />
-        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F19]/90 border border-rose-500/30 rounded-3xl max-w-lg w-full text-center space-y-6 shadow-2xl backdrop-blur-xl">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-rose-500/10 border border-rose-500/40 flex items-center justify-center text-rose-400 text-2xl shadow-lg">
-            <AlertCircle className="w-7 h-7" />
+          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
+        </div>
+        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F17]/95 border border-rose-600/50 max-w-lg w-full text-center space-y-5 shadow-2xl">
+          <div className="w-12 h-12 mx-auto bg-zinc-900 border border-rose-500/50 flex items-center justify-center text-rose-400 text-xl">
+            <AlertCircle className="w-6 h-6" />
           </div>
           <div>
-            <h2 className="text-xl font-black text-rose-300 uppercase tracking-wide">
+            <h2 className="text-lg font-black text-rose-300 uppercase tracking-wide italic">
               Lobi Ekranı Yüklenemedi
             </h2>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+            <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
               [SC-MP-005] Sunucu bağlantısı zaman aşımına uğradı veya lobi verisi senkronize edilemedi.
             </p>
           </div>
@@ -188,14 +194,14 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                 setElapsedSeconds(0);
                 fetchState();
               }}
-              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-950/60 transition flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-5 py-2.5 bg-[#00F5A0] hover:bg-[#00D485] text-black text-xs font-black uppercase tracking-wider transition flex items-center justify-center gap-2"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>TEKRAR DENE</span>
             </button>
             <Link
               href="/draft"
-              className="w-full sm:w-auto px-6 py-3 bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white text-xs font-bold uppercase tracking-wider rounded-xl border border-white/10 transition flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-wider border border-zinc-700 transition flex items-center justify-center gap-2"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>DRAFT MERKEZİ</span>
@@ -203,24 +209,23 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
           </div>
 
           {/* Diagnostics Panel */}
-          <div className="pt-4 border-t border-white/[0.08] text-left">
+          <div className="pt-3 border-t border-zinc-800 text-left">
             <button
               onClick={() => setShowDiagnostics(!showDiagnostics)}
-              className="text-[11px] font-mono text-slate-500 hover:text-slate-300 flex items-center justify-between w-full"
+              className="text-[10px] font-mono text-zinc-500 hover:text-zinc-300 flex items-center justify-between w-full"
             >
-              <span>⚙️ Tanı & Teşhis Paneli (Diagnostics)</span>
-              <span>{showDiagnostics ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}</span>
+              <span>⚙️ Tanı & Teşhis Paneli</span>
+              <span>{showDiagnostics ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}</span>
             </button>
 
             {showDiagnostics && (
-              <div className="mt-3 p-3.5 bg-black/60 rounded-xl border border-white/10 font-mono text-[10px] text-slate-400 space-y-1">
+              <div className="mt-2 p-3 bg-black border border-zinc-800 font-mono text-[10px] text-zinc-400 space-y-1">
                 <div>Oda Kodu: {roomCode}</div>
                 <div>Oda Durumu: {hydrationResult.diagnostics?.roomStatus || 'Bilinmiyor'}</div>
                 <div>State Sürümü: {hydrationResult.diagnostics?.stateVersion || 0}</div>
                 <div>Menajer Bulundu: {hydrationResult.diagnostics?.memberFound ? 'Evet' : 'Hayır'}</div>
                 <div>Kulüp Bulundu: {hydrationResult.diagnostics?.clubFound ? 'Evet' : 'Hayır'}</div>
                 <div>Realtime: {hydrationResult.diagnostics?.realtimeConnected ? 'Aktif' : 'Pasif'}</div>
-                <div>Son Hata: {hydrationResult.diagnostics?.lastError || 'Yok'}</div>
               </div>
             )}
           </div>
@@ -234,27 +239,29 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
     return (
       <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden">
         <div
-          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-25"
-          style={{ backgroundImage: `url('/stadium-draft-bg.webp')` }}
-        />
-        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F19]/90 border border-white/10 rounded-3xl max-w-md w-full text-center space-y-6 shadow-2xl backdrop-blur-xl">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-rose-500/10 border border-rose-500/40 flex items-center justify-center text-rose-400 text-2xl shadow-lg">
+          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
+        </div>
+        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F17]/95 border border-zinc-800 max-w-md w-full text-center space-y-5 shadow-2xl">
+          <div className="w-12 h-12 mx-auto bg-zinc-900 border border-zinc-700 flex items-center justify-center text-rose-400 text-xl font-black">
             ✕
           </div>
           <div>
-            <h2 className="text-xl font-black text-white uppercase tracking-wide">
-              Oda Bulunamadı
+            <h2 className="text-lg font-black text-white uppercase tracking-wide italic">
+              ODA BULUNAMADI
             </h2>
-            <p className="text-xs text-rose-400 bg-rose-950/60 p-3 rounded-xl border border-rose-900/50 mt-2">
+            <p className="text-xs text-rose-400 bg-rose-950/60 p-3 border border-rose-900/50 mt-2">
               [SC-MP-001] {hydrationResult.errorMessage || 'Oda bulunamadı veya süresi doldu.'}
             </p>
           </div>
           <Link
             href="/draft"
-            className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl shadow-lg transition"
+            className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider px-5 py-2.5 bg-[#00F5A0] hover:bg-[#00D485] text-black transition"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Draft Merkezine Dön</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>DRAFT MERKEZİNE DÖN</span>
           </Link>
         </div>
       </div>
@@ -301,21 +308,23 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
     return (
       <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden">
         <div
-          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat opacity-25"
-          style={{ backgroundImage: `url('/stadium-draft-bg.webp')` }}
-        />
-        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F19]/90 border border-white/10 rounded-3xl max-w-md w-full text-center space-y-6 shadow-2xl backdrop-blur-xl">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-2xl shadow-lg">
+          className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
+        </div>
+        <div className="relative z-10 p-8 sm:p-10 bg-[#0B0F17]/95 border border-zinc-800 max-w-md w-full text-center space-y-5 shadow-2xl">
+          <div className="w-12 h-12 mx-auto bg-zinc-900 border border-[#00F5A0]/40 flex items-center justify-center text-[#00F5A0] text-xl">
             🏟️
           </div>
           <div>
-            <h2 className="text-xl font-black text-white uppercase tracking-wide">
+            <h2 className="text-lg font-black text-white uppercase tracking-wide italic">
               {rState.room.name}
             </h2>
-            <div className="inline-block px-3 py-1 bg-emerald-950/80 border border-emerald-500/40 rounded-full text-xs font-mono font-bold text-emerald-400 mt-2">
+            <div className="inline-block px-3 py-0.5 bg-emerald-950/80 border border-emerald-500/40 text-xs font-mono font-bold text-[#00F5A0] mt-2">
               ODA KODU: {roomCode}
             </div>
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="text-xs text-zinc-400 mt-2">
               {isLobby
                 ? 'Bu lig odasına katılmak için menajer isminizi girin.'
                 : 'Bu odada draft veya lig başlamış durumda. Yalnızca izleyici olarak katılabilirsiniz.'}
@@ -324,7 +333,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
 
           <form onSubmit={handleInlineJoin} className="space-y-4 text-left">
             <div>
-              <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+              <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-1.5">
                 Menajer İsminiz
               </label>
               <input
@@ -335,19 +344,19 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                 maxLength={20}
                 required
                 disabled={isJoiningInline}
-                className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/10 text-white placeholder-slate-500 text-sm font-semibold focus:outline-none focus:border-emerald-500 transition"
+                className="w-full px-4 py-2.5 bg-zinc-950 border border-zinc-700 text-white placeholder-zinc-500 text-sm font-semibold focus:outline-none focus:border-[#00F5A0] transition"
               />
             </div>
 
             {!isLobby && (
-              <div className="p-3 bg-amber-950/60 border border-amber-500/40 rounded-xl text-xs text-amber-300 flex items-center gap-2">
+              <div className="p-2.5 bg-amber-950/60 border border-amber-500/40 text-xs text-amber-300 flex items-center gap-2">
                 <span>👁️</span>
                 <span>İzleyici Modunda Katılacaksınız</span>
               </div>
             )}
 
             {joinError && (
-              <div className="p-3 bg-rose-950/70 border border-rose-500/50 rounded-xl text-xs text-rose-300">
+              <div className="p-2.5 bg-rose-950/70 border border-rose-500/50 text-xs text-rose-300">
                 {joinError}
               </div>
             )}
@@ -355,14 +364,14 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
             <button
               type="submit"
               disabled={isJoiningInline}
-              className="w-full py-3.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-400 text-white font-black text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-emerald-950/60 transition flex items-center justify-center gap-2 disabled:opacity-60"
+              className="w-full py-3 bg-[#00F5A0] hover:bg-[#00D485] text-black font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 disabled:opacity-60"
             >
               {isJoiningInline ? 'Odaya Giriliyor...' : '⚽ Odaya Katıl & Lobiye Gir'}
             </button>
           </form>
 
           <div className="pt-2">
-            <Link href="/draft" className="text-xs text-slate-500 hover:text-slate-300 flex items-center justify-center gap-1">
+            <Link href="/draft" className="text-xs text-zinc-500 hover:text-zinc-300 flex items-center justify-center gap-1">
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Draft Ana Sayfasına Dön</span>
             </Link>
@@ -465,77 +474,79 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
 
   return (
     <div className="relative min-h-screen w-full bg-[#04060A] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
-      {/* Dynamic Atmospheric Stadium Arena Background */}
+      {/* ==================================================================== */}
+      {/* 1. SHARP STADIUM ARENA BACKGROUND                                     */}
+      {/* ==================================================================== */}
       <div
         className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: `url('/stadium-draft-bg.webp')`,
-          filter: 'brightness(0.24) contrast(1.18) saturate(1.2)',
-        }}
-      />
-      <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-t from-[#04060A] via-[#04060A]/90 to-transparent" />
-      <div className="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(ellipse_75%_75%_at_50%_-15%,rgba(16,185,129,0.18),rgba(255,255,255,0))]" />
+        style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
+      </div>
 
-      {/* TOP BROADCAST STATUS BAR */}
-      <header className="relative z-20 w-full border-b border-white/[0.08] bg-[#070B14]/85 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      {/* ==================================================================== */}
+      {/* 2. EA FC BROADCAST TOP NAVIGATION BAR                                */}
+      {/* ==================================================================== */}
+      <header className="relative z-20 w-full border-b border-zinc-800 bg-[#070A0F] px-4 sm:px-8 py-2.5">
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
+          {/* Left: Brand Plate & Back Button */}
+          <div className="flex items-center gap-3.5">
             <Link
-              href="/draft"
-              className="group flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] hover:border-emerald-500/40 text-slate-300 hover:text-white text-xs font-bold transition duration-200"
+              href="/draft/room"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
             >
-              <LogOut className="w-4 h-4 text-emerald-400 group-hover:-translate-x-0.5 transition-transform" />
+              <LogOut className="w-3.5 h-3.5 text-[#00F5A0]" />
               <span className="hidden sm:inline">ODADAN AYRIL</span>
             </Link>
 
-            <div className="h-5 w-px bg-white/10 hidden sm:block" />
+            <div className="h-6 w-px bg-zinc-800 hidden sm:block" />
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-black shadow-inner">
-                <Shield className="w-5 h-5" />
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="relative h-8 sm:h-9 w-11 sm:w-13 flex items-center justify-center">
+                <Image
+                  src="/images/sc-emblem-official-hd.png"
+                  alt="SquadCraft SC"
+                  width={52}
+                  height={36}
+                  className="object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform"
+                  priority
+                />
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-sm md:text-base font-black tracking-wide text-white uppercase font-display truncate max-w-[180px] sm:max-w-xs md:max-w-sm">
-                    {room.name}
-                  </h1>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
-                    CANLI LOBİ
-                  </span>
+              <div className="flex flex-col justify-center">
+                <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-lg sm:text-xl leading-none">
+                  <span className="text-white group-hover:text-zinc-100 transition-colors">{room.name}</span>
                 </div>
-                <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                  <span>{room.rules.format === 'DOUBLE_ROUND' ? 'Çift Devre Lig' : 'Tek Devre Lig'}</span>
-                  <span>•</span>
-                  <span>{room.rules.squadSize} Oyuncu</span>
-                  <span>•</span>
-                  <span>{room.rules.pickTimerSeconds > 0 ? `${room.rules.pickTimerSeconds}s Süre` : 'Sınırsız'}</span>
-                </div>
+                <span className="text-[9px] font-mono font-bold tracking-widest text-[#00F5A0] uppercase mt-0.5">
+                  CANLI LOBİ • {room.rules.format === 'DOUBLE_ROUND' ? 'ÇİFT DEVRE' : 'TEK DEVRE'} • {room.rules.squadSize} OYUNCU
+                </span>
               </div>
-            </div>
+            </Link>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          {/* Right: Room Code & Actions */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => setIsFeedbackOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-slate-400 hover:text-white text-xs font-semibold transition"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-zinc-700 hover:border-zinc-500 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-amber-400" />
+              <MessageSquare className="w-3.5 h-3.5 text-[#00F5A0]" />
               <span>Geri Bildirim</span>
             </button>
 
             {/* Room Code Copy Badge */}
             <button
               onClick={handleCopyCode}
-              className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-xs font-mono font-bold transition shadow-lg ${
+              className={`flex items-center gap-2 px-3.5 py-1.5 border text-xs font-mono font-bold transition ${
                 copied
-                  ? 'bg-emerald-600 text-white border-emerald-400 shadow-emerald-950/80 scale-105'
-                  : 'bg-emerald-950/80 hover:bg-emerald-900/90 border-emerald-500/50 text-emerald-300 hover:text-white shadow-emerald-950/40'
+                  ? 'bg-[#00F5A0] text-black border-[#00F5A0]'
+                  : 'bg-zinc-950 hover:bg-zinc-900 border-zinc-700 text-[#00F5A0]'
               }`}
               title="Kodu Kopyalamak İçin Tıklayın"
             >
-              <span className="text-[11px] uppercase tracking-wider text-emerald-400 font-sans font-bold">KOD:</span>
+              <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-sans font-bold">KOD:</span>
               <span className="font-black text-sm tracking-wider">{roomCode}</span>
-              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-emerald-400" />}
+              {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-[#00F5A0]" />}
             </button>
           </div>
         </div>
@@ -543,15 +554,15 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
 
       {/* ERROR BANNER */}
       {error && (
-        <div className="relative z-10 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 mt-4">
-          <div className="p-3.5 rounded-2xl bg-rose-950/80 border border-rose-500/50 text-rose-200 text-xs flex items-center justify-between shadow-xl">
+        <div className="relative z-20 max-w-[1520px] w-full mx-auto px-4 sm:px-8 mt-3">
+          <div className="p-3 bg-rose-950/80 border border-rose-600/50 text-rose-200 text-xs flex items-center justify-between">
             <div className="flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
               <span>{error}</span>
             </div>
             <button
               onClick={() => setError(null)}
-              className="text-rose-400 hover:text-white text-xs font-bold px-2 py-1 bg-rose-900/40 rounded-lg transition"
+              className="text-rose-400 hover:text-white text-xs font-bold px-2 py-0.5 bg-rose-900/40 transition"
             >
               ✕
             </button>
@@ -559,24 +570,26 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
         </div>
       )}
 
-      {/* MAIN LOBBY CONTAINER */}
-      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      {/* ==================================================================== */}
+      {/* 3. MAIN LOBBY GRID                                                   */}
+      {/* ==================================================================== */}
+      <main className="relative z-20 max-w-[1520px] w-full mx-auto px-4 sm:px-8 py-5 flex-1 grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
         {/* ==================================================================== */}
-        {/* LEFT 2-COLS: MANAGER ROSTER & PODIUM CARDS */}
+        {/* LEFT 2-COLS: MANAGER ROSTER & PODIUM CARDS                           */}
         {/* ==================================================================== */}
-        <div className="lg:col-span-2 space-y-5">
-          {/* Section Header */}
-          <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0B0F19]/90 border border-white/[0.08] p-4 rounded-2xl backdrop-blur-xl">
+        <div className="lg:col-span-2 space-y-4">
+          {/* Section Header Strip */}
+          <div className="flex flex-wrap items-center justify-between gap-3 bg-[#0B0F17]/95 border border-zinc-800 p-3.5">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 font-bold text-xs">
+              <div className="w-8 h-8 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[#00F5A0] font-bold text-xs">
                 <Users className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-sm md:text-base font-black tracking-wide text-white uppercase">
-                  Katılan Menajerler & Kadrolar
+                <h2 className="text-sm font-black tracking-wide text-white uppercase italic">
+                  KATILAN MENAJERLER & KADROLAR
                 </h2>
-                <div className="flex items-center gap-2 text-xs text-slate-400">
-                  <span className="font-semibold text-emerald-400">{activeManagers.length} / {room.rules.maxManagers} Slot Dolu</span>
+                <div className="flex items-center gap-2 text-xs text-zinc-400">
+                  <span className="font-bold text-[#00F5A0]">{activeManagers.length} / {room.rules.maxManagers} Slot Dolu</span>
                   <span>•</span>
                   <span>{humanManagers.length} İnsan Menajer</span>
                   {botManagers.length > 0 && <span>• {botManagers.length} Yapay Zeka Bot</span>}
@@ -587,29 +600,26 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
             <div className="flex items-center gap-2">
               {/* Bot Addition Bar for Host */}
               {isHost && activeManagers.length < room.rules.maxManagers && (
-                <div className="flex items-center bg-black/50 border border-white/10 rounded-xl p-1 gap-1">
-                  <span className="text-[11px] font-bold text-slate-400 px-2 flex items-center gap-1">
-                    <Bot className="w-3.5 h-3.5 text-purple-400" />
+                <div className="flex items-center bg-zinc-950 border border-zinc-800 p-1 gap-1">
+                  <span className="text-[10px] font-bold text-zinc-400 px-1.5 flex items-center gap-1">
+                    <Bot className="w-3 h-3 text-[#00D4FF]" />
                     <span>+ Bot:</span>
                   </span>
                   <button
                     onClick={() => handleAddBot('KOLAY')}
-                    className="px-2.5 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 text-[11px] font-bold transition shadow-sm"
-                    title="Kolay Seviye Bot Ekle"
+                    className="px-2 py-0.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#00F5A0] text-[10px] font-bold transition"
                   >
                     Kolay
                   </button>
                   <button
                     onClick={() => handleAddBot('ORTA')}
-                    className="px-2.5 py-1 rounded-lg bg-sky-950/80 hover:bg-sky-900 border border-sky-500/40 text-sky-300 text-[11px] font-bold transition shadow-sm"
-                    title="Orta Seviye Bot Ekle"
+                    className="px-2 py-0.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#00D4FF] text-[10px] font-bold transition"
                   >
                     Orta
                   </button>
                   <button
                     onClick={() => handleAddBot('ZOR')}
-                    className="px-2.5 py-1 rounded-lg bg-purple-950/80 hover:bg-purple-900 border border-purple-500/40 text-purple-300 text-[11px] font-bold transition shadow-sm"
-                    title="Zor Seviye Bot Ekle"
+                    className="px-2 py-0.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#FFB800] text-[10px] font-bold transition"
                   >
                     Zor
                   </button>
@@ -619,9 +629,9 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
               {myClub && (
                 <button
                   onClick={() => setIsCustomizerOpen(true)}
-                  className="px-3.5 py-2 bg-gradient-to-r from-emerald-600/20 to-teal-600/20 hover:from-emerald-600/30 hover:to-teal-600/30 border border-emerald-500/40 rounded-xl text-xs font-bold text-emerald-300 hover:text-white transition flex items-center gap-1.5 shadow-sm"
+                  className="px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-bold text-[#00F5A0] hover:text-white transition flex items-center gap-1.5"
                 >
-                  <Palette className="w-3.5 h-3.5 text-emerald-400" />
+                  <Palette className="w-3.5 h-3.5" />
                   <span>Kulübümü Düzenle</span>
                 </button>
               )}
@@ -629,7 +639,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
           </div>
 
           {/* Members FIFA Grid Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             {members.map((member) => {
               const club = clubs.find((c) => c.memberId === member.id);
               const isMe = member.sessionId === sessionId;
@@ -637,87 +647,77 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
               return (
                 <div
                   key={member.id}
-                  className={`relative overflow-hidden rounded-2xl p-4 sm:p-5 border transition-all duration-300 backdrop-blur-xl ${
+                  className={`relative p-4 border transition-all ${
                     isMe
-                      ? 'bg-gradient-to-br from-[#0B0F19] via-[#0E1726] to-[#0B0F19] border-emerald-500/60 shadow-xl shadow-emerald-950/40 ring-1 ring-emerald-500/30'
+                      ? 'bg-[#0E1522] border-[#00F5A0] shadow-lg shadow-[#00F5A0]/10'
                       : member.isBot
-                      ? 'bg-[#0B0F19]/80 border-purple-500/20 hover:border-purple-500/40 shadow-lg'
-                      : 'bg-[#0B0F19]/80 border-white/[0.08] hover:border-white/20 shadow-lg'
+                      ? 'bg-[#0B0F17]/90 border-zinc-800'
+                      : 'bg-[#0B0F17]/90 border-zinc-800'
                   }`}
                 >
-                  {/* Decorative Glow Stripe */}
-                  <div
-                    className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r"
-                    style={{
-                      backgroundImage: club
-                        ? `linear-gradient(to right, ${club.primaryColor}, ${club.secondaryColor})`
-                        : undefined,
-                    }}
-                  />
-
                   <div className="flex items-center justify-between gap-3">
                     {/* Club Crest & Info */}
-                    <div className="flex items-center gap-3.5 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0">
                       <div className="relative shrink-0">
                         {club ? (
-                          <div className="p-1 rounded-xl bg-black/40 border border-white/10 shadow-inner">
-                            <BadgePreview badge={club.badge} clubCode={club.code} size={46} />
+                          <div className="p-1 bg-black/50 border border-zinc-700">
+                            <BadgePreview badge={club.badge} clubCode={club.code} size={44} />
                           </div>
                         ) : (
-                          <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-lg text-slate-400">
+                          <div className="w-11 h-11 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-sm text-zinc-500">
                             👁️
                           </div>
                         )}
                       </div>
 
                       <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-sm font-black text-white uppercase tracking-wide truncate font-display">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-sm font-black text-white uppercase italic truncate">
                             {club ? club.name : member.username}
                           </span>
                           {isMe && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500 text-slate-950 uppercase tracking-wider shadow-sm">
+                            <span className="px-1.5 py-0.2 text-[9px] font-black bg-[#00F5A0] text-black uppercase">
                               SEN
                             </span>
                           )}
                           {member.isHost && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase tracking-wider flex items-center gap-1">
-                              <Crown className="w-3 h-3 text-amber-400" />
+                            <span className="px-1.5 py-0.2 text-[9px] font-black bg-[#FFB800]/20 text-[#FFB800] border border-[#FFB800]/40 uppercase flex items-center gap-1">
+                              <Crown className="w-2.5 h-2.5" />
                               <span>KURUCU</span>
                             </span>
                           )}
                         </div>
 
-                        <div className="text-xs text-slate-400 font-medium flex items-center gap-1.5 mt-0.5">
+                        <div className="text-xs text-zinc-400 font-medium flex items-center gap-1.5 mt-0.5">
                           <span>{member.username}</span>
                           {club && (
                             <>
                               <span>•</span>
-                              <span className="font-mono text-emerald-400 font-bold">{club.code}</span>
+                              <span className="font-mono text-[#00F5A0] font-bold">{club.code}</span>
                             </>
                           )}
                           {member.isSpectator && (
-                            <span className="text-slate-500 font-semibold">(İzleyici)</span>
+                            <span className="text-zinc-500 font-semibold">(İzleyici)</span>
                           )}
                         </div>
 
-                        {/* Bot Archetype & Difficulty Badge */}
+                        {/* Bot Badge */}
                         {member.isBot && (
                           <div className="mt-1 flex items-center gap-1.5">
                             <span
-                              className={`text-[10px] px-2 py-0.5 rounded-md font-bold uppercase tracking-wider border flex items-center gap-1 ${
+                              className={`text-[9px] px-1.5 py-0.2 font-mono font-bold uppercase border flex items-center gap-1 ${
                                 member.botDifficulty === 'ZOR'
-                                  ? 'bg-purple-950/80 text-purple-300 border-purple-500/50'
+                                  ? 'bg-amber-950/80 text-[#FFB800] border-amber-500/50'
                                   : member.botDifficulty === 'KOLAY'
-                                  ? 'bg-emerald-950/80 text-emerald-300 border-emerald-500/50'
-                                  : 'bg-sky-950/80 text-sky-300 border-sky-500/50'
+                                  ? 'bg-emerald-950/80 text-[#00F5A0] border-emerald-500/50'
+                                  : 'bg-sky-950/80 text-[#00D4FF] border-sky-500/50'
                               }`}
                             >
-                              <Bot className="w-3 h-3" />
+                              <Bot className="w-2.5 h-2.5" />
                               <span>BOT • {member.botDifficulty || 'ORTA'}</span>
                             </span>
                             {member.botPersonality && (
-                              <span className="text-[10px] text-slate-400 font-mono">
+                              <span className="text-[10px] text-zinc-400 font-mono">
                                 ({member.botPersonality})
                               </span>
                             )}
@@ -731,27 +731,27 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                       {member.isBot && isHost ? (
                         <button
                           onClick={() => handleRemoveBot(member.id)}
-                          className="px-2.5 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-600/40 text-rose-300 text-xs font-bold transition shadow-sm"
+                          className="px-2.5 py-1 bg-rose-950/80 hover:bg-rose-900 border border-rose-600/40 text-rose-300 text-xs font-bold transition"
                           title="Botu Odadan Çıkar"
                         >
                           ✕ Kaldır
                         </button>
                       ) : !member.isSpectator && !member.isBot ? (
                         <span
-                          className={`text-xs font-black uppercase tracking-wider px-3 py-1.5 rounded-xl border flex items-center gap-1.5 shadow-sm ${
+                          className={`text-xs font-black uppercase tracking-wider px-2.5 py-1 border flex items-center gap-1.5 ${
                             member.isReady
-                              ? 'bg-emerald-950/90 text-emerald-400 border-emerald-500/50 shadow-emerald-950/50'
-                              : 'bg-slate-900 text-amber-400 border-amber-500/30'
+                              ? 'bg-emerald-950 text-[#00F5A0] border-emerald-500/50'
+                              : 'bg-zinc-900 text-[#FFB800] border-zinc-700'
                           }`}
                         >
                           {member.isReady ? (
                             <>
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-[#00F5A0]" />
                               <span>HAZIR</span>
                             </>
                           ) : (
                             <>
-                              <Clock className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                              <Clock className="w-3.5 h-3.5 text-[#FFB800] animate-pulse" />
                               <span>BEKLİYOR</span>
                             </>
                           )}
@@ -767,17 +767,17 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
             {Array.from({ length: Math.max(0, room.rules.maxManagers - activeManagers.length) }).map((_, idx) => (
               <div
                 key={`empty-slot-${idx}`}
-                className="relative overflow-hidden rounded-2xl p-5 border border-dashed border-white/10 bg-white/[0.01] hover:bg-white/[0.03] transition flex items-center justify-between"
+                className="p-4 border border-dashed border-zinc-800 bg-zinc-950/40 flex items-center justify-between"
               >
-                <div className="flex items-center gap-3.5">
-                  <div className="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center text-slate-500 font-black text-base">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-600 font-black text-sm">
                     +
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-slate-300 uppercase tracking-wide">
+                    <div className="text-xs font-bold text-zinc-400 uppercase tracking-wide">
                       Boş Menajer Slotu
                     </div>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-[11px] text-zinc-600">
                       Arkadaşınızı davet edin veya Bot ekleyin
                     </div>
                   </div>
@@ -786,13 +786,13 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                 {isHost ? (
                   <button
                     onClick={() => handleAddBot('ORTA')}
-                    className="px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 text-slate-300 hover:text-white text-xs font-bold transition flex items-center gap-1"
+                    className="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-bold transition flex items-center gap-1"
                   >
-                    <Plus className="w-3.5 h-3.5 text-emerald-400" />
+                    <Plus className="w-3 h-3 text-[#00F5A0]" />
                     <span>Bot Ekle</span>
                   </button>
                 ) : (
-                  <span className="text-[10px] px-2 py-1 bg-white/[0.03] border border-white/10 rounded-lg text-slate-500 font-mono font-bold uppercase">
+                  <span className="text-[9px] px-2 py-0.5 bg-zinc-900 border border-zinc-800 text-zinc-600 font-mono font-bold uppercase">
                     BOŞ
                   </span>
                 )}
@@ -802,39 +802,39 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
 
           {/* User Readiness Interactive Bar */}
           {currentMember && !currentMember.isSpectator && (
-            <div className="p-4 sm:p-5 bg-gradient-to-r from-[#0B0F19] to-[#111827] border border-white/[0.08] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl backdrop-blur-xl">
+            <div className="p-4 bg-[#0B0F17]/95 border border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-3 text-center sm:text-left">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
-                  <UserCheck className="w-5 h-5" />
+                <div className="w-9 h-9 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[#00F5A0] shrink-0">
+                  <UserCheck className="w-4 h-4" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-white uppercase tracking-wider">
-                    {currentMember.isReady ? 'Kadronuz Draft İçin Onaylandı' : 'Drafta Başlamaya Hazır mısınız?'}
+                  <div className="text-xs font-black text-white uppercase tracking-wider italic">
+                    {currentMember.isReady ? 'KADRONUZ DRAFT İÇİN ONAYLANDI' : 'DRAFT HAZIRLIK DURUMU'}
                   </div>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-[11px] text-zinc-400">
                     {currentMember.isReady
                       ? 'Diğer menajerlerin hazır olması bekleniyor.'
-                      : 'Kulüp bilgilerinizi kontrol ettikten sonra hazır durumunuzu güncelleyin.'}
+                      : 'Kulüp bilgilerinizi onayladıktan sonra hazır durumuna geçin.'}
                   </p>
                 </div>
               </div>
 
               <button
                 onClick={handleToggleReady}
-                className={`w-full sm:w-auto px-6 py-3 rounded-xl font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 ${
+                className={`w-full sm:w-auto px-5 py-2.5 font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 ${
                   currentMember.isReady
-                    ? 'bg-amber-600 hover:bg-amber-500 text-white shadow-amber-950/60'
-                    : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-950/60'
+                    ? 'bg-[#FFB800] hover:bg-[#E5A700] text-black'
+                    : 'bg-[#00F5A0] hover:bg-[#00D485] text-black'
                 }`}
               >
                 {currentMember.isReady ? (
                   <>
-                    <Clock className="w-4 h-4" />
-                    <span>Hazır Değilim (Geri Al)</span>
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>HAZIR DEĞİLİM (GERİ AL)</span>
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4" />
+                    <Check className="w-3.5 h-3.5" />
                     <span>MAÇA HAZIRIM!</span>
                   </>
                 )}
@@ -844,115 +844,119 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
         </div>
 
         {/* ==================================================================== */}
-        {/* RIGHT COLUMN: LEAGUE RULES & DRAFT LAUNCHPAD */}
+        {/* RIGHT COLUMN: LEAGUE RULES & DRAFT LAUNCHPAD                         */}
         {/* ==================================================================== */}
-        <div className="space-y-5">
+        <div className="space-y-4">
           {/* Lig Kuralları Paneli */}
-          <div className="bg-[#0B0F19]/90 border border-white/[0.08] rounded-2xl p-5 space-y-4 shadow-xl backdrop-blur-xl">
-            <div className="flex items-center justify-between border-b border-white/[0.08] pb-3.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+          <div className="bg-[#0B0F17]/95 border border-zinc-800 p-5 space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-zinc-900 border border-zinc-700 flex items-center justify-center text-[#FFB800]">
                   <Trophy className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-white uppercase tracking-wider">
-                    Lig Formatı & Kurallar
+                  <h3 className="text-xs font-black text-white uppercase tracking-wider italic">
+                    LİG FORMATI & KURALLAR
                   </h3>
-                  <span className="text-[10px] text-slate-400">SquadCraft Alpha 4</span>
+                  <span className="text-[10px] font-mono text-zinc-500">SquadCraft Alpha 4</span>
                 </div>
               </div>
 
               {isHost && (
                 <button
                   onClick={() => setIsRulesOpen(true)}
-                  className="px-2.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 text-xs font-bold text-emerald-400 hover:text-white transition flex items-center gap-1"
+                  className="px-2 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-xs font-bold text-[#00F5A0] hover:text-white transition flex items-center gap-1"
                 >
-                  <Settings className="w-3.5 h-3.5" />
+                  <Settings className="w-3 h-3" />
                   <span>Düzenle</span>
                 </button>
               )}
             </div>
 
-            <div className="space-y-2.5 text-xs">
-              <div className="flex justify-between py-2 border-b border-white/[0.05]">
-                <span className="text-slate-400">Lig Türü</span>
-                <span className="font-bold text-white">
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
+                <span className="text-zinc-400">Lig Türü</span>
+                <span className="font-black text-white">
                   {room.rules.format === 'DOUBLE_ROUND' ? 'Çift Devre (Rövanşlı)' : 'Tek Devre (Hızlı)'}
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/[0.05]">
-                <span className="text-slate-400">Kadro Kotası</span>
-                <span className="font-bold text-white">{room.rules.squadSize} Futbolcu</span>
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
+                <span className="text-zinc-400">Kadro Kotası</span>
+                <span className="font-black text-white">{room.rules.squadSize} Futbolcu</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/[0.05]">
-                <span className="text-slate-400">Seçim Tur Süresi</span>
-                <span className="font-bold text-emerald-400">
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
+                <span className="text-zinc-400">Seçim Tur Süresi</span>
+                <span className="font-black text-[#00F5A0]">
                   {room.rules.pickTimerSeconds > 0 ? `${room.rules.pickTimerSeconds} Saniye` : 'Sınırsız'}
                 </span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/[0.05]">
-                <span className="text-slate-400">Kondisyon Ayarı</span>
-                <span className="font-bold text-white">{room.rules.fitness}</span>
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
+                <span className="text-zinc-400">Kondisyon Ayarı</span>
+                <span className="font-black text-white">{room.rules.fitness}</span>
               </div>
-              <div className="flex justify-between py-2 border-b border-white/[0.05]">
-                <span className="text-slate-400">Sakatlık & Ceza</span>
-                <span className="font-bold text-white">
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
+                <span className="text-zinc-400">Sakatlık & Ceza</span>
+                <span className="font-black text-white">
                   {room.rules.injuries ? 'Açık' : 'Kapalı'} / {room.rules.suspensions ? 'Açık' : 'Kapalı'}
                 </span>
               </div>
-              <div className="flex justify-between py-2">
-                <span className="text-slate-400">Maç Motoru</span>
-                <span className="font-bold text-amber-400">2D Taktik Radarı</span>
+              <div className="flex justify-between py-1.5">
+                <span className="text-zinc-400">Maç Motoru</span>
+                <span className="font-black text-[#FFB800]">2D Taktik Radarı</span>
               </div>
             </div>
 
             {/* LAUNCH CENTER */}
-            <div className="pt-3 border-t border-white/[0.08]">
+            <div className="pt-2 border-t border-zinc-800">
               {isHost ? (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   <button
                     onClick={handleStartDraft}
                     disabled={!canStartDraft || isStartingDraft}
-                    className={`w-full py-4 rounded-xl font-black text-xs uppercase tracking-wider shadow-2xl transition flex items-center justify-center gap-2 ${
+                    className={`w-full py-3.5 font-black text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 ${
                       canStartDraft && !isStartingDraft
-                        ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 shadow-emerald-950/80 cursor-pointer animate-pulse'
-                        : 'bg-white/[0.05] text-slate-500 cursor-not-allowed border border-white/[0.08]'
+                        ? 'bg-[#00F5A0] hover:bg-[#00D485] text-black shadow-lg shadow-[#00F5A0]/20 cursor-pointer'
+                        : 'bg-zinc-900 text-zinc-600 cursor-not-allowed border border-zinc-800'
                     }`}
                   >
                     {isStartingDraft ? (
                       <>
-                        <div className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                         <span>DRAFT BAŞLATILIYOR...</span>
                       </>
                     ) : (
                       <>
-                        <Play className="w-4 h-4 fill-current" />
+                        <Play className="w-3.5 h-3.5 fill-current" />
                         <span>DRAFT'I BAŞLAT ({activeManagers.length}/{room.rules.maxManagers})</span>
                       </>
                     )}
                   </button>
 
                   {!canStartDraft && (
-                    <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-500/30 text-[11px] text-amber-300 space-y-1">
-                      <div className="font-bold">Başlatma Koşulları:</div>
+                    <div className="p-2.5 bg-zinc-950 border border-zinc-800 text-[10px] text-zinc-400 space-y-1">
+                      <div className="font-bold text-[#FFB800]">Başlatma Koşulları:</div>
                       <div className="flex items-center gap-1.5">
-                        <span>{activeManagers.length >= 2 ? '✓' : '✗'}</span>
+                        <span className={activeManagers.length >= 2 ? 'text-[#00F5A0]' : 'text-zinc-600'}>
+                          {activeManagers.length >= 2 ? '✓' : '✗'}
+                        </span>
                         <span>En az 2 takım katılmış olmalıdır. ({activeManagers.length}/2)</span>
                       </div>
                       <div className="flex items-center gap-1.5">
-                        <span>{allHumansReady ? '✓' : '✗'}</span>
+                        <span className={allHumansReady ? 'text-[#00F5A0]' : 'text-zinc-600'}>
+                          {allHumansReady ? '✓' : '✗'}
+                        </span>
                         <span>Tüm gerçek menajerler "HAZIR" olmalıdır.</span>
                       </div>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="p-4 rounded-xl bg-black/40 border border-white/10 text-center space-y-2">
-                  <div className="flex items-center justify-center gap-2 text-xs font-bold text-amber-400">
-                    <Clock className="w-4 h-4 animate-spin" />
+                <div className="p-3 bg-zinc-950 border border-zinc-800 text-center space-y-1.5">
+                  <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-[#FFB800]">
+                    <Clock className="w-3.5 h-3.5 animate-spin" />
                     <span>KURUCU BEKLENİYOR</span>
                   </div>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[10px] text-zinc-500">
                     Oda kurucusu tüm takımlar hazır olduğunda draftı başlatacaktır.
                   </p>
                 </div>
@@ -961,19 +965,19 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
           </div>
 
           {/* Davet ve Paylaşım Kartı */}
-          <div className="bg-[#0B0F19]/90 border border-white/[0.08] rounded-2xl p-5 space-y-3 shadow-xl backdrop-blur-xl">
-            <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider">
-              <Share2 className="w-4 h-4 text-emerald-400" />
-              <span>Arkadaşlarını Davet Et</span>
+          <div className="bg-[#0B0F17]/95 border border-zinc-800 p-4 space-y-2.5 shadow-2xl">
+            <div className="flex items-center gap-2 text-xs font-black text-white uppercase italic">
+              <Share2 className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <span>ARKADAŞLARINI DAVET ET</span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-[11px] text-zinc-400">
               Bu odaya katılmak isteyen arkadaşlarınıza aşağıdaki kodu iletmeniz yeterlidir:
             </p>
-            <div className="p-3 bg-black/60 rounded-xl border border-emerald-500/30 flex items-center justify-between font-mono">
-              <span className="text-emerald-400 font-black text-sm tracking-widest">{roomCode}</span>
+            <div className="p-2.5 bg-zinc-950 border border-zinc-800 flex items-center justify-between font-mono">
+              <span className="text-[#00F5A0] font-black text-sm tracking-widest">{roomCode}</span>
               <button
                 onClick={handleCopyCode}
-                className="text-xs font-bold text-slate-300 hover:text-white px-2.5 py-1 bg-white/[0.05] hover:bg-white/[0.1] rounded-lg transition"
+                className="text-xs font-bold text-zinc-300 hover:text-white px-2 py-0.5 bg-zinc-900 border border-zinc-700 transition"
               >
                 {copied ? 'Kopyalandı!' : 'Kopyala'}
               </button>
@@ -982,9 +986,25 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
         </div>
       </main>
 
-      {/* FOOTER */}
-      <footer className="relative z-10 w-full border-t border-white/[0.06] bg-[#070B14]/80 py-4 text-center text-xs text-slate-500">
-        Oda Kodu: <span className="font-mono text-emerald-400 font-bold">{roomCode}</span> • SquadCraft Realtime Match Engine
+      {/* ==================================================================== */}
+      {/* 4. EA FC BROADCAST FOOTER & TICKER                                   */}
+      {/* ==================================================================== */}
+      <footer className="relative z-20 w-full border-t border-zinc-800 bg-[#070A0F] py-2 px-4 sm:px-8 text-xs text-zinc-400">
+        <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[10px] text-zinc-400 tracking-wider">
+              ODA KODU: <span className="text-[#00F5A0] font-bold">{roomCode}</span> • SQUADCRAFT REALTIME MATCH ENGINE
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-400">
+            <span className="px-1.5 py-0.5 bg-zinc-800 text-zinc-200">D</span> DRAFT
+            <span className="text-zinc-600">•</span>
+            <span className="px-1.5 py-0.5 bg-zinc-800 text-zinc-200">K</span> KARİYER
+            <span className="text-zinc-600">•</span>
+            <span className="px-1.5 py-0.5 bg-zinc-800 text-zinc-200">S</span> AYARLAR
+          </div>
+        </div>
       </footer>
 
       {/* MODALS */}
