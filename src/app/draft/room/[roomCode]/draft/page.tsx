@@ -154,6 +154,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
   const [mobileTab, setMobileTab] = useState<'pool' | 'card' | 'squad'>('pool');
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [showDiagnostics, setShowDiagnostics] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [pickError, setPickError] = useState<string | null>(null);
   const [isSubmittingPick, setIsSubmittingPick] = useState(false);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -164,6 +165,9 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
 
   // Canonical hydration loop
   const hydrate = async (isBackground = false) => {
+    if (isBackground && hasLoadedOnce) {
+      setIsSyncing(true);
+    }
     try {
       DraftMultiplayerStore.checkTurnTimeout(roomCode);
       const res = await DraftMultiplayerStore.hydrateDraftRoom(roomCode, sessionId);
@@ -219,6 +223,8 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
       }
     } catch (err: any) {
       console.warn('Hydration warning:', err);
+    } finally {
+      setIsSyncing(false);
     }
   };
 
@@ -519,7 +525,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
       </div>
 
       {/* ==================================================================== */}
-      {/* 1. EA FC BROADCAST TOP LIVE HUD                                      */}
+      {/* 1. SQUADCRAFT ORIGINAL DRAFT COMMAND CENTER HUD                      */}
       {/* ==================================================================== */}
       <header className="relative z-20 w-full border-b border-zinc-800 bg-[#070D14]/95 backdrop-blur-md px-3 sm:px-6 py-2.5 shadow-2xl">
         <div className="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
@@ -540,7 +546,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                   SQUADCRAFT <span className="text-[#00F5A0]">26</span>
                 </span>
                 <span className="text-[8px] font-mono tracking-widest text-zinc-400 uppercase">
-                  CANLI DRAFT ARENASI
+                  DRAFT COMMAND CENTER
                 </span>
               </div>
             </Link>
@@ -558,6 +564,14 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                 />
               </div>
             </div>
+
+            {/* Background Sync Pill */}
+            {isSyncing && (
+              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-[#00D4FF]/10 border border-[#00D4FF]/30 text-[#00D4FF] text-[10px] font-mono font-bold uppercase animate-pulse">
+                <RefreshCw className="w-3 h-3 animate-spin" />
+                <span>Bağlantı yenileniyor...</span>
+              </div>
+            )}
           </div>
 
           {/* Center: Current Turn Drafter Spotlight */}
@@ -897,7 +911,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         </div>
 
         {/* ================================================================== */}
-        {/* COLUMN 2: EA FC PLAYER SPOTLIGHT CARD (4 Cols)                     */}
+        {/* COLUMN 2: SQUADCRAFT PLAYER SCOUTING SPOTLIGHT (4 Cols)             */}
         {/* ================================================================== */}
         <div
           className={`lg:col-span-4 bg-[#070D14]/95 border-2 border-zinc-800 flex flex-col justify-between h-[680px] p-5 shadow-2xl ${
@@ -906,7 +920,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         >
           {activeSpotlightPlayer ? (
             <div className="space-y-4 flex-1 flex flex-col justify-between">
-              {/* Top FC Card Hero Frame */}
+              {/* Top Tactical Scouting Frame */}
               <div className="relative p-5 bg-gradient-to-b from-[#0B1522] to-[#050B12] border border-[#00D4FF]/30 shadow-xl overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#00D4FF]/10 rounded-full blur-2xl pointer-events-none" />
 

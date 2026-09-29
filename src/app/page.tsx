@@ -62,7 +62,7 @@ export default function MainMenuPage() {
     [loadExistingCareer, router]
   );
 
-  // FIFA-style Keyboard shortcuts
+  // SquadCraft Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't trigger if user is typing in an input or modal is open
@@ -103,7 +103,7 @@ export default function MainMenuPage() {
       </div>
 
       {/* ==================================================================== */}
-      {/* 2. EA FC BROADCAST TOP NAVIGATION BAR */}
+      {/* 2. SQUADCRAFT BROADCAST TOP NAVIGATION BAR                           */}
       {/* ==================================================================== */}
       <header className="relative z-20 w-full border-b border-zinc-800 bg-[#070A0F] px-4 sm:px-8 py-2.5">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
@@ -140,7 +140,7 @@ export default function MainMenuPage() {
             </div>
           </div>
 
-          {/* Center: FIFA Category Switcher Tabs */}
+          {/* Center: SquadCraft Tactical Category Switcher Tabs */}
           <nav className="hidden lg:flex items-center gap-1">
             <button
               onClick={() => setActiveTab('hub')}
@@ -241,7 +241,7 @@ export default function MainMenuPage() {
         </div>
 
         {/* ==================================================================== */}
-        {/* 4. EA FC STYLE ASYMMETRIC PRIMARY TILES (HIGH IMPACT, ZERO BLUR)     */}
+        {/* 4. SQUADCRAFT TACTICAL PRIMARY TILES (HIGH IMPACT, ZERO BLUR)        */}
         {/* ==================================================================== */}
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
           {/* ------------------------------------------------------------------ */}
@@ -409,7 +409,7 @@ export default function MainMenuPage() {
         </div>
 
         {/* ==================================================================== */}
-        {/* 5. THREE SECONDARY FIFA CARDS (SHARP TILES, NO BLUR)                  */}
+        {/* 5. THREE SECONDARY SQUADCRAFT TILES (SHARP TILES, NO BLUR)           */}
         {/* ==================================================================== */}
         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-4 mt-4 sm:mt-5">
           {/* Card 1: Özgün Futbol Evreni */}
@@ -502,7 +502,7 @@ export default function MainMenuPage() {
       </main>
 
       {/* ==================================================================== */}
-      {/* 6. EA FC BROADCAST TICKER & CONTROLLER PROMPT FOOTER                 */}
+      {/* 6. SQUADCRAFT BROADCAST TICKER & CONTROLLER PROMPT FOOTER             */}
       {/* ==================================================================== */}
       <footer className="relative z-20 w-full border-t border-zinc-800 bg-[#05070B] text-xs">
         {/* Broadcast Live News Ticker Strip */}
@@ -526,7 +526,7 @@ export default function MainMenuPage() {
 
         {/* Controller Shortcuts & Status HUD */}
         <div className="max-w-[1600px] mx-auto px-4 sm:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-          {/* Left: Keyboard & Controller Shortcuts (FIFA iconic HUD) */}
+          {/* Left: Keyboard & Controller Shortcuts (SquadCraft Tactical HUD) */}
           <div className="flex flex-wrap items-center gap-3 text-[11px] font-mono text-zinc-400">
             <div className="flex items-center gap-1">
               <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-bold">↵ ENTER</kbd>

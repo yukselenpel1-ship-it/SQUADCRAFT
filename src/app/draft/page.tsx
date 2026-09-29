@@ -154,7 +154,7 @@ export default function DraftHomePage() {
       </div>
 
       {/* ==================================================================== */}
-      {/* 2. EA FC BROADCAST TOP NAVIGATION BAR                                */}
+      {/* 2. SQUADCRAFT BROADCAST TOP NAVIGATION BAR                           */}
       {/* ==================================================================== */}
       <header className="relative z-20 w-full border-b border-zinc-800 bg-[#070A0F] px-4 sm:px-8 py-2.5">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
@@ -193,7 +193,7 @@ export default function DraftHomePage() {
             </Link>
           </div>
 
-          {/* Center: FIFA Category Switcher Tabs */}
+          {/* Center: Tactical Category Switcher Tabs */}
           <nav className="hidden lg:flex items-center gap-1">
             <Link
               href="/"
@@ -279,7 +279,7 @@ export default function DraftHomePage() {
         </div>
 
         {/* ==================================================================== */}
-        {/* 4. PRIMARY EA FC MODE CARDS (2-COLUMN GRID, ZERO BLUR)               */}
+        {/* 4. PRIMARY SQUADCRAFT MODE CARDS (2-COLUMN GRID, ZERO BLUR)          */}
         {/* ==================================================================== */}
         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 max-w-5xl">
           {/* ------------------------------------------------------------------ */}
@@ -543,7 +543,7 @@ export default function DraftHomePage() {
       </main>
 
       {/* ==================================================================== */}
-      {/* 5. EA FC BROADCAST TICKER & CONTROLLER PROMPT FOOTER                 */}
+      {/* 5. SQUADCRAFT BROADCAST TICKER & CONTROLLER PROMPT FOOTER             */}
       {/* ==================================================================== */}
       <footer className="relative z-20 w-full border-t border-zinc-800 bg-[#05070B] text-xs">
         {/* Broadcast Live News Ticker Strip */}

@@ -169,7 +169,7 @@ export default function SquadPage() {
         </div>
       </div>
 
-      {/* Squad Table (Crisp EA FC Sports Table, Zero Blur) */}
+      {/* Squad Table (Crisp SquadCraft Sports Table, Zero Blur) */}
       <div className="overflow-x-auto border border-zinc-800 bg-[#070B12] shadow-xl">
         <table className="w-full text-left border-collapse min-w-[850px]">
           <thead>

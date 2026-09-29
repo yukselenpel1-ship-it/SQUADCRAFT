@@ -56,6 +56,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
   const router = useRouter();
 
   const [hydrationResult, setHydrationResult] = useState<HydratedRoomResult>({ status: 'LOADING' });
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isCustomizerOpen, setIsCustomizerOpen] = useState(false);
@@ -81,14 +82,19 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
   const fetchState = async () => {
     try {
       const res = await DraftMultiplayerStore.hydrateDraftRoom(roomCode, sessionId);
-      setHydrationResult(res);
-
       if (res.status === 'SUCCESS' && res.state) {
+        setHydrationResult(res);
+        setHasLoadedOnce(true);
+
         // Automatic transition if host started draft
         if (res.state.room.status === 'DRAFTING') {
           router.push(`/draft/room/${roomCode}/draft`);
         } else if (res.state.room.status === 'LEAGUE_ACTIVE' || res.state.room.status === 'LEAGUE_COMPLETED') {
           router.push(`/draft/room/${roomCode}/league`);
+        }
+      } else {
+        if (!hasLoadedOnce) {
+          setHydrationResult(res);
         }
       }
     } catch (e: any) {
@@ -130,8 +136,8 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
     };
   }, [roomCode]);
 
-  // Loading state (max 8s)
-  if (hydrationResult.status === 'LOADING' && elapsedSeconds < 8) {
+  // Loading state (initial only, max 7s)
+  if (!hasLoadedOnce && hydrationResult.status === 'LOADING' && elapsedSeconds < 7) {
     return (
       <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden">
         <div
@@ -153,13 +159,13 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
               LOBİYE BAĞLANILIYOR
             </h2>
             <p className="text-xs text-zinc-400 mt-1">
-              <span className="font-mono text-[#00F5A0] font-bold">{roomCode}</span> kodlu maç odası senkronize ediliyor ({elapsedSeconds}s)
+              <span className="font-mono text-[#00F5A0] font-bold">{roomCode}</span> kodlu maç odası senkronize ediliyor...
             </p>
           </div>
           <div className="w-full bg-zinc-900 h-2 overflow-hidden border border-zinc-800">
             <div
               className="bg-[#00F5A0] h-full transition-all duration-1000 shadow-[0_0_12px_#00F5A0]"
-              style={{ width: `${Math.min(100, (elapsedSeconds / 8) * 100)}%` }}
+              style={{ width: `${Math.min(100, (elapsedSeconds / 5) * 100)}%` }}
             />
           </div>
         </div>
@@ -167,8 +173,8 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
     );
   }
 
-  // Timeout or Error State (Strictly max 8s)
-  if (hydrationResult.status === 'TIMEOUT' || hydrationResult.status === 'ERROR' || (hydrationResult.status === 'LOADING' && elapsedSeconds >= 8)) {
+  // Timeout or Error State (Only before first load)
+  if (!hasLoadedOnce && (hydrationResult.status === 'TIMEOUT' || hydrationResult.status === 'ERROR')) {
     return (
       <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden">
         <div
@@ -491,7 +497,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
       </div>
 
       {/* ==================================================================== */}
-      {/* 2. EA FC BROADCAST TOP NAVIGATION BAR                                */}
+      {/* 2. SQUADCRAFT BROADCAST TOP NAVIGATION BAR                           */}
       {/* ==================================================================== */}
       <header className="relative z-20 w-full border-b border-zinc-800 bg-[#070A0F] px-4 sm:px-8 py-2.5">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
@@ -648,7 +654,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
             </div>
           </div>
 
-          {/* Members FIFA Grid Cards */}
+          {/* Members Tactical Grid Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {members.map((member) => {
               const club = clubs.find((c) => c.memberId === member.id);
@@ -1028,7 +1034,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
       </main>
 
       {/* ==================================================================== */}
-      {/* 4. EA FC BROADCAST FOOTER & TICKER                                   */}
+      {/* 4. SQUADCRAFT BROADCAST FOOTER & TICKER                              */}
       {/* ==================================================================== */}
       <footer className="relative z-20 w-full border-t border-zinc-800 bg-[#070A0F] py-2 px-4 sm:px-8 text-xs text-zinc-400">
         <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">

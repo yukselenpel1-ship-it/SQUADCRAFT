@@ -254,7 +254,7 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
         </div>
       </div>
 
-      {/* SVG Tactical Pitch Markings (Crisp, High Contrast, EA FC Style) */}
+      {/* SVG Tactical Pitch Markings (Crisp, High Contrast, SquadCraft Tactical Style) */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none stroke-emerald-400/35"
         strokeWidth="1.75"

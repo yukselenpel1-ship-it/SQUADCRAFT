@@ -25,7 +25,7 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
           </main>
         ) : (
           <>
-            {/* Fixed EA FC Stadium Arena Background - Zero Blur, Crisp Atmosphere */}
+            {/* Fixed SquadCraft Stadium Arena Background - Zero Blur, Crisp Atmosphere */}
             <div
               className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
               style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}

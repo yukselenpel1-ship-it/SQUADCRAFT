@@ -134,7 +134,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* 2. GRAND HERO: Club Identity & Command Hub (EA FC Club Header, ZERO BLUR) */}
+      {/* 2. GRAND HERO: Club Identity & Command Hub (SquadCraft Club Header, ZERO BLUR) */}
       <div className="bg-[#070B12] border-2 border-[#00F5A0] p-6 shadow-2xl">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="flex items-center gap-5">

@@ -191,7 +191,7 @@ export default function NewCareerPage() {
       </div>
 
       {/* ==================================================================== */}
-      {/* 2. EA FC BROADCAST TOP NAVIGATION BAR                                */}
+      {/* 2. SQUADCRAFT BROADCAST TOP NAVIGATION BAR                           */}
       {/* ==================================================================== */}
       <header className="relative z-20 w-full border-b border-zinc-800 bg-[#070A0F] px-4 sm:px-8 py-2.5">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
@@ -230,7 +230,7 @@ export default function NewCareerPage() {
             </Link>
           </div>
 
-          {/* Center: FIFA Category Switcher Tabs */}
+          {/* Center: Tactical Category Switcher Tabs */}
           <nav className="hidden lg:flex items-center gap-1">
             <Link
               href="/"
@@ -284,7 +284,7 @@ export default function NewCareerPage() {
       </header>
 
       {/* ==================================================================== */}
-      {/* 3. EA FC CAREER SETUP STEPPER (ATHLETIC HORIZONTAL BAR)              */}
+      {/* 3. SQUADCRAFT CAREER SETUP STEPPER (ATHLETIC HORIZONTAL BAR)         */}
       {/* ==================================================================== */}
       <div className="relative z-20 w-full bg-[#05080E] border-b border-zinc-800 px-4 sm:px-8 py-2">
         <div className="max-w-[1520px] mx-auto flex items-center justify-between">
@@ -708,7 +708,7 @@ export default function NewCareerPage() {
                 })}
               </div>
 
-              {/* Large Featured EA FC Club Card (5 Cols, ZERO BLUR) */}
+              {/* Large Featured SquadCraft Club Card (5 Cols, ZERO BLUR) */}
               <div className="lg:col-span-5 bg-[#06140D] border-2 border-[#00F5A0] p-6 flex flex-col justify-between shadow-2xl">
                 <div className="space-y-5">
                   <div className="flex items-center gap-4">
@@ -968,7 +968,7 @@ export default function NewCareerPage() {
       </main>
 
       {/* ==================================================================== */}
-      {/* 5. EA FC BROADCAST TICKER & CONTROLLER PROMPT FOOTER                 */}
+      {/* 5. SQUADCRAFT BROADCAST TICKER & CONTROLLER PROMPT FOOTER             */}
       {/* ==================================================================== */}
       <footer className="relative z-20 w-full border-t border-zinc-800 bg-[#05070B] text-xs">
         {/* Broadcast Live News Ticker Strip */}

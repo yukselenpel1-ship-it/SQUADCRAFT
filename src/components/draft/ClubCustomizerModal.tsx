@@ -96,8 +96,8 @@ export const ClubCustomizerModal: React.FC<ClubCustomizerModalProps> = ({
                 <h2 className="text-xl font-black text-white uppercase tracking-wide font-display">
                   Kulüp & Arma Düzenleyici
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 uppercase">
-                  FIFA STİLİ
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-[#00F5A0] border border-emerald-500/40 uppercase">
+                  SQUADCRAFT HD
                 </span>
               </div>
               <p className="text-xs text-slate-400 mt-0.5">

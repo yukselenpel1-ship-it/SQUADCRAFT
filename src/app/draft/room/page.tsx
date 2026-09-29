@@ -162,7 +162,7 @@ export default function DraftRoomHubPage() {
       </div>
 
       {/* ==================================================================== */}
-      {/* 2. EA FC BROADCAST TOP NAVIGATION BAR                                */}
+      {/* 2. SQUADCRAFT BROADCAST TOP NAVIGATION BAR                           */}
       {/* ==================================================================== */}
       <header className="relative z-20 w-full border-b border-zinc-800 bg-[#070A0F] px-4 sm:px-8 py-2.5">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
@@ -201,7 +201,7 @@ export default function DraftRoomHubPage() {
             </Link>
           </div>
 
-          {/* Center: FIFA Category Switcher Tabs */}
+          {/* Center: Tactical Category Switcher Tabs */}
           <nav className="hidden lg:flex items-center gap-1">
             <Link
               href="/"
@@ -597,7 +597,7 @@ export default function DraftRoomHubPage() {
       </main>
 
       {/* ==================================================================== */}
-      {/* 4. EA FC BROADCAST FOOTER & TICKER                                   */}
+      {/* 4. SQUADCRAFT BROADCAST FOOTER & TICKER                              */}
       {/* ==================================================================== */}
       <footer className="relative z-20 w-full border-t border-zinc-800 bg-[#070A0F] py-2 px-4 sm:px-8 text-xs text-zinc-400">
         <div className="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
