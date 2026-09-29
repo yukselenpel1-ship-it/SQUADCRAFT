@@ -42,7 +42,7 @@ export interface DraftRules {
 }
 
 export const DEFAULT_DRAFT_RULES: DraftRules = {
-  maxManagers: 4,
+  maxManagers: 6,
   format: 'DOUBLE_ROUND',
   squadSize: 18,
   pickTimerSeconds: 60,

@@ -44,7 +44,7 @@ export default function DraftRoomHubPage() {
   const [username, setUsername] = useState('');
   const [joinCode, setJoinCode] = useState('');
   const [roomName, setRoomName] = useState('');
-  const [managerCount, setManagerCount] = useState<4 | 6 | 8>(4);
+  const [managerCount, setManagerCount] = useState<4 | 6 | 8>(6);
   const [isSpectator, setIsSpectator] = useState(false);
   const [recentRooms, setRecentRooms] = useState<string[]>([]);
   const [createError, setCreateError] = useState<string | null>(null);
