@@ -304,13 +304,19 @@ export function calculatePlayerDraftValue(player: {
     if (potential >= 88) youthBonus += 6_000_000;
     else if (potential >= 85) youthBonus += 3_500_000;
     else if (potential >= 80) youthBonus += 1_000_000;
+
+    // Scale youth bonus relative to current ability (raw prospects shouldn't cost as much as established stars)
+    const ovrScale = Math.max(0.18, Math.min(1.0, (overall - 54) / 22));
+    youthBonus *= ovrScale;
   } else if (age <= 24 && potential >= 80) {
     youthBonus = growthRoom * 250_000;
     if (potential >= 88) youthBonus += 2_000_000;
+    const ovrScale = Math.max(0.25, Math.min(1.0, (overall - 58) / 18));
+    youthBonus *= ovrScale;
   } else if (age >= 30) {
-    // Veteran discount
+    // Veteran discount: Milder discount (max 22%) so top veterans cannot be hoarded cheaply
     const penaltyYears = age - 29;
-    const discountFactor = Math.max(0.60, 1 - penaltyYears * 0.08);
+    const discountFactor = Math.max(0.78, 1 - penaltyYears * 0.045);
     baseValue *= discountFactor;
   }
 

@@ -185,11 +185,37 @@ export function chooseBotDraftPick(
     }
   }
 
-  const avgBudgetPerPick = currentBudget / remainingPicksForClub;
+  const clubPlayersMap = new Map(playerPool.map((p) => [p.id, p]));
+  const existingClubPlayers = clubPlayerIds.map((id) => clubPlayersMap.get(id)).filter(Boolean) as Player[];
+  const starAnchorCount = existingClubPlayers.filter((p) => (p.draftValue ?? 0) >= 35_000_000 || p.overall >= 88).length;
+  const currentRound = counts.total + 1;
+
+  // Target Reserve Schedule per pick depending on difficulty & phase
+  let targetReservePerPick = 0;
+  if (difficulty === 'ZOR') {
+    if (currentRound <= 3) targetReservePerPick = 8_200_000;
+    else if (currentRound <= 7) targetReservePerPick = 6_500_000;
+    else if (currentRound <= 11) targetReservePerPick = 4_500_000;
+    else if (currentRound <= 14) targetReservePerPick = 2_600_000;
+    else targetReservePerPick = 1_000_000;
+  } else if (difficulty === 'ORTA') {
+    if (currentRound <= 3) targetReservePerPick = 7_200_000;
+    else if (currentRound <= 7) targetReservePerPick = 5_500_000;
+    else if (currentRound <= 11) targetReservePerPick = 3_600_000;
+    else if (currentRound <= 14) targetReservePerPick = 2_000_000;
+    else targetReservePerPick = 700_000;
+  } else {
+    // KOLAY: Weaker pacing, leaves less for the bench
+    if (currentRound <= 3) targetReservePerPick = 6_200_000;
+    else if (currentRound <= 7) targetReservePerPick = 4_800_000;
+    else if (currentRound <= 11) targetReservePerPick = 3_000_000;
+    else targetReservePerPick = 800_000;
+  }
 
   // Rank available players using evaluation score
   const scoredCandidates = candidates.map((p) => {
-    let score = p.overall * 2;
+    // Current ability is the primary anchor of all scouting decisions
+    let score = p.overall * 3.5;
     const playerPrice = p.draftValue ?? calculatePlayerDraftValue(p);
 
     const isGK = p.position === 'GK';
@@ -200,94 +226,82 @@ export function chooseBotDraftPick(
     // Positional Need Bonuses
     if (isGK) {
       if (counts.gk >= minGK) {
-        score -= 50; // Already satisfied min GK
+        score -= 90; // Strictly never hoard 3+ GKs
+      } else if (counts.gk >= 1 && currentRound <= 12) {
+        score -= 40; // Do not buy an expensive backup goalkeeper during Starting XI rounds
       } else {
-        score += neededGK * 25;
+        score += neededGK * 15;
         if (mustFillMin && neededGK > 0) score += 60;
       }
     } else if (isDEF) {
-      if (neededDEF > 0) score += neededDEF * 8;
+      if (neededDEF > 0) score += neededDEF * 6;
       if (mustFillMin && neededDEF > 0) score += 30;
     } else if (isMID) {
-      if (neededMID > 0) score += neededMID * 8;
+      if (neededMID > 0) score += neededMID * 6;
       if (mustFillMin && neededMID > 0) score += 30;
     } else if (isATT) {
-      if (neededATT > 0) score += neededATT * 10;
+      if (neededATT > 0) score += neededATT * 8;
       if (mustFillMin && neededATT > 0) score += 35;
+    }
+
+    // Budget Reserve check
+    const remainingPicksAfterPick = remainingPicksForClub - 1;
+    if (remainingPicksAfterPick > 0) {
+      const projectedPerPick = (currentBudget - playerPrice) / remainingPicksAfterPick;
+      if (projectedPerPick < targetReservePerPick) {
+        const deficit = targetReservePerPick - projectedPerPick;
+        const penaltyMultiplier = difficulty === 'ZOR' ? 3.5 : 2.5;
+        score -= (deficit / 100_000) * penaltyMultiplier;
+      }
     }
 
     // Personality Modifiers (Tactical Fit)
     if (difficulty === 'ORTA' || difficulty === 'ZOR') {
       if (personality === 'Hücumcu') {
-        if (isATT) score += 12;
-        score += (p.attributes.finishing + p.attributes.pace) * 0.1;
+        if (isATT) score += 6;
+        score += (p.attributes.finishing + p.attributes.pace) * 0.05;
       } else if (personality === 'Presçi') {
-        score += (p.attributes.stamina + p.attributes.tackling) * 0.15;
+        score += (p.attributes.stamina + p.attributes.tackling) * 0.08;
       } else if (personality === 'Kontrollü') {
-        score += (p.attributes.passing + p.attributes.vision + p.attributes.decisions) * 0.12;
+        score += (p.attributes.passing + p.attributes.vision + p.attributes.decisions) * 0.06;
       } else if (personality === 'Kontratakçı') {
-        if (isDEF || isATT) score += 8;
-        score += (p.attributes.pace + p.attributes.acceleration) * 0.15;
+        if (isDEF || isATT) score += 4;
+        score += (p.attributes.pace + p.attributes.acceleration) * 0.08;
       }
     }
 
-    // Budget Pacing Modifiers
+    // Difficulty specific logic
     if (difficulty === 'KOLAY') {
-      // Pacing so KOLAY does not burn entire budget in early rounds
-      if (playerPrice > avgBudgetPerPick * 2.5) {
-        score -= 25;
-      }
+      // Inefficient picks, occasional overpay for older players, ignores potential
+      if (p.age >= 28 && p.overall >= 80) score += 2;
+      if (p.age >= 33) score -= 4; // Moderate veteran cap
+      if (p.potential > p.overall) score -= 2; // Ignores potential
     } else if (difficulty === 'ORTA') {
-      // ORTA: Paces budget so it doesn't spend >2.2x average in late rounds
-      if (remainingPicksForClub <= 10 && playerPrice > avgBudgetPerPick * 2.2) {
-        score -= 20;
+      // Balanced squad building (max 2 stars)
+      if (playerPrice >= 35_000_000 && starAnchorCount >= 2) score -= 60;
+      // Prime age focus
+      if (p.age >= 24 && p.age <= 28) score += 4;
+      else if (p.age >= 32) score -= 6;
+      if (p.age <= 23 && p.potential > p.overall) {
+        score += Math.min(5, (p.potential - p.overall) * 0.5);
       }
     } else if (difficulty === 'ZOR') {
-      // ZOR: Advanced Price/Performance (F/P) & Strategy
-      // 1. Price-to-overall efficiency ratio (OVR per Million €)
-      const priceInM = Math.max(0.5, playerPrice / 1_000_000);
-      const fpRatio = p.overall / priceInM;
-      if (fpRatio >= 8) score += 12; // Incredible bargain
-      else if (fpRatio >= 5) score += 6;
+      // Dominant Starting XI & Smart depth
+      if (playerPrice >= 35_000_000 && starAnchorCount >= 2) score -= 80;
 
-      // 2. "YÜKSELEN YETENEK" Badge bonus
-      if (p.isRisingTalent) {
-        score += 18;
-      }
-
-      // 3. High POT youth premium
-      if (p.age <= 22 && p.potential >= 85) {
-        score += 14;
-      }
-
-      // 4. Aging expensive penalty: Avoid burning 20M+ on 31+ year olds
-      if (p.age >= 31 && playerPrice > 16_000_000) {
-        score -= 15;
-      }
-
-      // 5. Early marquee star allowance vs late round thriftiness
-      const currentRound = counts.total + 1;
-      if (currentRound <= 3 && p.overall >= 86) {
-        score += 15; // Bot willingly invests in anchor superstars early
-      } else if (currentRound >= 12 && playerPrice > avgBudgetPerPick * 1.6) {
-        score -= 25; // Heavily favor smart bargains in depth rounds
-      }
-
-      // 6. Positional scarcity in remaining pool
-      const samePosAvailable = availablePlayers.filter((cand) => cand.position === p.position);
-      if (samePosAvailable.length <= 4) {
-        score += 15; // Scarcity premium
-      }
-
-      // 7. Check public history to anticipate run on positions
-      const recentPicks = publicHistory.slice(-4);
-      const recentPosCount = recentPicks.filter((pick) => {
-        const picked = playerPool.find((pl) => pl.id === pick.playerId);
-        return picked?.position === p.position;
-      }).length;
-
-      if (recentPosCount >= 2) {
-        score += 8; // Competitors are actively targeting this position
+      if (currentRound <= 11) {
+        // Starting XI phase: 1-2 prime anchors + dominant Starting XI OVR + Prime Age (22-29)
+        if (currentRound <= 3 && p.overall >= 86 && starAnchorCount < 2) score += 22;
+        // High OVR gradient for Starting XI dominance
+        if (p.overall >= 78) score += (p.overall - 77) * 2.5;
+        if (p.age >= 22 && p.age <= 29) score += 8; // Prime age dominance
+        if (p.age >= 31) score -= 10; // Avoid veterans in Starting XI
+      } else {
+        // Depth / Bench phase (R12-18): Target high-ceiling upside, Rising Talents & cheap bargains
+        if (p.isRisingTalent) score += 22;
+        if (p.age <= 22 && p.potential >= 80) score += Math.min(10, (p.potential - p.overall) * 0.9);
+        if (p.overall >= 73 && playerPrice <= 7_500_000) score += 8;
+        if (p.age >= 29) score -= 12; // Strict youth depth bias
       }
     }
 
