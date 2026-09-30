@@ -1,8 +1,9 @@
 import { Player, PlayerPosition, ClubTactics, Formation, Mentality, Tempo, Pressing, PassingStyle, DefensiveLine, Width } from '@/types/game';
 import { FORMATION_COORDINATES } from '@/lib/data/mockData';
-import { DraftRules, DraftClub, BotDifficulty, BotPersonality, DraftPick } from './types';
+import { DraftRules, DraftClub, BotDifficulty, BotPersonality, DraftPick, DEFAULT_DRAFT_BUDGET, MIN_PLAYER_DRAFT_PRICE } from './types';
 import { countSquadPositions } from './draftEngine';
 import { createDefaultBadgeConfig, BADGE_SHAPES, BADGE_PATTERNS, BADGE_EMBLEMS } from './badgeGenerator';
+import { calculatePlayerDraftValue } from './playerPool';
 
 // ============================================================================
 // ORIGINAL FICTIONAL CONTENT GENERATORS
@@ -128,13 +129,29 @@ export function chooseBotDraftPick(
   rules: DraftRules,
   difficulty: BotDifficulty,
   personality: BotPersonality = 'Dengeli',
-  publicHistory: DraftPick[] = []
+  publicHistory: DraftPick[] = [],
+  club?: DraftClub
 ): Player | null {
-  const availablePlayers = playerPool.filter((p) => !pickedPlayerIds.has(p.id));
-  if (availablePlayers.length === 0) return null;
+  const allAvailable = playerPool.filter((p) => !pickedPlayerIds.has(p.id));
+  if (allAvailable.length === 0) return null;
 
   const counts = countSquadPositions(playerPool, clubPlayerIds);
-  const remainingPicksForClub = rules.squadSize - counts.total;
+  const remainingPicksForClub = Math.max(1, rules.squadSize - counts.total);
+  const currentBudget = club?.budget ?? DEFAULT_DRAFT_BUDGET;
+  const minRequiredForRest = Math.max(0, remainingPicksForClub - 1) * MIN_PLAYER_DRAFT_PRICE;
+
+  // Strict mathematical guarantee filter: Bot can never choose an unaffordable player
+  let availablePlayers = allAvailable.filter((p) => {
+    const val = p.draftValue ?? calculatePlayerDraftValue(p);
+    return currentBudget >= val && (currentBudget - val) >= minRequiredForRest;
+  });
+
+  if (availablePlayers.length === 0) {
+    // Edge case safety fallback to cheapest available
+    availablePlayers = [...allAvailable].sort(
+      (a, b) => (a.draftValue ?? 0) - (b.draftValue ?? 0)
+    );
+  }
 
   const minGK = 2;
   const minDEF = 5;
@@ -156,12 +173,24 @@ export function chooseBotDraftPick(
     if (neededGK > 0 && remainingPicksForClub <= neededGK + 1) {
       const gks = candidates.filter((p) => p.position === 'GK');
       if (gks.length > 0) candidates = gks;
+    } else if (neededDEF > 0 && remainingPicksForClub <= neededDEF + 1) {
+      const defs = candidates.filter((p) => ['DC', 'DL', 'DR', 'CB', 'LB', 'RB', 'LWB', 'RWB'].includes(p.position));
+      if (defs.length > 0) candidates = defs;
+    } else if (neededMID > 0 && remainingPicksForClub <= neededMID + 1) {
+      const mids = candidates.filter((p) => ['DMC', 'MC', 'AMC', 'ML', 'MR', 'DM', 'CM', 'CAM', 'LM', 'RM'].includes(p.position));
+      if (mids.length > 0) candidates = mids;
+    } else if (neededATT > 0 && remainingPicksForClub <= neededATT + 1) {
+      const atts = candidates.filter((p) => ['AML', 'AMR', 'ST', 'LW', 'RW', 'CF'].includes(p.position));
+      if (atts.length > 0) candidates = atts;
     }
   }
+
+  const avgBudgetPerPick = currentBudget / remainingPicksForClub;
 
   // Rank available players using evaluation score
   const scoredCandidates = candidates.map((p) => {
     let score = p.overall * 2;
+    const playerPrice = p.draftValue ?? calculatePlayerDraftValue(p);
 
     const isGK = p.position === 'GK';
     const isDEF = ['DC', 'DL', 'DR', 'CB', 'LB', 'RB', 'LWB', 'RWB'].includes(p.position);
@@ -202,20 +231,55 @@ export function chooseBotDraftPick(
       }
     }
 
-    // Advanced ZOR logic: Positional scarcity & age curve
-    if (difficulty === 'ZOR') {
-      // Check scarcity in remaining pool
+    // Budget Pacing Modifiers
+    if (difficulty === 'KOLAY') {
+      // Pacing so KOLAY does not burn entire budget in early rounds
+      if (playerPrice > avgBudgetPerPick * 2.5) {
+        score -= 25;
+      }
+    } else if (difficulty === 'ORTA') {
+      // ORTA: Paces budget so it doesn't spend >2.2x average in late rounds
+      if (remainingPicksForClub <= 10 && playerPrice > avgBudgetPerPick * 2.2) {
+        score -= 20;
+      }
+    } else if (difficulty === 'ZOR') {
+      // ZOR: Advanced Price/Performance (F/P) & Strategy
+      // 1. Price-to-overall efficiency ratio (OVR per Million €)
+      const priceInM = Math.max(0.5, playerPrice / 1_000_000);
+      const fpRatio = p.overall / priceInM;
+      if (fpRatio >= 8) score += 12; // Incredible bargain
+      else if (fpRatio >= 5) score += 6;
+
+      // 2. "YÜKSELEN YETENEK" Badge bonus
+      if (p.isRisingTalent) {
+        score += 18;
+      }
+
+      // 3. High POT youth premium
+      if (p.age <= 22 && p.potential >= 85) {
+        score += 14;
+      }
+
+      // 4. Aging expensive penalty: Avoid burning 20M+ on 31+ year olds
+      if (p.age >= 31 && playerPrice > 16_000_000) {
+        score -= 15;
+      }
+
+      // 5. Early marquee star allowance vs late round thriftiness
+      const currentRound = counts.total + 1;
+      if (currentRound <= 3 && p.overall >= 86) {
+        score += 15; // Bot willingly invests in anchor superstars early
+      } else if (currentRound >= 12 && playerPrice > avgBudgetPerPick * 1.6) {
+        score -= 25; // Heavily favor smart bargains in depth rounds
+      }
+
+      // 6. Positional scarcity in remaining pool
       const samePosAvailable = availablePlayers.filter((cand) => cand.position === p.position);
       if (samePosAvailable.length <= 4) {
         score += 15; // Scarcity premium
       }
 
-      // Value younger high-potential players
-      if (p.age <= 24 && p.overall >= 80) {
-        score += 5;
-      }
-
-      // Check public history to anticipate run on positions
+      // 7. Check public history to anticipate run on positions
       const recentPicks = publicHistory.slice(-4);
       const recentPosCount = recentPicks.filter((pick) => {
         const picked = playerPool.find((pl) => pl.id === pick.playerId);
@@ -232,23 +296,30 @@ export function chooseBotDraftPick(
 
   scoredCandidates.sort((a, b) => b.score - a.score);
 
+  // Guarantee only affordable & quota-safe players are picked
+  const safeScored = scoredCandidates.filter((c) => {
+    const val = c.player.draftValue ?? calculatePlayerDraftValue(c.player);
+    return currentBudget >= val && (currentBudget - val) >= minRequiredForRest;
+  });
+  const finalCandidates = safeScored.length > 0 ? safeScored : scoredCandidates;
+
   // Difficulty Selection variance:
   if (difficulty === 'KOLAY') {
     // Pick among top 4 with slight randomness
-    const topN = scoredCandidates.slice(0, Math.min(4, scoredCandidates.length));
+    const topN = finalCandidates.slice(0, Math.min(4, finalCandidates.length));
     const chosen = topN[Math.floor(Math.random() * topN.length)];
     return chosen.player;
   }
 
   if (difficulty === 'ORTA') {
     // Pick among top 2
-    const topN = scoredCandidates.slice(0, Math.min(2, scoredCandidates.length));
+    const topN = finalCandidates.slice(0, Math.min(2, finalCandidates.length));
     const chosen = topN[Math.floor(Math.random() * topN.length)];
     return chosen.player;
   }
 
   // ZOR always picks the highest scored player
-  return scoredCandidates[0]?.player || availablePlayers[0];
+  return finalCandidates[0]?.player || availablePlayers[0];
 }
 
 // ============================================================================

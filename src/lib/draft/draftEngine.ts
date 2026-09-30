@@ -10,8 +10,11 @@ import {
   DraftStanding,
   LeagueFormat,
   MultiplayerErrorCode,
+  DEFAULT_DRAFT_BUDGET,
+  MIN_PLAYER_DRAFT_PRICE,
 } from './types';
 import { formatMultiplayerError } from './logger';
+import { calculatePlayerDraftValue } from './playerPool';
 
 // Clean character set for readable, non-confusing room codes (omits 0/O, 1/I/L)
 const CODE_CHARS = '23456789ABCDEFGHJKMNPQRSTUVWXYZ';
@@ -163,7 +166,8 @@ export function validateDraftPick(
   playerId: string,
   pickedPlayerIds: Set<string>,
   playerPool: Player[],
-  rules: DraftRules
+  rules: DraftRules,
+  club?: DraftClub
 ): { isValid: boolean; error?: string; errorCode?: MultiplayerErrorCode } {
   if (draftState.isCompleted) {
     const err = formatMultiplayerError('SC-MP-007', 'Draft zaten tamamlandı.');
@@ -191,25 +195,68 @@ export function validateDraftPick(
     return { isValid: false, error: err.message, errorCode: 'SC-MP-004' };
   }
 
+  // Budget Validation & Mathematical Quota Guarantee
+  if (club) {
+    const playerPrice = player.draftValue ?? calculatePlayerDraftValue(player);
+    const currentBudget = club.budget ?? DEFAULT_DRAFT_BUDGET;
+
+    if (playerPrice > currentBudget) {
+      const err = formatMultiplayerError(
+        'SC-MP-013',
+        `Bütçe yetersiz! Oyuncu bedeli: €${(playerPrice / 1_000_000).toFixed(1)}M, Mevcut bütçeniz: €${(currentBudget / 1_000_000).toFixed(1)}M`
+      );
+      return { isValid: false, error: err.message, errorCode: 'SC-MP-013' };
+    }
+
+    const currentSquadCount = club.squadPlayerIds?.length || 0;
+    const remainingPicks = rules.squadSize - currentSquadCount;
+    if (remainingPicks > 1) {
+      const remainingAfterPick = currentBudget - playerPrice;
+      const minRequiredForRest = (remainingPicks - 1) * MIN_PLAYER_DRAFT_PRICE;
+      if (remainingAfterPick < minRequiredForRest) {
+        const err = formatMultiplayerError(
+          'SC-MP-013',
+          `Bu seçim sonrası kalan ${remainingPicks - 1} transferi tamamlamak için gereken asgari bütçe (€150K/seçim) tehlikeye giriyor.`
+        );
+        return { isValid: false, error: err.message, errorCode: 'SC-MP-013' };
+      }
+    }
+  }
+
   return { isValid: true };
 }
 
 /**
  * Intelligent Auto-Pick algorithm for timeout / AFK players.
  * Evaluates positional requirements: Min 2 GK, 5 DEF, 5 MID, 3 ATT.
+ * Strictly respects remaining budget and mathematical quota guarantee.
  */
 export function determineAutoPick(
   playerPool: Player[],
   pickedPlayerIds: Set<string>,
   clubPlayerIds: string[],
   rules: DraftRules,
-  currentRound: number
+  currentRound: number,
+  club?: DraftClub
 ): Player | null {
-  const availablePlayers = playerPool.filter((p) => !pickedPlayerIds.has(p.id));
-  if (availablePlayers.length === 0) return null;
-
+  const currentBudget = club?.budget ?? DEFAULT_DRAFT_BUDGET;
   const counts = countSquadPositions(playerPool, clubPlayerIds);
   const remainingRounds = rules.squadSize - counts.total;
+  const minRequiredForRest = Math.max(0, remainingRounds - 1) * MIN_PLAYER_DRAFT_PRICE;
+
+  let availablePlayers = playerPool.filter((p) => {
+    if (pickedPlayerIds.has(p.id)) return false;
+    const val = p.draftValue ?? calculatePlayerDraftValue(p);
+    return currentBudget >= val && (currentBudget - val) >= minRequiredForRest;
+  });
+
+  if (availablePlayers.length === 0) {
+    // Edge case safety fallback to cheapest unpicked players
+    availablePlayers = playerPool
+      .filter((p) => !pickedPlayerIds.has(p.id))
+      .sort((a, b) => (a.draftValue ?? 0) - (b.draftValue ?? 0));
+  }
+  if (availablePlayers.length === 0) return null;
 
   // Minimum required targets
   const minGK = 2;
@@ -274,7 +321,8 @@ export function executeDraftPick(
   playerId: string,
   isAutoPick: boolean,
   rules: DraftRules,
-  nowMs: number = Date.now()
+  nowMs: number = Date.now(),
+  draftPrice?: number
 ): { nextState: DraftState; newPick: DraftPick } {
   const globalPickNumber = currentState.picks.length + 1;
   const timeTakenSeconds = Math.max(
@@ -294,6 +342,7 @@ export function executeDraftPick(
     selectedAt: new Date(nowMs).toISOString(),
     isAutoPick,
     timeTakenSeconds,
+    draftPrice,
   };
 
   const updatedPicks = [...currentState.picks, newPick];

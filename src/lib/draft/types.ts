@@ -176,7 +176,8 @@ export type MultiplayerErrorCode =
   | 'SC-MP-009' // Squad validation failure
   | 'SC-MP-010' // State desync
   | 'SC-MP-011' // Room creation failed
-  | 'SC-MP-012'; // Bot management failed
+  | 'SC-MP-012' // Bot management failed
+  | 'SC-MP-013'; // Budget insufficient or quota guarantee breach
 
 export const ERROR_MESSAGES: Record<MultiplayerErrorCode, string> = {
   'SC-MP-001': 'Oda bulunamadı.',
@@ -191,6 +192,7 @@ export const ERROR_MESSAGES: Record<MultiplayerErrorCode, string> = {
   'SC-MP-010': 'Oda durumu senkronize edilemedi.',
   'SC-MP-011': 'Oda oluşturulamadı.',
   'SC-MP-012': 'Bot odadan kaldırılamadı.',
+  'SC-MP-013': 'Bütçe yetersiz veya kalan seçimler için kadro tamamlama bütçesi aşıldı.',
 };
 
 export type MultiplayerActionType =
@@ -245,6 +247,9 @@ export interface BadgeConfig {
   accentColor?: string;
 }
 
+export const DEFAULT_DRAFT_BUDGET = 250_000_000; // €250.0M SquadCraft Draft Budget
+export const MIN_PLAYER_DRAFT_PRICE = 150_000; // €150K minimum player price
+
 export interface DraftClub {
   id: string;
   roomId: string;
@@ -256,6 +261,8 @@ export interface DraftClub {
   secondaryColor: string;
   badge: BadgeConfig;
   squadPlayerIds: string[];
+  budget?: number; // Current remaining draft budget (starts at €250M)
+  spentBudget?: number; // Total draft budget spent
 }
 
 // ============================================================================
@@ -274,6 +281,7 @@ export interface DraftPick {
   selectedAt: string;
   isAutoPick: boolean;
   timeTakenSeconds: number;
+  draftPrice?: number;
 }
 
 export interface DraftState {

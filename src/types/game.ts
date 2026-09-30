@@ -56,6 +56,42 @@ export type SquadRole =
   | 'Genç Oyuncu'
   | 'Genç Yetenek';
 
+export type PlayerArchetype =
+  | 'Hızlı Kanat'
+  | 'Oyun Kurucu Kanat'
+  | 'Oyun Kurucu'
+  | 'Bitirici Forvet'
+  | 'Pres Forvet'
+  | 'Hedef Santrfor'
+  | 'Box-to-Box'
+  | 'Defansif Orta Saha'
+  | 'Pasör Stoper'
+  | 'Fiziksel Stoper'
+  | 'Hücumcu Bek'
+  | 'Savunmacı Bek'
+  | 'Süpürücü Kaleci'
+  | 'Çizgi Kalecisi';
+
+export type DevelopmentCurve = 'EARLY_PEAK' | 'BALANCED' | 'LATE_BLOOMER';
+
+export interface HiddenPlayerAttributes {
+  consistency: number; // 1-100 (İstikrar)
+  bigMatchPerformance: number; // 1-100 (Büyük Maç Performansı)
+  injuryProneness: number; // 1-100 (Sakatlık Yatkınlığı)
+  professionalism: number; // 1-100 (Profesyonellik)
+  workEthic: number; // 1-100 (Çalışma Disiplini)
+  developmentCurve: DevelopmentCurve; // Gelişim Eğrisi
+}
+
+export interface ScoutingReport {
+  isFullyScouted: boolean;
+  scoutedLevel: number; // 0-100
+  estimatedOvrMin: number;
+  estimatedOvrMax: number;
+  estimatedPotMin: number;
+  estimatedPotMax: number;
+}
+
 export interface Player {
   id: string;
   clubId: string;
@@ -108,6 +144,13 @@ export interface Player {
   parentClubId?: string;
   parentClubName?: string;
   agent?: any;
+
+  // SquadCraft Player 2.0 & Draft Economy Fields
+  draftValue?: number; // EUR € Draft Değeri
+  archetype?: PlayerArchetype;
+  isRisingTalent?: boolean; // "YÜKSELEN YETENEK"
+  hiddenAttributes?: HiddenPlayerAttributes;
+  scoutingReport?: ScoutingReport;
   
   // İstatistikler (Sezon)
   seasonStats?: {

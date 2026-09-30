@@ -15,6 +15,7 @@ import {
   BotDifficulty,
   BotPersonality,
   LiveMatchweekState,
+  DEFAULT_DRAFT_BUDGET,
 } from './types';
 import {
   generateRoomCode,
@@ -28,7 +29,7 @@ import {
   initializeDraftStandings,
   generateDefaultDraftTactics,
 } from './draftEngine';
-import { getCachedDraftPlayerPool } from './playerPool';
+import { getCachedDraftPlayerPool, calculatePlayerDraftValue } from './playerPool';
 import { createDefaultBadgeConfig } from './badgeGenerator';
 import { FICTIONAL_CLUB_PRESETS } from './clubValidation';
 import { resolveMemberConnection, evaluateHostMigration } from './sessionManager';
@@ -248,6 +249,8 @@ function mapDbClub(c: any): DraftClub {
     secondaryColor: c.secondary_color,
     badge: c.badge || {},
     squadPlayerIds: c.squad_player_ids || [],
+    budget: c.budget ?? DEFAULT_DRAFT_BUDGET,
+    spentBudget: c.spent_budget ?? 0,
   };
 }
 
@@ -597,6 +600,8 @@ export class DraftMultiplayerStore {
       secondaryColor: randomPreset.secondaryColor,
       badge: createDefaultBadgeConfig(randomPreset.primaryColor, randomPreset.secondaryColor),
       squadPlayerIds: [],
+      budget: DEFAULT_DRAFT_BUDGET,
+      spentBudget: 0,
     };
 
     const hostMember: RoomMember = {
@@ -760,6 +765,8 @@ export class DraftMultiplayerStore {
       secondaryColor: randomPreset.secondaryColor,
       badge: createDefaultBadgeConfig(randomPreset.primaryColor, randomPreset.secondaryColor),
       squadPlayerIds: [],
+      budget: DEFAULT_DRAFT_BUDGET,
+      spentBudget: 0,
     };
 
     const hostMember: RoomMember = {
@@ -996,6 +1003,8 @@ export class DraftMultiplayerStore {
         secondaryColor: preset.secondaryColor,
         badge: createDefaultBadgeConfig(preset.primaryColor, preset.secondaryColor),
         squadPlayerIds: [],
+        budget: DEFAULT_DRAFT_BUDGET,
+        spentBudget: 0,
       };
       updatedClubs.push(newClub);
       currentMember.clubId = newClubId;
@@ -1122,6 +1131,8 @@ export class DraftMultiplayerStore {
         secondaryColor: preset.secondaryColor,
         badge: createDefaultBadgeConfig(preset.primaryColor, preset.secondaryColor),
         squadPlayerIds: [],
+        budget: DEFAULT_DRAFT_BUDGET,
+        spentBudget: 0,
       };
       updatedClubs.push(newClub);
       currentMember.clubId = newClubId;
@@ -1454,6 +1465,8 @@ export class DraftMultiplayerStore {
       secondaryColor: botProfile.secondaryColor,
       badge: botProfile.badge,
       squadPlayerIds: [],
+      budget: DEFAULT_DRAFT_BUDGET,
+      spentBudget: 0,
     };
 
     const updatedRules: DraftRules = {
@@ -1597,6 +1610,8 @@ export class DraftMultiplayerStore {
       secondaryColor: botProfile.secondaryColor,
       badge: botProfile.badge,
       squadPlayerIds: [],
+      budget: DEFAULT_DRAFT_BUDGET,
+      spentBudget: 0,
     };
 
     const updatedRules: DraftRules = {
@@ -2173,7 +2188,8 @@ export class DraftMultiplayerStore {
       playerId,
       pickedPlayerIds,
       state.playerPool,
-      state.room.rules
+      state.room.rules,
+      club
     );
 
     if (!validation.isValid) {
@@ -2189,6 +2205,9 @@ export class DraftMultiplayerStore {
       return { success: false, error: validation.error, errorCode: validation.errorCode || 'SC-MP-004' };
     }
 
+    const pickedPlayer = state.playerPool.find((p) => p.id === playerId);
+    const playerPrice = pickedPlayer?.draftValue ?? (pickedPlayer ? calculatePlayerDraftValue(pickedPlayer) : 0);
+
     // Execute pick
     const { nextState, newPick } = executeDraftPick(
       state.draftState,
@@ -2196,12 +2215,21 @@ export class DraftMultiplayerStore {
       club.id,
       playerId,
       isAutoPick,
-      state.room.rules
+      state.room.rules,
+      Date.now(),
+      playerPrice
     );
 
-    // Add player to club squad
+    // Add player to club squad and deduct draft budget
     const updatedClubs = state.clubs.map((c) =>
-      c.id === club.id ? { ...c, squadPlayerIds: [...c.squadPlayerIds, playerId] } : c
+      c.id === club.id
+        ? {
+            ...c,
+            squadPlayerIds: [...c.squadPlayerIds, playerId],
+            budget: Math.max(0, (c.budget ?? DEFAULT_DRAFT_BUDGET) - playerPrice),
+            spentBudget: (c.spentBudget ?? 0) + playerPrice,
+          }
+        : c
     );
 
     const resultingVersion = prevVersion + 1;
@@ -2238,7 +2266,11 @@ export class DraftMultiplayerStore {
         if (updatedClubItem) {
           await supabase
             .from('draft_clubs')
-            .update({ squad_player_ids: updatedClubItem.squadPlayerIds })
+            .update({
+              squad_player_ids: updatedClubItem.squadPlayerIds,
+              budget: updatedClubItem.budget,
+              spent_budget: updatedClubItem.spentBudget,
+            })
             .eq('id', club.id);
         }
 
@@ -2246,7 +2278,6 @@ export class DraftMultiplayerStore {
       });
     }
 
-    const pickedPlayer = state.playerPool.find((p) => p.id === playerId);
     recordTelemetryEvent(
       isAutoPick ? 'AUTO_PICK' : 'DRAFT_PICK',
       {
@@ -2315,7 +2346,8 @@ export class DraftMultiplayerStore {
       state.room.rules,
       currentMember.botDifficulty || 'ORTA',
       currentMember.botPersonality || 'Dengeli',
-      state.draftState.picks
+      state.draftState.picks,
+      club
     );
 
     if (!chosenPlayer) {
@@ -3306,7 +3338,8 @@ export class DraftMultiplayerStore {
         pickedPlayerIds,
         club.squadPlayerIds,
         state.room.rules,
-        state.draftState.currentRound
+        state.draftState.currentRound,
+        club
       );
 
       if (autoPick) {
@@ -3771,6 +3804,8 @@ export class DraftMultiplayerStore {
     const updatedClubs = state.clubs.map((c) => ({
       ...c,
       squadPlayerIds: [],
+      budget: DEFAULT_DRAFT_BUDGET,
+      spentBudget: 0,
     }));
 
     const newState: RoomFullState = {
