@@ -2474,24 +2474,6 @@ export class DraftMultiplayerStore {
             .eq('id', club.id);
         }
 
-        if (standings.length > 0) {
-          const rows = standings.map((s) => ({
-            room_id: state.room.id,
-            club_id: s.clubId,
-            rank: s.rank,
-            played: s.played,
-            won: s.won,
-            drawn: s.drawn,
-            lost: s.lost,
-            goals_for: s.goalsFor,
-            goals_against: s.goalsAgainst,
-            goal_difference: s.goalDifference,
-            points: s.points,
-            form: s.form,
-          }));
-          await supabase.from('draft_standings').upsert(rows, { onConflict: 'room_id,club_id' });
-        }
-
         if (fixtures.length > 0) {
           const fixRows = fixtures.map((f) => ({
             id: f.id,
@@ -2504,9 +2486,33 @@ export class DraftMultiplayerStore {
             away_tactics: f.awayTactics,
             home_score: f.homeScore,
             away_score: f.awayScore,
+            match_result: f.matchResult,
             simulated_at: f.simulatedAt,
           }));
           await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
+        }
+
+        if (standings.length > 0) {
+          try {
+            await supabase.from('draft_standings').delete().eq('room_id', state.room.id);
+            const rows = standings.map((s) => ({
+              room_id: state.room.id,
+              club_id: s.clubId,
+              rank: s.rank,
+              played: s.played,
+              won: s.won,
+              drawn: s.drawn,
+              lost: s.lost,
+              goals_for: s.goalsFor,
+              goals_against: s.goalsAgainst,
+              goal_difference: s.goalDifference,
+              points: s.points,
+              form: s.form,
+            }));
+            await supabase.from('draft_standings').insert(rows);
+          } catch (e) {
+            console.warn('Standings sync warning:', e);
+          }
         }
 
         broadcastRealtimeUpdate(state.room.roomCode, 'START_LEAGUE', resultingVersion);
@@ -2631,24 +2637,6 @@ export class DraftMultiplayerStore {
           })
           .eq('id', state.room.id);
 
-        if (updatedStandings.length > 0) {
-          const rows = updatedStandings.map((s) => ({
-            room_id: state.room.id,
-            club_id: s.clubId,
-            rank: s.rank,
-            played: s.played,
-            won: s.won,
-            drawn: s.drawn,
-            lost: s.lost,
-            goals_for: s.goalsFor,
-            goals_against: s.goalsAgainst,
-            goal_difference: s.goalDifference,
-            points: s.points,
-            form: s.form,
-          }));
-          await supabase.from('draft_standings').upsert(rows, { onConflict: 'room_id,club_id' });
-        }
-
         if (updatedFixtures.length > 0) {
           const fixRows = updatedFixtures.map((f) => ({
             id: f.id,
@@ -2661,9 +2649,33 @@ export class DraftMultiplayerStore {
             away_tactics: f.awayTactics,
             home_score: f.homeScore,
             away_score: f.awayScore,
+            match_result: f.matchResult,
             simulated_at: f.simulatedAt,
           }));
           await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
+        }
+
+        if (updatedStandings.length > 0) {
+          try {
+            await supabase.from('draft_standings').delete().eq('room_id', state.room.id);
+            const rows = updatedStandings.map((s) => ({
+              room_id: state.room.id,
+              club_id: s.clubId,
+              rank: s.rank,
+              played: s.played,
+              won: s.won,
+              drawn: s.drawn,
+              lost: s.lost,
+              goals_for: s.goalsFor,
+              goals_against: s.goalsAgainst,
+              goal_difference: s.goalDifference,
+              points: s.points,
+              form: s.form,
+            }));
+            await supabase.from('draft_standings').insert(rows);
+          } catch (e) {
+            console.warn('Standings advance sync warning:', e);
+          }
         }
 
         broadcastRealtimeUpdate(state.room.roomCode, 'ADVANCE_MATCHWEEK', resultingVersion);
@@ -2801,24 +2813,6 @@ export class DraftMultiplayerStore {
             .eq('id', club.id);
         }
 
-        if (standings.length > 0) {
-          const rows = standings.map((s) => ({
-            room_id: state.room.id,
-            club_id: s.clubId,
-            rank: s.rank,
-            played: s.played,
-            won: s.won,
-            drawn: s.drawn,
-            lost: s.lost,
-            goals_for: s.goalsFor,
-            goals_against: s.goalsAgainst,
-            goal_difference: s.goalDifference,
-            points: s.points,
-            form: s.form,
-          }));
-          await supabase.from('draft_standings').upsert(rows, { onConflict: 'room_id,club_id' });
-        }
-
         if (fixtures.length > 0) {
           const fixRows = fixtures.map((f) => ({
             id: f.id,
@@ -2831,9 +2825,33 @@ export class DraftMultiplayerStore {
             away_tactics: f.awayTactics,
             home_score: f.homeScore,
             away_score: f.awayScore,
+            match_result: f.matchResult,
             simulated_at: f.simulatedAt,
           }));
           await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
+        }
+
+        if (standings.length > 0) {
+          try {
+            await supabase.from('draft_standings').delete().eq('room_id', state.room.id);
+            const rows = standings.map((s) => ({
+              room_id: state.room.id,
+              club_id: s.clubId,
+              rank: s.rank,
+              played: s.played,
+              won: s.won,
+              drawn: s.drawn,
+              lost: s.lost,
+              goals_for: s.goalsFor,
+              goals_against: s.goalsAgainst,
+              goal_difference: s.goalDifference,
+              points: s.points,
+              form: s.form,
+            }));
+            await supabase.from('draft_standings').insert(rows);
+          } catch (e) {
+            console.warn('Standings repair sync warning:', e);
+          }
         }
 
         broadcastRealtimeUpdate(state.room.roomCode, 'REPAIR_ROOM', resultingVersion);
@@ -3073,32 +3091,47 @@ export class DraftMultiplayerStore {
           })
           .eq('id', state.room.id);
 
-        if (updatedStandings.length > 0) {
-          const rows = updatedStandings.map((s) => ({
+        if (updatedFixtures.length > 0) {
+          const fixRows = updatedFixtures.map((f) => ({
+            id: f.id,
             room_id: state.room.id,
-            club_id: s.clubId,
-            rank: s.rank,
-            played: s.played,
-            won: s.won,
-            drawn: s.drawn,
-            lost: s.lost,
-            goals_for: s.goalsFor,
-            goals_against: s.goalsAgainst,
-            goal_difference: s.goalDifference,
-            points: s.points,
-            form: s.form,
+            round: f.round,
+            home_club_id: f.homeClubId,
+            away_club_id: f.awayClubId,
+            status: f.status,
+            home_tactics: f.homeTactics,
+            away_tactics: f.awayTactics,
+            home_score: f.homeScore,
+            away_score: f.awayScore,
+            match_result: f.matchResult,
+            simulated_at: f.simulatedAt,
           }));
-          await supabase.from('draft_standings').upsert(rows, { onConflict: 'room_id,club_id' });
+          await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
         }
 
-        for (const fix of updatedFixtures.filter((f) => f.round === targetRound && f.status === 'COMPLETED')) {
-          await supabase.from('draft_fixtures').update({
-            status: 'COMPLETED',
-            home_score: fix.homeScore,
-            away_score: fix.awayScore,
-            simulated_at: fix.simulatedAt,
-          }).eq('id', fix.id);
+        if (updatedStandings.length > 0) {
+          try {
+            await supabase.from('draft_standings').delete().eq('room_id', state.room.id);
+            const rows = updatedStandings.map((s) => ({
+              room_id: state.room.id,
+              club_id: s.clubId,
+              rank: s.rank,
+              played: s.played,
+              won: s.won,
+              drawn: s.drawn,
+              lost: s.lost,
+              goals_for: s.goalsFor,
+              goals_against: s.goalsAgainst,
+              goal_difference: s.goalDifference,
+              points: s.points,
+              form: s.form,
+            }));
+            await supabase.from('draft_standings').insert(rows);
+          } catch (e) {
+            console.warn('Standings simulate sync warning:', e);
+          }
         }
+
         broadcastRealtimeUpdate(state.room.roomCode, 'SIMULATE_MATCH', resultingVersion);
       });
     }
@@ -3230,32 +3263,47 @@ export class DraftMultiplayerStore {
           })
           .eq('id', state.room.id);
 
-        if (updatedStandings.length > 0) {
-          const rows = updatedStandings.map((s) => ({
+        if (updatedFixtures.length > 0) {
+          const fixRows = updatedFixtures.map((f) => ({
+            id: f.id,
             room_id: state.room.id,
-            club_id: s.clubId,
-            rank: s.rank,
-            played: s.played,
-            won: s.won,
-            drawn: s.drawn,
-            lost: s.lost,
-            goals_for: s.goalsFor,
-            goals_against: s.goalsAgainst,
-            goal_difference: s.goalDifference,
-            points: s.points,
-            form: s.form,
+            round: f.round,
+            home_club_id: f.homeClubId,
+            away_club_id: f.awayClubId,
+            status: f.status,
+            home_tactics: f.homeTactics,
+            away_tactics: f.awayTactics,
+            home_score: f.homeScore,
+            away_score: f.awayScore,
+            match_result: f.matchResult,
+            simulated_at: f.simulatedAt,
           }));
-          await supabase.from('draft_standings').upsert(rows, { onConflict: 'room_id,club_id' });
+          await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
         }
 
-        for (const fix of updatedFixtures.filter((f) => f.round === targetRound && f.status === 'COMPLETED')) {
-          await supabase.from('draft_fixtures').update({
-            status: 'COMPLETED',
-            home_score: fix.homeScore,
-            away_score: fix.awayScore,
-            simulated_at: fix.simulatedAt,
-          }).eq('id', fix.id);
+        if (updatedStandings.length > 0) {
+          try {
+            await supabase.from('draft_standings').delete().eq('room_id', state.room.id);
+            const rows = updatedStandings.map((s) => ({
+              room_id: state.room.id,
+              club_id: s.clubId,
+              rank: s.rank,
+              played: s.played,
+              won: s.won,
+              drawn: s.drawn,
+              lost: s.lost,
+              goals_for: s.goalsFor,
+              goals_against: s.goalsAgainst,
+              goal_difference: s.goalDifference,
+              points: s.points,
+              form: s.form,
+            }));
+            await supabase.from('draft_standings').insert(rows);
+          } catch (e) {
+            console.warn('Standings live result sync warning:', e);
+          }
         }
+
         broadcastRealtimeUpdate(state.room.roomCode, 'SIMULATE_MATCH', resultingVersion);
       });
     }
