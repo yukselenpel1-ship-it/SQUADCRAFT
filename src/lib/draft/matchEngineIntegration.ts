@@ -101,6 +101,95 @@ export function simulateDraftFixture(
 }
 
 /**
+ * Recomputes Draft League Standings from scratch from all completed fixtures.
+ * Idempotent, robust, and immune to stale database rows or multiple simulation triggers.
+ */
+export function computeStandingsFromFixtures(
+  clubs: DraftClub[],
+  fixtures: DraftFixture[]
+): DraftStanding[] {
+  let standings: DraftStanding[] = clubs.map((club, idx) => ({
+    rank: idx + 1,
+    clubId: club.id,
+    clubName: club.name,
+    clubCode: club.code,
+    played: 0,
+    won: 0,
+    drawn: 0,
+    lost: 0,
+    goalsFor: 0,
+    goalsAgainst: 0,
+    goalDifference: 0,
+    points: 0,
+    form: [],
+  }));
+
+  const completed = fixtures.filter(
+    (f) => f.status === 'COMPLETED' && f.homeScore !== undefined && f.awayScore !== undefined
+  );
+
+  // Sort completed fixtures by round / date to ensure chronological form
+  const sortedCompleted = [...completed].sort((a, b) => a.round - b.round);
+
+  for (const fixture of sortedCompleted) {
+    const { homeClubId, awayClubId, homeScore, awayScore } = fixture;
+    if (homeScore === undefined || awayScore === undefined) continue;
+
+    standings = standings.map((item) => {
+      if (item.clubId === homeClubId) {
+        const isWin = homeScore > awayScore;
+        const isDraw = homeScore === awayScore;
+        const isLoss = homeScore < awayScore;
+        return {
+          ...item,
+          played: item.played + 1,
+          won: item.won + (isWin ? 1 : 0),
+          drawn: item.drawn + (isDraw ? 1 : 0),
+          lost: item.lost + (isLoss ? 1 : 0),
+          goalsFor: item.goalsFor + homeScore,
+          goalsAgainst: item.goalsAgainst + awayScore,
+          goalDifference: item.goalDifference + (homeScore - awayScore),
+          points: item.points + (isWin ? 3 : isDraw ? 1 : 0),
+          form: [...item.form, isWin ? ('W' as const) : isDraw ? ('D' as const) : ('L' as const)].slice(-5),
+        };
+      }
+
+      if (item.clubId === awayClubId) {
+        const isWin = awayScore > homeScore;
+        const isDraw = homeScore === awayScore;
+        const isLoss = awayScore < homeScore;
+        return {
+          ...item,
+          played: item.played + 1,
+          won: item.won + (isWin ? 1 : 0),
+          drawn: item.drawn + (isDraw ? 1 : 0),
+          lost: item.lost + (isLoss ? 1 : 0),
+          goalsFor: item.goalsFor + awayScore,
+          goalsAgainst: item.goalsAgainst + homeScore,
+          goalDifference: item.goalDifference + (awayScore - homeScore),
+          points: item.points + (isWin ? 3 : isDraw ? 1 : 0),
+          form: [...item.form, isWin ? ('W' as const) : isDraw ? ('D' as const) : ('L' as const)].slice(-5),
+        };
+      }
+
+      return item;
+    });
+  }
+
+  // Sort standings: Points desc, GD desc, GF desc
+  standings.sort((a, b) => {
+    if (b.points !== a.points) return b.points - a.points;
+    if (b.goalDifference !== a.goalDifference) return b.goalDifference - a.goalDifference;
+    return b.goalsFor - a.goalsFor;
+  });
+
+  return standings.map((item, index) => ({
+    ...item,
+    rank: index + 1,
+  }));
+}
+
+/**
  * Updates Draft League Standings based on a newly completed fixture.
  */
 export function updateDraftStandings(
