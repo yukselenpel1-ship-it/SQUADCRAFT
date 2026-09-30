@@ -14,6 +14,7 @@ import {
   MultiplayerErrorCode,
   BotDifficulty,
   BotPersonality,
+  LiveMatchweekState,
 } from './types';
 import {
   generateRoomCode,
@@ -203,6 +204,7 @@ function mapDbRoom(r: any): MultiplayerRoom {
     currentMatchweek: rules.currentMatchweek || r.current_matchweek || 1,
     totalMatchweeks: rules.totalMatchweeks || r.total_matchweeks || undefined,
     leaguePhase: rules.leaguePhase || r.league_phase || undefined,
+    liveMatchweek: rules.liveMatchweek || undefined,
     createdAt: r.created_at || new Date().toISOString(),
     updatedAt: r.updated_at || new Date().toISOString(),
   };
@@ -2709,6 +2711,396 @@ export class DraftMultiplayerStore {
     }
 
     logMultiplayerAction('SIMULATE_MATCH', state.room.id, memberId || 'system', prevVersion, resultingVersion, true, undefined, {
+      completedMatchweek: currentMatchweek,
+      nextMatchweek,
+      isSeasonComplete,
+    });
+
+    return { success: true, state: newState };
+  }
+
+  /**
+   * Sets or unsets a manager's READY state for the current matchweek.
+   * When all required human managers give HAZIR, automatically initiates 3-2-1 COUNTDOWN.
+   */
+  public static setMatchweekReady(
+    roomId: string,
+    memberId: string,
+    isReady: boolean
+  ): { success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode } {
+    const state = this.getRoom(roomId);
+    if (!state) {
+      const err = formatMultiplayerError('SC-MP-001');
+      return { success: false, error: err.message, errorCode: 'SC-MP-001' };
+    }
+
+    const currentMatchweek = state.room.currentMatchweek || 1;
+    let liveMw: LiveMatchweekState = state.room.rules.liveMatchweek && state.room.rules.liveMatchweek.matchweek === currentMatchweek
+      ? { ...state.room.rules.liveMatchweek }
+      : {
+          matchweek: currentMatchweek,
+          status: 'PREPARING',
+          readyMemberIds: [],
+          completedMemberIds: [],
+        };
+
+    // If matches are already LIVE, cannot alter ready status
+    if (liveMw.status === 'LIVE') {
+      return { success: false, error: 'Haftanın maçları şu anda canlı oynanıyor.' };
+    }
+
+    const member = state.members.find((m) => m.id === memberId);
+    if (!member) {
+      return { success: false, error: 'Menajer odada bulunamadı.' };
+    }
+
+    let readyIds = new Set(liveMw.readyMemberIds || []);
+    if (isReady) {
+      readyIds.add(memberId);
+    } else {
+      readyIds.delete(memberId);
+      // If was in countdown, abort countdown back to preparing
+      if (liveMw.status === 'COUNTDOWN') {
+        liveMw.status = 'PREPARING';
+        delete liveMw.countdownStartedAt;
+      }
+    }
+
+    liveMw.readyMemberIds = Array.from(readyIds);
+
+    // Check if all required human managers in room are ready
+    const humanManagers = state.members.filter((m) => !m.isBot && !m.isSpectator);
+    const allHumansReady = humanManagers.length > 0 && humanManagers.every((m) => liveMw.readyMemberIds.includes(m.id));
+
+    if (allHumansReady && liveMw.status === 'PREPARING') {
+      liveMw.status = 'COUNTDOWN';
+      liveMw.countdownStartedAt = new Date().toISOString();
+    }
+
+    const prevVersion = state.room.stateVersion || 1;
+    const resultingVersion = prevVersion + 1;
+
+    const updatedRoom: MultiplayerRoom = {
+      ...state.room,
+      stateVersion: resultingVersion,
+      liveMatchweek: liveMw,
+      rules: {
+        ...state.room.rules,
+        liveMatchweek: liveMw,
+        stateVersion: resultingVersion,
+      },
+      updatedAt: new Date().toISOString(),
+    };
+
+    const newState: RoomFullState = {
+      ...state,
+      room: updatedRoom,
+    };
+
+    memoryRooms[state.room.id] = newState;
+    persistRoomLocal(newState);
+
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      safeDbRun(async () => {
+        await supabase
+          .from('multiplayer_rooms')
+          .update({
+            status: state.room.status,
+            rules: {
+              ...state.room.rules,
+              fixtures: state.fixtures,
+              standings: state.standings,
+              currentMatchweek,
+              totalMatchweeks: state.room.totalMatchweeks,
+              liveMatchweek: liveMw,
+              stateVersion: resultingVersion,
+            },
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', state.room.id);
+
+        broadcastRealtimeUpdate(state.room.roomCode, 'MATCHWEEK_READY', resultingVersion);
+      });
+    }
+
+    logMultiplayerAction('MATCHWEEK_READY', state.room.id, memberId, prevVersion, resultingVersion, true, undefined, {
+      matchweek: currentMatchweek,
+      isReady,
+      allReady: allHumansReady,
+      status: liveMw.status,
+    });
+
+    return { success: true, state: newState };
+  }
+
+  /**
+   * Starts live matches for the matchweek simultaneously for all players and devices.
+   * Pre-simulates deterministic match outcomes and timestamps the kickoff.
+   */
+  public static launchLiveMatchweek(
+    roomId: string,
+    triggeredByMemberId?: string
+  ): { success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode } {
+    const state = this.getRoom(roomId);
+    if (!state) {
+      const err = formatMultiplayerError('SC-MP-001');
+      return { success: false, error: err.message, errorCode: 'SC-MP-001' };
+    }
+
+    const currentMatchweek = state.room.currentMatchweek || 1;
+    let liveMw: LiveMatchweekState = state.room.rules.liveMatchweek && state.room.rules.liveMatchweek.matchweek === currentMatchweek
+      ? { ...state.room.rules.liveMatchweek }
+      : {
+          matchweek: currentMatchweek,
+          status: 'PREPARING',
+          readyMemberIds: [],
+        };
+
+    // Idempotency: cannot launch twice
+    if (liveMw.status === 'LIVE') {
+      return { success: true, state };
+    }
+
+    // Pre-simulate all uncompleted fixtures for current matchweek
+    let updatedFixtures = [...state.fixtures];
+    const mwFixtures = updatedFixtures.filter((f) => f.round === currentMatchweek);
+
+    for (const fix of mwFixtures) {
+      if (fix.status !== 'COMPLETED') {
+        const homeClub = state.clubs.find((c) => c.id === fix.homeClubId);
+        const awayClub = state.clubs.find((c) => c.id === fix.awayClubId);
+        if (homeClub && awayClub) {
+          const homeM = state.members.find((m) => m.id === homeClub.memberId);
+          const awayM = state.members.find((m) => m.id === awayClub.memberId);
+
+          const homeTactics =
+            fix.homeTactics ||
+            (homeM?.isBot
+              ? generateBotTactics(homeClub.id, homeClub.squadPlayerIds, state.playerPool, homeM.botDifficulty, homeM.botPersonality)
+              : generateDefaultDraftTactics(homeClub.id, homeClub.squadPlayerIds, state.playerPool));
+
+          const awayTactics =
+            fix.awayTactics ||
+            (awayM?.isBot
+              ? generateBotTactics(awayClub.id, awayClub.squadPlayerIds, state.playerPool, awayM.botDifficulty, awayM.botPersonality)
+              : generateDefaultDraftTactics(awayClub.id, awayClub.squadPlayerIds, state.playerPool));
+
+          const { updatedFixture } = simulateDraftFixture(
+            fix,
+            homeClub,
+            awayClub,
+            homeTactics,
+            awayTactics,
+            state.playerPool
+          );
+
+          // Mark as SIMULATING with full precomputed matchResult
+          updatedFixtures = updatedFixtures.map((f) =>
+            f.id === fix.id
+              ? {
+                  ...updatedFixture,
+                  status: 'SIMULATING',
+                }
+              : f
+          );
+        }
+      }
+    }
+
+    liveMw = {
+      matchweek: currentMatchweek,
+      status: 'LIVE',
+      readyMemberIds: liveMw.readyMemberIds || [],
+      startedAt: new Date().toISOString(),
+      paceMs: 800, // 800ms per minute -> total game ~ 72 seconds
+      completedMemberIds: [],
+    };
+
+    const prevVersion = state.room.stateVersion || 1;
+    const resultingVersion = prevVersion + 1;
+
+    const updatedRoom: MultiplayerRoom = {
+      ...state.room,
+      status: 'LEAGUE_ACTIVE',
+      stateVersion: resultingVersion,
+      liveMatchweek: liveMw,
+      rules: {
+        ...state.room.rules,
+        fixtures: updatedFixtures,
+        currentMatchweek,
+        liveMatchweek: liveMw,
+        stateVersion: resultingVersion,
+      },
+      updatedAt: new Date().toISOString(),
+    };
+
+    const newState: RoomFullState = {
+      ...state,
+      room: updatedRoom,
+      fixtures: updatedFixtures,
+    };
+
+    memoryRooms[state.room.id] = newState;
+    persistRoomLocal(newState);
+
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      safeDbRun(async () => {
+        await supabase
+          .from('multiplayer_rooms')
+          .update({
+            status: 'LEAGUE_ACTIVE',
+            rules: {
+              ...state.room.rules,
+              fixtures: updatedFixtures,
+              standings: state.standings,
+              currentMatchweek,
+              totalMatchweeks: state.room.totalMatchweeks,
+              liveMatchweek: liveMw,
+              stateVersion: resultingVersion,
+            },
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', state.room.id);
+
+        broadcastRealtimeUpdate(state.room.roomCode, 'START_LIVE_MATCHWEEK', resultingVersion);
+      });
+    }
+
+    logMultiplayerAction('START_LIVE_MATCHWEEK', state.room.id, triggeredByMemberId || 'system', prevVersion, resultingVersion, true, undefined, {
+      matchweek: currentMatchweek,
+      fixturesCount: mwFixtures.length,
+    });
+
+    return { success: true, state: newState };
+  }
+
+  /**
+   * Finalizes the live matchweek once the 90th minute has concluded:
+   * 1. Marks all current week fixtures as COMPLETED.
+   * 2. Authoritatively updates standings and league awards.
+   * 3. Advances to next matchweek or marks LEAGUE_COMPLETED.
+   * 4. Resets liveMatchweek to PREPARING for the next week.
+   */
+  public static finishLiveMatchweek(
+    roomId: string,
+    memberId?: string
+  ): { success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode } {
+    const state = this.getRoom(roomId);
+    if (!state) {
+      const err = formatMultiplayerError('SC-MP-001');
+      return { success: false, error: err.message, errorCode: 'SC-MP-001' };
+    }
+
+    const currentMatchweek = state.room.currentMatchweek || 1;
+    const totalMatchweeks = state.room.totalMatchweeks || Math.max(...state.fixtures.map((f) => f.round), 1);
+
+    const updatedFixtures = state.fixtures.map((f) =>
+      f.round === currentMatchweek ? { ...f, status: 'COMPLETED' as const } : f
+    );
+
+    const updatedStandings = computeStandingsFromFixtures(state.clubs, updatedFixtures);
+
+    const nextUnfinished = updatedFixtures.find((f) => f.status !== 'COMPLETED');
+    const isSeasonComplete = !nextUnfinished;
+    const nextMatchweek = nextUnfinished ? nextUnfinished.round : totalMatchweeks;
+    const roomStatus = isSeasonComplete ? 'LEAGUE_COMPLETED' : 'LEAGUE_ACTIVE';
+    const leaguePhase = isSeasonComplete ? 'SEASON_COMPLETE' : 'MATCHWEEK_PREP';
+
+    let awards = state.awards;
+    if (isSeasonComplete) {
+      awards = computeLeagueAwards(updatedStandings, updatedFixtures, state.clubs, state.playerPool);
+    }
+
+    const nextLiveMw: LiveMatchweekState = {
+      matchweek: nextMatchweek,
+      status: isSeasonComplete ? 'COMPLETED' : 'PREPARING',
+      readyMemberIds: [],
+      completedMemberIds: [],
+    };
+
+    const prevVersion = state.room.stateVersion || 1;
+    const resultingVersion = prevVersion + 1;
+
+    const updatedRoom: MultiplayerRoom = {
+      ...state.room,
+      status: roomStatus,
+      currentMatchweek: nextMatchweek,
+      totalMatchweeks,
+      leaguePhase,
+      liveMatchweek: nextLiveMw,
+      stateVersion: resultingVersion,
+      rules: {
+        ...state.room.rules,
+        fixtures: updatedFixtures,
+        standings: updatedStandings,
+        currentMatchweek: nextMatchweek,
+        totalMatchweeks,
+        leaguePhase,
+        liveMatchweek: nextLiveMw,
+        stateVersion: resultingVersion,
+        awards,
+      },
+      updatedAt: new Date().toISOString(),
+    };
+
+    const newState: RoomFullState = {
+      ...state,
+      room: updatedRoom,
+      fixtures: updatedFixtures,
+      standings: updatedStandings,
+      awards,
+    };
+
+    memoryRooms[state.room.id] = newState;
+    persistRoomLocal(newState);
+
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      safeDbRun(async () => {
+        await supabase
+          .from('multiplayer_rooms')
+          .update({
+            status: roomStatus,
+            rules: {
+              ...state.room.rules,
+              fixtures: updatedFixtures,
+              standings: updatedStandings,
+              currentMatchweek: nextMatchweek,
+              totalMatchweeks,
+              leaguePhase,
+              liveMatchweek: nextLiveMw,
+              stateVersion: resultingVersion,
+              awards,
+            },
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', state.room.id);
+
+        if (updatedFixtures.length > 0) {
+          const fixRows = updatedFixtures.map((f) => ({
+            id: f.id,
+            room_id: state.room.id,
+            round: f.round,
+            home_club_id: f.homeClubId,
+            away_club_id: f.awayClubId,
+            status: f.status,
+            home_tactics: f.homeTactics,
+            away_tactics: f.awayTactics,
+            home_score: f.homeScore,
+            away_score: f.awayScore,
+            match_result: f.matchResult,
+            simulated_at: f.simulatedAt,
+          }));
+          await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
+        }
+
+        broadcastRealtimeUpdate(state.room.roomCode, 'FINISH_LIVE_MATCHWEEK', resultingVersion);
+      });
+    }
+
+    logMultiplayerAction('FINISH_LIVE_MATCHWEEK', state.room.id, memberId || 'system', prevVersion, resultingVersion, true, undefined, {
       completedMatchweek: currentMatchweek,
       nextMatchweek,
       isSeasonComplete,

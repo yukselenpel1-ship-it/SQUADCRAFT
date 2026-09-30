@@ -12,6 +12,7 @@ import { Player, Formation, Mentality, Tempo, Pressing, PassingStyle, DefensiveL
 import { BadgePreview } from '@/components/draft/BadgePreview';
 import { MatchReportModal } from '@/components/draft/MatchReportModal';
 import { DraftLiveMatchModal } from '@/components/draft/DraftLiveMatchModal';
+import { MatchweekReadyBanner } from '@/components/draft/MatchweekReadyBanner';
 import { FeedbackModal } from '@/components/draft/FeedbackModal';
 import { AlphaDebugOverlay } from '@/components/draft/AlphaDebugOverlay';
 import {
@@ -50,6 +51,7 @@ import {
   LogOut,
   ChevronDown,
   Repeat,
+  RotateCcw,
 } from 'lucide-react';
 
 interface LeaguePageProps {
@@ -102,6 +104,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const [customLineupIds, setCustomLineupIds] = useState<string[]>([]);
   const [selectedStarterId, setSelectedStarterId] = useState<string | null>(null);
   const [selectedBenchId, setSelectedBenchId] = useState<string | null>(null);
+  const [dismissedLiveMw, setDismissedLiveMw] = useState<number | null>(null);
 
   const sessionId = getMultiplayerSessionId();
 
@@ -168,6 +171,36 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
       clearInterval(interval);
     };
   }, [roomCode]);
+
+  // Synchronized Auto-Transition to Live Match when status turns LIVE
+  useEffect(() => {
+    const state = hydrationResult.state;
+    if (!state) return;
+    const { room, members, clubs, fixtures } = state;
+    if (room.liveMatchweek?.status === 'LIVE') {
+      const liveMw = room.liveMatchweek.matchweek;
+      if (dismissedLiveMw === liveMw) return;
+
+      const currentM = members.find((m: RoomMember) => m.sessionId === sessionId);
+      const myC = clubs.find((c: DraftClub) => c.memberId === currentM?.id);
+
+      const targetFixture =
+        (myC
+          ? fixtures.find(
+              (f: DraftFixture) =>
+                (f.homeClubId === myC.id || f.awayClubId === myC.id) &&
+                f.round === liveMw
+            )
+          : null) ||
+        fixtures.find((f: DraftFixture) => f.round === liveMw && (f.status === 'SIMULATING' || f.status === 'COMPLETED')) ||
+        fixtures.find((f: DraftFixture) => f.round === liveMw);
+
+      if (targetFixture && !isLiveMatchModalOpen) {
+        setLiveMatchFixture(targetFixture);
+        setIsLiveMatchModalOpen(true);
+      }
+    }
+  }, [hydrationResult.state?.room?.liveMatchweek?.status, hydrationResult.state?.room?.liveMatchweek?.matchweek, sessionId, isLiveMatchModalOpen, dismissedLiveMw]);
 
   const handleCopyCode = () => {
     navigator.clipboard.writeText(roomCode);
@@ -360,18 +393,68 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
       fixtures.find((f: DraftFixture) => (f.homeClubId === myClub.id || f.awayClubId === myClub.id) && f.status !== 'COMPLETED')
     : fixtures.find((f: DraftFixture) => f.status !== 'COMPLETED');
 
+  const readyMemberIds = new Set(room.liveMatchweek?.readyMemberIds || []);
+  const isCurrentMemberReady = currentMember ? readyMemberIds.has(currentMember.id) : false;
+
   // Interactive Live Match Launcher
   const handleOpenLiveMatch = (fixture: DraftFixture) => {
+    setDismissedLiveMw(null);
     setLiveMatchFixture(fixture);
     setIsLiveMatchModalOpen(true);
   };
 
+  // Close live match modal (memorize dismissal so it does not auto-reopen)
+  const handleCloseLiveModal = () => {
+    if (room.liveMatchweek?.matchweek) {
+      setDismissedLiveMw(room.liveMatchweek.matchweek);
+    }
+    setIsLiveMatchModalOpen(false);
+  };
+
+  // Toggle ready status for current manager
+  const handleToggleReady = (isReady: boolean) => {
+    if (!currentMember) return;
+    const res = DraftMultiplayerStore.setMatchweekReady(room.id, currentMember.id, isReady);
+    if (res.state) {
+      setHydrationResult((prev) => ({ ...prev, state: res.state }));
+      setStatusMessage(isReady ? 'Hafta için HAZIR veridiniz!' : 'Hazır durumunuz geri çekildi.');
+      setTimeout(() => setStatusMessage(null), 2500);
+    }
+  };
+
+  // Launch live matchweek (after countdown or triggered)
+  const handleLaunchLiveMatchweek = () => {
+    if (!currentMember) return;
+    const res = DraftMultiplayerStore.launchLiveMatchweek(room.id, currentMember.id);
+    if (res.state) {
+      setHydrationResult((prev) => ({ ...prev, state: res.state }));
+      setStatusMessage('Haftanın maçları CANLI başladı!');
+      setTimeout(() => setStatusMessage(null), 2500);
+    }
+  };
+
   // Callback when live simulation ends
   const handleLiveMatchFinished = (completedFix: DraftFixture) => {
+    if (room.liveMatchweek?.matchweek) {
+      setDismissedLiveMw(room.liveMatchweek.matchweek);
+    }
+    if (currentMember) {
+      const res = DraftMultiplayerStore.finishLiveMatchweek(room.id, currentMember.id);
+      if (res.state) {
+        setHydrationResult((prev) => ({ ...prev, state: res.state }));
+        setSelectedFixture(completedFix);
+        setIsLiveMatchModalOpen(false);
+        setStatusMessage(`Hafta ${completedFix.round} tamamlandı ve lig puan durumu güncellendi!`);
+        setTimeout(() => setStatusMessage(null), 3000);
+        return;
+      }
+    }
+
     const res = DraftMultiplayerStore.saveLiveMatchResult(room.id, completedFix);
     if (res.state) {
       setHydrationResult((prev) => ({ ...prev, state: res.state }));
       setSelectedFixture(completedFix);
+      setIsLiveMatchModalOpen(false);
       setStatusMessage(`Hafta ${completedFix.round} maçı tamamlandı ve puan durumu güncellendi!`);
       setTimeout(() => setStatusMessage(null), 3000);
     }
@@ -773,23 +856,46 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
             <div className="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap">
               {!isSeasonComplete && (
                 <>
-                  {myNextFixture && myNextFixture.status !== 'COMPLETED' && (
+                  {room.liveMatchweek?.status === 'LIVE' && (
                     <button
-                      onClick={() => handleOpenLiveMatch(myNextFixture)}
-                      className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 flex items-center justify-center gap-2 active:scale-95"
+                      onClick={() => {
+                        const target = myNextFixture || fixtures.find((f) => f.round === currentMatchweek);
+                        if (target) handleOpenLiveMatch(target);
+                      }}
+                      className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 text-white font-black text-xs uppercase tracking-wider transition shadow-lg shadow-rose-600/30 flex items-center justify-center gap-2 animate-pulse active:scale-95"
                     >
-                      <Play className="w-4 h-4 fill-current" />
-                      <span>SIRADAKİ MAÇIMI OYNA & SİMÜLE ET</span>
+                      <Radio className="w-4 h-4" />
+                      <span>🔴 CANLI MAÇ YAYININA GİRİŞ YAP</span>
                     </button>
                   )}
 
-                  {isHost && !isCurrentWeekFinished && currentWeekFixtures.some((f) => f.status !== 'COMPLETED') && (
+                  {room.liveMatchweek?.status === 'COUNTDOWN' && (
+                    <div className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-black font-black text-xs uppercase tracking-wider shadow-lg flex items-center justify-center gap-2 animate-bounce">
+                      <Clock className="w-4 h-4 animate-spin" />
+                      <span>GERİ SAYIM BAŞLADI... DÜDÜK ÇALIYOR!</span>
+                    </div>
+                  )}
+
+                  {(!room.liveMatchweek || room.liveMatchweek.status === 'PREPARING') && !isCurrentWeekFinished && (
                     <button
-                      onClick={handleSimulateRemainingInWeek}
-                      className="px-4 py-3 bg-[#00D4FF] hover:bg-[#00B4E0] text-black font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center gap-1.5"
+                      onClick={() => handleToggleReady(!isCurrentMemberReady)}
+                      className={`w-full sm:w-auto px-6 py-3 font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 active:scale-95 ${
+                        isCurrentMemberReady
+                          ? 'bg-zinc-900 border-2 border-amber-500/60 text-amber-300'
+                          : 'bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black border-2 border-[#00F5A0] shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+                      }`}
                     >
-                      <Zap className="w-3.5 h-3.5 fill-current" />
-                      <span>HAFTANIN DİĞER MAÇLARINI SİMÜLE ET</span>
+                      {isCurrentMemberReady ? (
+                        <>
+                          <RotateCcw className="w-4 h-4 text-amber-400" />
+                          <span>HAZIR VERİLDİ (İPTAL ET)</span>
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="w-4 h-4 fill-current" />
+                          <span>HAZIR</span>
+                        </>
+                      )}
                     </button>
                   )}
 
@@ -960,159 +1066,156 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         {/* TAB 1: GENEL BAKIŞ (OVERVIEW)                                      */}
         {/* ================================================================== */}
         {activeTab === 'overview' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-            {/* Left 8 Cols: Spotlight Matchday & Results */}
-            <div className="lg:col-span-8 space-y-5">
-              {/* Matchday Spotlight Card */}
-              <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl relative overflow-hidden">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3.5 mb-5">
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-[#00F5A0]" />
-                    <h3 className="text-sm font-black text-white uppercase italic tracking-wider font-display">
-                      {myNextFixture
-                        ? `SIRADAKİ KARŞILAŞMA (HAFTA ${myNextFixture.round})`
-                        : isSeasonComplete
-                        ? 'TÜM LİG MAÇLARI TAMAMLANDI'
-                        : 'SIRADAKİ MAÇ'}
-                    </h3>
+          <div className="space-y-5">
+            {/* Top Interactive Ready System Hub */}
+            {!isSeasonComplete && (
+              <MatchweekReadyBanner
+                matchweek={currentMatchweek}
+                totalMatchweeks={totalMatchweeks}
+                liveMatchweek={room.liveMatchweek}
+                members={members}
+                clubs={clubs}
+                currentMemberId={currentMember?.id}
+                isHost={isHost}
+                onToggleReady={handleToggleReady}
+                onLaunchMatchweek={handleLaunchLiveMatchweek}
+                onOpenLiveMatch={() => {
+                  const target = myNextFixture || fixtures.find((f) => f.round === currentMatchweek);
+                  if (target) handleOpenLiveMatch(target);
+                }}
+              />
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+              {/* Left 8 Cols: Spotlight Matchday & Results */}
+              <div className="lg:col-span-8 space-y-5">
+                {/* Matchday Spotlight Card */}
+                <div className="bg-[#070D14]/95 border border-zinc-800 p-4 sm:p-6 shadow-2xl relative overflow-hidden">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-3.5 mb-5">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-[#00F5A0]" />
+                      <h3 className="text-sm font-black text-white uppercase italic tracking-wider font-display">
+                        {myNextFixture
+                          ? `SIRADAKİ KARŞILAŞMA (HAFTA ${myNextFixture.round})`
+                          : isSeasonComplete
+                          ? 'TÜM LİG MAÇLARI TAMAMLANDI'
+                          : 'SIRADAKİ MAÇ'}
+                      </h3>
+                    </div>
+                    {myNextFixture && (
+                      <span className="text-[10px] px-3 py-1 bg-zinc-950 border border-zinc-800 text-[#00F5A0] font-mono font-black uppercase">
+                        {myNextFixture.status === 'COMPLETED'
+                          ? 'TAMAMLANDI'
+                          : room.liveMatchweek?.status === 'LIVE'
+                          ? 'CANLI MAÇ'
+                          : isCurrentMemberReady
+                          ? 'HAZIR VERİLDİ'
+                          : 'HAZIR BEKLENİYOR'}
+                      </span>
+                    )}
                   </div>
-                  {myNextFixture && (
-                    <span className="text-[10px] px-3 py-1 bg-zinc-950 border border-zinc-800 text-[#00F5A0] font-mono font-black uppercase">
-                      {myNextFixture.status === 'COMPLETED' ? 'TAMAMLANDI' : 'HAZIR'}
-                    </span>
-                  )}
-                </div>
 
-                {myNextFixture ? (
-                  <div>
-                    {(() => {
-                      const homeClub = clubs.find((c: DraftClub) => c.id === myNextFixture.homeClubId);
-                      const awayClub = clubs.find((c: DraftClub) => c.id === myNextFixture.awayClubId);
+                  {myNextFixture ? (
+                    <div>
+                      {(() => {
+                        const homeClub = clubs.find((c: DraftClub) => c.id === myNextFixture.homeClubId);
+                        const awayClub = clubs.find((c: DraftClub) => c.id === myNextFixture.awayClubId);
 
-                      return (
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 bg-zinc-950/80 border border-zinc-800">
-                          {/* Home Club */}
-                          <div className="text-center space-y-2.5 flex-1 max-w-[200px]">
-                            <div className="flex justify-center">
-                              {homeClub && <BadgePreview badge={homeClub.badge} clubCode={homeClub.code} size={76} />}
+                        return (
+                          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-4 sm:p-6 bg-zinc-950/80 border border-zinc-800">
+                            {/* Home Club */}
+                            <div className="text-center space-y-2.5 flex-1 max-w-[200px]">
+                              <div className="flex justify-center">
+                                {homeClub && <BadgePreview badge={homeClub.badge} clubCode={homeClub.code} size={76} />}
+                              </div>
+                              <div className="text-sm sm:text-base font-black text-white uppercase italic tracking-wide truncate">
+                                {homeClub?.name}
+                              </div>
+                              <div className="text-xs text-zinc-400 font-bold">Menajer: {homeClub?.managerName}</div>
                             </div>
-                            <div className="text-sm sm:text-base font-black text-white uppercase italic tracking-wide truncate">
-                              {homeClub?.name}
-                            </div>
-                            <div className="text-xs text-zinc-400 font-bold">Menajer: {homeClub?.managerName}</div>
-                          </div>
 
-                          {/* Center Score / VS */}
-                          <div className="text-center space-y-3 flex-1">
-                            <div className="text-3xl sm:text-4xl font-black text-white font-mono tracking-widest">
+                            {/* Center Score / VS */}
+                            <div className="text-center space-y-3 flex-1">
+                              <div className="text-3xl sm:text-4xl font-black text-white font-mono tracking-widest">
+                                {myNextFixture.status === 'COMPLETED' ? (
+                                  <span className="text-[#00F5A0]">
+                                    {myNextFixture.homeScore} - {myNextFixture.awayScore}
+                                  </span>
+                                ) : (
+                                  <span className="text-[#00D4FF]">
+                                    VS
+                                  </span>
+                                )}
+                              </div>
+
                               {myNextFixture.status === 'COMPLETED' ? (
-                                <span className="text-[#00F5A0]">
-                                  {myNextFixture.homeScore} - {myNextFixture.awayScore}
-                                </span>
+                                <button
+                                  onClick={() => {
+                                    setSelectedFixture(myNextFixture);
+                                    setIsReportModalOpen(true);
+                                  }}
+                                  className="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs font-bold uppercase tracking-wider border border-zinc-700 transition flex items-center gap-1.5 mx-auto"
+                                >
+                                  <Eye className="w-3.5 h-3.5 text-[#00D4FF]" />
+                                  <span>MAÇ RAPORU</span>
+                                </button>
+                              ) : room.liveMatchweek?.status === 'LIVE' ? (
+                                <button
+                                  onClick={() => handleOpenLiveMatch(myNextFixture)}
+                                  className="px-6 py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 text-white font-black text-xs uppercase tracking-wider transition shadow-lg shadow-rose-600/30 flex items-center gap-2 animate-pulse mx-auto active:scale-95"
+                                >
+                                  <Radio className="w-4 h-4" />
+                                  <span>CANLI MAÇI İZLE</span>
+                                </button>
+                              ) : room.liveMatchweek?.status === 'COUNTDOWN' ? (
+                                <div className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-black font-black text-xs uppercase tracking-wider flex items-center gap-2 animate-bounce mx-auto">
+                                  <Clock className="w-4 h-4 animate-spin" />
+                                  <span>BAŞLIYOR (GERİ SAYIM)</span>
+                                </div>
                               ) : (
-                                <span className="text-[#00D4FF]">
-                                  VS
-                                </span>
+                                <button
+                                  onClick={() => handleToggleReady(!isCurrentMemberReady)}
+                                  className={`px-6 py-3 font-black text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 mx-auto active:scale-95 ${
+                                    isCurrentMemberReady
+                                      ? 'bg-zinc-900 border-2 border-amber-500/60 text-amber-300'
+                                      : 'bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black border-2 border-[#00F5A0] shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+                                  }`}
+                                >
+                                  {isCurrentMemberReady ? (
+                                    <>
+                                      <RotateCcw className="w-4 h-4 text-amber-400" />
+                                      <span>HAZIR VERİLDİ (İPTAL ET)</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <CheckCircle2 className="w-4 h-4 fill-current" />
+                                      <span>HAZIR VER</span>
+                                    </>
+                                  )}
+                                </button>
                               )}
                             </div>
 
-                            {myNextFixture.status === 'COMPLETED' ? (
-                              <button
-                                onClick={() => {
-                                  setSelectedFixture(myNextFixture);
-                                  setIsReportModalOpen(true);
-                                }}
-                                className="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs font-bold uppercase tracking-wider border border-zinc-700 transition flex items-center gap-1.5 mx-auto"
-                              >
-                                <Eye className="w-3.5 h-3.5 text-[#00D4FF]" />
-                                <span>MAÇ RAPORU</span>
-                              </button>
-                            ) : (
-                              <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
-                                <button
-                                  onClick={() => handleOpenLiveMatch(myNextFixture)}
-                                  className="px-6 py-3 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 flex items-center gap-2 active:scale-95"
-                                >
-                                  <Play className="w-4 h-4 fill-current" />
-                                  <span>CANLI MAÇI OYNA</span>
-                                </button>
-                                <button
-                                  onClick={() => handleFastSimulateFixture(myNextFixture.id)}
-                                  className="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#00D4FF] font-black text-xs uppercase tracking-wider transition"
-                                  title="Anında Hızlı Simüle Et"
-                                >
-                                  HIZLI SİMÜLE
-                                </button>
+                            {/* Away Club */}
+                            <div className="text-center space-y-2.5 flex-1 max-w-[200px]">
+                              <div className="flex justify-center">
+                                {awayClub && <BadgePreview badge={awayClub.badge} clubCode={awayClub.code} size={76} />}
                               </div>
-                            )}
-                          </div>
-
-                          {/* Away Club */}
-                          <div className="text-center space-y-2.5 flex-1 max-w-[200px]">
-                            <div className="flex justify-center">
-                              {awayClub && <BadgePreview badge={awayClub.badge} clubCode={awayClub.code} size={76} />}
-                            </div>
-                            <div className="text-sm sm:text-base font-black text-white uppercase italic tracking-wide truncate">
-                              {awayClub?.name}
-                            </div>
-                            <div className="text-xs text-zinc-400 font-bold">Menajer: {awayClub?.managerName}</div>
-                          </div>
-                        </div>
-                      );
-                    })()}
-                  </div>
-                ) : (
-                  <div className="text-center py-10 text-zinc-400 text-xs bg-zinc-950 border border-zinc-800">
-                    Lig fikstüründeki tüm karşılaşmalar tamamlandı! Şampiyonluk podyumunu yukarıda inceleyebilirsiniz.
-                  </div>
-                )}
-              </div>
-
-              {/* Multiplayer Managers Readiness Box */}
-              {humanMembers.length > 1 && (
-                <div className="bg-[#070D14]/95 border border-zinc-800 p-5 shadow-2xl space-y-3">
-                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
-                    <h3 className="text-xs font-black text-white uppercase italic tracking-wider flex items-center gap-2">
-                      <UserCheck className="w-4 h-4 text-[#00F5A0]" />
-                      <span>ÇOK OYUNCULU MENAJER HAZIRLIK DURUMU</span>
-                    </h3>
-                    <span className="text-[10px] font-mono text-zinc-400">
-                      Hafta {currentMatchweek} Maç Kontrolü
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {humanMembers.map((member) => {
-                      const mClub = clubs.find((c) => c.memberId === member.id);
-                      const mFixture = mClub
-                        ? currentWeekFixtures.find((f) => f.homeClubId === mClub.id || f.awayClubId === mClub.id)
-                        : null;
-                      const isPlayed = mFixture?.status === 'COMPLETED';
-
-                      return (
-                        <div key={member.id} className="p-3 bg-zinc-950 border border-zinc-800 flex items-center justify-between">
-                          <div className="flex items-center gap-2 truncate">
-                            {mClub && <BadgePreview badge={mClub.badge} clubCode={mClub.code} size={20} />}
-                            <div>
-                              <div className="text-xs font-bold text-white truncate">{member.username}</div>
-                              <div className="text-[10px] text-zinc-500 truncate">{mClub?.name}</div>
+                              <div className="text-sm sm:text-base font-black text-white uppercase italic tracking-wide truncate">
+                                {awayClub?.name}
+                              </div>
+                              <div className="text-xs text-zinc-400 font-bold">Menajer: {awayClub?.managerName}</div>
                             </div>
                           </div>
-                          <span
-                            className={`px-2 py-0.5 text-[10px] font-mono font-black uppercase ${
-                              isPlayed
-                                ? 'bg-emerald-950 text-[#00F5A0] border border-emerald-500/40'
-                                : 'bg-amber-950 text-[#FFB800] border border-amber-500/40 animate-pulse'
-                            }`}
-                          >
-                            {isPlayed ? '✓ OYNADI' : '⏳ BEKLİYOR'}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
+                        );
+                      })()}
+                    </div>
+                  ) : (
+                    <div className="text-center py-10 text-zinc-400 text-xs bg-zinc-950 border border-zinc-800">
+                      Lig fikstüründeki tüm karşılaşmalar tamamlandı! Şampiyonluk podyumunu yukarıda inceleyebilirsiniz.
+                    </div>
+                  )}
                 </div>
-              )}
 
               {/* Recent Match Results */}
               <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
@@ -1231,7 +1334,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
 
         {/* ================================================================== */}
         {/* TAB 2: KADROM (SQUAD ROSTER)                                       */}
@@ -1889,22 +1993,18 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                               >
                                 {f.homeScore} - {f.awayScore}
                               </button>
+                            ) : room.liveMatchweek?.status === 'LIVE' && f.round === room.liveMatchweek.matchweek ? (
+                              <button
+                                onClick={() => handleOpenLiveMatch(f)}
+                                className="px-3 py-1.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 text-white font-black text-xs uppercase tracking-wider transition animate-pulse flex items-center gap-1.5"
+                              >
+                                <Radio className="w-3.5 h-3.5" />
+                                <span>CANLI İZLE</span>
+                              </button>
                             ) : (
-                              <div className="flex items-center gap-1.5">
-                                <button
-                                  onClick={() => handleOpenLiveMatch(f)}
-                                  className="px-3 py-2 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition"
-                                >
-                                  CANLI İZLE
-                                </button>
-                                <button
-                                  onClick={() => handleFastSimulateFixture(f.id)}
-                                  className="px-2.5 py-2 bg-zinc-900 hover:bg-zinc-800 text-[#00D4FF] border border-zinc-700 text-xs font-bold uppercase transition"
-                                  title="Hızlı Simüle Et"
-                                >
-                                  ⚡
-                                </button>
-                              </div>
+                              <span className="text-[10px] font-mono text-zinc-400 px-2.5 py-1 bg-zinc-950 border border-zinc-800">
+                                ⏳ Beklemede
+                              </span>
                             )}
                           </div>
                         </div>
@@ -2178,8 +2278,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         clubs={clubs}
         playerPool={playerPool}
         isOpen={isLiveMatchModalOpen}
-        onClose={() => setIsLiveMatchModalOpen(false)}
+        onClose={handleCloseLiveModal}
         onMatchFinished={handleLiveMatchFinished}
+        startedAt={room.liveMatchweek?.startedAt}
+        paceMs={room.liveMatchweek?.paceMs || 800}
+        isMultiplayerSynced={room.liveMatchweek?.status === 'LIVE'}
       />
 
       {/* Match Post-Report Modal */}

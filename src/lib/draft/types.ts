@@ -42,6 +42,17 @@ export interface DraftRules {
   fixtures?: DraftFixture[];
   standings?: DraftStanding[];
   awards?: LeagueAwards;
+  liveMatchweek?: LiveMatchweekState;
+}
+
+export interface LiveMatchweekState {
+  matchweek: number;
+  status: 'PREPARING' | 'COUNTDOWN' | 'LIVE' | 'COMPLETED';
+  readyMemberIds: string[];
+  countdownStartedAt?: string;
+  startedAt?: string;
+  paceMs?: number;
+  completedMemberIds?: string[];
 }
 
 export const DEFAULT_DRAFT_RULES: DraftRules = {
@@ -127,6 +138,7 @@ export interface MultiplayerRoom {
   currentMatchweek?: number;
   totalMatchweeks?: number;
   leaguePhase?: LeaguePhase;
+  liveMatchweek?: LiveMatchweekState;
   createdAt: string;
   updatedAt: string;
 }
@@ -192,6 +204,9 @@ export type MultiplayerActionType =
   | 'HOST_MIGRATION'
   | 'SUBMIT_TACTICS'
   | 'SIMULATE_MATCH'
+  | 'MATCHWEEK_READY'
+  | 'START_LIVE_MATCHWEEK'
+  | 'FINISH_LIVE_MATCHWEEK'
   | 'UPDATE_STANDINGS'
   | 'UPDATE_RULES'
   | 'UPDATE_CLUB'
