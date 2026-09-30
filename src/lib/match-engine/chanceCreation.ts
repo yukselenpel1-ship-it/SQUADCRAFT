@@ -59,9 +59,13 @@ export function simulateMinuteAttack(
   // Base chance creation probability per minute ~0.155
   const baseChanceProb = 0.155;
 
-  // Decide if Home or Away attacks
-  const homeAttackStrength = (home.ratings.attackingStrength / 75) * homeMods.chanceCreationMult * (momentum.homeMomentum / 50) * homeAdvantageMultiplier;
-  const awayAttackStrength = (away.ratings.attackingStrength / 75) * awayMods.chanceCreationMult * (momentum.awayMomentum / 50);
+  // Attack vs Defense ratio creates natural advantage without scripted outcome:
+  // Attacking team's offensive strength is challenged by defending team's defensive capability
+  const homeAttackVsAwayDef = Math.pow(home.ratings.attackingStrength / Math.max(45, away.ratings.defensiveStrength), 0.85);
+  const awayAttackVsHomeDef = Math.pow(away.ratings.attackingStrength / Math.max(45, home.ratings.defensiveStrength), 0.85);
+
+  const homeAttackStrength = homeAttackVsAwayDef * homeMods.chanceCreationMult * (momentum.homeMomentum / 50) * homeAdvantageMultiplier;
+  const awayAttackStrength = awayAttackVsHomeDef * awayMods.chanceCreationMult * (momentum.awayMomentum / 50);
 
   // Player count penalty (if red card received)
   const homePlayerCountMult = home.activePitchPlayerIds.length / 11;
@@ -100,6 +104,12 @@ export function simulateMinuteAttack(
   const direction: AttackingDirection = isHome ? 'HOME_ATTACK' : 'AWAY_ATTACK';
   result.attackingDirection = direction;
 
+  // Archetype traits on pitch
+  const hasFastWinger = activeAttackers.some((p) => p.player.archetype === 'Hızlı Kanat');
+  const hasTargetForward = activeAttackers.some((p) => p.player.archetype === 'Hedef Santrfor');
+  const hasPlaymaker = activeAttackers.some((p) => p.player.archetype === 'Oyun Kurucu' || p.player.archetype === 'Oyun Kurucu Kanat');
+  const hasSweeperKeeper = goalkeeper.player.archetype === 'Süpürücü Kaleci';
+
   // Chance Type determination
   let chanceType: ChanceType = 'CENTRAL_BOX';
   let coords: PitchCoordinates = isHome ? { x: 75 + Math.random() * 18, y: 35 + Math.random() * 30 } : { x: 7 + Math.random() * 18, y: 35 + Math.random() * 30 };
@@ -107,18 +117,18 @@ export function simulateMinuteAttack(
 
   const chanceRoll = Math.random();
 
-  // Penalty check (~3% of attacking chances)
+  // Penalty check (~3.5% of attacking chances)
   if (chanceRoll < 0.035) {
     chanceType = 'PENALTY';
     coords = isHome ? { x: 88, y: 50 } : { x: 12, y: 50 };
   }
-  // Breakaway check (boosted by opponent high line)
-  else if (chanceRoll < 0.035 + 0.14 * (1 + defMods.breakawayThreatBonus)) {
+  // Breakaway check (boosted by fast wingers & opponent high line, suppressed by sweeper keeper)
+  else if (chanceRoll < 0.035 + 0.14 * (1 + defMods.breakawayThreatBonus) * (hasFastWinger ? 1.25 : 1.0) * (hasSweeperKeeper ? 0.80 : 1.0)) {
     chanceType = 'ONE_ON_ONE';
     coords = isHome ? { x: 84 + Math.random() * 8, y: 45 + Math.random() * 10 } : { x: 8 + Math.random() * 8, y: 45 + Math.random() * 10 };
   }
-  // Wide cross check (boosted by wide play)
-  else if (chanceRoll < 0.42 * attMods.crossingFrequencyMult) {
+  // Wide cross check (boosted by wide play and target forwards)
+  else if (chanceRoll < 0.42 * attMods.crossingFrequencyMult * (hasTargetForward ? 1.25 : 1.0)) {
     chanceType = Math.random() < 0.65 ? 'WIDE_CROSS_HEADER' : 'WIDE_CROSS_VOLLEY';
     isCross = true;
     coords = isHome ? { x: 82 + Math.random() * 10, y: 30 + Math.random() * 40 } : { x: 10 + Math.random() * 10, y: 30 + Math.random() * 40 };
@@ -128,12 +138,12 @@ export function simulateMinuteAttack(
     chanceType = 'CORNER_HEADER';
     coords = isHome ? { x: 86 + Math.random() * 8, y: 40 + Math.random() * 20 } : { x: 6 + Math.random() * 8, y: 40 + Math.random() * 20 };
   }
-  // Long shot check
-  else if (chanceRoll < 0.76) {
+  // Long shot check (reduced if playmakers seek incisive box through balls)
+  else if (chanceRoll < (hasPlaymaker ? 0.70 : 0.76)) {
     chanceType = 'LONG_SHOT';
     coords = isHome ? { x: 72 + Math.random() * 6, y: 35 + Math.random() * 30 } : { x: 22 + Math.random() * 6, y: 35 + Math.random() * 30 };
   }
-  // Central box play
+  // Central box play (dominant when playmakers unlock defense)
   else {
     chanceType = 'CENTRAL_BOX';
     coords = isHome ? { x: 84 + Math.random() * 8, y: 40 + Math.random() * 20 } : { x: 8 + Math.random() * 8, y: 40 + Math.random() * 20 };
@@ -141,9 +151,8 @@ export function simulateMinuteAttack(
 
   result.pitchCoords = coords;
 
-  // Select Shooter & Assister
-  const isSetPiece = chanceType === 'CORNER_HEADER';
-  const shooter = selectShooter(activeAttackers, isSetPiece);
+  // Select Shooter & Assister based on chance context
+  const shooter = selectShooter(activeAttackers, chanceType);
   const assister = chanceType !== 'PENALTY'
     ? selectAssister(activeAttackers, shooter.player.id, isCross)
     : undefined;

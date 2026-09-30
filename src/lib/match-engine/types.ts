@@ -89,6 +89,9 @@ export interface PlayerInMatch {
   foulsCommitted: number;
   yellowCards: number;
   redCards: number;
+  keyPasses?: number;
+  blocks?: number;
+  matchDayConsistencyVariance?: number;
   isInjured: boolean;
   injurySeverity?: 'LIGHT' | 'MODERATE' | 'SEVERE';
 }

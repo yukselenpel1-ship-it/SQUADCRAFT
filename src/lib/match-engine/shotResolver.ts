@@ -48,41 +48,84 @@ export function resolveShot(
   shooter: PlayerInMatch,
   goalkeeper: PlayerInMatch,
   defendingOverallDefense: number,
-  assister?: PlayerInMatch
+  assister?: PlayerInMatch,
+  isCompetitive: boolean = true
 ): ShotResolutionResult {
   const isHeader = chanceType === 'WIDE_CROSS_HEADER' || chanceType === 'CORNER_HEADER';
   const isLongShot = chanceType === 'LONG_SHOT' || chanceType === 'DIRECT_FREE_KICK';
+  const isBreakaway = chanceType === 'ONE_ON_ONE';
+  const isPenalty = chanceType === 'PENALTY';
+
+  const shooterArch = shooter.player.archetype;
+  const gkArch = goalkeeper.player.archetype;
 
   // Base xG
   let xG = calculateBaseXG(chanceType, isLongShot ? 24 : 12);
 
-  // Shooter attribute modifiers
-  const finishing = isHeader
-    ? getEffectiveAttribute(shooter, 'heading')
-    : isLongShot
-    ? getEffectiveAttribute(shooter, 'longShots')
-    : getEffectiveAttribute(shooter, 'finishing');
+  // Playmaker Assister Impact: Great vision/passing increases chance quality (xG)
+  if (assister) {
+    const vis = getEffectiveAttribute(assister, 'vision', isCompetitive);
+    const pas = getEffectiveAttribute(assister, 'passing', isCompetitive);
+    let passQualityMult = (vis * 0.55 + pas * 0.45) / 75;
+    if (assister.player.archetype === 'Oyun Kurucu' || assister.player.archetype === 'Oyun Kurucu Kanat') {
+      passQualityMult *= 1.08;
+    }
+    xG = Number((xG * Math.max(0.85, Math.min(1.22, passQualityMult))).toFixed(3));
+  }
 
-  const composure = getEffectiveAttribute(shooter, 'composure');
-  const technique = getEffectiveAttribute(shooter, 'technique');
+  // Shooter skill score according to context:
+  // Striker attributes: finishing, pace (for breakaways), physical/heading (for crosses/corners), composure
+  let shooterSkill = 1.0;
+  const fin = getEffectiveAttribute(shooter, 'finishing', isCompetitive);
+  const com = getEffectiveAttribute(shooter, 'composure', isCompetitive);
+  const tec = getEffectiveAttribute(shooter, 'technique', isCompetitive);
+  const pac = getEffectiveAttribute(shooter, 'pace', isCompetitive);
+  const str = getEffectiveAttribute(shooter, 'strength', isCompetitive);
+  const hea = getEffectiveAttribute(shooter, 'heading', isCompetitive);
+  const lsh = getEffectiveAttribute(shooter, 'longShots', isCompetitive);
 
-  // Shooter skill score (0.80 to 1.25)
-  const shooterSkill = (finishing * 0.50 + composure * 0.30 + technique * 0.20) / 75;
-  xG = Number((xG * Math.max(0.70, Math.min(1.30, shooterSkill))).toFixed(3));
+  if (isPenalty) {
+    shooterSkill = (fin * 0.55 + com * 0.45) / 75;
+    if (shooterArch === 'Bitirici Forvet') shooterSkill *= 1.06;
+  } else if (isHeader) {
+    shooterSkill = (hea * 0.50 + str * 0.30 + com * 0.20) / 75;
+    if (shooterArch === 'Hedef Santrfor') shooterSkill *= 1.15;
+  } else if (isBreakaway) {
+    shooterSkill = (fin * 0.40 + pac * 0.25 + com * 0.25 + tec * 0.10) / 75;
+    if (shooterArch === 'Hızlı Kanat') shooterSkill *= 1.08;
+    if (shooterArch === 'Bitirici Forvet') shooterSkill *= 1.10;
+  } else if (isLongShot) {
+    shooterSkill = (lsh * 0.60 + tec * 0.25 + com * 0.15) / 75;
+  } else {
+    // Central Box
+    shooterSkill = (fin * 0.50 + com * 0.30 + str * 0.10 + tec * 0.10) / 75;
+    if (shooterArch === 'Bitirici Forvet') shooterSkill *= 1.12;
+  }
+
+  xG = Number((xG * Math.max(0.70, Math.min(1.35, shooterSkill))).toFixed(3));
 
   // Goalkeeper quality
-  const gkReflexes = getEffectiveAttribute(goalkeeper, 'reflexes');
-  const gkPositioning = getEffectiveAttribute(goalkeeper, 'positioningGK');
-  const gkHandling = getEffectiveAttribute(goalkeeper, 'handling');
-  const gkSkill = (gkReflexes * 0.45 + gkPositioning * 0.35 + gkHandling * 0.20) / 75;
+  const gkReflexes = getEffectiveAttribute(goalkeeper, 'reflexes', isCompetitive);
+  const gkPositioning = getEffectiveAttribute(goalkeeper, 'positioningGK', isCompetitive);
+  const gkHandling = getEffectiveAttribute(goalkeeper, 'handling', isCompetitive);
+  let gkSkill = (gkReflexes * 0.45 + gkPositioning * 0.35 + gkHandling * 0.20) / 75;
 
-  // Defensive pressure
+  // Sweeper Keeper cuts angle on 1-on-1 breakaways
+  if (isBreakaway && gkArch === 'Süpürücü Kaleci') {
+    gkSkill *= 1.15;
+  }
+  // Line Keeper has elite reflex saves on close-range box shots / headers
+  if ((chanceType === 'CENTRAL_BOX' || isHeader) && gkArch === 'Çizgi Kalecisi') {
+    gkSkill *= 1.10;
+  }
+
+  // Defensive pressure from defending unit
   const defPressure = defendingOverallDefense / 75;
 
   // Conversion probability (heavily based on xG, fine-tuned by shooter vs GK & defenders)
   let goalProbability = xG * 0.90;
   goalProbability = goalProbability * (shooterSkill / ((gkSkill + defPressure) / 2));
-  goalProbability = Math.max(0.015, Math.min(0.92, goalProbability));
+  goalProbability = Math.max(0.015, Math.min(0.90, goalProbability));
 
   const roll = Math.random();
 
@@ -93,6 +136,7 @@ export function resolveShot(
     shooter.shotsOnTarget += 1;
     if (assister) {
       assister.assists += 1;
+      assister.keyPasses = (assister.keyPasses || 0) + 1;
     }
 
     return {
@@ -108,7 +152,7 @@ export function resolveShot(
   // If not a goal, determine if on target, saved, blocked, or off target
   shooter.shots += 1;
   const onTargetRoll = Math.random();
-  const onTargetThreshold = Math.min(0.85, 0.45 + (finishing / 100) * 0.35);
+  const onTargetThreshold = Math.min(0.85, 0.45 + (fin / 100) * 0.35);
 
   if (onTargetRoll < onTargetThreshold) {
     // Shot is on target -> Goalkeeper makes save or defender blocks

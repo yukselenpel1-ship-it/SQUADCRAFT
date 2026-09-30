@@ -50,6 +50,13 @@ export class MatchEngine {
     this.config = config;
     this.momentum = createInitialMomentum(config.enableHomeAdvantage);
 
+    const calcConsistencyVariance = (p: Player) => {
+      const consistency = p.hiddenAttributes?.consistency ?? 70;
+      // spread: consistency 100 -> 0%, consistency 70 -> ±3.3%, consistency 50 -> ±5.5%
+      const spread = (100 - consistency) * 0.0011;
+      return (Math.random() - 0.5) * 2 * spread;
+    };
+
     // Initialize Home Team Runtime
     const homeStarting = (homeStartingIds || homePlayers.slice(0, 11).map((p) => p.id)).slice(0, 11);
     const homeBench = homePlayers.filter((p) => !homeStarting.includes(p.id)).map((p) => p.id);
@@ -70,10 +77,13 @@ export class MatchEngine {
         minutesPlayed: 0,
         matchRating: 6.5,
         currentFitness: p.fitness || 98,
+        matchDayConsistencyVariance: calcConsistencyVariance(p),
         goals: 0,
         assists: 0,
         shots: 0,
         shotsOnTarget: 0,
+        keyPasses: 0,
+        blocks: 0,
         passesAttempted: 0,
         passesCompleted: 0,
         tacklesAttempted: 0,
@@ -107,10 +117,13 @@ export class MatchEngine {
         minutesPlayed: 0,
         matchRating: 6.5,
         currentFitness: p.fitness || 98,
+        matchDayConsistencyVariance: calcConsistencyVariance(p),
         goals: 0,
         assists: 0,
         shots: 0,
         shotsOnTarget: 0,
+        keyPasses: 0,
+        blocks: 0,
         passesAttempted: 0,
         passesCompleted: 0,
         tacklesAttempted: 0,
@@ -127,8 +140,9 @@ export class MatchEngine {
     const homeActive = homeStarting.map((id) => homePlayerMap[id]).filter(Boolean);
     const awayActive = awayStarting.map((id) => awayPlayerMap[id]).filter(Boolean);
 
-    const homeRatings = calculateTeamRatings(homeActive);
-    const awayRatings = calculateTeamRatings(awayActive);
+    const isComp = this.config.isCompetitive !== false;
+    const homeRatings = calculateTeamRatings(homeActive, isComp);
+    const awayRatings = calculateTeamRatings(awayActive, isComp);
 
     const homeRuntime: MatchTeamRuntime = {
       club: homeClub,
@@ -278,8 +292,9 @@ export class MatchEngine {
     const homeActive = this.state.home.activePitchPlayerIds.map((id) => this.state.home.players[id]).filter(Boolean);
     const awayActive = this.state.away.activePitchPlayerIds.map((id) => this.state.away.players[id]).filter(Boolean);
 
-    this.state.home.ratings = calculateTeamRatings(homeActive);
-    this.state.away.ratings = calculateTeamRatings(awayActive);
+    const isComp = this.config.isCompetitive !== false;
+    this.state.home.ratings = calculateTeamRatings(homeActive, isComp);
+    this.state.away.ratings = calculateTeamRatings(awayActive, isComp);
 
     const homeMods = computeTacticalModifiers(
       this.state.home.tactics,
