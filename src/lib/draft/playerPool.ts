@@ -603,8 +603,8 @@ export function generateDraftPlayerPool(): Player[] {
         developmentCurve,
       };
 
-      // "YÜKSELEN YETENEK" Badge criteria: Age <= 21, POT >= 84, growth >= 6
-      const isRisingTalent = age <= 21 && potential >= 84 && (potential - overall) >= 6;
+      // "YÜKSELEN YETENEK" Badge criteria: Age <= 21, POT >= 87, growth >= 6
+      const isRisingTalent = age <= 21 && potential >= 87 && (potential - overall) >= 6;
 
       // Draft & Market Value
       const draftValue = calculatePlayerDraftValue({

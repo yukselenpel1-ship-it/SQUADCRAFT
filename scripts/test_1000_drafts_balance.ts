@@ -103,26 +103,28 @@ function run1000DraftsSimulation() {
 
   for (let d = 0; d < 1000; d++) {
     const managerCount = 4; // 4-manager league
-    const memberIds = ['m-0', 'm-1', 'm-2', 'm-3'];
+    const memberBaseIds = ['m-0', 'm-1', 'm-2', 'm-3'];
 
-    const members: RoomMember[] = memberIds.map((id, idx) => ({
-      id,
+    const members: RoomMember[] = memberBaseIds.map((id, idx) => ({
+      id: `${id}-d${d}`,
       roomId: `sim-room-${d}`,
-      sessionId: `session-${id}`,
+      sessionId: `session-${id}-${d}`,
       username: `Manager ${idx + 1}`,
       isHost: idx === 0,
       isSpectator: false,
       isReady: true,
       isBot: true,
       botDifficulty: difficulties[idx % difficulties.length],
-      botPersonality: personalities[(d + idx) % personalities.length],
+      botPersonality: personalities[(d * 4 + idx) % personalities.length],
       isConnected: true,
       lastSeenAt: new Date().toISOString(),
       joinedAt: new Date().toISOString(),
     }));
 
+    const memberIds = members.map((m) => m.id);
+
     let clubs: DraftClub[] = members.map((m, idx) => ({
-      id: `c-${m.id}`,
+      id: `club-${idx}-d${d}`,
       roomId: `sim-room-${d}`,
       memberId: m.id,
       name: `Club ${idx + 1}`,
@@ -134,6 +136,7 @@ function run1000DraftsSimulation() {
       squadPlayerIds: [],
       budget: DEFAULT_DRAFT_BUDGET,
       spentBudget: 0,
+      draftOrder: idx,
     }));
 
     let draftState = initializeDraftState(`sim-room-${d}`, memberIds, rules);
@@ -246,14 +249,18 @@ function run1000DraftsSimulation() {
 
   const avg = (arr: number[]) => (arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : 0);
 
+  const totalRisingInPool = playerPool.filter((p) => p.isRisingTalent).length;
+  const risingPercentage = ((totalRisingInPool / playerPool.length) * 100).toFixed(2);
+
   console.log('\n================== SIMULATION RESULTS ==================');
   console.log(`Completed Drafts: ${metrics.totalDrafts}`);
   console.log(`Total Squads Created: ${metrics.totalSquads}`);
   console.log(`Successful Squads: ${metrics.successfulSquads} / ${metrics.totalSquads} (100% target)`);
   console.log(`Positional Quota Violations: ${metrics.quotaViolations}`);
-  console.log(`Budget Violations: ${metrics.budgetViolations}`);
+  console.log(`Budget Deadlocks / Violations: ${metrics.budgetViolations}`);
   console.log(`Execution Time: ${elapsedMs}ms (~${(elapsedMs / 1000).toFixed(2)}s)`);
-  console.log(`Total "YÜKSELEN YETENEK" drafted: ${metrics.risingTalentsPickedTotal}`);
+  console.log(`Database Rising Talents: ${totalRisingInPool} / ${playerPool.length} (${risingPercentage}%)`);
+  console.log(`Total Rising Talents drafted: ${metrics.risingTalentsPickedTotal}`);
 
   console.log('\n--- PERFORMANCE & STRATEGY BY BOT DIFFICULTY ---');
   for (const diff of ['KOLAY', 'ORTA', 'ZOR'] as BotDifficulty[]) {
@@ -274,9 +281,9 @@ function run1000DraftsSimulation() {
     console.log(`  - Average Squad POT:       ${avg(pots).toFixed(1)}`);
     console.log(`  - Average Spent Budget:    €${(avg(spents) / 1_000_000).toFixed(2)}M`);
     console.log(`  - Average Remaining Budget: €${(avg(rems) / 1_000_000).toFixed(2)}M`);
-    console.log(`  - Rising Talents / Squad:  ${avg(risings).toFixed(2)}`);
     console.log(`  - Min Remaining Budget:    €${(Math.min(...rems) / 1_000_000).toFixed(2)}M`);
     console.log(`  - Max Remaining Budget:    €${(Math.max(...rems) / 1_000_000).toFixed(2)}M`);
+    console.log(`  - Rising Talents / Squad:  ${avg(risings).toFixed(2)}`);
   }
 
   console.log('\n========================================================');

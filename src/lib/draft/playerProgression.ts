@@ -170,8 +170,8 @@ export function simulateSeasonProgression(
     }
   }
 
-  // "YÜKSELEN YETENEK" Badge criteria: Age <= 21, POT >= 84, growth >= 6
-  const isRisingTalent = newAge <= 21 && pot >= 84 && (pot - newOverall) >= 6;
+  // "YÜKSELEN YETENEK" Badge criteria: Age <= 21, POT >= 87, growth >= 6
+  const isRisingTalent = newAge <= 21 && pot >= 87 && (pot - newOverall) >= 6;
 
   // Re-calculate draft & market value dynamically
   const updatedDraftValue = calculatePlayerDraftValue({

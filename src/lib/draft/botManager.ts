@@ -119,6 +119,36 @@ export function getBotPickDelayMs(difficulty: BotDifficulty): number {
 // ============================================================================
 
 /**
+ * Calculates a natural, organic contingency reserve for a club manager.
+ * Varies naturally across clubs and personalities without artificial zero-draining.
+ */
+export function getClubManagerBuffer(clubId: string, difficulty: BotDifficulty, personality?: BotPersonality): number {
+  let hash = 0;
+  for (let i = 0; i < clubId.length; i++) {
+    hash = (hash * 31 + clubId.charCodeAt(i)) >>> 0;
+  }
+  const variance = (hash % 100) / 100; // 0.00 to 0.99
+
+  let personalityBias = 0;
+  if (personality === 'Kontrollü') personalityBias = 0.20;
+  else if (personality === 'Hücumcu') personalityBias = -0.15;
+  else if (personality === 'Kontratakçı') personalityBias = 0.10;
+
+  const factor = Math.max(0, Math.min(1, variance + personalityBias));
+
+  if (difficulty === 'KOLAY') {
+    // Easy: €2.0M to €11.5M (typical ~€4M - €9M)
+    return 2_000_000 + factor * 9_500_000;
+  } else if (difficulty === 'ORTA') {
+    // Medium: €1.0M to €7.5M (typical ~€2.5M - €5.5M)
+    return 1_000_000 + factor * 6_500_000;
+  } else {
+    // Hard: €0.5M to €5.5M (typical ~€1.5M - €4.0M)
+    return 500_000 + factor * 5_000_000;
+  }
+}
+
+/**
  * Decides which player the bot will pick during snake draft.
  * Respects difficulty tiers with zero hidden cheating.
  */
@@ -190,26 +220,32 @@ export function chooseBotDraftPick(
   const starAnchorCount = existingClubPlayers.filter((p) => (p.draftValue ?? 0) >= 35_000_000 || p.overall >= 88).length;
   const currentRound = counts.total + 1;
 
+  // Organic Manager Financial Disposition & Contingency Reserve
+  const desiredReserve = getClubManagerBuffer(club?.id ?? 'default-club', difficulty, personality);
+  const plannedSpendCap = DEFAULT_DRAFT_BUDGET - desiredReserve;
+  const currentSpent = club?.spentBudget ?? 0;
+
   // Target Reserve Schedule per pick depending on difficulty & phase
   let targetReservePerPick = 0;
   if (difficulty === 'ZOR') {
     if (currentRound <= 3) targetReservePerPick = 8_200_000;
     else if (currentRound <= 7) targetReservePerPick = 6_500_000;
     else if (currentRound <= 11) targetReservePerPick = 4_500_000;
-    else if (currentRound <= 14) targetReservePerPick = 2_600_000;
+    else if (currentRound <= 14) targetReservePerPick = 2_400_000;
     else targetReservePerPick = 1_000_000;
   } else if (difficulty === 'ORTA') {
-    if (currentRound <= 3) targetReservePerPick = 7_200_000;
-    else if (currentRound <= 7) targetReservePerPick = 5_500_000;
-    else if (currentRound <= 11) targetReservePerPick = 3_600_000;
-    else if (currentRound <= 14) targetReservePerPick = 2_000_000;
-    else targetReservePerPick = 700_000;
+    if (currentRound <= 3) targetReservePerPick = 7_500_000;
+    else if (currentRound <= 7) targetReservePerPick = 5_800_000;
+    else if (currentRound <= 11) targetReservePerPick = 3_800_000;
+    else if (currentRound <= 14) targetReservePerPick = 2_200_000;
+    else targetReservePerPick = 900_000;
   } else {
-    // KOLAY: Weaker pacing, leaves less for the bench
-    if (currentRound <= 3) targetReservePerPick = 6_200_000;
-    else if (currentRound <= 7) targetReservePerPick = 4_800_000;
-    else if (currentRound <= 11) targetReservePerPick = 3_000_000;
-    else targetReservePerPick = 800_000;
+    // KOLAY: Pacing adjusted so bench lands naturally at 63-66 OVR
+    if (currentRound <= 3) targetReservePerPick = 6_800_000;
+    else if (currentRound <= 7) targetReservePerPick = 5_000_000;
+    else if (currentRound <= 11) targetReservePerPick = 3_200_000;
+    else if (currentRound <= 14) targetReservePerPick = 1_600_000;
+    else targetReservePerPick = 700_000;
   }
 
   // Rank available players using evaluation score
@@ -255,6 +291,31 @@ export function chooseBotDraftPick(
       }
     }
 
+    // Organic Planned Spend Cap Soft Penalty:
+    // When projected total spending approaches or exceeds the manager's target spend cap,
+    // apply a soft penalty so that natural leftover funds emerge organically.
+    const projectedTotalSpent = currentSpent + playerPrice + Math.max(0, remainingPicksAfterPick) * 600_000;
+    if (projectedTotalSpent > plannedSpendCap) {
+      const excess = projectedTotalSpent - plannedSpendCap;
+      score -= (excess / 100_000) * 2.2;
+    }
+
+    // Bench Spend Discipline & Role-Based Pricing (Rounds 12-18):
+    // In late rounds, clubs avoid needlessly overpaying for bench depth while securing quality.
+    if (currentRound >= 12 && !p.isRisingTalent) {
+      const priceInM = playerPrice / 1_000_000;
+      const lateRoundMultiplier = currentRound >= 16 ? 2.0 : currentRound >= 14 ? 1.5 : 1.0;
+      if (difficulty === 'KOLAY') {
+        score -= priceInM * 2.8 * lateRoundMultiplier;
+      } else if (difficulty === 'ORTA') {
+        score -= priceInM * 1.8 * lateRoundMultiplier;
+      } else if (difficulty === 'ZOR') {
+        if (playerPrice > 4_500_000) {
+          score -= (priceInM - 4.5) * 3.5 * lateRoundMultiplier;
+        }
+      }
+    }
+
     // Personality Modifiers (Tactical Fit)
     if (difficulty === 'ORTA' || difficulty === 'ZOR') {
       if (personality === 'Hücumcu') {
@@ -274,8 +335,12 @@ export function chooseBotDraftPick(
     if (difficulty === 'KOLAY') {
       // Inefficient picks, occasional overpay for older players, ignores potential
       if (p.age >= 28 && p.overall >= 80) score += 2;
-      if (p.age >= 33) score -= 4; // Moderate veteran cap
+      if (p.age >= 33) score -= 3; // Moderate veteran cap
       if (p.potential > p.overall) score -= 2; // Ignores potential
+      // Preference for decent mid-tier benchers in late rounds (63-69 OVR at €1.0M-€3.0M)
+      if (currentRound >= 12 && p.overall >= 63 && p.overall <= 69 && playerPrice <= 3_000_000) {
+        score += 6;
+      }
     } else if (difficulty === 'ORTA') {
       // Balanced squad building (max 2 stars)
       if (playerPrice >= 35_000_000 && starAnchorCount >= 2) score -= 60;
@@ -283,7 +348,13 @@ export function chooseBotDraftPick(
       if (p.age >= 24 && p.age <= 28) score += 4;
       else if (p.age >= 32) score -= 6;
       if (p.age <= 23 && p.potential > p.overall) {
-        score += Math.min(5, (p.potential - p.overall) * 0.5);
+        score += Math.min(6, (p.potential - p.overall) * 0.6);
+      }
+      if (p.isRisingTalent && currentRound >= 10) {
+        score += 8; // Medium scouts appreciate some rising talent
+      }
+      if (currentRound >= 12 && p.overall >= 67 && playerPrice <= 4_500_000) {
+        score += 6;
       }
     } else if (difficulty === 'ZOR') {
       // Dominant Starting XI & Smart depth
@@ -291,17 +362,17 @@ export function chooseBotDraftPick(
 
       if (currentRound <= 11) {
         // Starting XI phase: 1-2 prime anchors + dominant Starting XI OVR + Prime Age (22-29)
-        if (currentRound <= 3 && p.overall >= 86 && starAnchorCount < 2) score += 22;
-        // High OVR gradient for Starting XI dominance
-        if (p.overall >= 78) score += (p.overall - 77) * 2.5;
-        if (p.age >= 22 && p.age <= 29) score += 8; // Prime age dominance
+        if (currentRound <= 3 && p.overall >= 86 && starAnchorCount < 2) score += 28;
+        if (p.overall >= 78) score += (p.overall - 77) * 3.5;
+        if (p.isRisingTalent) score += 25; // Elite young prodigies valued for Starting XI
+        if (p.age >= 22 && p.age <= 29) score += 10; // Prime age dominance
         if (p.age >= 31) score -= 10; // Avoid veterans in Starting XI
       } else {
         // Depth / Bench phase (R12-18): Target high-ceiling upside, Rising Talents & cheap bargains
-        if (p.isRisingTalent) score += 22;
-        if (p.age <= 22 && p.potential >= 80) score += Math.min(10, (p.potential - p.overall) * 0.9);
-        if (p.overall >= 73 && playerPrice <= 7_500_000) score += 8;
-        if (p.age >= 29) score -= 12; // Strict youth depth bias
+        if (p.isRisingTalent) score += 32;
+        if (p.age <= 22 && p.potential >= 82) score += Math.min(10, (p.potential - p.overall) * 0.9);
+        if (p.overall >= 70 && playerPrice <= 6_000_000) score += 8 + (p.overall - 70) * 1.5;
+        if (p.age >= 29) score -= 10; // Strict youth depth bias
       }
     }
 
