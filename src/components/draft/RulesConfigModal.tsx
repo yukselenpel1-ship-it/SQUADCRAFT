@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DraftRules, PRESET_4_MANAGERS, PRESET_6_MANAGERS, PRESET_8_MANAGERS, SquadSizeOption, PickTimerOption, FitnessSetting, LeagueFormat } from '@/lib/draft/types';
+import { DraftRules, PRESET_4_MANAGERS, PRESET_6_MANAGERS, PRESET_8_MANAGERS, SquadSizeOption, PickTimerOption, FitnessSetting, LeagueFormat, DEFAULT_DRAFT_BUDGET } from '@/lib/draft/types';
 import { Trophy, Settings, Zap, Check, X, Shield, Clock, Flame, Users } from 'lucide-react';
 
 interface RulesConfigModalProps {
@@ -156,6 +156,71 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
                 <option value={0}>Sınırsız (Süre Yok)</option>
               </select>
             </div>
+          </div>
+
+          {/* Kulüp Başlangıç Bütçesi */}
+          <div className="pt-2">
+            <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+              <span>Kulüp Başlangıç Bütçesi</span>
+              <span className="text-emerald-400 font-mono text-xs font-bold">
+                €{((current.draftBudget || DEFAULT_DRAFT_BUDGET) / 1_000_000).toFixed(1)}M
+              </span>
+            </label>
+            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-2">
+              {[100_000_000, 150_000_000, 200_000_000, 250_000_000, 300_000_000].map((b) => {
+                const isSelected = (current.draftBudget || DEFAULT_DRAFT_BUDGET) === b;
+                return (
+                  <button
+                    key={b}
+                    type="button"
+                    onClick={() => setCurrent({ ...current, draftBudget: b })}
+                    className={`py-2 px-1 text-xs font-mono font-bold rounded-xl border transition text-center ${
+                      isSelected
+                        ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-sm'
+                        : 'bg-slate-900 border-white/10 text-slate-400 hover:border-white/25 hover:text-white'
+                    }`}
+                  >
+                    €{b / 1_000_000}M
+                  </button>
+                );
+              })}
+              <button
+                type="button"
+                onClick={() => {
+                  const curr = current.draftBudget || DEFAULT_DRAFT_BUDGET;
+                  if ([100_000_000, 150_000_000, 200_000_000, 250_000_000, 300_000_000].includes(curr)) {
+                    setCurrent({ ...current, draftBudget: 175_000_000 });
+                  }
+                }}
+                className={`py-2 px-1 text-xs font-bold rounded-xl border transition text-center ${
+                  ![100_000_000, 150_000_000, 200_000_000, 250_000_000, 300_000_000].includes(current.draftBudget || DEFAULT_DRAFT_BUDGET)
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300'
+                    : 'bg-slate-900 border-white/10 text-slate-400 hover:border-white/25 hover:text-white'
+                }`}
+              >
+                Özel
+              </button>
+            </div>
+
+            {![100_000_000, 150_000_000, 200_000_000, 250_000_000, 300_000_000].includes(current.draftBudget || DEFAULT_DRAFT_BUDGET) && (
+              <div className="bg-slate-900/90 border border-amber-500/30 p-3 rounded-xl flex items-center gap-3">
+                <span className="text-xs font-bold text-amber-400 shrink-0">Özel Bütçe (€50M - €500M):</span>
+                <input
+                  type="number"
+                  min={50}
+                  max={500}
+                  step={5}
+                  value={Math.round((current.draftBudget || DEFAULT_DRAFT_BUDGET) / 1_000_000)}
+                  onChange={(e) => {
+                    const val = Number(e.target.value);
+                    const clamped = Math.max(50, Math.min(500, val || 50));
+                    setCurrent({ ...current, draftBudget: clamped * 1_000_000 });
+                  }}
+                  className="w-24 bg-black border border-white/20 rounded-lg px-2 py-1 text-sm font-mono text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 text-center"
+                />
+                <span className="text-xs font-mono text-zinc-400">Milyon Euro</span>
+              </div>
+            )}
           </div>
 
           {/* Fitness, Injuries, Suspensions */}

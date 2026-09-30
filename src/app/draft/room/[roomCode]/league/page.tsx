@@ -53,6 +53,7 @@ import {
   Repeat,
   RotateCcw,
 } from 'lucide-react';
+import { FORMATION_COORDINATES } from '@/lib/data/mockData';
 
 interface LeaguePageProps {
   params: Promise<{ roomCode: string }>;
@@ -61,6 +62,63 @@ interface LeaguePageProps {
 type TabType = 'overview' | 'squad' | 'tactics' | 'fixtures' | 'standings' | 'players' | 'history';
 type SquadPositionFilter = 'ALL' | 'GK' | 'DEF' | 'MID' | 'ATT';
 type SquadViewMode = 'grid' | 'table';
+
+export function isSlotCompatible(playerPosition: string, slotRole: string): boolean {
+  if (slotRole === 'GK') return playerPosition === 'GK';
+  const defs = ['CB', 'LB', 'RB', 'LWB', 'RWB', 'DC', 'DL', 'DR'];
+  const mids = ['DM', 'CM', 'CAM', 'LM', 'RM', 'DMC', 'MC', 'AMC', 'ML', 'MR'];
+  const atts = ['LW', 'RW', 'ST', 'CF', 'AML', 'AMR'];
+  if (defs.includes(slotRole)) return defs.includes(playerPosition);
+  if (mids.includes(slotRole)) return mids.includes(playerPosition);
+  if (atts.includes(slotRole)) return atts.includes(playerPosition);
+  return false;
+}
+
+export function autoAssignPlayersToSlots(
+  playerIds: string[],
+  pool: Player[],
+  form: Formation
+): string[] {
+  const slots = FORMATION_COORDINATES[form] || FORMATION_COORDINATES['4-3-3'];
+  const players = playerIds.map((id) => pool.find((p) => p.id === id)).filter(Boolean) as Player[];
+  if (players.length === 0) return playerIds;
+
+  const result: (string | null)[] = new Array(11).fill(null);
+  const unassigned = [...players];
+
+  const getCat = (pos: string): 'GK' | 'DEF' | 'MID' | 'ATT' => {
+    if (pos === 'GK') return 'GK';
+    if (['CB', 'LB', 'RB', 'LWB', 'RWB', 'DC', 'DL', 'DR'].includes(pos)) return 'DEF';
+    if (['DM', 'CM', 'CAM', 'LM', 'RM', 'DMC', 'MC', 'AMC', 'ML', 'MR'].includes(pos)) return 'MID';
+    return 'ATT';
+  };
+
+  // 1. Assign GK to slot 0 if exists
+  const gkIdx = unassigned.findIndex((p) => getCat(p.position) === 'GK');
+  if (gkIdx !== -1) {
+    result[0] = unassigned[gkIdx].id;
+    unassigned.splice(gkIdx, 1);
+  }
+
+  // 2. Assign matching category slots
+  for (let i = 1; i < slots.length; i++) {
+    const slotCat = getCat(slots[i].role);
+    const matchIdx = unassigned.findIndex((p) => getCat(p.position) === slotCat);
+    if (matchIdx !== -1) {
+      result[i] = unassigned[matchIdx].id;
+      unassigned.splice(matchIdx, 1);
+    }
+  }
+
+  // 3. Fill any remaining unassigned slots
+  for (let i = 0; i < result.length; i++) {
+    if (!result[i] && unassigned.length > 0) {
+      result[i] = unassigned.shift()!.id;
+    }
+  }
+
+  return result.filter(Boolean) as string[];
+}
 
 export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const resolvedParams = use(params);
@@ -132,8 +190,27 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         if (myC && customLineupIds.length === 0) {
           const pool = res.state.playerPool;
           const myS = pool.filter((p: Player) => myC.squadPlayerIds.includes(p.id));
-          const sorted = [...myS].sort((a, b) => b.overall - a.overall);
-          setCustomLineupIds(sorted.slice(0, 11).map((p) => p.id));
+          if (myC.tactics) {
+            if (myC.tactics.formation) setFormation(myC.tactics.formation);
+            if (myC.tactics.settings?.mentality) setMentality(myC.tactics.settings.mentality);
+            if (myC.tactics.settings?.tempo) setTempo(myC.tactics.settings.tempo);
+            if (myC.tactics.settings?.pressing) setPressing(myC.tactics.settings.pressing);
+            if (myC.tactics.settings?.passingStyle) setPassingStyle(myC.tactics.settings.passingStyle);
+            if (myC.tactics.settings?.defensiveLine) setDefensiveLine(myC.tactics.settings.defensiveLine);
+            if (myC.tactics.settings?.width) setWidth(myC.tactics.settings.width);
+            if (myC.tactics.lineup && myC.tactics.lineup.length === 11) {
+              const savedIds = myC.tactics.lineup.map((l) => l.playerId).filter(Boolean) as string[];
+              if (savedIds.length === 11) {
+                setCustomLineupIds(savedIds);
+              }
+            }
+          }
+          if (customLineupIds.length === 0) {
+            const sorted = [...myS].sort((a, b) => b.overall - a.overall);
+            const initial11 = sorted.slice(0, 11).map((p) => p.id);
+            const assigned = autoAssignPlayersToSlots(initial11, myS, myC.tactics?.formation || '4-3-3');
+            setCustomLineupIds(assigned);
+          }
         }
       }
     } catch (e) {
@@ -523,6 +600,66 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     }
   };
 
+  // Formation change handler
+  const handleFormationChange = (newFormation: Formation) => {
+    setFormation(newFormation);
+    const currentLineup = customLineupIds.length === 11 ? customLineupIds : mySquad.slice(0, 11).map((p) => p.id);
+    const reordered = autoAssignPlayersToSlots(currentLineup, mySquad, newFormation);
+    setCustomLineupIds(reordered);
+    setSelectedStarterId(null);
+    setSelectedBenchId(null);
+    setStatusMessage(`Diziliş ${newFormation} olarak ayarlandı. Kadro sahaya yerleştirildi.`);
+    setTimeout(() => setStatusMessage(null), 2500);
+  };
+
+  // Interactive Pitch Player Click (Select or Pitch-to-Pitch Swap)
+  const handlePitchPlayerClick = (playerId: string) => {
+    if (!selectedStarterId) {
+      setSelectedStarterId(playerId);
+      setSelectedBenchId(null);
+      return;
+    }
+
+    if (selectedStarterId === playerId) {
+      setSelectedStarterId(null);
+      return;
+    }
+
+    // Another starter clicked -> swap their positions on the pitch!
+    const idx1 = customLineupIds.indexOf(selectedStarterId);
+    const idx2 = customLineupIds.indexOf(playerId);
+    if (idx1 !== -1 && idx2 !== -1) {
+      const nextLineup = [...customLineupIds];
+      nextLineup[idx1] = playerId;
+      nextLineup[idx2] = selectedStarterId;
+      setCustomLineupIds(nextLineup);
+
+      const p1 = mySquad.find((p) => p.id === selectedStarterId);
+      const p2 = mySquad.find((p) => p.id === playerId);
+      setSelectedStarterId(null);
+      setStatusMessage(`${p1?.lastName || 'Oyuncu 1'} ile ${p2?.lastName || 'Oyuncu 2'} mevkileri değiştirildi!`);
+      setTimeout(() => setStatusMessage(null), 2000);
+    }
+  };
+
+  // Interactive Bench Player Click (Select or Starter-to-Bench Swap)
+  const handleBenchPlayerClick = (benchPlayerId: string) => {
+    if (selectedStarterId) {
+      const starterId = selectedStarterId;
+      const updatedLineup = customLineupIds.map((id) => (id === starterId ? benchPlayerId : id));
+      setCustomLineupIds(updatedLineup);
+      setSelectedStarterId(null);
+      setSelectedBenchId(null);
+
+      const pStarter = mySquad.find((p) => p.id === starterId);
+      const pBench = mySquad.find((p) => p.id === benchPlayerId);
+      setStatusMessage(`${pStarter?.lastName || 'As oyuncu'} yerine ${pBench?.lastName || 'Yedek oyuncu'} oyuna alındı!`);
+      setTimeout(() => setStatusMessage(null), 2000);
+    } else {
+      setSelectedBenchId(selectedBenchId === benchPlayerId ? null : benchPlayerId);
+    }
+  };
+
   // Auto best XI
   const handleAutoBestXI = () => {
     if (!mySquad || mySquad.length === 0) return;
@@ -532,50 +669,49 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     const mids = mySquad.filter((p: Player) => ['DM', 'CM', 'CAM', 'LM', 'RM', 'DMC', 'MC', 'AMC', 'ML', 'MR'].includes(p.position)).sort((a, b) => b.overall - a.overall);
     const atts = mySquad.filter((p: Player) => ['LW', 'RW', 'ST', 'CF', 'AML', 'AMR'].includes(p.position)).sort((a, b) => b.overall - a.overall);
 
-    const starting11 = [
-      gks[0]?.id || mySquad[0]?.id,
-      defs[0]?.id || mySquad[1]?.id,
-      defs[1]?.id || mySquad[2]?.id,
-      defs[2]?.id || mySquad[3]?.id,
-      defs[3]?.id || mySquad[4]?.id,
-      mids[0]?.id || mySquad[5]?.id,
-      mids[1]?.id || mySquad[6]?.id,
-      mids[2]?.id || mySquad[7]?.id,
-      atts[0]?.id || mids[3]?.id || mySquad[8]?.id,
-      atts[1]?.id || mids[4]?.id || mySquad[9]?.id,
-      atts[2]?.id || atts[0]?.id || mySquad[10]?.id,
-    ].filter(Boolean) as string[];
+    const candidates = [
+      ...gks.slice(0, 1),
+      ...defs.slice(0, 5),
+      ...mids.slice(0, 5),
+      ...atts.slice(0, 4),
+    ].sort((a, b) => b.overall - a.overall);
 
-    setCustomLineupIds(starting11);
-
-    const tactics = {
-      clubId: myClub!.id,
-      formation,
-      settings: {
-        mentality,
-        tempo,
-        pressing,
-        passingStyle,
-        defensiveLine,
-        width,
-      },
-      lineup: starting11.map((id, idx) => ({
-        slotId: idx,
-        role: (idx === 0 ? 'GK' : idx <= 4 ? 'DC' : idx <= 7 ? 'MC' : 'ST') as any,
-        x: 50,
-        y: idx === 0 ? 90 : idx <= 4 ? 70 : idx <= 7 ? 45 : 20,
-        playerId: id,
-      })),
-      substitutes: mySquad.filter((p: Player) => !starting11.includes(p.id)).slice(0, 7).map((p: Player) => p.id),
-      reserves: mySquad.filter((p: Player) => !starting11.includes(p.id)).slice(7).map((p: Player) => p.id),
-    };
-
-    const res = DraftMultiplayerStore.updateClubTactics(room.id, currentMember!.id, tactics as any);
-    if (res.state) {
-      setHydrationResult((prev) => ({ ...prev, state: res.state }));
-      setStatusMessage('En iyi 11 otomatik dizildi ve taktik kaydedildi!');
-      setTimeout(() => setStatusMessage(null), 2500);
+    const best11: Player[] = [];
+    if (gks.length > 0) best11.push(gks[0]);
+    const others = candidates.filter((p) => p.id !== gks[0]?.id);
+    for (const p of others) {
+      if (best11.length < 11) best11.push(p);
     }
+
+    const assigned = autoAssignPlayersToSlots(best11.map((p) => p.id), mySquad, formation);
+    setCustomLineupIds(assigned);
+    setSelectedStarterId(null);
+    setSelectedBenchId(null);
+
+    if (myClub && currentMember) {
+      const slots = FORMATION_COORDINATES[formation] || FORMATION_COORDINATES['4-3-3'];
+      const tactics = {
+        clubId: myClub.id,
+        formation,
+        settings: { mentality, tempo, pressing, passingStyle, defensiveLine, width },
+        lineup: assigned.map((id, idx) => ({
+          slotId: idx,
+          role: slots[idx]?.role || 'MC',
+          x: slots[idx]?.x || 50,
+          y: slots[idx]?.y || 50,
+          playerId: id,
+        })),
+        substitutes: mySquad.filter((p: Player) => !assigned.includes(p.id)).slice(0, 7).map((p: Player) => p.id),
+        reserves: mySquad.filter((p: Player) => !assigned.includes(p.id)).slice(7).map((p: Player) => p.id),
+      };
+      const res = DraftMultiplayerStore.updateClubTactics(room.id, currentMember.id, tactics as any);
+      if (res.state) {
+        setHydrationResult((prev) => ({ ...prev, state: res.state }));
+      }
+    }
+
+    setStatusMessage('En iyi 11 otomatik dizildi ve taktiğe işlendi!');
+    setTimeout(() => setStatusMessage(null), 2500);
   };
 
   // Interactive Starter & Bench Swap Handler
@@ -586,15 +722,16 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     setSelectedBenchId(null);
 
     if (myClub && currentMember) {
+      const slots = FORMATION_COORDINATES[formation] || FORMATION_COORDINATES['4-3-3'];
       const tactics = {
         clubId: myClub.id,
         formation,
         settings: { mentality, tempo, pressing, passingStyle, defensiveLine, width },
         lineup: updatedLineup.map((id, idx) => ({
           slotId: idx,
-          role: (idx === 0 ? 'GK' : idx <= 4 ? 'DC' : idx <= 7 ? 'MC' : 'ST') as any,
-          x: 50,
-          y: idx === 0 ? 90 : idx <= 4 ? 70 : idx <= 7 ? 45 : 20,
+          role: slots[idx]?.role || 'MC',
+          x: slots[idx]?.x || 50,
+          y: slots[idx]?.y || 50,
           playerId: id,
         })),
         substitutes: mySquad.filter((p) => !updatedLineup.includes(p.id)).slice(0, 7).map((p) => p.id),
@@ -610,15 +747,16 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const handleSaveTactics = () => {
     if (!myClub || !currentMember) return;
     const lineupToSave = customLineupIds.length === 11 ? customLineupIds : mySquad.slice(0, 11).map((p) => p.id);
+    const slots = FORMATION_COORDINATES[formation] || FORMATION_COORDINATES['4-3-3'];
     const tactics = {
       clubId: myClub.id,
       formation,
       settings: { mentality, tempo, pressing, passingStyle, defensiveLine, width },
       lineup: lineupToSave.map((id, idx) => ({
         slotId: idx,
-        role: (idx === 0 ? 'GK' : idx <= 4 ? 'DC' : idx <= 7 ? 'MC' : 'ST') as any,
-        x: 50,
-        y: idx === 0 ? 90 : idx <= 4 ? 70 : idx <= 7 ? 45 : 20,
+        role: slots[idx]?.role || 'MC',
+        x: slots[idx]?.x || 50,
+        y: slots[idx]?.y || 50,
         playerId: id,
       })),
       substitutes: mySquad.filter((p) => !lineupToSave.includes(p.id)).slice(0, 7).map((p) => p.id),
@@ -627,8 +765,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     const res = DraftMultiplayerStore.updateClubTactics(room.id, currentMember.id, tactics as any);
     if (res.state) {
       setHydrationResult((prev) => ({ ...prev, state: res.state }));
-      setStatusMessage('Taktiğiniz ve ilk 11 dizilişiniz kaydedildi!');
-      setTimeout(() => setStatusMessage(null), 2500);
+      setStatusMessage(`Taktik kaydedildi: ${formation} (${mentality})`);
+      setTimeout(() => setStatusMessage(null), 3000);
     }
   };
 
@@ -1589,23 +1727,18 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     <label className="block text-zinc-300 font-bold uppercase mb-1.5">Diziliş (Formasyon)</label>
                     <select
                       value={formation}
-                      onChange={(e) => setFormation(e.target.value as Formation)}
+                      onChange={(e) => handleFormationChange(e.target.value as Formation)}
                       className="w-full bg-zinc-950 border border-zinc-700 p-3 text-white focus:outline-none focus:border-[#00F5A0] font-bold"
                     >
-                      <option value="4-2-3-1">4-2-3-1 (Dengeli & Modern Geçiş)</option>
                       <option value="4-3-3">4-3-3 (Hücum & Kanat Organizasyonları)</option>
+                      <option value="4-2-3-1">4-2-3-1 (Dengeli & Modern Geçiş)</option>
                       <option value="4-4-2">4-4-2 (Klasik Çift Forvet & Baskı)</option>
-                      <option value="4-1-2-1-2">4-1-2-1-2 (Baklava / Dar Elmas)</option>
-                      <option value="4-3-2-1">4-3-2-1 (Yılbaşı Ağacı / Dar Hücum)</option>
-                      <option value="4-2-2-2">4-2-2-2 (Çift Ön Libero & Çift 10 Numara)</option>
                       <option value="4-1-4-1">4-1-4-1 (Guardiola / Kompakt Orta Saha)</option>
-                      <option value="4-2-4">4-2-4 (Tam Hücum & 4 Forvet)</option>
-                      <option value="3-5-2">3-5-2 (Orta Saha Hakimiyeti & Kanat Bek)</option>
+                      <option value="4-3-1-2">4-3-1-2 (Dar Elmas & Çift Forvet)</option>
                       <option value="3-4-3">3-4-3 (Toplam Hücum & Kanat Baskısı)</option>
-                      <option value="3-4-2-1">3-4-2-1 (Modern Amorim / Alonso 3'lüsü)</option>
-                      <option value="3-4-1-2">3-4-1-2 (3 Stoper, 10 Numara & Çift Forvet)</option>
-                      <option value="5-3-2">5-3-2 (Kayıtsız Savunma & Kontratak)</option>
-                      <option value="5-2-3">5-2-3 (5-4-1 Geçiş Hücumu)</option>
+                      <option value="3-5-2">3-5-2 (Orta Saha Hakimiyeti & Kanat Bek)</option>
+                      <option value="5-3-2">5-3-2 (Katı Savunma & Kontratak)</option>
+                      <option value="5-2-3">5-2-3 (5'li Savunma & Hızlı Geçiş)</option>
                     </select>
                   </div>
 
@@ -1697,128 +1830,128 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                 </div>
 
                 {/* Realistic Pitch */}
-                <div className="h-88 bg-gradient-to-b from-[#0a2318] via-[#0d2f21] to-[#0a2318] border-2 border-emerald-500/40 relative my-4 overflow-hidden shadow-inner flex items-center justify-center">
+                <div
+                  onClick={() => {
+                    setSelectedStarterId(null);
+                    setSelectedBenchId(null);
+                  }}
+                  className="w-full h-[520px] sm:h-[560px] bg-gradient-to-b from-[#0a2318] via-[#0d2f21] to-[#0a2318] border-2 border-emerald-500/40 relative my-4 overflow-hidden shadow-2xl rounded-lg flex items-center justify-center select-none"
+                >
                   {/* Grass Stripes */}
-                  <div className="absolute inset-0 opacity-10 flex flex-col pointer-events-none">
-                    <div className="flex-1 bg-black" />
+                  <div className="absolute inset-0 opacity-15 flex flex-col pointer-events-none">
+                    <div className="flex-1 bg-black/30" />
                     <div className="flex-1 bg-transparent" />
-                    <div className="flex-1 bg-black" />
+                    <div className="flex-1 bg-black/30" />
                     <div className="flex-1 bg-transparent" />
-                    <div className="flex-1 bg-black" />
+                    <div className="flex-1 bg-black/30" />
+                    <div className="flex-1 bg-transparent" />
+                    <div className="flex-1 bg-black/30" />
                     <div className="flex-1 bg-transparent" />
                   </div>
 
                   {/* Pitch Markings */}
-                  <div className="absolute inset-3 border border-white/20 pointer-events-none" />
-                  <div className="absolute inset-x-3 top-1/2 h-px bg-white/20 pointer-events-none" />
-                  <div className="w-28 h-28 rounded-full border border-white/20 absolute pointer-events-none" />
-                  <div className="w-2 h-2 rounded-full bg-white/30 absolute pointer-events-none" />
-                  <div className="absolute inset-x-20 top-3 h-18 border-b border-x border-white/20 pointer-events-none" />
-                  <div className="absolute inset-x-20 bottom-3 h-18 border-t border-x border-white/20 pointer-events-none" />
+                  <div className="absolute inset-3 border border-white/25 pointer-events-none rounded" />
+                  <div className="absolute inset-x-3 top-1/2 h-px bg-white/25 pointer-events-none" />
+                  <div className="w-28 h-28 rounded-full border border-white/25 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+                  <div className="w-2 h-2 rounded-full bg-white/40 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
-                  {/* 11 Starter Nodes with Click-to-Swap */}
-                  <div className="absolute inset-5 flex flex-col justify-between py-2">
-                    {/* Forwards */}
-                    <div className="flex justify-around">
-                      {activeStarters.slice(8, 11).map((p, i) => {
-                        const isSelected = selectedStarterId === p.id;
-                        return (
-                          <div
-                            key={p.id || i}
-                            onClick={() => setSelectedStarterId(isSelected ? null : p.id)}
-                            className="flex flex-col items-center cursor-pointer transition transform hover:scale-110"
-                          >
-                            <div className={`w-8 h-8 rounded-full font-mono font-black text-[11px] flex items-center justify-center border-2 shadow-lg ${
-                              isSelected ? 'bg-rose-500 text-white border-white animate-bounce' : 'bg-[#FFB800] text-black border-black'
-                            }`}>
-                              {p.overall}
-                            </div>
-                            <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
-                              {p.lastName}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
+                  {/* Penalty Box Top */}
+                  <div className="absolute top-3 left-1/2 -translate-x-1/2 w-48 h-20 border-b border-x border-white/25 pointer-events-none" />
+                  <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-9 border-b border-x border-white/25 pointer-events-none" />
+                  <div className="w-24 h-10 border-b border-white/25 rounded-b-full absolute top-[83px] left-1/2 -translate-x-1/2 pointer-events-none" />
 
-                    {/* Midfielders */}
-                    <div className="flex justify-around">
-                      {activeStarters.slice(4, 8).map((p, i) => {
-                        const isSelected = selectedStarterId === p.id;
-                        return (
-                          <div
-                            key={p.id || i}
-                            onClick={() => setSelectedStarterId(isSelected ? null : p.id)}
-                            className="flex flex-col items-center cursor-pointer transition transform hover:scale-110"
-                          >
-                            <div className={`w-8 h-8 rounded-full font-mono font-black text-[11px] flex items-center justify-center border-2 shadow-lg ${
-                              isSelected ? 'bg-rose-500 text-white border-white animate-bounce' : 'bg-[#00F5A0] text-black border-black'
-                            }`}>
-                              {p.overall}
-                            </div>
-                            <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
-                              {p.lastName}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
+                  {/* Penalty Box Bottom */}
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-48 h-20 border-t border-x border-white/25 pointer-events-none" />
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-24 h-9 border-t border-x border-white/25 pointer-events-none" />
+                  <div className="w-24 h-10 border-t border-white/25 rounded-t-full absolute bottom-[83px] left-1/2 -translate-x-1/2 pointer-events-none" />
 
-                    {/* Defenders */}
-                    <div className="flex justify-around">
-                      {activeStarters.slice(1, 4).map((p, i) => {
-                        const isSelected = selectedStarterId === p.id;
-                        return (
-                          <div
-                            key={p.id || i}
-                            onClick={() => setSelectedStarterId(isSelected ? null : p.id)}
-                            className="flex flex-col items-center cursor-pointer transition transform hover:scale-110"
-                          >
-                            <div className={`w-8 h-8 rounded-full font-mono font-black text-[11px] flex items-center justify-center border-2 shadow-lg ${
-                              isSelected ? 'bg-rose-500 text-white border-white animate-bounce' : 'bg-[#00D4FF] text-black border-black'
-                            }`}>
-                              {p.overall}
-                            </div>
-                            <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
-                              {p.lastName}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
+                  {/* 11 Starter Coordinate Nodes */}
+                  {(FORMATION_COORDINATES[formation] || FORMATION_COORDINATES['4-3-3']).map((slot, slotIdx) => {
+                    const playerId = customLineupIds[slotIdx];
+                    const player = mySquad.find((p) => p.id === playerId);
+                    if (!player) return null;
 
-                    {/* GK */}
-                    <div className="flex justify-center">
-                      {activeStarters.slice(0, 1).map((p, i) => {
-                        const isSelected = selectedStarterId === p.id;
-                        return (
-                          <div
-                            key={p.id || i}
-                            onClick={() => setSelectedStarterId(isSelected ? null : p.id)}
-                            className="flex flex-col items-center cursor-pointer transition transform hover:scale-110"
+                    const isSelected = selectedStarterId === player.id;
+                    const isCompatible = isSlotCompatible(player.position, slot.role);
+
+                    const getPosBadgeColor = () => {
+                      if (slot.role === 'GK') return 'bg-purple-600 text-white border-purple-300';
+                      if (['CB', 'LB', 'RB', 'LWB', 'RWB', 'DC', 'DL', 'DR'].includes(slot.role))
+                        return 'bg-[#00D4FF] text-black border-cyan-300';
+                      if (['DM', 'CM', 'CAM', 'LM', 'RM', 'DMC', 'MC', 'AMC', 'ML', 'MR'].includes(slot.role))
+                        return 'bg-[#00F5A0] text-black border-emerald-300';
+                      return 'bg-[#FFB800] text-black border-amber-300';
+                    };
+
+                    return (
+                      <div
+                        key={`${slotIdx}-${slot.role}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePitchPlayerClick(player.id);
+                        }}
+                        style={{
+                          left: `${slot.x}%`,
+                          top: `${slot.y}%`,
+                          transform: 'translate(-50%, -50%)',
+                        }}
+                        className="absolute flex flex-col items-center cursor-pointer transition-all duration-300 z-10 hover:scale-110 active:scale-95 group"
+                      >
+                        {/* MEVKİ DIŞI Warning Pill */}
+                        {!isCompatible && (
+                          <span className="mb-0.5 px-1.5 py-0.5 bg-rose-600 text-white font-black text-[8px] tracking-wider rounded uppercase shadow-lg animate-pulse whitespace-nowrap border border-rose-400">
+                            MEVKİ DIŞI
+                          </span>
+                        )}
+
+                        {/* Player Circle Node */}
+                        <div
+                          className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full font-mono font-black text-xs flex items-center justify-center border-2 shadow-xl transition-all ${
+                            isSelected
+                              ? 'bg-rose-500 text-white border-white ring-4 ring-[#00F5A0] shadow-[0_0_20px_#00F5A0] animate-bounce scale-110'
+                              : !isCompatible
+                              ? 'bg-rose-950 text-rose-200 border-rose-500 ring-2 ring-rose-500/80 shadow-rose-900/50'
+                              : getPosBadgeColor()
+                          }`}
+                        >
+                          {player.overall}
+                        </div>
+
+                        {/* Player Name and Slot Role Label */}
+                        <div className="flex flex-col items-center mt-0.5 pointer-events-none">
+                          <span className="text-[9px] sm:text-[10px] font-black text-white uppercase truncate max-w-[84px] bg-black/90 px-1.5 py-0.5 border border-zinc-800 rounded shadow-md">
+                            {player.lastName}
+                          </span>
+                          <span
+                            className={`text-[8px] font-mono font-bold px-1 rounded mt-0.5 ${
+                              !isCompatible
+                                ? 'text-rose-300 bg-rose-950/90 border border-rose-700 font-black'
+                                : 'text-zinc-300 bg-zinc-950/90 border border-zinc-800'
+                            }`}
                           >
-                            <div className={`w-8 h-8 rounded-full font-mono font-black text-[11px] flex items-center justify-center border-2 shadow-lg ${
-                              isSelected ? 'bg-rose-500 text-white border-white animate-bounce' : 'bg-purple-500 text-white border-black'
-                            }`}>
-                              {p.overall}
-                            </div>
-                            <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
-                              {p.lastName} (GK)
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
+                            {player.position} ({slot.role})
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 <div className="text-center text-[11px] font-bold text-zinc-400">
                   {selectedStarterId ? (
-                    <span className="text-[#FFB800] animate-pulse">
-                      ⚡ Sahadan bir oyuncu seçildi! Aşağıdaki yedekler listesinden oyuna sokmak istediğin oyuncuya tıkla.
-                    </span>
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="text-[#FFB800] animate-pulse">
+                        ⚡ Sahadan bir oyuncu seçildi! Aşağıdaki yedeklerden birine veya sahadaki başka bir oyuncuya tıklayarak yer değiştirin.
+                      </span>
+                      <button
+                        onClick={() => setSelectedStarterId(null)}
+                        className="px-2 py-0.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-bold uppercase rounded border border-zinc-600 transition"
+                      >
+                        İptal
+                      </button>
+                    </div>
                   ) : (
-                    <span>Sahadan bir oyuncuya tıklayarak yedeklerle anında yer değiştirebilirsiniz.</span>
+                    <span>Sahadaki veya yedekteki oyunculara tıklayarak anında yer değiştirebilirsiniz.</span>
                   )}
                 </div>
               </div>
@@ -1839,37 +1972,36 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {activeBench.map((player) => {
                   const ovrStyle = getOvrColor(player.overall);
+                  const isSelectedBench = selectedBenchId === player.id;
 
                   return (
                     <div
                       key={player.id}
-                      onClick={() => {
-                        if (selectedStarterId) {
-                          handleSwapStarterAndBench(selectedStarterId, player.id);
-                        }
-                      }}
-                      className={`p-3 border flex items-center justify-between transition cursor-pointer ${
+                      onClick={() => handleBenchPlayerClick(player.id)}
+                      className={`p-3 border flex items-center justify-between transition cursor-pointer rounded ${
                         selectedStarterId
-                          ? 'bg-zinc-950 hover:bg-[#00F5A0]/10 border-[#00F5A0]/40 hover:border-[#00F5A0]'
+                          ? 'bg-zinc-950 hover:bg-[#00F5A0]/15 border-[#00F5A0]/50 hover:border-[#00F5A0] shadow-[0_0_10px_rgba(0,245,160,0.15)] ring-1 ring-[#00F5A0]/30'
+                          : isSelectedBench
+                          ? 'bg-zinc-900 border-[#00D4FF] ring-2 ring-[#00D4FF]'
                           : 'bg-zinc-950 border-zinc-800 hover:border-zinc-700'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 truncate">
-                        <div className={`w-9 h-9 bg-gradient-to-br ${ovrStyle} font-mono font-black text-xs flex items-center justify-center border shrink-0`}>
+                        <div className={`w-9 h-9 bg-gradient-to-br ${ovrStyle} font-mono font-black text-xs flex items-center justify-center border shrink-0 rounded`}>
                           {player.overall}
                         </div>
-                        <div>
+                        <div className="truncate">
                           <div className="text-xs font-black text-white uppercase truncate max-w-[120px]">
                             {player.firstName} {player.lastName}
                           </div>
                           <div className="text-[10px] text-zinc-400 font-bold">
-                            <span className="text-[#00F5A0]">{player.position}</span> • {player.age} Yaş
+                            <span className="text-[#00F5A0] font-mono">{player.position}</span> • {player.age} Yaş
                           </div>
                         </div>
                       </div>
 
                       {selectedStarterId && (
-                        <button className="px-2 py-1 bg-[#00F5A0] text-black text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow">
+                        <button className="px-2.5 py-1 bg-[#00F5A0] hover:bg-[#00D485] text-black text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-md rounded">
                           <Repeat className="w-3 h-3" />
                           <span>AL</span>
                         </button>

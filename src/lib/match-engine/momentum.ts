@@ -5,8 +5,8 @@ export interface MomentumState {
 
 export function createInitialMomentum(isHomeAdvantaged: boolean = true): MomentumState {
   return {
-    homeMomentum: isHomeAdvantaged ? 54 : 50,
-    awayMomentum: isHomeAdvantaged ? 46 : 50,
+    homeMomentum: isHomeAdvantaged ? 52.5 : 50,
+    awayMomentum: isHomeAdvantaged ? 47.5 : 50,
   };
 }
 

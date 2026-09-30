@@ -198,7 +198,7 @@ export function validateDraftPick(
   // Budget Validation & Mathematical Quota Guarantee
   if (club) {
     const playerPrice = player.draftValue ?? calculatePlayerDraftValue(player);
-    const currentBudget = club.budget ?? DEFAULT_DRAFT_BUDGET;
+    const currentBudget = club.budget ?? (rules.draftBudget || DEFAULT_DRAFT_BUDGET);
 
     if (playerPrice > currentBudget) {
       const err = formatMultiplayerError(
@@ -239,7 +239,7 @@ export function determineAutoPick(
   currentRound: number,
   club?: DraftClub
 ): Player | null {
-  const currentBudget = club?.budget ?? DEFAULT_DRAFT_BUDGET;
+  const currentBudget = club?.budget ?? (rules.draftBudget || DEFAULT_DRAFT_BUDGET);
   const counts = countSquadPositions(playerPool, clubPlayerIds);
   const remainingRounds = rules.squadSize - counts.total;
   const minRequiredForRest = Math.max(0, remainingRounds - 1) * MIN_PLAYER_DRAFT_PRICE;

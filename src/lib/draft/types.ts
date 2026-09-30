@@ -33,6 +33,7 @@ export interface DraftRules {
   transferWindow: TransferSetting;
   matchType: MatchTypeSetting;
   autoPickMode: AutoPickMode;
+  draftBudget?: number; // Configurable initial club draft budget (default €250.0M)
   draftOrder?: string[];
   removedMemberIds?: string[];
   stateVersion?: number;
@@ -55,6 +56,9 @@ export interface LiveMatchweekState {
   completedMemberIds?: string[];
 }
 
+export const DEFAULT_DRAFT_BUDGET = 250_000_000; // €250.0M SquadCraft Draft Budget
+export const MIN_PLAYER_DRAFT_PRICE = 150_000; // €150K minimum player price
+
 export const DEFAULT_DRAFT_RULES: DraftRules = {
   maxManagers: 6,
   format: 'DOUBLE_ROUND',
@@ -66,6 +70,7 @@ export const DEFAULT_DRAFT_RULES: DraftRules = {
   transferWindow: 'CLOSED',
   matchType: 'FAST_SIM',
   autoPickMode: 'AUTO_PICK',
+  draftBudget: DEFAULT_DRAFT_BUDGET,
 };
 
 export const PRESET_4_MANAGERS: DraftRules = {
@@ -79,6 +84,7 @@ export const PRESET_4_MANAGERS: DraftRules = {
   transferWindow: 'CLOSED',
   matchType: 'FAST_SIM',
   autoPickMode: 'AUTO_PICK',
+  draftBudget: DEFAULT_DRAFT_BUDGET,
 };
 
 export const PRESET_6_MANAGERS: DraftRules = {
@@ -92,6 +98,7 @@ export const PRESET_6_MANAGERS: DraftRules = {
   transferWindow: 'CLOSED',
   matchType: 'FAST_SIM',
   autoPickMode: 'AUTO_PICK',
+  draftBudget: DEFAULT_DRAFT_BUDGET,
 };
 
 export const PRESET_8_MANAGERS: DraftRules = {
@@ -105,6 +112,7 @@ export const PRESET_8_MANAGERS: DraftRules = {
   transferWindow: 'CLOSED',
   matchType: 'FAST_SIM',
   autoPickMode: 'AUTO_PICK',
+  draftBudget: DEFAULT_DRAFT_BUDGET,
 };
 
 export const PRESET_CLOSED_ALPHA_4: DraftRules = PRESET_4_MANAGERS;
@@ -247,9 +255,6 @@ export interface BadgeConfig {
   accentColor?: string;
 }
 
-export const DEFAULT_DRAFT_BUDGET = 250_000_000; // €250.0M SquadCraft Draft Budget
-export const MIN_PLAYER_DRAFT_PRICE = 150_000; // €150K minimum player price
-
 export interface DraftClub {
   id: string;
   roomId: string;
@@ -263,6 +268,7 @@ export interface DraftClub {
   squadPlayerIds: string[];
   budget?: number; // Current remaining draft budget (starts at €250M)
   spentBudget?: number; // Total draft budget spent
+  tactics?: ClubTactics; // Saved club tactics & starting 11
 }
 
 // ============================================================================

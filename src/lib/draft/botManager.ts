@@ -167,7 +167,8 @@ export function chooseBotDraftPick(
 
   const counts = countSquadPositions(playerPool, clubPlayerIds);
   const remainingPicksForClub = Math.max(1, rules.squadSize - counts.total);
-  const currentBudget = club?.budget ?? DEFAULT_DRAFT_BUDGET;
+  const initialBudget = rules.draftBudget || DEFAULT_DRAFT_BUDGET;
+  const currentBudget = club?.budget ?? initialBudget;
   const minRequiredForRest = Math.max(0, remainingPicksForClub - 1) * MIN_PLAYER_DRAFT_PRICE;
 
   // Strict mathematical guarantee filter: Bot can never choose an unaffordable player
@@ -217,35 +218,37 @@ export function chooseBotDraftPick(
 
   const clubPlayersMap = new Map(playerPool.map((p) => [p.id, p]));
   const existingClubPlayers = clubPlayerIds.map((id) => clubPlayersMap.get(id)).filter(Boolean) as Player[];
-  const starAnchorCount = existingClubPlayers.filter((p) => (p.draftValue ?? 0) >= 35_000_000 || p.overall >= 88).length;
+  const budgetScale = initialBudget / DEFAULT_DRAFT_BUDGET;
+  const starPriceThreshold = 35_000_000 * budgetScale;
+  const starAnchorCount = existingClubPlayers.filter((p) => (p.draftValue ?? 0) >= starPriceThreshold || p.overall >= 88).length;
   const currentRound = counts.total + 1;
 
-  // Organic Manager Financial Disposition & Contingency Reserve
-  const desiredReserve = getClubManagerBuffer(club?.id ?? 'default-club', difficulty, personality);
-  const plannedSpendCap = DEFAULT_DRAFT_BUDGET - desiredReserve;
+  // Organic Manager Financial Disposition & Contingency Reserve (scaled with room budget)
+  const desiredReserve = getClubManagerBuffer(club?.id ?? 'default-club', difficulty, personality) * budgetScale;
+  const plannedSpendCap = initialBudget - desiredReserve;
   const currentSpent = club?.spentBudget ?? 0;
 
-  // Target Reserve Schedule per pick depending on difficulty & phase
+  // Target Reserve Schedule per pick scaled dynamically to room budget
   let targetReservePerPick = 0;
   if (difficulty === 'ZOR') {
-    if (currentRound <= 3) targetReservePerPick = 8_200_000;
-    else if (currentRound <= 7) targetReservePerPick = 6_500_000;
-    else if (currentRound <= 11) targetReservePerPick = 4_500_000;
-    else if (currentRound <= 14) targetReservePerPick = 2_400_000;
-    else targetReservePerPick = 1_000_000;
+    if (currentRound <= 3) targetReservePerPick = 8_200_000 * budgetScale;
+    else if (currentRound <= 7) targetReservePerPick = 6_500_000 * budgetScale;
+    else if (currentRound <= 11) targetReservePerPick = 4_500_000 * budgetScale;
+    else if (currentRound <= 14) targetReservePerPick = 2_400_000 * budgetScale;
+    else targetReservePerPick = 1_000_000 * budgetScale;
   } else if (difficulty === 'ORTA') {
-    if (currentRound <= 3) targetReservePerPick = 7_500_000;
-    else if (currentRound <= 7) targetReservePerPick = 5_800_000;
-    else if (currentRound <= 11) targetReservePerPick = 3_800_000;
-    else if (currentRound <= 14) targetReservePerPick = 2_200_000;
-    else targetReservePerPick = 900_000;
+    if (currentRound <= 3) targetReservePerPick = 7_500_000 * budgetScale;
+    else if (currentRound <= 7) targetReservePerPick = 5_800_000 * budgetScale;
+    else if (currentRound <= 11) targetReservePerPick = 3_800_000 * budgetScale;
+    else if (currentRound <= 14) targetReservePerPick = 2_200_000 * budgetScale;
+    else targetReservePerPick = 900_000 * budgetScale;
   } else {
     // KOLAY: Pacing adjusted so bench lands naturally at 63-66 OVR
-    if (currentRound <= 3) targetReservePerPick = 6_800_000;
-    else if (currentRound <= 7) targetReservePerPick = 5_000_000;
-    else if (currentRound <= 11) targetReservePerPick = 3_200_000;
-    else if (currentRound <= 14) targetReservePerPick = 1_600_000;
-    else targetReservePerPick = 700_000;
+    if (currentRound <= 3) targetReservePerPick = 6_800_000 * budgetScale;
+    else if (currentRound <= 7) targetReservePerPick = 5_000_000 * budgetScale;
+    else if (currentRound <= 11) targetReservePerPick = 3_200_000 * budgetScale;
+    else if (currentRound <= 14) targetReservePerPick = 1_600_000 * budgetScale;
+    else targetReservePerPick = 700_000 * budgetScale;
   }
 
   // Rank available players using evaluation score

@@ -235,9 +235,48 @@ function mapDbMember(m: any): RoomMember {
 }
 
 /**
+ * Authoritatively calculates and reconciles clubs' budget & spentBudget from confirmed picks.
+ * Guarantees budget never resets to €250M on refresh, reconnect, or tab switch.
+ */
+export function reconcileClubsBudget(
+  clubs: DraftClub[],
+  rules: DraftRules,
+  picks: DraftPick[] = [],
+  playerPool: Player[] = []
+): DraftClub[] {
+  const initialBudget = rules.draftBudget || DEFAULT_DRAFT_BUDGET;
+  const pool = playerPool.length > 0 ? playerPool : getCachedDraftPlayerPool();
+  const playerMap = new Map(pool.map((p) => [p.id, p]));
+
+  return clubs.map((c) => {
+    const clubPicks = picks.filter((p) => p.clubId === c.id || p.memberId === c.memberId);
+    if (clubPicks.length > 0) {
+      const spent = clubPicks.reduce((sum, p) => {
+        const pl = playerMap.get(p.playerId);
+        const val = pl?.draftValue ?? (pl ? calculatePlayerDraftValue(pl) : 0);
+        return sum + val;
+      }, 0);
+      return {
+        ...c,
+        budget: Math.max(0, initialBudget - spent),
+        spentBudget: spent,
+        squadPlayerIds: clubPicks.map((p) => p.playerId),
+      };
+    }
+
+    // No picks yet for this club
+    return {
+      ...c,
+      budget: c.spentBudget && c.spentBudget > 0 ? Math.max(0, initialBudget - c.spentBudget) : (c.budget ?? initialBudget),
+      spentBudget: c.spentBudget || 0,
+    };
+  });
+}
+
+/**
  * Maps database row to DraftClub
  */
-function mapDbClub(c: any): DraftClub {
+function mapDbClub(c: any, defaultBudget: number = DEFAULT_DRAFT_BUDGET): DraftClub {
   return {
     id: c.id,
     roomId: c.room_id,
@@ -249,8 +288,8 @@ function mapDbClub(c: any): DraftClub {
     secondaryColor: c.secondary_color,
     badge: c.badge || {},
     squadPlayerIds: c.squad_player_ids || [],
-    budget: c.budget ?? DEFAULT_DRAFT_BUDGET,
-    spentBudget: c.spent_budget ?? 0,
+    budget: c.budget != null ? c.budget : defaultBudget,
+    spentBudget: c.spent_budget != null ? c.spent_budget : 0,
   };
 }
 
@@ -357,6 +396,9 @@ function loadRoomLocal(roomIdOrCode: string): RoomFullState | null {
     if (item) {
       const parsed = JSON.parse(item) as RoomFullState;
       parsed.playerPool = getCachedDraftPlayerPool();
+      if (parsed.clubs && parsed.room) {
+        parsed.clubs = reconcileClubsBudget(parsed.clubs, parsed.room.rules, parsed.draftState?.picks || [], parsed.playerPool);
+      }
       memoryRooms[parsed.room.id] = parsed;
       roomCodeMap[parsed.room.roomCode.toUpperCase()] = parsed.room.id;
       return parsed;
@@ -371,6 +413,9 @@ function loadRoomLocal(roomIdOrCode: string): RoomFullState | null {
           const parsed = JSON.parse(val) as RoomFullState;
           if (parsed.room?.roomCode?.toUpperCase() === roomIdOrCode.toUpperCase()) {
             parsed.playerPool = getCachedDraftPlayerPool();
+            if (parsed.clubs && parsed.room) {
+              parsed.clubs = reconcileClubsBudget(parsed.clubs, parsed.room.rules, parsed.draftState?.picks || [], parsed.playerPool);
+            }
             memoryRooms[parsed.room.id] = parsed;
             roomCodeMap[parsed.room.roomCode.toUpperCase()] = parsed.room.id;
             return parsed;
@@ -484,6 +529,14 @@ export class DraftMultiplayerStore {
           },
         };
       }
+
+      // Authoritatively reconcile and lock club budgets from canonical picks & room rules
+      state.clubs = reconcileClubsBudget(
+        state.clubs,
+        state.room.rules,
+        state.draftState?.picks || [],
+        pool
+      );
 
       // AUTO-REPAIR / FINALIZATION CHECK:
       // If draft state is complete or status is DRAFTING with full picks, guarantee transition to LEAGUE_ACTIVE
@@ -600,7 +653,7 @@ export class DraftMultiplayerStore {
       secondaryColor: randomPreset.secondaryColor,
       badge: createDefaultBadgeConfig(randomPreset.primaryColor, randomPreset.secondaryColor),
       squadPlayerIds: [],
-      budget: DEFAULT_DRAFT_BUDGET,
+      budget: rules.draftBudget || DEFAULT_DRAFT_BUDGET,
       spentBudget: 0,
     };
 
@@ -765,7 +818,7 @@ export class DraftMultiplayerStore {
       secondaryColor: randomPreset.secondaryColor,
       badge: createDefaultBadgeConfig(randomPreset.primaryColor, randomPreset.secondaryColor),
       squadPlayerIds: [],
-      budget: DEFAULT_DRAFT_BUDGET,
+      budget: rules.draftBudget || DEFAULT_DRAFT_BUDGET,
       spentBudget: 0,
     };
 
@@ -845,8 +898,9 @@ export class DraftMultiplayerStore {
               m.username !== '[DELETED]'
           );
           const activeMemberIds = new Set(members.map((m) => m.id));
-          const rawClubs: DraftClub[] = (dbRoom.draft_clubs || []).map(mapDbClub);
-          const clubs: DraftClub[] = rawClubs.filter(
+          const initialRoomBudget = room.rules?.draftBudget || DEFAULT_DRAFT_BUDGET;
+          const rawClubs: DraftClub[] = (dbRoom.draft_clubs || []).map((c: any) => mapDbClub(c, initialRoomBudget));
+          let clubs: DraftClub[] = rawClubs.filter(
             (c) =>
               !removedIds.has(c.memberId) &&
               activeMemberIds.has(c.memberId) &&
@@ -888,17 +942,11 @@ export class DraftMultiplayerStore {
 
             draftState = reconstructDraftState(room.id, members, room.rules, dbPicks || []);
 
-            // Reconcile and guarantee club squadPlayerIds is derived directly from canonical draft picks
-            if (dbPicks && dbPicks.length > 0) {
-              for (const club of clubs) {
-                const clubPicks = dbPicks.filter(
-                  (p: any) => p.club_id === club.id || p.member_id === club.memberId
-                );
-                if (clubPicks.length > 0) {
-                  club.squadPlayerIds = clubPicks.map((p: any) => p.player_id);
-                }
-              }
-            }
+            // Authoritatively reconcile and guarantee club squadPlayerIds and budget from canonical draft picks
+            clubs = reconcileClubsBudget(clubs, room.rules, draftState?.picks || [], getCachedDraftPlayerPool());
+          } else {
+            // In lobby or before drafting, enforce initial configured room budget
+            clubs = reconcileClubsBudget(clubs, room.rules, [], getCachedDraftPlayerPool());
           }
 
           let state: RoomFullState = {
@@ -1003,7 +1051,7 @@ export class DraftMultiplayerStore {
         secondaryColor: preset.secondaryColor,
         badge: createDefaultBadgeConfig(preset.primaryColor, preset.secondaryColor),
         squadPlayerIds: [],
-        budget: DEFAULT_DRAFT_BUDGET,
+        budget: state.room.rules.draftBudget || DEFAULT_DRAFT_BUDGET,
         spentBudget: 0,
       };
       updatedClubs.push(newClub);
@@ -1131,7 +1179,7 @@ export class DraftMultiplayerStore {
         secondaryColor: preset.secondaryColor,
         badge: createDefaultBadgeConfig(preset.primaryColor, preset.secondaryColor),
         squadPlayerIds: [],
-        budget: DEFAULT_DRAFT_BUDGET,
+        budget: state.room.rules.draftBudget || DEFAULT_DRAFT_BUDGET,
         spentBudget: 0,
       };
       updatedClubs.push(newClub);
@@ -1369,9 +1417,19 @@ export class DraftMultiplayerStore {
     const prevVersion = state.room.stateVersion || 1;
     const resultingVersion = prevVersion + 1;
 
+    const newBudget = rules.draftBudget || DEFAULT_DRAFT_BUDGET;
+    const updatedClubs = state.clubs.map((c) => {
+      const picksCount = c.squadPlayerIds?.length || 0;
+      if (picksCount === 0) {
+        return { ...c, budget: newBudget, spentBudget: 0 };
+      }
+      return c;
+    });
+
     const newState: RoomFullState = {
       ...state,
       room: { ...state.room, rules, stateVersion: resultingVersion, updatedAt: new Date().toISOString() },
+      clubs: updatedClubs,
     };
 
     memoryRooms[state.room.id] = newState;
@@ -1465,7 +1523,7 @@ export class DraftMultiplayerStore {
       secondaryColor: botProfile.secondaryColor,
       badge: botProfile.badge,
       squadPlayerIds: [],
-      budget: DEFAULT_DRAFT_BUDGET,
+      budget: state.room.rules.draftBudget || DEFAULT_DRAFT_BUDGET,
       spentBudget: 0,
     };
 
@@ -1610,7 +1668,7 @@ export class DraftMultiplayerStore {
       secondaryColor: botProfile.secondaryColor,
       badge: botProfile.badge,
       squadPlayerIds: [],
-      budget: DEFAULT_DRAFT_BUDGET,
+      budget: state.room.rules.draftBudget || DEFAULT_DRAFT_BUDGET,
       spentBudget: 0,
     };
 
@@ -2226,7 +2284,7 @@ export class DraftMultiplayerStore {
         ? {
             ...c,
             squadPlayerIds: [...c.squadPlayerIds, playerId],
-            budget: Math.max(0, (c.budget ?? DEFAULT_DRAFT_BUDGET) - playerPrice),
+            budget: Math.max(0, (c.budget ?? (state.room.rules.draftBudget || DEFAULT_DRAFT_BUDGET)) - playerPrice),
             spentBudget: (c.spentBudget ?? 0) + playerPrice,
           }
         : c
@@ -2908,12 +2966,14 @@ export class DraftMultiplayerStore {
 
           const homeTactics =
             fix.homeTactics ||
+            homeClub.tactics ||
             (homeM?.isBot
               ? generateBotTactics(homeClub.id, homeClub.squadPlayerIds, state.playerPool, homeM.botDifficulty, homeM.botPersonality)
               : generateDefaultDraftTactics(homeClub.id, homeClub.squadPlayerIds, state.playerPool));
 
           const awayTactics =
             fix.awayTactics ||
+            awayClub.tactics ||
             (awayM?.isBot
               ? generateBotTactics(awayClub.id, awayClub.squadPlayerIds, state.playerPool, awayM.botDifficulty, awayM.botPersonality)
               : generateDefaultDraftTactics(awayClub.id, awayClub.squadPlayerIds, state.playerPool));
@@ -3374,7 +3434,8 @@ export class DraftMultiplayerStore {
     const prevVersion = state.room.stateVersion || 1;
     const resultingVersion = prevVersion + 1;
 
-    // Update tactics in all awaiting fixtures
+    // Update tactics on the club itself AND in all awaiting fixtures
+    const updatedClubs = state.clubs.map((c) => (c.id === club.id ? { ...c, tactics } : c));
     const updatedFixtures = state.fixtures.map((f) => {
       if (f.status === 'AWAITING_TACTICS' || f.status === 'READY') {
         if (f.homeClubId === club.id) return { ...f, homeTactics: tactics };
@@ -3385,6 +3446,7 @@ export class DraftMultiplayerStore {
 
     const newState: RoomFullState = {
       ...state,
+      clubs: updatedClubs,
       fixtures: updatedFixtures,
       room: { ...state.room, stateVersion: resultingVersion, updatedAt: new Date().toISOString() },
     };
@@ -3440,12 +3502,14 @@ export class DraftMultiplayerStore {
 
     const homeTactics =
       fixture.homeTactics ||
+      homeClub.tactics ||
       (homeM?.isBot
         ? generateBotTactics(homeClub.id, homeClub.squadPlayerIds, state.playerPool, homeM.botDifficulty, homeM.botPersonality)
         : generateDefaultDraftTactics(homeClub.id, homeClub.squadPlayerIds, state.playerPool));
 
     const awayTactics =
       fixture.awayTactics ||
+      awayClub.tactics ||
       (awayM?.isBot
         ? generateBotTactics(awayClub.id, awayClub.squadPlayerIds, state.playerPool, awayM.botDifficulty, awayM.botPersonality)
         : generateDefaultDraftTactics(awayClub.id, awayClub.squadPlayerIds, state.playerPool));
@@ -3804,7 +3868,7 @@ export class DraftMultiplayerStore {
     const updatedClubs = state.clubs.map((c) => ({
       ...c,
       squadPlayerIds: [],
-      budget: DEFAULT_DRAFT_BUDGET,
+      budget: state.room.rules.draftBudget || DEFAULT_DRAFT_BUDGET,
       spentBudget: 0,
     }));
 

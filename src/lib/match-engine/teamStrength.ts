@@ -2,9 +2,9 @@ import { Player, PlayerPosition } from '@/types/game';
 import { PlayerInMatch, TeamRatings } from './types';
 
 // Position mismatch penalty matrix
-export function getPositionSuitability(playerPos: PlayerPosition, secondaryPositions: PlayerPosition[], targetRole: PlayerPosition): number {
-  if (playerPos === targetRole) return 1.0;
-  if (secondaryPositions.includes(targetRole)) return 0.92;
+export function getPositionSuitability(playerPos: PlayerPosition, secondaryPositions?: PlayerPosition[], targetRole?: PlayerPosition): number {
+  if (!targetRole || playerPos === targetRole) return 1.0;
+  if (secondaryPositions && secondaryPositions.includes(targetRole)) return 0.92;
 
   const isGK = (p: PlayerPosition) => p === 'GK';
   const isDef = (p: PlayerPosition) => ['DR', 'DC', 'DL'].includes(p);
@@ -39,6 +39,12 @@ export function getPositionSuitability(playerPos: PlayerPosition, secondaryPosit
   return 0.68;
 }
 
+// Progressive, bounded fatigue curve
+export function calculateFatigueMultiplier(fitness: number): number {
+  const fitClamped = Math.max(30, Math.min(100, fitness));
+  return 0.82 + 0.18 * Math.pow(fitClamped / 100, 1.25);
+}
+
 // Calculate effective attribute of a player accounting for suitability, fitness, morale, form, consistency, and bigMatchPerformance
 export function getEffectiveAttribute(
   pim: PlayerInMatch,
@@ -51,21 +57,11 @@ export function getEffectiveAttribute(
   // 1. Position Suitability
   const suitability = getPositionSuitability(p.position, p.secondaryPositions, pim.currentPosition);
 
-  // 2. Fitness effect: Bounded non-linear fatigue curve
-  // Fitness >= 85: peak condition (1.0)
-  // Fitness 70-84: mild fatigue (0.94 - 1.0)
-  // Fitness 50-69: noticeable fatigue (0.80 - 0.94) -> a 90 OVR player drops to ~72-84
-  // Fitness < 50: severe exhaustion (0.65 - 0.80) -> a fresh 82 OVR player clearly outperforms an exhausted 90 OVR star
-  let fitnessMult = 1.0;
-  if (pim.currentFitness < 85) {
-    if (pim.currentFitness >= 70) {
-      fitnessMult = 0.94 + ((pim.currentFitness - 70) / 15) * 0.06;
-    } else if (pim.currentFitness >= 50) {
-      fitnessMult = 0.80 + ((pim.currentFitness - 50) / 20) * 0.14;
-    } else {
-      fitnessMult = Math.max(0.65, 0.65 + (pim.currentFitness / 50) * 0.15);
-    }
-  }
+  // 2. Fitness effect: Smooth, bounded progressive fatigue curve
+  // Completely eliminates cliff effects (e.g. 51 vs 49) while preserving progressive decline.
+  // 100: 1.000, 90: 0.978, 80: 0.956, 70: 0.935, 60: 0.915, 50: 0.896, 45: 0.886, 40: 0.877
+  // Allows an exhausted 90 star team (~79.7 effective) to compete tightly against an 82 fresh team (~81.6 effective)
+  const fitnessMult = calculateFatigueMultiplier(pim.currentFitness);
 
   // 3. Form effect: (1 to 10, avg 7.0) -> -7.5% to +4.5%
   const formMult = 1.0 + (p.form - 7.0) * 0.015;

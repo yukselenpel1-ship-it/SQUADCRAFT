@@ -558,7 +558,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
             </div>
             <span className="text-zinc-600">|</span>
             <span className="text-[11px] font-mono font-bold text-zinc-400 uppercase">
-              {room.rules.maxManagers} TAKIMLI ALFA LİGİ • {room.rules.squadSize} FUTBOLCU • {room.rules.pickTimerSeconds > 0 ? `${room.rules.pickTimerSeconds}S SÜRE` : 'SÜRESİZ'}
+              {room.rules.maxManagers} TAKIMLI ALFA LİGİ • {room.rules.squadSize} FUTBOLCU • {room.rules.pickTimerSeconds > 0 ? `${room.rules.pickTimerSeconds}S SÜRE` : 'SÜRESİZ'} • €{((room.rules.draftBudget || 250_000_000) / 1_000_000).toFixed(1)}M BÜTÇE
             </span>
           </div>
 
@@ -980,6 +980,12 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                 <span className="text-zinc-400">Sakatlık & Ceza</span>
                 <span className="font-black text-white">
                   {room.rules.injuries ? 'Açık' : 'Kapalı'} / {room.rules.suspensions ? 'Açık' : 'Kapalı'}
+                </span>
+              </div>
+              <div className="flex justify-between py-1.5 border-b border-zinc-900">
+                <span className="text-zinc-400">Başlangıç Bütçesi</span>
+                <span className="font-black text-amber-400 font-mono">
+                  €{((room.rules.draftBudget || 250_000_000) / 1_000_000).toFixed(1)}M
                 </span>
               </div>
               <div className="flex justify-between py-1.5">

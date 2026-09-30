@@ -44,7 +44,7 @@ export class MatchEngine {
     config: MatchSimulationConfig = {
       isCompetitive: true,
       enableHomeAdvantage: true,
-      homeAdvantageMultiplier: 1.06,
+      homeAdvantageMultiplier: 1.10,
     }
   ) {
     this.config = config;
@@ -318,7 +318,7 @@ export class MatchEngine {
     this.momentum = decayMomentum(this.momentum);
 
     // 4. Calculate dynamic minute possession ratio
-    const homePossAbility = this.state.home.ratings.possessionAbility + homeMods.possessionShareBonus + (this.config.enableHomeAdvantage ? 3 : 0);
+    const homePossAbility = this.state.home.ratings.possessionAbility + homeMods.possessionShareBonus + (this.config.enableHomeAdvantage ? 5 : 0);
     const awayPossAbility = this.state.away.ratings.possessionAbility + awayMods.possessionShareBonus;
     const totalPossAbility = homePossAbility + awayPossAbility;
 

@@ -56,13 +56,13 @@ export function simulateMinuteAttack(
     momentum,
   };
 
-  // Base chance creation probability per minute ~0.155
-  const baseChanceProb = 0.155;
+  // Base chance creation probability per minute ~0.148 (realistic ~13-14 total attacks per match)
+  const baseChanceProb = 0.148;
 
   // Attack vs Defense ratio creates natural advantage without scripted outcome:
   // Attacking team's offensive strength is challenged by defending team's defensive capability
-  const homeAttackVsAwayDef = Math.pow(home.ratings.attackingStrength / Math.max(45, away.ratings.defensiveStrength), 0.85);
-  const awayAttackVsHomeDef = Math.pow(away.ratings.attackingStrength / Math.max(45, home.ratings.defensiveStrength), 0.85);
+  const homeAttackVsAwayDef = Math.pow(home.ratings.attackingStrength / Math.max(45, away.ratings.defensiveStrength), 0.60);
+  const awayAttackVsHomeDef = Math.pow(away.ratings.attackingStrength / Math.max(45, home.ratings.defensiveStrength), 0.60);
 
   const homeAttackStrength = homeAttackVsAwayDef * homeMods.chanceCreationMult * (momentum.homeMomentum / 50) * homeAdvantageMultiplier;
   const awayAttackStrength = awayAttackVsHomeDef * awayMods.chanceCreationMult * (momentum.awayMomentum / 50);

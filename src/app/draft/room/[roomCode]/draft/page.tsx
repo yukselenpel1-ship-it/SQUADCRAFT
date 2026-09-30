@@ -461,7 +461,8 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
   const targetSquadSize = room.rules.squadSize || 18;
   const mySquadLength = currentClub?.squadPlayerIds.length || 0;
   const remainingPicks = Math.max(1, targetSquadSize - mySquadLength);
-  const currentBudget = currentClub?.budget ?? DEFAULT_DRAFT_BUDGET;
+  const initialBudget = room.rules.draftBudget || DEFAULT_DRAFT_BUDGET;
+  const currentBudget = currentClub?.budget ?? initialBudget;
   const spentBudget = currentClub?.spentBudget ?? 0;
   const minRequiredForRest = (remainingPicks - 1) * MIN_PLAYER_DRAFT_PRICE;
   const avgBudgetPerPick = currentBudget / remainingPicks;
@@ -1362,15 +1363,23 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               {/* Financial Summary */}
               <div className="p-2.5 bg-zinc-950 border border-zinc-800 rounded text-[11px] font-mono space-y-1">
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">Kalan Bütçe:</span>
+                  <span className="text-zinc-400">BAŞLANGIÇ BÜTÇESİ:</span>
+                  <span className="text-zinc-300 font-bold">€{(initialBudget / 1_000_000).toFixed(1)}M</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">HARCANAN:</span>
+                  <span className="text-amber-400 font-bold">€{(spentBudget / 1_000_000).toFixed(1)}M</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-400">KALAN BÜTÇE:</span>
                   <span className="text-[#00F5A0] font-black">€{(currentBudget / 1_000_000).toFixed(1)}M</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">Harcanan:</span>
-                  <span className="text-zinc-300 font-bold">€{(spentBudget / 1_000_000).toFixed(1)}M</span>
+                  <span className="text-zinc-400">KALAN SEÇİM:</span>
+                  <span className="text-zinc-200 font-bold">{remainingPicks}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-zinc-400">Ort. Kalan/Seçim:</span>
+                  <span className="text-zinc-400">SEÇİM BAŞINA ORTALAMA:</span>
                   <span className="text-[#00D4FF] font-bold">€{(avgBudgetPerPick / 1_000_000).toFixed(1)}M</span>
                 </div>
               </div>
@@ -1483,7 +1492,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
             </div>
 
             <div className="pt-2 border-t border-zinc-800 text-[10px] font-mono text-zinc-500 text-center">
-              Snake Draft Formatı • Bütçe Tavanı €250.0M
+              Snake Draft Formatı • Bütçe Tavanı €{(initialBudget / 1_000_000).toFixed(1)}M
             </div>
           </div>
         </div>

@@ -25,21 +25,21 @@ export function calculateBaseXG(chanceType: ChanceType, distanceMeters: number):
     case 'PENALTY':
       return 0.76;
     case 'ONE_ON_ONE':
-      return 0.45 + Math.random() * 0.18; // 0.45 - 0.63
+      return 0.38 + Math.random() * 0.12; // 0.38 - 0.50
     case 'CENTRAL_BOX':
-      return 0.22 + Math.random() * 0.14; // 0.22 - 0.36
+      return 0.15 + Math.random() * 0.09; // 0.15 - 0.24
     case 'WIDE_CROSS_HEADER':
-      return 0.09 + Math.random() * 0.08; // 0.09 - 0.17
+      return 0.08 + Math.random() * 0.07; // 0.08 - 0.15
     case 'WIDE_CROSS_VOLLEY':
-      return 0.12 + Math.random() * 0.10; // 0.12 - 0.22
+      return 0.10 + Math.random() * 0.08; // 0.10 - 0.18
     case 'CORNER_HEADER':
-      return 0.08 + Math.random() * 0.09; // 0.08 - 0.17
-    case 'DIRECT_FREE_KICK':
       return 0.06 + Math.random() * 0.06; // 0.06 - 0.12
+    case 'DIRECT_FREE_KICK':
+      return 0.05 + Math.random() * 0.05; // 0.05 - 0.10
     case 'LONG_SHOT':
-      return 0.02 + Math.random() * 0.04; // 0.02 - 0.06
+      return 0.02 + Math.random() * 0.03; // 0.02 - 0.05
     default:
-      return 0.10;
+      return 0.09;
   }
 }
 
@@ -86,23 +86,24 @@ export function resolveShot(
 
   if (isPenalty) {
     shooterSkill = (fin * 0.55 + com * 0.45) / 75;
-    if (shooterArch === 'Bitirici Forvet') shooterSkill *= 1.06;
+    if (shooterArch === 'Bitirici Forvet') shooterSkill *= 1.05;
   } else if (isHeader) {
     shooterSkill = (hea * 0.50 + str * 0.30 + com * 0.20) / 75;
-    if (shooterArch === 'Hedef Santrfor') shooterSkill *= 1.15;
+    if (shooterArch === 'Hedef Santrfor') shooterSkill *= 1.10;
   } else if (isBreakaway) {
     shooterSkill = (fin * 0.40 + pac * 0.25 + com * 0.25 + tec * 0.10) / 75;
-    if (shooterArch === 'Hızlı Kanat') shooterSkill *= 1.08;
-    if (shooterArch === 'Bitirici Forvet') shooterSkill *= 1.10;
+    if (shooterArch === 'Hızlı Kanat') shooterSkill *= 1.06;
+    if (shooterArch === 'Bitirici Forvet') shooterSkill *= 1.08;
   } else if (isLongShot) {
     shooterSkill = (lsh * 0.60 + tec * 0.25 + com * 0.15) / 75;
   } else {
     // Central Box
     shooterSkill = (fin * 0.50 + com * 0.30 + str * 0.10 + tec * 0.10) / 75;
-    if (shooterArch === 'Bitirici Forvet') shooterSkill *= 1.12;
+    if (shooterArch === 'Bitirici Forvet') shooterSkill *= 1.08;
   }
 
-  xG = Number((xG * Math.max(0.70, Math.min(1.35, shooterSkill))).toFixed(3));
+  // Shooter skill moderately adjusts xG without double-multiplying
+  xG = Number((xG * Math.max(0.75, Math.min(1.25, shooterSkill))).toFixed(3));
 
   // Goalkeeper quality
   const gkReflexes = getEffectiveAttribute(goalkeeper, 'reflexes', isCompetitive);
@@ -122,10 +123,12 @@ export function resolveShot(
   // Defensive pressure from defending unit
   const defPressure = defendingOverallDefense / 75;
 
-  // Conversion probability (heavily based on xG, fine-tuned by shooter vs GK & defenders)
-  let goalProbability = xG * 0.90;
-  goalProbability = goalProbability * (shooterSkill / ((gkSkill + defPressure) / 2));
-  goalProbability = Math.max(0.015, Math.min(0.90, goalProbability));
+  // Defensive contest combines GK ability and defensive line pressure
+  const defContest = Math.max(0.60, gkSkill * 0.60 + defPressure * 0.40);
+
+  // Conversion probability reflects xG challenged by defensive contest
+  let goalProbability = xG * (1.10 / defContest);
+  goalProbability = Math.max(0.01, Math.min(0.85, goalProbability));
 
   const roll = Math.random();
 
