@@ -843,8 +843,22 @@ export class DraftMultiplayerStore {
               activeMemberIds.has(c.memberId) &&
               c.name !== '[REMOVED]'
           );
-          const fixtures: DraftFixture[] = (dbRoom.draft_fixtures || []).map(mapDbFixture);
+          const dbFixtures: DraftFixture[] = (dbRoom.draft_fixtures || []).map(mapDbFixture);
+          const rulesFixtures: DraftFixture[] = (room.rules?.fixtures || []);
+          const fixtures: DraftFixture[] = dbFixtures.length > 0 && dbFixtures.some((f) => f.status === 'COMPLETED')
+            ? dbFixtures
+            : rulesFixtures.length > 0
+            ? rulesFixtures
+            : dbFixtures;
+
           const standings: DraftStanding[] = computeStandingsFromFixtures(clubs, fixtures);
+
+          if (room.rules?.currentMatchweek && (!room.currentMatchweek || room.currentMatchweek < room.rules.currentMatchweek)) {
+            room.currentMatchweek = room.rules.currentMatchweek;
+          }
+          if (room.rules?.totalMatchweeks && !room.totalMatchweeks) {
+            room.totalMatchweeks = room.rules.totalMatchweeks;
+          }
 
           let draftState: DraftState | undefined = undefined;
 
@@ -2460,9 +2474,15 @@ export class DraftMultiplayerStore {
           .from('multiplayer_rooms')
           .update({
             status: 'LEAGUE_ACTIVE',
-            current_matchweek: currentMatchweek,
-            total_matchweeks: totalMatchweeks,
-            league_phase: 'MATCHWEEK_PREP',
+            rules: {
+              ...state.room.rules,
+              fixtures,
+              standings,
+              currentMatchweek,
+              totalMatchweeks,
+              leaguePhase: 'MATCHWEEK_PREP',
+              stateVersion: resultingVersion,
+            },
             updated_at: new Date().toISOString(),
           })
           .eq('id', state.room.id);
@@ -2629,10 +2649,16 @@ export class DraftMultiplayerStore {
           .from('multiplayer_rooms')
           .update({
             status: roomStatus,
-            current_matchweek: nextMatchweek,
-            total_matchweeks: totalMatchweeks,
-            league_phase: leaguePhase,
-            state_version: resultingVersion,
+            rules: {
+              ...state.room.rules,
+              fixtures: updatedFixtures,
+              standings: updatedStandings,
+              currentMatchweek: nextMatchweek,
+              totalMatchweeks,
+              leaguePhase,
+              stateVersion: resultingVersion,
+              awards,
+            },
             updated_at: new Date().toISOString(),
           })
           .eq('id', state.room.id);
@@ -2799,9 +2825,15 @@ export class DraftMultiplayerStore {
           .from('multiplayer_rooms')
           .update({
             status: updatedRoom.status,
-            current_matchweek: currentMatchweek,
-            total_matchweeks: totalMatchweeks,
-            league_phase: updatedRoom.leaguePhase,
+            rules: {
+              ...state.room.rules,
+              fixtures,
+              standings,
+              currentMatchweek,
+              totalMatchweeks,
+              leaguePhase: updatedRoom.leaguePhase,
+              stateVersion: resultingVersion,
+            },
             updated_at: new Date().toISOString(),
           })
           .eq('id', state.room.id);
@@ -3083,10 +3115,16 @@ export class DraftMultiplayerStore {
           .from('multiplayer_rooms')
           .update({
             status: roomStatus,
-            current_matchweek: nextMatchweek,
-            total_matchweeks: totalMatchweeks,
-            league_phase: allCompleted ? 'SEASON_COMPLETE' : 'MATCHWEEK_PREP',
-            state_version: resultingVersion,
+            rules: {
+              ...state.room.rules,
+              fixtures: updatedFixtures,
+              standings: updatedStandings,
+              currentMatchweek: nextMatchweek,
+              totalMatchweeks,
+              leaguePhase: allCompleted ? 'SEASON_COMPLETE' : 'MATCHWEEK_PREP',
+              stateVersion: resultingVersion,
+              awards,
+            },
             updated_at: new Date().toISOString(),
           })
           .eq('id', state.room.id);
@@ -3255,10 +3293,16 @@ export class DraftMultiplayerStore {
           .from('multiplayer_rooms')
           .update({
             status: roomStatus,
-            current_matchweek: nextMatchweek,
-            total_matchweeks: totalMatchweeks,
-            league_phase: allCompleted ? 'SEASON_COMPLETE' : 'MATCHWEEK_PREP',
-            state_version: resultingVersion,
+            rules: {
+              ...state.room.rules,
+              fixtures: updatedFixtures,
+              standings: updatedStandings,
+              currentMatchweek: nextMatchweek,
+              totalMatchweeks,
+              leaguePhase: allCompleted ? 'SEASON_COMPLETE' : 'MATCHWEEK_PREP',
+              stateVersion: resultingVersion,
+              awards,
+            },
             updated_at: new Date().toISOString(),
           })
           .eq('id', state.room.id);

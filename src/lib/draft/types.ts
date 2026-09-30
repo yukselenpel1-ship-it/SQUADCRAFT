@@ -39,6 +39,9 @@ export interface DraftRules {
   currentMatchweek?: number;
   totalMatchweeks?: number;
   leaguePhase?: LeaguePhase;
+  fixtures?: DraftFixture[];
+  standings?: DraftStanding[];
+  awards?: LeagueAwards;
 }
 
 export const DEFAULT_DRAFT_RULES: DraftRules = {
