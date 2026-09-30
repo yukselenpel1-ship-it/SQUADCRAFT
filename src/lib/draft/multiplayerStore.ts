@@ -2978,8 +2978,44 @@ export class DraftMultiplayerStore {
       state.playerPool
     );
 
-    const updatedFixtures = state.fixtures.map((f) => (f.id === fixtureId ? updatedFixture : f));
-    const updatedStandings = updateDraftStandings(state.standings, updatedFixture);
+    let updatedFixtures = state.fixtures.map((f) => (f.id === fixtureId ? updatedFixture : f));
+    let updatedStandings = updateDraftStandings(state.standings, updatedFixture);
+
+    // Auto-simulate unplayed bot-vs-bot matches in the same matchweek
+    const targetRound = fixture.round;
+    const pendingBotFixtures = updatedFixtures.filter((f) => {
+      if (f.round !== targetRound || f.status === 'COMPLETED' || f.id === fixtureId) return false;
+      const hClub = state.clubs.find((c) => c.id === f.homeClubId);
+      const aClub = state.clubs.find((c) => c.id === f.awayClubId);
+      const hMember = state.members.find((m) => m.id === hClub?.memberId);
+      const aMember = state.members.find((m) => m.id === aClub?.memberId);
+      return hMember?.isBot && aMember?.isBot;
+    });
+
+    for (const botFix of pendingBotFixtures) {
+      const hClub = state.clubs.find((c) => c.id === botFix.homeClubId);
+      const aClub = state.clubs.find((c) => c.id === botFix.awayClubId);
+      if (hClub && aClub) {
+        const hM = state.members.find((m) => m.id === hClub.memberId);
+        const aM = state.members.find((m) => m.id === aClub.memberId);
+        const hTactics =
+          botFix.homeTactics ||
+          generateBotTactics(hClub.id, hClub.squadPlayerIds, state.playerPool, hM?.botDifficulty, hM?.botPersonality);
+        const aTactics =
+          botFix.awayTactics ||
+          generateBotTactics(aClub.id, aClub.squadPlayerIds, state.playerPool, aM?.botDifficulty, aM?.botPersonality);
+        const { updatedFixture: simBotFix } = simulateDraftFixture(
+          botFix,
+          hClub,
+          aClub,
+          hTactics,
+          aTactics,
+          state.playerPool
+        );
+        updatedFixtures = updatedFixtures.map((f) => (f.id === botFix.id ? simBotFix : f));
+        updatedStandings = updateDraftStandings(updatedStandings, simBotFix);
+      }
+    }
 
     // Check if entire league is completed
     const allCompleted = updatedFixtures.every((f) => f.status === 'COMPLETED');
@@ -3009,6 +3045,14 @@ export class DraftMultiplayerStore {
         if (allCompleted) {
           await supabase.from('multiplayer_rooms').update({ status: 'LEAGUE_COMPLETED' }).eq('id', state.room.id);
         }
+        for (const fix of updatedFixtures.filter((f) => f.round === targetRound && f.status === 'COMPLETED')) {
+          await supabase.from('draft_fixtures').update({
+            status: 'COMPLETED',
+            home_score: fix.homeScore,
+            away_score: fix.awayScore,
+            simulated_at: fix.simulatedAt,
+          }).eq('id', fix.id);
+        }
         broadcastRealtimeUpdate(state.room.roomCode, 'SIMULATE_MATCH', resultingVersion);
       });
     }
@@ -3031,6 +3075,103 @@ export class DraftMultiplayerStore {
       fixtureId,
       score: `${updatedFixture.homeScore} - ${updatedFixture.awayScore}`,
     });
+
+    return { success: true, state: newState };
+  }
+
+  /**
+   * Saves interactive live match simulation result and auto-simulates other bot matches in the round.
+   */
+  public static saveLiveMatchResult(
+    roomId: string,
+    completedFixture: DraftFixture
+  ): { success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode } {
+    const state = this.getRoom(roomId);
+    if (!state) {
+      const err = formatMultiplayerError('SC-MP-001');
+      return { success: false, error: err.message, errorCode: 'SC-MP-001' };
+    }
+
+    const prevVersion = state.room.stateVersion || 1;
+    const resultingVersion = prevVersion + 1;
+
+    let updatedFixtures = state.fixtures.map((f) => (f.id === completedFixture.id ? completedFixture : f));
+    let updatedStandings = updateDraftStandings(state.standings, completedFixture);
+
+    // Auto-simulate unplayed bot-vs-bot matches in the same matchweek
+    const targetRound = completedFixture.round;
+    const pendingBotFixtures = updatedFixtures.filter((f) => {
+      if (f.round !== targetRound || f.status === 'COMPLETED' || f.id === completedFixture.id) return false;
+      const hClub = state.clubs.find((c) => c.id === f.homeClubId);
+      const aClub = state.clubs.find((c) => c.id === f.awayClubId);
+      const hMember = state.members.find((m) => m.id === hClub?.memberId);
+      const aMember = state.members.find((m) => m.id === aClub?.memberId);
+      return hMember?.isBot && aMember?.isBot;
+    });
+
+    for (const botFix of pendingBotFixtures) {
+      const hClub = state.clubs.find((c) => c.id === botFix.homeClubId);
+      const aClub = state.clubs.find((c) => c.id === botFix.awayClubId);
+      if (hClub && aClub) {
+        const hM = state.members.find((m) => m.id === hClub.memberId);
+        const aM = state.members.find((m) => m.id === aClub.memberId);
+        const hTactics =
+          botFix.homeTactics ||
+          generateBotTactics(hClub.id, hClub.squadPlayerIds, state.playerPool, hM?.botDifficulty, hM?.botPersonality);
+        const aTactics =
+          botFix.awayTactics ||
+          generateBotTactics(aClub.id, aClub.squadPlayerIds, state.playerPool, aM?.botDifficulty, aM?.botPersonality);
+        const { updatedFixture: simBotFix } = simulateDraftFixture(
+          botFix,
+          hClub,
+          aClub,
+          hTactics,
+          aTactics,
+          state.playerPool
+        );
+        updatedFixtures = updatedFixtures.map((f) => (f.id === botFix.id ? simBotFix : f));
+        updatedStandings = updateDraftStandings(updatedStandings, simBotFix);
+      }
+    }
+
+    const allCompleted = updatedFixtures.every((f) => f.status === 'COMPLETED');
+    let awards: LeagueAwards | undefined = state.awards;
+    let roomStatus = state.room.status;
+
+    if (allCompleted) {
+      roomStatus = 'LEAGUE_COMPLETED';
+      awards = computeLeagueAwards(updatedStandings, updatedFixtures, state.clubs, state.playerPool);
+      recordTelemetryEvent('LEAGUE_COMPLETED', { champion: awards.championClubName }, state.room.id);
+    }
+
+    const newState: RoomFullState = {
+      ...state,
+      room: { ...state.room, status: roomStatus, stateVersion: resultingVersion, updatedAt: new Date().toISOString() },
+      fixtures: updatedFixtures,
+      standings: updatedStandings,
+      awards,
+    };
+
+    memoryRooms[state.room.id] = newState;
+    persistRoomLocal(newState);
+
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      safeDbRun(async () => {
+        if (allCompleted) {
+          await supabase.from('multiplayer_rooms').update({ status: 'LEAGUE_COMPLETED' }).eq('id', state.room.id);
+        }
+        for (const fix of updatedFixtures.filter((f) => f.round === targetRound && f.status === 'COMPLETED')) {
+          await supabase.from('draft_fixtures').update({
+            status: 'COMPLETED',
+            home_score: fix.homeScore,
+            away_score: fix.awayScore,
+            simulated_at: fix.simulatedAt,
+          }).eq('id', fix.id);
+        }
+        broadcastRealtimeUpdate(state.room.roomCode, 'SIMULATE_MATCH', resultingVersion);
+      });
+    }
 
     return { success: true, state: newState };
   }

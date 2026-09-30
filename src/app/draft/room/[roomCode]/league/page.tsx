@@ -11,6 +11,7 @@ import { DraftFixture, DraftStanding, LeagueAwards, DraftPick, RoomMember, Draft
 import { Player, Formation, Mentality, Tempo, Pressing, PassingStyle, DefensiveLine, Width } from '@/types/game';
 import { BadgePreview } from '@/components/draft/BadgePreview';
 import { MatchReportModal } from '@/components/draft/MatchReportModal';
+import { DraftLiveMatchModal } from '@/components/draft/DraftLiveMatchModal';
 import { FeedbackModal } from '@/components/draft/FeedbackModal';
 import { AlphaDebugOverlay } from '@/components/draft/AlphaDebugOverlay';
 import {
@@ -48,6 +49,7 @@ import {
   Eye,
   LogOut,
   ChevronDown,
+  Repeat,
 } from 'lucide-react';
 
 interface LeaguePageProps {
@@ -66,6 +68,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const [hydrationResult, setHydrationResult] = useState<HydratedRoomResult>({ status: 'LOADING' });
   const [activeTab, setActiveTab] = useState<TabType>('overview');
   const [selectedFixture, setSelectedFixture] = useState<DraftFixture | null>(null);
+  const [liveMatchFixture, setLiveMatchFixture] = useState<DraftFixture | null>(null);
+  const [isLiveMatchModalOpen, setIsLiveMatchModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
@@ -85,7 +89,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   // Draft history filters
   const [historyClubFilter, setHistoryClubFilter] = useState<string>('ALL');
 
-  // Tactical local state
+  // Tactical local state & interactive substitutions
   const [formation, setFormation] = useState<Formation>('4-3-3');
   const [mentality, setMentality] = useState<Mentality>('Dengeli');
   const [tempo, setTempo] = useState<Tempo>('Standart');
@@ -93,6 +97,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const [passingStyle, setPassingStyle] = useState<PassingStyle>('Kısa');
   const [defensiveLine, setDefensiveLine] = useState<DefensiveLine>('Standart');
   const [width, setWidth] = useState<Width>('Dengeli');
+
+  // Starting 11 custom lineup IDs (interactive starter-bench swap)
+  const [customLineupIds, setCustomLineupIds] = useState<string[]>([]);
+  const [selectedStarterId, setSelectedStarterId] = useState<string | null>(null);
+  const [selectedBenchId, setSelectedBenchId] = useState<string | null>(null);
 
   const sessionId = getMultiplayerSessionId();
 
@@ -112,6 +121,16 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
           }
         } else if (res.state.room.status === 'LEAGUE_ACTIVE' && (res.state.fixtures.length === 0 || res.state.standings.length === 0)) {
           DraftMultiplayerStore.repairRoomState(res.state.room.id, res.state.members[0]?.id);
+        }
+
+        // Initialize custom lineup from myClub if not initialized yet
+        const currentM = res.state.members.find((m: RoomMember) => m.sessionId === sessionId);
+        const myC = res.state.clubs.find((c: DraftClub) => c.memberId === currentM?.id);
+        if (myC && customLineupIds.length === 0) {
+          const pool = res.state.playerPool;
+          const myS = pool.filter((p: Player) => myC.squadPlayerIds.includes(p.id));
+          const sorted = [...myS].sort((a, b) => b.overall - a.overall);
+          setCustomLineupIds(sorted.slice(0, 11).map((p) => p.id));
         }
       }
     } catch (e) {
@@ -331,14 +350,35 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const currentWeekCompleted = currentWeekFixtures.filter((f: DraftFixture) => f.status === 'COMPLETED');
   const isCurrentWeekFinished = currentWeekFixtures.length > 0 && currentWeekCompleted.length === currentWeekFixtures.length;
 
+  // Active human managers status
+  const humanMembers = members.filter((m) => !m.isBot && !m.isSpectator);
+  const humanClubs = clubs.filter((c) => humanMembers.some((m) => m.id === c.memberId));
+
   // Next user fixture in current matchweek or upcoming
   const myNextFixture = myClub
     ? fixtures.find((f: DraftFixture) => (f.homeClubId === myClub.id || f.awayClubId === myClub.id) && f.status !== 'COMPLETED' && f.round === currentMatchweek) ||
       fixtures.find((f: DraftFixture) => (f.homeClubId === myClub.id || f.awayClubId === myClub.id) && f.status !== 'COMPLETED')
     : fixtures.find((f: DraftFixture) => f.status !== 'COMPLETED');
 
-  // Simulate Fixture
-  const handleSimulateFixture = (fixtureId: string) => {
+  // Interactive Live Match Launcher
+  const handleOpenLiveMatch = (fixture: DraftFixture) => {
+    setLiveMatchFixture(fixture);
+    setIsLiveMatchModalOpen(true);
+  };
+
+  // Callback when live simulation ends
+  const handleLiveMatchFinished = (completedFix: DraftFixture) => {
+    const res = DraftMultiplayerStore.saveLiveMatchResult(room.id, completedFix);
+    if (res.state) {
+      setHydrationResult((prev) => ({ ...prev, state: res.state }));
+      setSelectedFixture(completedFix);
+      setStatusMessage(`Hafta ${completedFix.round} maçı tamamlandı ve puan durumu güncellendi!`);
+      setTimeout(() => setStatusMessage(null), 3000);
+    }
+  };
+
+  // Fast Simulate Fixture (Instantly simulate + auto-simulate other bots in week)
+  const handleFastSimulateFixture = (fixtureId: string) => {
     const res = DraftMultiplayerStore.simulateFixture(room.id, fixtureId);
     if (!res.success) {
       setErrorMessage(res.error || '[SC-MP-006] Maç simüle edilemedi.');
@@ -354,7 +394,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         setSelectedFixture(updated);
         setIsReportModalOpen(true);
       }
-      setStatusMessage('Maç simülasyonu tamamlandı!');
+      setStatusMessage('Maç ve haftanın yapay zeka karşılaşmaları simüle edildi!');
       setTimeout(() => setStatusMessage(null), 3000);
     }
   };
@@ -423,6 +463,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
       atts[2]?.id || atts[0]?.id || mySquad[10]?.id,
     ].filter(Boolean) as string[];
 
+    setCustomLineupIds(starting11);
+
     const tactics = {
       clubId: myClub!.id,
       formation,
@@ -453,10 +495,58 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     }
   };
 
+  // Interactive Starter & Bench Swap Handler
+  const handleSwapStarterAndBench = (starterId: string, benchId: string) => {
+    const updatedLineup = customLineupIds.map((id) => (id === starterId ? benchId : id));
+    setCustomLineupIds(updatedLineup);
+    setSelectedStarterId(null);
+    setSelectedBenchId(null);
+
+    if (myClub && currentMember) {
+      const tactics = {
+        clubId: myClub.id,
+        formation,
+        settings: { mentality, tempo, pressing, passingStyle, defensiveLine, width },
+        lineup: updatedLineup.map((id, idx) => ({
+          slotId: idx,
+          role: (idx === 0 ? 'GK' : idx <= 4 ? 'DC' : idx <= 7 ? 'MC' : 'ST') as any,
+          x: 50,
+          y: idx === 0 ? 90 : idx <= 4 ? 70 : idx <= 7 ? 45 : 20,
+          playerId: id,
+        })),
+        substitutes: mySquad.filter((p) => !updatedLineup.includes(p.id)).slice(0, 7).map((p) => p.id),
+        reserves: mySquad.filter((p) => !updatedLineup.includes(p.id)).slice(7).map((p) => p.id),
+      };
+      DraftMultiplayerStore.updateClubTactics(room.id, currentMember.id, tactics as any);
+      setStatusMessage('Oyuncu değişikliği başarıyla yapıldı ve taktiğe işlendi!');
+      setTimeout(() => setStatusMessage(null), 2000);
+    }
+  };
+
   // Save Tactics
   const handleSaveTactics = () => {
     if (!myClub || !currentMember) return;
-    handleAutoBestXI();
+    const lineupToSave = customLineupIds.length === 11 ? customLineupIds : mySquad.slice(0, 11).map((p) => p.id);
+    const tactics = {
+      clubId: myClub.id,
+      formation,
+      settings: { mentality, tempo, pressing, passingStyle, defensiveLine, width },
+      lineup: lineupToSave.map((id, idx) => ({
+        slotId: idx,
+        role: (idx === 0 ? 'GK' : idx <= 4 ? 'DC' : idx <= 7 ? 'MC' : 'ST') as any,
+        x: 50,
+        y: idx === 0 ? 90 : idx <= 4 ? 70 : idx <= 7 ? 45 : 20,
+        playerId: id,
+      })),
+      substitutes: mySquad.filter((p) => !lineupToSave.includes(p.id)).slice(0, 7).map((p) => p.id),
+      reserves: mySquad.filter((p) => !lineupToSave.includes(p.id)).slice(7).map((p) => p.id),
+    };
+    const res = DraftMultiplayerStore.updateClubTactics(room.id, currentMember.id, tactics as any);
+    if (res.state) {
+      setHydrationResult((prev) => ({ ...prev, state: res.state }));
+      setStatusMessage('Taktiğiniz ve ilk 11 dizilişiniz kaydedildi!');
+      setTimeout(() => setStatusMessage(null), 2500);
+    }
   };
 
   // Rematch
@@ -478,10 +568,12 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   });
 
   // Calculate team stats & OVR averages
-  const sortedSquad = [...mySquad].sort((a, b) => b.overall - a.overall);
+  const activeStarters = mySquad.filter((p) => customLineupIds.includes(p.id));
+  const activeBench = mySquad.filter((p) => !customLineupIds.includes(p.id));
+
   const teamAvgOvr = mySquad.length > 0 ? (mySquad.reduce((sum, p) => sum + p.overall, 0) / mySquad.length).toFixed(1) : '0.0';
-  const xiAvgOvr = sortedSquad.length >= 11 ? (sortedSquad.slice(0, 11).reduce((sum, p) => sum + p.overall, 0) / 11).toFixed(1) : teamAvgOvr;
-  const benchAvgOvr = sortedSquad.length > 11 ? (sortedSquad.slice(11).reduce((sum, p) => sum + p.overall, 0) / (sortedSquad.length - 11)).toFixed(1) : '0.0';
+  const xiAvgOvr = activeStarters.length > 0 ? (activeStarters.reduce((sum, p) => sum + p.overall, 0) / activeStarters.length).toFixed(1) : teamAvgOvr;
+  const benchAvgOvr = activeBench.length > 0 ? (activeBench.reduce((sum, p) => sum + p.overall, 0) / activeBench.length).toFixed(1) : '0.0';
 
   const progressPercent = fixtures.length > 0 ? Math.round((completedFixtures.length / fixtures.length) * 100) : 0;
 
@@ -683,7 +775,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                 <>
                   {myNextFixture && myNextFixture.status !== 'COMPLETED' && (
                     <button
-                      onClick={() => handleSimulateFixture(myNextFixture.id)}
+                      onClick={() => handleOpenLiveMatch(myNextFixture)}
                       className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 flex items-center justify-center gap-2 active:scale-95"
                     >
                       <Play className="w-4 h-4 fill-current" />
@@ -936,13 +1028,22 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                                 <span>MAÇ RAPORU</span>
                               </button>
                             ) : (
-                              <button
-                                onClick={() => handleSimulateFixture(myNextFixture.id)}
-                                className="px-6 py-3 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 mx-auto flex items-center gap-2 active:scale-95"
-                              >
-                                <Play className="w-4 h-4 fill-current" />
-                                <span>MAÇI SİMÜLE ET</span>
-                              </button>
+                              <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+                                <button
+                                  onClick={() => handleOpenLiveMatch(myNextFixture)}
+                                  className="px-6 py-3 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 flex items-center gap-2 active:scale-95"
+                                >
+                                  <Play className="w-4 h-4 fill-current" />
+                                  <span>CANLI MAÇI OYNA</span>
+                                </button>
+                                <button
+                                  onClick={() => handleFastSimulateFixture(myNextFixture.id)}
+                                  className="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-[#00D4FF] font-black text-xs uppercase tracking-wider transition"
+                                  title="Anında Hızlı Simüle Et"
+                                >
+                                  HIZLI SİMÜLE
+                                </button>
+                              </div>
                             )}
                           </div>
 
@@ -966,6 +1067,52 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                   </div>
                 )}
               </div>
+
+              {/* Multiplayer Managers Readiness Box */}
+              {humanMembers.length > 1 && (
+                <div className="bg-[#070D14]/95 border border-zinc-800 p-5 shadow-2xl space-y-3">
+                  <div className="flex items-center justify-between border-b border-zinc-800 pb-2.5">
+                    <h3 className="text-xs font-black text-white uppercase italic tracking-wider flex items-center gap-2">
+                      <UserCheck className="w-4 h-4 text-[#00F5A0]" />
+                      <span>ÇOK OYUNCULU MENAJER HAZIRLIK DURUMU</span>
+                    </h3>
+                    <span className="text-[10px] font-mono text-zinc-400">
+                      Hafta {currentMatchweek} Maç Kontrolü
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                    {humanMembers.map((member) => {
+                      const mClub = clubs.find((c) => c.memberId === member.id);
+                      const mFixture = mClub
+                        ? currentWeekFixtures.find((f) => f.homeClubId === mClub.id || f.awayClubId === mClub.id)
+                        : null;
+                      const isPlayed = mFixture?.status === 'COMPLETED';
+
+                      return (
+                        <div key={member.id} className="p-3 bg-zinc-950 border border-zinc-800 flex items-center justify-between">
+                          <div className="flex items-center gap-2 truncate">
+                            {mClub && <BadgePreview badge={mClub.badge} clubCode={mClub.code} size={20} />}
+                            <div>
+                              <div className="text-xs font-bold text-white truncate">{member.username}</div>
+                              <div className="text-[10px] text-zinc-500 truncate">{mClub?.name}</div>
+                            </div>
+                          </div>
+                          <span
+                            className={`px-2 py-0.5 text-[10px] font-mono font-black uppercase ${
+                              isPlayed
+                                ? 'bg-emerald-950 text-[#00F5A0] border border-emerald-500/40'
+                                : 'bg-amber-950 text-[#FFB800] border border-amber-500/40 animate-pulse'
+                            }`}
+                          >
+                            {isPlayed ? '✓ OYNADI' : '⏳ BEKLİYOR'}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
 
               {/* Recent Match Results */}
               <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
@@ -1168,11 +1315,14 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {filteredSquad.map((player: Player) => {
                   const ovrStyle = getOvrColor(player.overall);
+                  const isStarter = customLineupIds.includes(player.id);
 
                   return (
                     <div
                       key={player.id}
-                      className="bg-[#070D14]/95 border border-zinc-800 hover:border-[#00F5A0]/60 p-4 shadow-xl transition-all duration-200 flex flex-col justify-between space-y-3"
+                      className={`bg-[#070D14]/95 border p-4 shadow-xl transition-all duration-200 flex flex-col justify-between space-y-3 ${
+                        isStarter ? 'border-zinc-800 hover:border-[#00F5A0]/60' : 'border-zinc-900 opacity-80'
+                      }`}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
@@ -1193,6 +1343,10 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                             </div>
                           </div>
                         </div>
+
+                        <span className={`px-2 py-0.5 text-[9px] font-mono font-black uppercase ${isStarter ? 'bg-[#00F5A0] text-black' : 'bg-zinc-800 text-zinc-400'}`}>
+                          {isStarter ? 'İLK 11' : 'YEDEK'}
+                        </span>
                       </div>
 
                       {/* 6 Core Attributes Grid */}
@@ -1245,6 +1399,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     <tr>
                       <th className="py-3 px-3">OVR</th>
                       <th className="py-3 px-3">Futbolcu</th>
+                      <th className="py-3 px-2">Durum</th>
                       <th className="py-3 px-2">Mevki</th>
                       <th className="py-3 px-2">Yaş</th>
                       <th className="py-3 px-2">Uyruk</th>
@@ -1259,35 +1414,43 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-800/60">
-                    {filteredSquad.map((player: Player) => (
-                      <tr key={player.id} className="hover:bg-zinc-900/50 transition">
-                        <td className="py-3 px-3 font-bold">
-                          <span className="px-2 py-0.5 text-xs font-black bg-emerald-950 text-[#00F5A0] border border-emerald-500/40 font-mono">
-                            {player.overall}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3 font-black text-white uppercase">
-                          {player.firstName} {player.lastName}
-                        </td>
-                        <td className="py-3 px-2">
-                          <span className="px-2 py-0.5 bg-zinc-950 text-zinc-300 font-bold text-[10px] border border-zinc-800">
-                            {player.position}
-                          </span>
-                        </td>
-                        <td className="py-3 px-2 text-zinc-400">{player.age}</td>
-                        <td className="py-3 px-2 text-zinc-400">{player.nationality}</td>
-                        <td className="py-3 px-2 text-zinc-400">{player.preferredFoot}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.pace}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.finishing}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.passing}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.dribbling}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.tackling}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.strength}</td>
-                        <td className="py-3 px-3 text-right">
-                          <span className="text-[#00F5A0] font-mono font-bold">%100</span>
-                        </td>
-                      </tr>
-                    ))}
+                    {filteredSquad.map((player: Player) => {
+                      const isStarter = customLineupIds.includes(player.id);
+                      return (
+                        <tr key={player.id} className="hover:bg-zinc-900/50 transition">
+                          <td className="py-3 px-3 font-bold">
+                            <span className="px-2 py-0.5 text-xs font-black bg-emerald-950 text-[#00F5A0] border border-emerald-500/40 font-mono">
+                              {player.overall}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3 font-black text-white uppercase">
+                            {player.firstName} {player.lastName}
+                          </td>
+                          <td className="py-3 px-2">
+                            <span className={`px-2 py-0.5 text-[9px] font-mono font-black ${isStarter ? 'bg-[#00F5A0] text-black' : 'bg-zinc-800 text-zinc-400'}`}>
+                              {isStarter ? 'İLK 11' : 'YEDEK'}
+                            </span>
+                          </td>
+                          <td className="py-3 px-2">
+                            <span className="px-2 py-0.5 bg-zinc-950 text-zinc-300 font-bold text-[10px] border border-zinc-800">
+                              {player.position}
+                            </span>
+                          </td>
+                          <td className="py-3 px-2 text-zinc-400">{player.age}</td>
+                          <td className="py-3 px-2 text-zinc-400">{player.nationality}</td>
+                          <td className="py-3 px-2 text-zinc-400">{player.preferredFoot}</td>
+                          <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.pace}</td>
+                          <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.finishing}</td>
+                          <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.passing}</td>
+                          <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.dribbling}</td>
+                          <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.tackling}</td>
+                          <td className="py-3 px-2 text-center text-zinc-300 font-mono font-bold">{player.attributes.strength}</td>
+                          <td className="py-3 px-3 text-right">
+                            <span className="text-[#00F5A0] font-mono font-bold">%100</span>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -1296,218 +1459,321 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         )}
 
         {/* ================================================================== */}
-        {/* TAB 3: TAKTİK & DİZİLİŞ (TACTICS & 2D PITCH)                       */}
+        {/* TAB 3: TAKTİK & DİZİLİŞ (TACTICS & INTERACTIVE SUBS)               */}
         {/* ================================================================== */}
         {activeTab === 'tactics' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-            {/* Tactical Controls (5 cols) */}
-            <div className="lg:col-span-5 bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-5">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3.5">
-                <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-display">
-                  <Sliders className="w-4 h-4 text-[#00F5A0]" />
-                  <span>TAKTIKSEL TALİMATLAR</span>
-                </h3>
-                <button
-                  onClick={handleAutoBestXI}
-                  className="px-3 py-1 bg-[#00F5A0]/10 border border-[#00F5A0]/40 hover:bg-[#00F5A0]/20 text-[#00F5A0] text-xs font-black uppercase transition flex items-center gap-1.5"
-                >
-                  <Zap className="w-3.5 h-3.5" />
-                  <span>En İyi 11</span>
-                </button>
+          <div className="space-y-5">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+              {/* Tactical Controls (5 cols) */}
+              <div className="lg:col-span-5 bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-5">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3.5">
+                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-display">
+                    <Sliders className="w-4 h-4 text-[#00F5A0]" />
+                    <span>TAKTIKSEL TALİMATLAR</span>
+                  </h3>
+                  <button
+                    onClick={handleAutoBestXI}
+                    className="px-3 py-1 bg-[#00F5A0]/10 border border-[#00F5A0]/40 hover:bg-[#00F5A0]/20 text-[#00F5A0] text-xs font-black uppercase transition flex items-center gap-1.5"
+                  >
+                    <Zap className="w-3.5 h-3.5" />
+                    <span>En İyi 11</span>
+                  </button>
+                </div>
+
+                <div className="space-y-4 text-xs">
+                  <div>
+                    <label className="block text-zinc-300 font-bold uppercase mb-1.5">Diziliş (Formasyon)</label>
+                    <select
+                      value={formation}
+                      onChange={(e) => setFormation(e.target.value as Formation)}
+                      className="w-full bg-zinc-950 border border-zinc-700 p-3 text-white focus:outline-none focus:border-[#00F5A0] font-bold"
+                    >
+                      <option value="4-2-3-1">4-2-3-1 (Dengeli & Modern Geçiş)</option>
+                      <option value="4-3-3">4-3-3 (Hücum & Kanat Organizasyonları)</option>
+                      <option value="4-4-2">4-4-2 (Klasik Çift Forvet & Baskı)</option>
+                      <option value="4-1-2-1-2">4-1-2-1-2 (Baklava / Dar Elmas)</option>
+                      <option value="4-3-2-1">4-3-2-1 (Yılbaşı Ağacı / Dar Hücum)</option>
+                      <option value="4-2-2-2">4-2-2-2 (Çift Ön Libero & Çift 10 Numara)</option>
+                      <option value="4-1-4-1">4-1-4-1 (Guardiola / Kompakt Orta Saha)</option>
+                      <option value="4-2-4">4-2-4 (Tam Hücum & 4 Forvet)</option>
+                      <option value="3-5-2">3-5-2 (Orta Saha Hakimiyeti & Kanat Bek)</option>
+                      <option value="3-4-3">3-4-3 (Toplam Hücum & Kanat Baskısı)</option>
+                      <option value="3-4-2-1">3-4-2-1 (Modern Amorim / Alonso 3'lüsü)</option>
+                      <option value="3-4-1-2">3-4-1-2 (3 Stoper, 10 Numara & Çift Forvet)</option>
+                      <option value="5-3-2">5-3-2 (Kayıtsız Savunma & Kontratak)</option>
+                      <option value="5-2-3">5-2-3 (5-4-1 Geçiş Hücumu)</option>
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-zinc-300 font-bold uppercase mb-1.5">Oyun Anlayışı</label>
+                      <select
+                        value={mentality}
+                        onChange={(e) => setMentality(e.target.value as Mentality)}
+                        className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#00F5A0] font-semibold"
+                      >
+                        <option value="Çok Savunmacı">Çok Savunmacı</option>
+                        <option value="Savunmacı">Savunmacı</option>
+                        <option value="Dengeli">Dengeli</option>
+                        <option value="Hücum">Hücum</option>
+                        <option value="Aşırı Hücum">Aşırı Hücum</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-zinc-300 font-bold uppercase mb-1.5">Tempo</label>
+                      <select
+                        value={tempo}
+                        onChange={(e) => setTempo(e.target.value as Tempo)}
+                        className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#00F5A0] font-semibold"
+                      >
+                        <option value="Çok Düşük">Çok Düşük</option>
+                        <option value="Düşük">Düşük</option>
+                        <option value="Standart">Standart</option>
+                        <option value="Yüksek">Yüksek</option>
+                        <option value="Çok Yüksek">Çok Yüksek</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3.5">
+                    <div>
+                      <label className="block text-zinc-300 font-bold uppercase mb-1.5">Pres Şiddeti</label>
+                      <select
+                        value={pressing}
+                        onChange={(e) => setPressing(e.target.value as Pressing)}
+                        className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#00F5A0] font-semibold"
+                      >
+                        <option value="Hafif">Hafif</option>
+                        <option value="Orta">Orta</option>
+                        <option value="Yoğun">Yoğun</option>
+                        <option value="Aşırı">Aşırı</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-zinc-300 font-bold uppercase mb-1.5">Pas Tercihi</label>
+                      <select
+                        value={passingStyle}
+                        onChange={(e) => setPassingStyle(e.target.value as PassingStyle)}
+                        className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#00F5A0] font-semibold"
+                      >
+                        <option value="Kısa">Kısa Pas</option>
+                        <option value="Karışık">Karışık</option>
+                        <option value="Doğrudan">Doğrudan (Direkt)</option>
+                        <option value="Uzun">Uzun Top</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleSaveTactics}
+                    className="w-full py-3.5 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 flex items-center justify-center gap-2 mt-2 active:scale-95"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>TAKTİĞİ KAYDET & GELECEK MAÇA UYGULA</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="space-y-4 text-xs">
-                <div>
-                  <label className="block text-zinc-300 font-bold uppercase mb-1.5">Diziliş (Formasyon)</label>
-                  <select
-                    value={formation}
-                    onChange={(e) => setFormation(e.target.value as Formation)}
-                    className="w-full bg-zinc-950 border border-zinc-700 p-3 text-white focus:outline-none focus:border-[#00F5A0] font-bold"
-                  >
-                    <option value="4-2-3-1">4-2-3-1 (Dengeli & Modern Geçiş)</option>
-                    <option value="4-3-3">4-3-3 (Hücum & Kanat Organizasyonları)</option>
-                    <option value="4-4-2">4-4-2 (Klasik Çift Forvet & Baskı)</option>
-                    <option value="4-1-2-1-2">4-1-2-1-2 (Baklava / Dar Elmas)</option>
-                    <option value="4-3-2-1">4-3-2-1 (Yılbaşı Ağacı / Dar Hücum)</option>
-                    <option value="4-2-2-2">4-2-2-2 (Çift Ön Libero & Çift 10 Numara)</option>
-                    <option value="4-1-4-1">4-1-4-1 (Guardiola / Kompakt Orta Saha)</option>
-                    <option value="4-2-4">4-2-4 (Tam Hücum & 4 Forvet)</option>
-                    <option value="3-5-2">3-5-2 (Orta Saha Hakimiyeti & Kanat Bek)</option>
-                    <option value="3-4-3">3-4-3 (Toplam Hücum & Kanat Baskısı)</option>
-                    <option value="3-4-2-1">3-4-2-1 (Modern Amorim / Alonso 3'lüsü)</option>
-                    <option value="3-4-1-2">3-4-1-2 (3 Stoper, 10 Numara & Çift Forvet)</option>
-                    <option value="5-3-2">5-3-2 (Kayıtsız Savunma & Kontratak)</option>
-                    <option value="5-2-3">5-2-3 (5-4-1 Geçiş Hücumu)</option>
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block text-zinc-300 font-bold uppercase mb-1.5">Oyun Anlayışı</label>
-                    <select
-                      value={mentality}
-                      onChange={(e) => setMentality(e.target.value as Mentality)}
-                      className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#00F5A0] font-semibold"
-                    >
-                      <option value="Çok Savunmacı">Çok Savunmacı</option>
-                      <option value="Savunmacı">Savunmacı</option>
-                      <option value="Dengeli">Dengeli</option>
-                      <option value="Hücum">Hücum</option>
-                      <option value="Aşırı Hücum">Aşırı Hücum</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-zinc-300 font-bold uppercase mb-1.5">Tempo</label>
-                    <select
-                      value={tempo}
-                      onChange={(e) => setTempo(e.target.value as Tempo)}
-                      className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#00F5A0] font-semibold"
-                    >
-                      <option value="Çok Düşük">Çok Düşük</option>
-                      <option value="Düşük">Düşük</option>
-                      <option value="Standart">Standart</option>
-                      <option value="Yüksek">Yüksek</option>
-                      <option value="Çok Yüksek">Çok Yüksek</option>
-                    </select>
+              {/* 2D Pitch Visualizer (7 cols) */}
+              <div className="lg:col-span-7 bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl flex flex-col justify-between">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-display">
+                    <Layers className="w-4 h-4 text-[#00F5A0]" />
+                    <span>SAHA DİZİLİŞ GÖRSELİ</span>
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-zinc-400">Değiştirmek için oyuncuya tıkla</span>
+                    <span className="text-xs font-mono font-black text-[#00F5A0] px-3 py-1 bg-zinc-950 border border-zinc-800">
+                      {formation}
+                    </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block text-zinc-300 font-bold uppercase mb-1.5">Pres Şiddeti</label>
-                    <select
-                      value={pressing}
-                      onChange={(e) => setPressing(e.target.value as Pressing)}
-                      className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#00F5A0] font-semibold"
-                    >
-                      <option value="Hafif">Hafif</option>
-                      <option value="Orta">Orta</option>
-                      <option value="Yoğun">Yoğun</option>
-                      <option value="Aşırı">Aşırı</option>
-                    </select>
+                {/* Realistic Pitch */}
+                <div className="h-88 bg-gradient-to-b from-[#0a2318] via-[#0d2f21] to-[#0a2318] border-2 border-emerald-500/40 relative my-4 overflow-hidden shadow-inner flex items-center justify-center">
+                  {/* Grass Stripes */}
+                  <div className="absolute inset-0 opacity-10 flex flex-col pointer-events-none">
+                    <div className="flex-1 bg-black" />
+                    <div className="flex-1 bg-transparent" />
+                    <div className="flex-1 bg-black" />
+                    <div className="flex-1 bg-transparent" />
+                    <div className="flex-1 bg-black" />
+                    <div className="flex-1 bg-transparent" />
                   </div>
 
-                  <div>
-                    <label className="block text-zinc-300 font-bold uppercase mb-1.5">Pas Tercihi</label>
-                    <select
-                      value={passingStyle}
-                      onChange={(e) => setPassingStyle(e.target.value as PassingStyle)}
-                      className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#00F5A0] font-semibold"
-                    >
-                      <option value="Kısa">Kısa Pas</option>
-                      <option value="Karışık">Karışık</option>
-                      <option value="Doğrudan">Doğrudan (Direkt)</option>
-                      <option value="Uzun">Uzun Top</option>
-                    </select>
+                  {/* Pitch Markings */}
+                  <div className="absolute inset-3 border border-white/20 pointer-events-none" />
+                  <div className="absolute inset-x-3 top-1/2 h-px bg-white/20 pointer-events-none" />
+                  <div className="w-28 h-28 rounded-full border border-white/20 absolute pointer-events-none" />
+                  <div className="w-2 h-2 rounded-full bg-white/30 absolute pointer-events-none" />
+                  <div className="absolute inset-x-20 top-3 h-18 border-b border-x border-white/20 pointer-events-none" />
+                  <div className="absolute inset-x-20 bottom-3 h-18 border-t border-x border-white/20 pointer-events-none" />
+
+                  {/* 11 Starter Nodes with Click-to-Swap */}
+                  <div className="absolute inset-5 flex flex-col justify-between py-2">
+                    {/* Forwards */}
+                    <div className="flex justify-around">
+                      {activeStarters.slice(8, 11).map((p, i) => {
+                        const isSelected = selectedStarterId === p.id;
+                        return (
+                          <div
+                            key={p.id || i}
+                            onClick={() => setSelectedStarterId(isSelected ? null : p.id)}
+                            className="flex flex-col items-center cursor-pointer transition transform hover:scale-110"
+                          >
+                            <div className={`w-8 h-8 rounded-full font-mono font-black text-[11px] flex items-center justify-center border-2 shadow-lg ${
+                              isSelected ? 'bg-rose-500 text-white border-white animate-bounce' : 'bg-[#FFB800] text-black border-black'
+                            }`}>
+                              {p.overall}
+                            </div>
+                            <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
+                              {p.lastName}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Midfielders */}
+                    <div className="flex justify-around">
+                      {activeStarters.slice(4, 8).map((p, i) => {
+                        const isSelected = selectedStarterId === p.id;
+                        return (
+                          <div
+                            key={p.id || i}
+                            onClick={() => setSelectedStarterId(isSelected ? null : p.id)}
+                            className="flex flex-col items-center cursor-pointer transition transform hover:scale-110"
+                          >
+                            <div className={`w-8 h-8 rounded-full font-mono font-black text-[11px] flex items-center justify-center border-2 shadow-lg ${
+                              isSelected ? 'bg-rose-500 text-white border-white animate-bounce' : 'bg-[#00F5A0] text-black border-black'
+                            }`}>
+                              {p.overall}
+                            </div>
+                            <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
+                              {p.lastName}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Defenders */}
+                    <div className="flex justify-around">
+                      {activeStarters.slice(1, 4).map((p, i) => {
+                        const isSelected = selectedStarterId === p.id;
+                        return (
+                          <div
+                            key={p.id || i}
+                            onClick={() => setSelectedStarterId(isSelected ? null : p.id)}
+                            className="flex flex-col items-center cursor-pointer transition transform hover:scale-110"
+                          >
+                            <div className={`w-8 h-8 rounded-full font-mono font-black text-[11px] flex items-center justify-center border-2 shadow-lg ${
+                              isSelected ? 'bg-rose-500 text-white border-white animate-bounce' : 'bg-[#00D4FF] text-black border-black'
+                            }`}>
+                              {p.overall}
+                            </div>
+                            <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
+                              {p.lastName}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* GK */}
+                    <div className="flex justify-center">
+                      {activeStarters.slice(0, 1).map((p, i) => {
+                        const isSelected = selectedStarterId === p.id;
+                        return (
+                          <div
+                            key={p.id || i}
+                            onClick={() => setSelectedStarterId(isSelected ? null : p.id)}
+                            className="flex flex-col items-center cursor-pointer transition transform hover:scale-110"
+                          >
+                            <div className={`w-8 h-8 rounded-full font-mono font-black text-[11px] flex items-center justify-center border-2 shadow-lg ${
+                              isSelected ? 'bg-rose-500 text-white border-white animate-bounce' : 'bg-purple-500 text-white border-black'
+                            }`}>
+                              {p.overall}
+                            </div>
+                            <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
+                              {p.lastName} (GK)
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
-                <button
-                  onClick={handleSaveTactics}
-                  className="w-full py-3.5 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 flex items-center justify-center gap-2 mt-2 active:scale-95"
-                >
-                  <Check className="w-4 h-4" />
-                  <span>TAKTİĞİ KAYDET & GELECEK MAÇA UYGULA</span>
-                </button>
+                <div className="text-center text-[11px] font-bold text-zinc-400">
+                  {selectedStarterId ? (
+                    <span className="text-[#FFB800] animate-pulse">
+                      ⚡ Sahadan bir oyuncu seçildi! Aşağıdaki yedekler listesinden oyuna sokmak istediğin oyuncuya tıkla.
+                    </span>
+                  ) : (
+                    <span>Sahadan bir oyuncuya tıklayarak yedeklerle anında yer değiştirebilirsiniz.</span>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* 2D Pitch Visualizer (7 cols) */}
-            <div className="lg:col-span-7 bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl flex flex-col justify-between">
+            {/* Substitutes & Bench Swapping Rack */}
+            <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
               <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                 <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-display">
-                  <Layers className="w-4 h-4 text-[#00F5A0]" />
-                  <span>SAHA DİZİLİŞ GÖRSELİ</span>
+                  <Users className="w-4 h-4 text-[#00D4FF]" />
+                  <span>YEDEKLER KULÜBESİ ({activeBench.length} OYUNCU)</span>
                 </h3>
-                <span className="text-xs font-mono font-black text-[#00F5A0] px-3 py-1 bg-zinc-950 border border-zinc-800">
-                  {formation}
+                <span className="text-xs text-zinc-400 font-bold">
+                  {selectedStarterId ? '👉 Oyuna almak için aşağıdaki yedeğe tıkla' : 'Değişiklik için önce sahadan oyuncu seçin'}
                 </span>
               </div>
 
-              {/* Realistic Pitch */}
-              <div className="h-88 bg-gradient-to-b from-[#0a2318] via-[#0d2f21] to-[#0a2318] border-2 border-emerald-500/40 relative my-4 overflow-hidden shadow-inner flex items-center justify-center">
-                {/* Grass Stripes */}
-                <div className="absolute inset-0 opacity-10 flex flex-col pointer-events-none">
-                  <div className="flex-1 bg-black" />
-                  <div className="flex-1 bg-transparent" />
-                  <div className="flex-1 bg-black" />
-                  <div className="flex-1 bg-transparent" />
-                  <div className="flex-1 bg-black" />
-                  <div className="flex-1 bg-transparent" />
-                </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {activeBench.map((player) => {
+                  const ovrStyle = getOvrColor(player.overall);
 
-                {/* Pitch Markings */}
-                <div className="absolute inset-3 border border-white/20 pointer-events-none" />
-                <div className="absolute inset-x-3 top-1/2 h-px bg-white/20 pointer-events-none" />
-                <div className="w-28 h-28 rounded-full border border-white/20 absolute pointer-events-none" />
-                <div className="w-2 h-2 rounded-full bg-white/30 absolute pointer-events-none" />
-                <div className="absolute inset-x-20 top-3 h-18 border-b border-x border-white/20 pointer-events-none" />
-                <div className="absolute inset-x-20 bottom-3 h-18 border-t border-x border-white/20 pointer-events-none" />
-
-                {/* 11 Starter Nodes */}
-                <div className="absolute inset-5 flex flex-col justify-between py-2">
-                  {/* Forwards */}
-                  <div className="flex justify-around">
-                    {sortedSquad.slice(8, 11).map((p, i) => (
-                      <div key={p.id || i} className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#FFB800] text-black font-mono font-black text-[11px] flex items-center justify-center border-2 border-black shadow-lg">
-                          {p.overall}
+                  return (
+                    <div
+                      key={player.id}
+                      onClick={() => {
+                        if (selectedStarterId) {
+                          handleSwapStarterAndBench(selectedStarterId, player.id);
+                        }
+                      }}
+                      className={`p-3 border flex items-center justify-between transition cursor-pointer ${
+                        selectedStarterId
+                          ? 'bg-zinc-950 hover:bg-[#00F5A0]/10 border-[#00F5A0]/40 hover:border-[#00F5A0]'
+                          : 'bg-zinc-950 border-zinc-800 hover:border-zinc-700'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2.5 truncate">
+                        <div className={`w-9 h-9 bg-gradient-to-br ${ovrStyle} font-mono font-black text-xs flex items-center justify-center border shrink-0`}>
+                          {player.overall}
                         </div>
-                        <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
-                          {p.lastName}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Midfielders */}
-                  <div className="flex justify-around">
-                    {sortedSquad.slice(4, 8).map((p, i) => (
-                      <div key={p.id || i} className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#00F5A0] text-black font-mono font-black text-[11px] flex items-center justify-center border-2 border-black shadow-lg">
-                          {p.overall}
+                        <div>
+                          <div className="text-xs font-black text-white uppercase truncate max-w-[120px]">
+                            {player.firstName} {player.lastName}
+                          </div>
+                          <div className="text-[10px] text-zinc-400 font-bold">
+                            <span className="text-[#00F5A0]">{player.position}</span> • {player.age} Yaş
+                          </div>
                         </div>
-                        <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
-                          {p.lastName}
-                        </span>
                       </div>
-                    ))}
-                  </div>
 
-                  {/* Defenders */}
-                  <div className="flex justify-around">
-                    {sortedSquad.slice(1, 4).map((p, i) => (
-                      <div key={p.id || i} className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-[#00D4FF] text-black font-mono font-black text-[11px] flex items-center justify-center border-2 border-black shadow-lg">
-                          {p.overall}
-                        </div>
-                        <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
-                          {p.lastName}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* GK */}
-                  <div className="flex justify-center">
-                    {sortedSquad.slice(0, 1).map((p, i) => (
-                      <div key={p.id || i} className="flex flex-col items-center">
-                        <div className="w-8 h-8 rounded-full bg-purple-500 text-white font-mono font-black text-[11px] flex items-center justify-center border-2 border-black shadow-lg">
-                          {p.overall}
-                        </div>
-                        <span className="text-[9px] font-black text-white uppercase truncate max-w-[75px] mt-0.5 bg-black/90 px-1.5 py-0.5 border border-zinc-800">
-                          {p.lastName} (GK)
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                      {selectedStarterId && (
+                        <button className="px-2 py-1 bg-[#00F5A0] text-black text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow">
+                          <Repeat className="w-3 h-3" />
+                          <span>AL</span>
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
-
-              <p className="text-[11px] text-zinc-400 text-center font-bold">
-                İlk 11 ve yedekler otomatik olarak en yüksek OVR gücüne ve taktiksel uyuma göre sahaya yerleştirilmiştir.
-              </p>
             </div>
           </div>
         )}
@@ -1624,12 +1890,21 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                                 {f.homeScore} - {f.awayScore}
                               </button>
                             ) : (
-                              <button
-                                onClick={() => handleSimulateFixture(f.id)}
-                                className="px-4 py-2 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition"
-                              >
-                                SİMÜLE ET
-                              </button>
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  onClick={() => handleOpenLiveMatch(f)}
+                                  className="px-3 py-2 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition"
+                                >
+                                  CANLI İZLE
+                                </button>
+                                <button
+                                  onClick={() => handleFastSimulateFixture(f.id)}
+                                  className="px-2.5 py-2 bg-zinc-900 hover:bg-zinc-800 text-[#00D4FF] border border-zinc-700 text-xs font-bold uppercase transition"
+                                  title="Hızlı Simüle Et"
+                                >
+                                  ⚡
+                                </button>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -1897,7 +2172,17 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         SquadCraft <span className="text-[#00F5A0] font-bold">{SQUADCRAFT_VERSION}</span> • Broadcast Draft & League Command Center
       </footer>
 
-      {/* Modals */}
+      {/* Live Interactive Match Simulation Modal */}
+      <DraftLiveMatchModal
+        fixture={liveMatchFixture}
+        clubs={clubs}
+        playerPool={playerPool}
+        isOpen={isLiveMatchModalOpen}
+        onClose={() => setIsLiveMatchModalOpen(false)}
+        onMatchFinished={handleLiveMatchFinished}
+      />
+
+      {/* Match Post-Report Modal */}
       <MatchReportModal
         fixture={selectedFixture}
         clubs={clubs}
