@@ -468,13 +468,36 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
     }
   }
 
-  // Budget calculations for Current Club
+  // Budget calculations for Current Club (Canonical & Bulletproof)
   const targetSquadSize = room.rules.squadSize || 18;
-  const mySquadLength = currentClub?.squadPlayerIds.length || 0;
-  const remainingPicks = Math.max(1, targetSquadSize - mySquadLength);
   const initialBudget = room.rules.draftBudget || DEFAULT_DRAFT_BUDGET;
-  const currentBudget = currentClub?.budget ?? initialBudget;
-  const spentBudget = currentClub?.spentBudget ?? 0;
+
+  const myPicks = (draftState.picks || []).filter(
+    (p) => (p.clubId && p.clubId === currentClub?.id) || (p.memberId && p.memberId === currentMember?.id)
+  );
+  const mySquadPlayerIds = Array.from(new Set([...(currentClub?.squadPlayerIds || []), ...myPicks.map((p) => p.playerId)]));
+  const mySquadLength = mySquadPlayerIds.length;
+  const remainingPicks = Math.max(1, targetSquadSize - mySquadLength);
+
+  const playerPoolMap = new Map((playerPool || []).map((p) => [p.id, p]));
+  let canonicalSpent = 0;
+  for (const pid of mySquadPlayerIds) {
+    const pickForPid = myPicks.find((p) => p.playerId === pid);
+    if (pickForPid && pickForPid.draftPrice !== undefined && pickForPid.draftPrice !== null && pickForPid.draftPrice > 0) {
+      canonicalSpent += Number(pickForPid.draftPrice);
+    } else {
+      const pl = playerPoolMap.get(pid);
+      canonicalSpent += pl?.draftValue ?? (pl ? calculatePlayerDraftValue(pl) : MIN_PLAYER_DRAFT_PRICE);
+    }
+  }
+  if (canonicalSpent === 0 && currentClub?.spentBudget && currentClub.spentBudget > 0) {
+    canonicalSpent = currentClub.spentBudget;
+  }
+
+  const spentBudget = canonicalSpent;
+  // CANONICAL RULE: remainingBudget = initialBudget - confirmedSpend
+  // Never re-inject initial budget if player squad or spend is confirmed
+  const currentBudget = mySquadLength > 0 ? Math.max(0, initialBudget - spentBudget) : (currentClub?.budget ?? initialBudget);
   const minRequiredForRest = (remainingPicks - 1) * MIN_PLAYER_DRAFT_PRICE;
   const avgBudgetPerPick = currentBudget / remainingPicks;
 

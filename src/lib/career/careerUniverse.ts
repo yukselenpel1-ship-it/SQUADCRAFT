@@ -192,7 +192,7 @@ export function generateCareerPlayerUniverse(clubs: Club[]): Player[] {
     }
   }
 
-  // 2. Allocate ~200 Real Free Agents
+  // 2. Allocate 200 Fictional Free Agents (200 kurgusal serbest oyuncu)
   const freeAgentCount = 200;
   for (let f = 0; f < freeAgentCount && poolIndex < masterPool.length; f++) {
     const basePlayer = masterPool[poolIndex++];

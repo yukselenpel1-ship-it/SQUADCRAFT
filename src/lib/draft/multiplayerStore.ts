@@ -16,6 +16,7 @@ import {
   BotPersonality,
   LiveMatchweekState,
   DEFAULT_DRAFT_BUDGET,
+  MIN_PLAYER_DRAFT_PRICE,
 } from './types';
 import {
   generateRoomCode,
@@ -138,16 +139,17 @@ export function reconstructDraftState(
 
   const picks: DraftPick[] = rawPicks.map((p) => ({
     id: p.id,
-    roomId: p.room_id || roomId,
+    roomId: p.room_id || p.roomId || roomId,
     round: p.round,
-    pickIndexInRound: p.pick_index_in_round,
-    globalPickNumber: p.global_pick_number,
-    memberId: p.member_id,
-    clubId: p.club_id,
-    playerId: p.player_id,
-    selectedAt: p.selected_at || new Date().toISOString(),
-    isAutoPick: Boolean(p.is_auto_pick),
-    timeTakenSeconds: p.time_taken_seconds || 0,
+    pickIndexInRound: p.pick_index_in_round ?? p.pickIndexInRound ?? 0,
+    globalPickNumber: p.global_pick_number ?? p.globalPickNumber ?? 0,
+    memberId: p.member_id || p.memberId,
+    clubId: p.club_id || p.clubId,
+    playerId: p.player_id || p.playerId,
+    selectedAt: p.selected_at || p.selectedAt || new Date().toISOString(),
+    isAutoPick: Boolean(p.is_auto_pick ?? p.isAutoPick),
+    timeTakenSeconds: p.time_taken_seconds ?? p.timeTakenSeconds ?? 0,
+    draftPrice: p.draft_price !== undefined ? Number(p.draft_price) : (p.draftPrice !== undefined ? Number(p.draftPrice) : undefined),
   }));
 
   const totalManagers = draftOrder.length;
@@ -244,31 +246,61 @@ export function reconcileClubsBudget(
   picks: DraftPick[] = [],
   playerPool: Player[] = []
 ): DraftClub[] {
-  const initialBudget = rules.draftBudget || DEFAULT_DRAFT_BUDGET;
+  const initialBudget = rules?.draftBudget || DEFAULT_DRAFT_BUDGET;
   const pool = playerPool.length > 0 ? playerPool : getCachedDraftPlayerPool();
   const playerMap = new Map(pool.map((p) => [p.id, p]));
 
   return clubs.map((c) => {
-    const clubPicks = picks.filter((p) => p.clubId === c.id || p.memberId === c.memberId);
-    if (clubPicks.length > 0) {
-      const spent = clubPicks.reduce((sum, p) => {
-        const pl = playerMap.get(p.playerId);
-        const val = pl?.draftValue ?? (pl ? calculatePlayerDraftValue(pl) : 0);
-        return sum + val;
-      }, 0);
-      return {
-        ...c,
-        budget: Math.max(0, initialBudget - spent),
-        spentBudget: spent,
-        squadPlayerIds: clubPicks.map((p) => p.playerId),
-      };
+    // 1. Gather all matching picks (supporting snake_case & camelCase)
+    const matchingPicks = picks.filter((p) => {
+      const pClubId = p.clubId || (p as any).club_id;
+      const pMemberId = p.memberId || (p as any).member_id;
+      return (pClubId && pClubId === c.id) || (pMemberId && pMemberId === c.memberId);
+    });
+
+    const pickPlayerIds = matchingPicks.map((p) => p.playerId || (p as any).player_id).filter(Boolean);
+    const existingSquadIds = (c.squadPlayerIds || []).filter(Boolean);
+
+    // 2. Canonical squad list is union of picks and existing squad
+    const allPlayerIds = Array.from(new Set([...existingSquadIds, ...pickPlayerIds]));
+
+    // 3. Compute canonical spent amount across all confirmed players
+    let spent = 0;
+    for (const pid of allPlayerIds) {
+      const matchingPick = matchingPicks.find((p) => (p.playerId || (p as any).player_id) === pid);
+      if (matchingPick && matchingPick.draftPrice !== undefined && matchingPick.draftPrice !== null && matchingPick.draftPrice > 0) {
+        spent += Number(matchingPick.draftPrice);
+      } else {
+        const pl = playerMap.get(pid);
+        const val = pl?.draftValue ?? (pl ? calculatePlayerDraftValue(pl) : MIN_PLAYER_DRAFT_PRICE);
+        spent += val;
+      }
     }
 
-    // No picks yet for this club
+    // Fallback to recorded spentBudget if picks weren't fully hydrated yet
+    if (spent === 0 && c.spentBudget && c.spentBudget > 0) {
+      spent = Number(c.spentBudget);
+    }
+
+    const canonicalBudget = Math.max(0, initialBudget - spent);
+
+    if (c.budget !== undefined && c.budget !== null && c.budget !== canonicalBudget && allPlayerIds.length > 0) {
+      console.log('[BUDGET_AUDIT]', {
+        source: 'RECONCILE_CLUBS_BUDGET',
+        oldBudget: c.budget,
+        newBudget: canonicalBudget,
+        roomBudget: initialBudget,
+        confirmedSpend: spent,
+        clubId: c.id,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     return {
       ...c,
-      budget: c.spentBudget && c.spentBudget > 0 ? Math.max(0, initialBudget - c.spentBudget) : (c.budget ?? initialBudget),
-      spentBudget: c.spentBudget || 0,
+      budget: canonicalBudget,
+      spentBudget: spent,
+      squadPlayerIds: allPlayerIds,
     };
   });
 }
@@ -949,7 +981,17 @@ export class DraftMultiplayerStore {
               .eq('room_id', room.id)
               .order('global_pick_number', { ascending: true });
 
-            draftState = reconstructDraftState(room.id, members, room.rules, dbPicks || []);
+            const existingMemPicks = memoryRooms[room.id]?.draftState?.picks || [];
+            const mergedPickMap = new Map<string, any>();
+            (dbPicks || []).forEach((p: any) => mergedPickMap.set(p.id, p));
+            existingMemPicks.forEach((p) => {
+              if (!mergedPickMap.has(p.id)) {
+                mergedPickMap.set(p.id, p);
+              }
+            });
+            const allPicks = Array.from(mergedPickMap.values());
+
+            draftState = reconstructDraftState(room.id, members, room.rules, allPicks);
 
             // Authoritatively reconcile and guarantee club squadPlayerIds and budget from canonical draft picks
             clubs = reconcileClubsBudget(clubs, room.rules, draftState?.picks || [], getCachedDraftPlayerPool());
@@ -2276,6 +2318,39 @@ export class DraftMultiplayerStore {
 
     try {
       const res = this.makePick(roomId, memberId, playerId, isAutoPick);
+      if (res.success && res.state) {
+        const supabase = getSupabaseClient();
+        if (supabase) {
+          const club = res.state.clubs.find((c) => c.memberId === memberId);
+          const lastPick = res.state.draftState?.picks[res.state.draftState.picks.length - 1];
+          if (club && lastPick) {
+            try {
+              await Promise.all([
+                supabase.from('draft_picks').upsert({
+                  id: lastPick.id,
+                  room_id: roomId,
+                  round: lastPick.round,
+                  pick_index_in_round: lastPick.pickIndexInRound,
+                  global_pick_number: lastPick.globalPickNumber,
+                  member_id: lastPick.memberId,
+                  club_id: lastPick.clubId,
+                  player_id: lastPick.playerId,
+                  selected_at: lastPick.selectedAt,
+                  is_auto_pick: lastPick.isAutoPick,
+                  time_taken_seconds: lastPick.timeTakenSeconds,
+                }),
+                supabase.from('draft_clubs').update({
+                  squad_player_ids: club.squadPlayerIds,
+                  budget: club.budget,
+                  spent_budget: club.spentBudget,
+                }).eq('id', club.id),
+              ]);
+            } catch (dbErr) {
+              console.warn('DB pick sync warning (handled via memory):', dbErr);
+            }
+          }
+        }
+      }
       return res;
     } finally {
       this.pickLockMap[lockKey] = false;
@@ -2346,14 +2421,28 @@ export class DraftMultiplayerStore {
       playerPrice
     );
 
+    const initialRoomBudget = state.room.rules.draftBudget || DEFAULT_DRAFT_BUDGET;
+    const newSpent = (club.spentBudget ?? 0) + playerPrice;
+    const newBudget = Math.max(0, initialRoomBudget - newSpent);
+
+    console.log('[BUDGET_AUDIT]', {
+      source: isAutoPick ? 'AUTO_PICK' : 'PLAYER_PICK',
+      oldBudget: club.budget,
+      newBudget,
+      roomBudget: initialRoomBudget,
+      confirmedSpend: newSpent,
+      clubId: club.id,
+      timestamp: new Date().toISOString(),
+    });
+
     // Add player to club squad and deduct draft budget
     const updatedClubs = state.clubs.map((c) =>
       c.id === club.id
         ? {
             ...c,
-            squadPlayerIds: [...c.squadPlayerIds, playerId],
-            budget: Math.max(0, (c.budget ?? (state.room.rules.draftBudget || DEFAULT_DRAFT_BUDGET)) - playerPrice),
-            spentBudget: (c.spentBudget ?? 0) + playerPrice,
+            squadPlayerIds: Array.from(new Set([...c.squadPlayerIds, playerId])),
+            budget: newBudget,
+            spentBudget: newSpent,
           }
         : c
     );

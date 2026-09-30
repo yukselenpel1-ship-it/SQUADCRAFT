@@ -168,7 +168,15 @@ export function chooseBotDraftPick(
   const counts = countSquadPositions(playerPool, clubPlayerIds);
   const remainingPicksForClub = Math.max(1, rules.squadSize - counts.total);
   const initialBudget = rules.draftBudget || DEFAULT_DRAFT_BUDGET;
-  const currentBudget = club?.budget ?? initialBudget;
+  let canonicalSpent = club?.spentBudget ?? 0;
+  if (canonicalSpent === 0 && clubPlayerIds.length > 0) {
+    const clubPoolMap = new Map(playerPool.map((p) => [p.id, p]));
+    canonicalSpent = clubPlayerIds.reduce((sum, id) => {
+      const pl = clubPoolMap.get(id);
+      return sum + (pl?.draftValue ?? (pl ? calculatePlayerDraftValue(pl) : MIN_PLAYER_DRAFT_PRICE));
+    }, 0);
+  }
+  const currentBudget = clubPlayerIds.length > 0 ? Math.max(0, initialBudget - canonicalSpent) : (club?.budget ?? initialBudget);
   const minRequiredForRest = Math.max(0, remainingPicksForClub - 1) * MIN_PLAYER_DRAFT_PRICE;
 
   // Strict mathematical guarantee filter: Bot can never choose an unaffordable player
