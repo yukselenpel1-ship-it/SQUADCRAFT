@@ -205,11 +205,19 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               }
             }
           }
-          if (customLineupIds.length === 0) {
-            const sorted = [...myS].sort((a, b) => b.overall - a.overall);
-            const initial11 = sorted.slice(0, 11).map((p) => p.id);
-            const assigned = autoAssignPlayersToSlots(initial11, myS, myC.tactics?.formation || '4-3-3');
-            setCustomLineupIds(assigned);
+          if (res.state.room.status === 'CLOSED' || res.state.room.status === 'TERMINATED') {
+            alert('Oda kurucusu odadan ayrıldığı için oda kapatıldı.');
+            router.push('/');
+            return;
+          }
+
+          if (res.state.room.status === 'DRAFTING') {
+            router.push(`/draft/room/${roomCode}/draft`);
+            return;
+          }
+          if (res.state.room.status === 'LOBBY') {
+            router.push(`/draft/room/${roomCode}`);
+            return;
           }
         }
       }
@@ -221,7 +229,12 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   useEffect(() => {
     fetchState();
 
-    const unsubscribe = DraftMultiplayerStore.subscribeToRoom(roomCode, () => {
+    const unsubscribe = DraftMultiplayerStore.subscribeToRoom(roomCode, (event) => {
+      if (event?.type === 'BROADCAST_ROOM_CLOSED') {
+        alert('Oda kurucusu odadan ayrıldığı için oda kapatıldı.');
+        router.push('/');
+        return;
+      }
       fetchState();
     });
 
@@ -600,6 +613,17 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     }
   };
 
+  const handleLeaveRoom = async () => {
+    if (isHost && currentMember) {
+      const confirmed = window.confirm('Oda kurucususunuz. Odadan ayrıldığınızda oda kapatılacak ve tüm katılımcılar ana sayfaya yönlendirilecektir. Ayrılmak istiyor musunuz?');
+      if (!confirmed) return;
+      await DraftMultiplayerStore.closeRoomByHost(room.id, currentMember.id);
+      router.push('/');
+    } else {
+      router.push('/draft');
+    }
+  };
+
   // Formation change handler
   const handleFormationChange = (newFormation: Formation) => {
     setFormation(newFormation);
@@ -842,13 +866,13 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
           {/* Left: Brand Plate & Back Button */}
           <div className="flex items-center gap-3.5">
-            <Link
-              href="/draft"
+            <button
+              onClick={handleLeaveRoom}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
             >
               <LogOut className="w-3.5 h-3.5 text-[#00F5A0]" />
               <span className="hidden sm:inline">ODADAN AYRIL</span>
-            </Link>
+            </button>
 
             <div className="h-6 w-px bg-zinc-800 hidden sm:block" />
 

@@ -2,6 +2,7 @@ import { Player, Club } from '@/types/game';
 import { PlayerTransferValuation, PlayerInterestDetails, PlayerInterestLevel } from './types';
 import { getPlayerAgent } from './agentLogic';
 import { daysBetween, getTransferWindowStatus } from '../career/calendar';
+import { calculateCareerMarketValue } from '../career/careerUniverse';
 
 /**
  * Calculates a player's genuine interest in joining a specific buyer club.
@@ -103,7 +104,7 @@ export function calculatePlayerValuation(
     }
   }
 
-  const baseValue = player.marketValue || 1000000;
+  const baseValue = player.marketValue || calculateCareerMarketValue(player, { contractEndDate: player.contractEnd, currentDate, sellerClub });
   let multiplier = 1.0;
   const reasons: string[] = [];
 

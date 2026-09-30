@@ -29,7 +29,7 @@ export interface NewsItem {
   date: string;
   headline: string;
   content: string;
-  category: 'MATCH_RESULTS' | 'TRANSFER' | 'INJURY' | 'TITLE_RACE' | 'CLUB_NEWS' | 'TRAINING';
+  category: 'MATCH_RESULTS' | 'TRANSFER' | 'INJURY' | 'TITLE_RACE' | 'CLUB_NEWS' | 'TRAINING' | 'TEAM_NEWS' | 'LEAGUE_NEWS';
   importance: 'NORMAL' | 'HIGH';
   clubId?: string;
   playerId?: string;

@@ -355,6 +355,12 @@ function broadcastRealtimeUpdate(roomCode: string, action: string, stateVersion:
         event: 'START_DRAFT',
         payload: { action, stateVersion, timestamp: Date.now() },
       });
+    } else if (action === 'CLOSE_ROOM') {
+      await channel.send({
+        type: 'broadcast',
+        event: 'ROOM_CLOSED',
+        payload: { action, stateVersion, timestamp: Date.now() },
+      });
     }
   });
 }
@@ -467,6 +473,9 @@ export class DraftMultiplayerStore {
       })
       .on('broadcast', { event: 'START_DRAFT' }, (payload) => {
         onUpdate({ type: 'BROADCAST_START_DRAFT', payload });
+      })
+      .on('broadcast', { event: 'ROOM_CLOSED' }, (payload) => {
+        onUpdate({ type: 'BROADCAST_ROOM_CLOSED', payload });
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'multiplayer_rooms', filter: `room_code=eq.${cleanCode}` }, (payload) => {
         onUpdate({ type: 'PG_ROOM', payload });
@@ -1934,6 +1943,65 @@ export class DraftMultiplayerStore {
     logMultiplayerAction('LEAVE_ROOM', state.room.id, botMemberId, prevVersion, resultingVersion, true);
 
     return { success: true, state: newState };
+  }
+
+  /**
+   * Closes and terminates a room when the host explicitly leaves (Host only).
+   * Sets room status to CLOSED, broadcasts to all participants, and terminates room state.
+   */
+  public static async closeRoomByHost(
+    roomId: string,
+    hostMemberId: string
+  ): Promise<{ success: boolean; error?: string; errorCode?: MultiplayerErrorCode }> {
+    const state = this.getRoom(roomId);
+    if (!state) {
+      const err = formatMultiplayerError('SC-MP-001');
+      return { success: false, error: err.message, errorCode: 'SC-MP-001' };
+    }
+
+    if (state.room.hostMemberId !== hostMemberId) {
+      const err = formatMultiplayerError('SC-MP-007', 'Yalnızca oda kurucusu odayı kapatabilir');
+      return { success: false, error: err.message, errorCode: 'SC-MP-007' };
+    }
+
+    const prevVersion = state.room.stateVersion || 1;
+    const resultingVersion = prevVersion + 1;
+
+    const closedRoom: MultiplayerRoom = {
+      ...state.room,
+      status: 'CLOSED',
+      stateVersion: resultingVersion,
+      updatedAt: new Date().toISOString(),
+    };
+
+    const newState: RoomFullState = {
+      ...state,
+      room: closedRoom,
+    };
+
+    memoryRooms[state.room.id] = newState;
+    persistRoomLocal(newState);
+
+    const supabase = getSupabaseClient();
+    if (supabase) {
+      try {
+        await supabase
+          .from('multiplayer_rooms')
+          .update({
+            status: 'CLOSED',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', state.room.id);
+
+        broadcastRealtimeUpdate(state.room.roomCode, 'CLOSE_ROOM', resultingVersion);
+      } catch (err: any) {
+        console.warn('Supabase closeRoomByHost warning:', err);
+      }
+    }
+
+    logMultiplayerAction('CLOSE_ROOM', state.room.id, hostMemberId, prevVersion, resultingVersion, true);
+
+    return { success: true };
   }
 
   /**

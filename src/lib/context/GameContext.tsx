@@ -49,6 +49,7 @@ import {
   clearCareerSave,
   simulatePendingAIMatches,
 } from '@/lib/career';
+import { generateCareerPlayerUniverse, EXTERNAL_CLUBS } from '@/lib/career/careerUniverse';
 
 import {
   ActiveNegotiation,
@@ -222,7 +223,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [seasonStage, setSeasonStage] = useState<SeasonStage>('PRE_SEASON');
   const [trainingIntensity, setTrainingIntensityState] = useState<TrainingIntensity>('Normal');
   const [allClubs, setAllClubs] = useState<Club[]>(MOCK_CLUBS);
-  const [allPlayers, setAllPlayers] = useState<Player[]>(MOCK_PLAYERS);
+  const [allPlayers, setAllPlayers] = useState<Player[]>(() => generateCareerPlayerUniverse(MOCK_CLUBS));
   const [tactics, setTactics] = useState<ClubTactics>(() => getInitialTactics('kalyon-doruk'));
   const [standings, setStandings] = useState<LeagueStanding[]>(() =>
     MOCK_CLUBS.map((c, i) => ({
@@ -260,7 +261,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [scoutingReports, setScoutingReports] = useState<ScoutingReport[]>([]);
   const [playerHiddenProfiles, setPlayerHiddenProfiles] = useState<Record<string, PlayerHiddenProfile>>(() => {
     const profiles: Record<string, PlayerHiddenProfile> = {};
-    for (const p of MOCK_PLAYERS) {
+    const initPool = generateCareerPlayerUniverse(MOCK_CLUBS);
+    for (const p of initPool) {
       profiles[p.id] = generatePlayerHiddenProfile(p);
     }
     return profiles;
@@ -366,7 +368,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     fac = academyFacilities,
     youths = youthPlayers,
     diff = difficulty,
-    lSize = leagueSize
+    lSize = leagueSize,
+    cls = allClubs
   ) => {
     saveCareerState({
       saveVersion: 3,
@@ -378,7 +381,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       trainingIntensity: tIntensity,
       difficulty: diff,
       leagueSize: lSize,
-      clubs: allClubs,
+      clubs: cls,
       players: pls,
       tactics: tacts,
       standings: stnds,
@@ -430,7 +433,32 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const daysUntilNextMatch = nextMatch ? Math.max(0, daysBetween(currentDate, nextMatch.date)) : 999;
 
   const getPlayerById = (id: string) => allPlayers.find((p) => p.id === id);
-  const getClubById = (id: string) => allClubs.find((c) => c.id === id);
+  const getClubById = (id: string): Club | undefined => {
+    const found = allClubs.find((c) => c.id === id);
+    if (found) return found;
+    const ext = EXTERNAL_CLUBS.find((c) => c.id === id);
+    if (ext) {
+      return {
+        id: ext.id,
+        name: ext.name,
+        shortName: ext.name,
+        code: ext.code,
+        city: ext.region,
+        stadium: `${ext.name} Arena`,
+        stadiumCapacity: 25000,
+        reputation: ext.reputation,
+        balance: 15000000,
+        transferBudget: 8000000,
+        wageBudget: 250000,
+        weeklyWageExpense: 180000,
+        primaryColor: '#2563EB',
+        secondaryColor: '#1E3A8A',
+        managerName: 'Teknik Direktör',
+        foundedYear: 1960,
+      };
+    }
+    return undefined;
+  };
 
   const setTrainingIntensity = (intensity: TrainingIntensity) => {
     setTrainingIntensityState(intensity);
@@ -808,7 +836,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // 4. Start Next Season
   const startNextSeasonRoll = () => {
-    const rolled = startNewSeason(seasonYear, allClubs, allPlayers, standings, userClubId);
+    const rolled = startNewSeason(seasonYear, allClubs, allPlayers, standings, userClubId, finances);
 
     setSeasonYear(rolled.newSeasonYear);
     setCurrentDate(rolled.newCurrentDate);
@@ -816,6 +844,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setFixtures(rolled.newFixtures);
     setStandings(rolled.newStandings);
     setAllPlayers(rolled.resetPlayers);
+    setAllClubs(rolled.updatedClubs);
+    setFinances(rolled.newFinances);
     setCareerHistory([...rolled.archivedHistory, ...careerHistory]);
     setInboxMessages([rolled.boardMessage, ...inboxMessages]);
 
@@ -831,19 +861,34 @@ export function GameProvider({ children }: { children: ReactNode }) {
       [rolled.boardMessage, ...inboxMessages],
       [],
       shortlistIds,
-      finances,
+      rolled.newFinances,
       [],
-      [...rolled.archivedHistory, ...careerHistory]
+      [...rolled.archivedHistory, ...careerHistory],
+      activeNegotiations,
+      transferHistory,
+      futureCommitments,
+      scouts,
+      scoutingAssignments,
+      scoutingKnowledge,
+      scoutingReports,
+      playerHiddenProfiles,
+      activeLoans,
+      academyFacilities,
+      youthPlayers,
+      difficulty,
+      leagueSize,
+      rolled.updatedClubs
     );
   };
 
   // 5. Reset Entire Career Save
   const resetEntireCareer = () => {
     clearCareerSave();
+    const initialUniverse = generateCareerPlayerUniverse(MOCK_CLUBS);
     const initialScouts = generateClubScouts('kalyon-doruk', 80);
     const initialFreeScouts = generateFreeAgentScouts();
     const initialProfiles: Record<string, PlayerHiddenProfile> = {};
-    for (const p of MOCK_PLAYERS) {
+    for (const p of initialUniverse) {
       initialProfiles[p.id] = generatePlayerHiddenProfile(p);
     }
     const initialAcademy = initializeClubAcademy(MOCK_CLUBS[0], '2026/27');
@@ -853,7 +898,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setSeasonStage('PRE_SEASON');
     setTrainingIntensityState('Normal');
     setAllClubs(MOCK_CLUBS);
-    setAllPlayers(MOCK_PLAYERS);
+    setAllPlayers(initialUniverse);
     setTactics(getInitialTactics('kalyon-doruk'));
     setStandings(
       MOCK_CLUBS.map((c, i) => ({
@@ -983,10 +1028,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
       ],
     };
 
+    const initialUniverse = generateCareerPlayerUniverse(baseClubs);
     const initialScouts = generateClubScouts(chosenClubId, targetClub.reputation);
     const initialFreeScouts = generateFreeAgentScouts();
     const initialProfiles: Record<string, PlayerHiddenProfile> = {};
-    for (const p of MOCK_PLAYERS) {
+    for (const p of initialUniverse) {
       initialProfiles[p.id] = generatePlayerHiddenProfile(p);
     }
     const initialAcademy = initializeClubAcademy(targetClub, '2026/27');
@@ -997,7 +1043,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setSeasonStage('PRE_SEASON');
     setTrainingIntensityState('Normal');
     setAllClubs(baseClubs);
-    setAllPlayers(MOCK_PLAYERS);
+    setAllPlayers(initialUniverse);
     setTactics(initialTacts);
     setStandings(initialStandings);
     setFixtures(initialFixtures);
@@ -1044,7 +1090,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       difficulty: diff,
       leagueSize: lSize,
       clubs: baseClubs,
-      players: MOCK_PLAYERS,
+      players: initialUniverse,
       tactics: initialTacts,
       standings: initialStandings,
       fixtures: initialFixtures,

@@ -2,11 +2,12 @@
 
 import React, { useState, useMemo } from 'react';
 import { useGame } from '@/lib/context/GameContext';
-import { Player, PositionCategory } from '@/types/game';
+import { Player, Club } from '@/types/game';
 import { StatBadge } from '@/components/ui/StatBadge';
 import { ClubBadge } from '@/components/ui/ClubBadge';
 import { PlayerModal } from '@/components/ui/PlayerModal';
 import { NegotiationModal } from '@/components/negotiation/NegotiationModal';
+import { EXTERNAL_CLUBS } from '@/lib/career/careerUniverse';
 import {
   getTransferWindowStatus,
   formatDateTurkish,
@@ -29,6 +30,9 @@ import {
   Flame,
   UserCheck,
   ChevronRight,
+  ChevronLeft,
+  ShieldCheck,
+  Eye,
 } from 'lucide-react';
 
 export default function TransfersPage() {
@@ -55,12 +59,40 @@ export default function TransfersPage() {
   const [selectedPosition, setSelectedPosition] = useState<string>('ALL');
   const [minOverall, setMinOverall] = useState<number>(0);
   const [maxAge, setMaxAge] = useState<number>(40);
+  const [marketPage, setMarketPage] = useState<number>(1);
+  const [freeAgentPage, setFreeAgentPage] = useState<number>(1);
   const [inspectedPlayer, setInspectedPlayer] = useState<Player | null>(null);
 
   // Negotiation Modal Target
   const [negotiationTargetPlayer, setNegotiationTargetPlayer] = useState<Player | null>(null);
 
-  const getClub = (id: string) => allClubs.find((c) => c.id === id);
+  const getClub = (id: string): Club | undefined => {
+    const found = allClubs.find((c) => c.id === id);
+    if (found) return found;
+    const ext = EXTERNAL_CLUBS.find((c) => c.id === id);
+    if (ext) {
+      return {
+        id: ext.id,
+        name: ext.name,
+        shortName: ext.name,
+        code: ext.code,
+        city: ext.region,
+        stadium: `${ext.name} Arena`,
+        stadiumCapacity: 25000,
+        reputation: ext.reputation,
+        balance: 15000000,
+        transferBudget: 8000000,
+        wageBudget: 250000,
+        weeklyWageExpense: 180000,
+        primaryColor: '#2563EB',
+        secondaryColor: '#1E3A8A',
+        managerName: 'Teknik Direktör',
+        foundedYear: 1960,
+      };
+    }
+    return undefined;
+  };
+
   const getPlayer = (id: string) => allPlayers.find((p) => p.id === id);
 
   const windowStatus = getTransferWindowStatus(currentDate);
@@ -81,7 +113,30 @@ export default function TransfersPage() {
     return `Kapanışa ${daysLeft} Gün Kaldı`;
   };
 
-  // 1. Market Players
+  // Helper to determine transfer status label & style
+  const getTransferStatusInfo = (player: Player) => {
+    const isFreeAgent = player.clubId === 'FREE_AGENT' || player.clubId === 'free-agent';
+    if (isFreeAgent) {
+      return { text: 'Serbest Oyuncu', color: 'text-emerald-400 bg-emerald-950/60 border-emerald-700/50' };
+    }
+    if (player.isTransferListedByRequest) {
+      return { text: 'Satış Talebinde', color: 'text-amber-400 bg-amber-950/60 border-amber-700/50' };
+    }
+    if (player.isTransferListed) {
+      return { text: 'Kulüp Satışta', color: 'text-sky-400 bg-sky-950/60 border-sky-700/50' };
+    }
+    const contractEnd = player.contractEnd || '2028-06-30';
+    const daysLeft = daysBetween(currentDate, contractEnd);
+    if (daysLeft <= 180) {
+      return { text: 'Sözleşmesi Bitiyor', color: 'text-rose-400 bg-rose-950/60 border-rose-700/50' };
+    }
+    if (player.overall >= 82) {
+      return { text: 'Satılık Değil', color: 'text-zinc-400 bg-zinc-900 border-zinc-700' };
+    }
+    return { text: 'Dengeli', color: 'text-zinc-400 bg-zinc-900/60 border-zinc-800' };
+  };
+
+  // 1. Market Players Filtered
   const marketPlayers = useMemo(() => {
     return allPlayers
       .filter((p) => p.clubId !== userClub.id && p.clubId !== 'FREE_AGENT' && p.clubId !== 'free-agent')
@@ -92,14 +147,18 @@ export default function TransfersPage() {
         if (searchQuery.trim() !== '') {
           const q = searchQuery.toLowerCase();
           const name = `${p.firstName} ${p.lastName}`.toLowerCase();
-          if (!name.includes(q) && !p.position.toLowerCase().includes(q)) return false;
+          const club = getClub(p.clubId);
+          const clubName = club ? club.name.toLowerCase() : '';
+          if (!name.includes(q) && !p.position.toLowerCase().includes(q) && !clubName.includes(q)) {
+            return false;
+          }
         }
         return true;
       })
       .sort((a, b) => b.overall - a.overall);
   }, [allPlayers, userClub.id, selectedPosition, minOverall, maxAge, searchQuery]);
 
-  // 2. Free Agents
+  // 2. Free Agents Filtered
   const freeAgents = useMemo(() => {
     return allPlayers
       .filter((p) => p.clubId === 'FREE_AGENT' || p.clubId === 'free-agent')
@@ -108,12 +167,26 @@ export default function TransfersPage() {
         if (searchQuery.trim() !== '') {
           const q = searchQuery.toLowerCase();
           const name = `${p.firstName} ${p.lastName}`.toLowerCase();
-          if (!name.includes(q)) return false;
+          if (!name.includes(q) && !p.position.toLowerCase().includes(q)) return false;
         }
         return true;
       })
       .sort((a, b) => b.overall - a.overall);
   }, [allPlayers, selectedPosition, searchQuery]);
+
+  // Pagination constants
+  const PAGE_SIZE = 35;
+  const marketTotalPages = Math.ceil(marketPlayers.length / PAGE_SIZE) || 1;
+  const paginatedMarketPlayers = useMemo(() => {
+    const start = (marketPage - 1) * PAGE_SIZE;
+    return marketPlayers.slice(start, start + PAGE_SIZE);
+  }, [marketPlayers, marketPage]);
+
+  const freeAgentTotalPages = Math.ceil(freeAgents.length / PAGE_SIZE) || 1;
+  const paginatedFreeAgents = useMemo(() => {
+    const start = (freeAgentPage - 1) * PAGE_SIZE;
+    return freeAgents.slice(start, start + PAGE_SIZE);
+  }, [freeAgents, freeAgentPage]);
 
   // 3. Shortlisted Players
   const shortlistedPlayers = allPlayers.filter((p) => shortlistIds.includes(p.id));
@@ -133,7 +206,7 @@ export default function TransfersPage() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
-              // TRANSFER HEADQUARTERS
+              // TRANSFER & SCOUTING HEADQUARTERS
             </span>
             <span
               className={`px-2 py-0.5 text-[10px] font-mono font-black uppercase border ${
@@ -258,18 +331,24 @@ export default function TransfersPage() {
               <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
+                placeholder="Futbolcu adı, kulüp veya mevki ara..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Futbolcu veya mevki ara..."
-                className="w-full pl-9 pr-3 py-2 bg-[#040711] border border-zinc-800 text-xs font-mono text-white placeholder-zinc-500 focus:outline-none focus:border-[#00F5A0]"
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setMarketPage(1);
+                }}
+                className="w-full pl-9 pr-3 py-2 bg-[#040810] border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#00F5A0]"
               />
             </div>
 
             <div>
               <select
                 value={selectedPosition}
-                onChange={(e) => setSelectedPosition(e.target.value)}
-                className="w-full px-3 py-2 bg-[#040711] border border-zinc-800 text-xs font-mono text-zinc-200 focus:outline-none focus:border-[#00F5A0]"
+                onChange={(e) => {
+                  setSelectedPosition(e.target.value);
+                  setMarketPage(1);
+                }}
+                className="w-full px-3 py-2 bg-[#040810] border border-zinc-800 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
               >
                 <option value="ALL">Tüm Mevkiler</option>
                 <option value="GK">Kaleci (GK)</option>
@@ -279,47 +358,71 @@ export default function TransfersPage() {
                 <option value="DMC">Ön Libero (DMC)</option>
                 <option value="MC">Merkez Orta Saha (MC)</option>
                 <option value="AMC">Ofansif Orta Saha (AMC)</option>
-                <option value="AMR">Sağ Kanat (AMR)</option>
-                <option value="AML">Sol Kanat (AML)</option>
+                <option value="MR">Sağ Kanat (MR)</option>
+                <option value="ML">Sol Kanat (ML)</option>
+                <option value="AMR">Sağ Açık (AMR)</option>
+                <option value="AML">Sol Açık (AML)</option>
                 <option value="ST">Santrfor (ST)</option>
               </select>
             </div>
 
-            <div>
+            <div className="flex items-center gap-2">
               <select
                 value={minOverall}
-                onChange={(e) => setMinOverall(Number(e.target.value))}
-                className="w-full px-3 py-2 bg-[#040711] border border-zinc-800 text-xs font-mono text-zinc-200 focus:outline-none focus:border-[#00F5A0]"
+                onChange={(e) => {
+                  setMinOverall(Number(e.target.value));
+                  setMarketPage(1);
+                }}
+                className="w-1/2 px-2 py-2 bg-[#040810] border border-zinc-800 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
               >
-                <option value="0">Min Genel Güç: Tümü</option>
-                <option value="70">Min 70+</option>
-                <option value="75">Min 75+</option>
-                <option value="80">Min 80+</option>
+                <option value="0">Min OVR: Hepsi</option>
+                <option value="70">70+ OVR</option>
+                <option value="75">75+ OVR</option>
+                <option value="80">80+ Yıldız</option>
+                <option value="85">85+ Elit</option>
+              </select>
+
+              <select
+                value={maxAge}
+                onChange={(e) => {
+                  setMaxAge(Number(e.target.value));
+                  setMarketPage(1);
+                }}
+                className="w-1/2 px-2 py-2 bg-[#040810] border border-zinc-800 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
+              >
+                <option value="40">Maks Yaş: 40</option>
+                <option value="21">21 ve Altı (Genç)</option>
+                <option value="24">24 ve Altı</option>
+                <option value="29">29 ve Altı</option>
               </select>
             </div>
           </div>
 
           {/* Market Player Table */}
           <div className="overflow-x-auto border border-zinc-850 bg-[#080D1A] shadow-2xl">
-            <table className="w-full text-left border-collapse min-w-[850px]">
+            <table className="w-full text-left border-collapse min-w-[1050px]">
               <thead>
                 <tr className="border-b border-zinc-800 bg-[#040711] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
                   <th className="py-3 px-4">OYUNCU</th>
-                  <th className="py-3 px-3">KULÜP</th>
-                  <th className="py-3 px-3 text-center">MEVKİ</th>
-                  <th className="py-3 px-3 text-center">YAŞ</th>
-                  <th className="py-3 px-3 text-center">GENEL</th>
-                  <th className="py-3 px-3 text-center">POT</th>
+                  <th className="py-3 px-3">KULÜBÜ</th>
+                  <th className="py-3 px-2 text-center">MEVKİ</th>
+                  <th className="py-3 px-2 text-center">YAŞ</th>
+                  <th className="py-3 px-3 text-center">OVR / POT</th>
                   <th className="py-3 px-3 text-right">PİYASA DEĞERİ</th>
-                  <th className="py-3 px-3 text-right">MAAŞ</th>
+                  <th className="py-3 px-3 text-right">MAAŞ TALEBİ</th>
+                  <th className="py-3 px-3 text-center">SÖZLEŞME</th>
+                  <th className="py-3 px-3 text-center">DURUM</th>
+                  <th className="py-3 px-3 text-center">GÖZLEM</th>
                   <th className="py-3 px-4 text-center">İŞLEM</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-850 text-xs font-semibold">
-                {marketPlayers.slice(0, 40).map((player) => {
+                {paginatedMarketPlayers.map((player) => {
                   const club = getClub(player.clubId);
                   const isShortlisted = shortlistIds.includes(player.id);
                   const masked = getMaskedPlayer(player);
+                  const statusInfo = getTransferStatusInfo(player);
+                  const scoutingLevel = player.scoutingReport?.scoutedLevel ?? (club ? 45 : 30);
 
                   return (
                     <tr
@@ -334,7 +437,7 @@ export default function TransfersPage() {
                           {player.firstName} {player.lastName}
                         </div>
                         <div className="text-[10px] font-mono text-zinc-500">
-                          {player.nationality}
+                          {player.nationality} {player.archetype ? `• ${player.archetype}` : ''}
                         </div>
                       </td>
 
@@ -348,28 +451,28 @@ export default function TransfersPage() {
                               size="xs"
                             />
                           )}
-                          <span className="text-zinc-300 text-xs truncate max-w-[120px]">
-                            {club?.name}
+                          <span className="text-zinc-300 text-xs truncate max-w-[130px]" title={club?.name}>
+                            {club?.name || 'Harici Kulüp'}
                           </span>
                         </div>
                       </td>
 
-                      <td className="py-3 px-3 text-center">
+                      <td className="py-3 px-2 text-center">
                         <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-zinc-900 border border-zinc-700 text-[#00F5A0]">
                           {player.position}
                         </span>
                       </td>
 
-                      <td className="py-3 px-3 text-center font-mono text-zinc-300">
+                      <td className="py-3 px-2 text-center font-mono text-zinc-300">
                         {player.age}
                       </td>
 
                       <td className="py-3 px-3 text-center">
-                        <StatBadge value={masked.overallDisplay} size="sm" />
-                      </td>
-
-                      <td className="py-3 px-3 text-center">
-                        <StatBadge value={masked.potentialDisplay} size="sm" />
+                        <div className="flex items-center justify-center gap-1.5 font-mono text-xs">
+                          <span className="font-bold text-white">{masked.overallDisplay}</span>
+                          <span className="text-zinc-500">/</span>
+                          <span className="text-[#00D4FF] font-bold">{masked.potentialDisplay}</span>
+                        </div>
                       </td>
 
                       <td className="py-3 px-3 text-right font-mono font-black text-white">
@@ -378,6 +481,28 @@ export default function TransfersPage() {
 
                       <td className="py-3 px-3 text-right font-mono text-[#00F5A0]">
                         {masked.wageDisplay}
+                      </td>
+
+                      <td className="py-3 px-3 text-center font-mono text-[11px] text-zinc-400">
+                        {player.contractYearsLeft ? `${player.contractYearsLeft} Yıl` : '1 Yıl'}
+                      </td>
+
+                      <td className="py-3 px-3 text-center">
+                        <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border uppercase ${statusInfo.color}`}>
+                          {statusInfo.text}
+                        </span>
+                      </td>
+
+                      <td className="py-3 px-3 text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          <div className="w-12 bg-zinc-800 h-1.5 rounded-full overflow-hidden">
+                            <div
+                              className="bg-[#00F5A0] h-full"
+                              style={{ width: `${Math.min(100, scoutingLevel)}%` }}
+                            />
+                          </div>
+                          <span className="font-mono text-[10px] text-zinc-400">%{scoutingLevel}</span>
+                        </div>
                       </td>
 
                       <td className="py-3 px-4 text-center">
@@ -408,16 +533,39 @@ export default function TransfersPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Pagination Controls */}
+          <div className="flex items-center justify-between p-3 bg-[#080D1A] border border-zinc-800 text-xs font-mono">
+            <span className="text-zinc-400">
+              Toplam {marketPlayers.length} futbolcu • Sayfa {marketPage} / {marketTotalPages}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={marketPage <= 1}
+                onClick={() => setMarketPage((prev) => Math.max(1, prev - 1))}
+                className="px-3 py-1.5 bg-[#040810] border border-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed hover:border-zinc-600 flex items-center gap-1 text-white"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" /> Önceki
+              </button>
+              <button
+                disabled={marketPage >= marketTotalPages}
+                onClick={() => setMarketPage((prev) => Math.min(marketTotalPages, prev + 1))}
+                className="px-3 py-1.5 bg-[#040810] border border-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed hover:border-zinc-600 flex items-center gap-1 text-white"
+              >
+                Sonraki <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
       {/* 2. FREE AGENTS TAB */}
       {activeTab === 'FREE_AGENTS' && (
         <div className="space-y-4">
-          <div className="p-3 bg-[#080D1A] border border-zinc-800 text-xs text-zinc-300 flex items-center gap-3">
+          <div className="p-3.5 bg-[#080D1A] border border-zinc-800 text-xs text-zinc-300 flex items-center gap-3">
             <UserCheck className="w-5 h-5 text-[#00F5A0] shrink-0" />
             <div>
-              <strong className="text-white uppercase font-mono tracking-wider">Serbest Oyuncu Statüsü:</strong> Kulübüyle sözleşmesi sona eren veya feshedilen futbolcular bedelsiz transfer edilebilir. Yalnızca haftalık maaş ve imza primi görüşülür.
+              <strong className="text-white uppercase font-mono tracking-wider">Serbest Oyuncular Masası:</strong> Toplam {freeAgents.length} kulüpsüz profesyonel futbolcu. Kulüplere bonservis ödenmez; doğrudan sözleşme ve imza primi üzerinden anlaşılır.
             </div>
           </div>
 
@@ -426,49 +574,122 @@ export default function TransfersPage() {
               Şu an serbest statüde kayıtlı futbolcu bulunmamaktadır.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {freeAgents.map((player) => (
-                <div
-                  key={player.id}
-                  className="p-4 bg-[#080D1A] border border-zinc-800 hover:border-zinc-700 transition-all space-y-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="px-2 py-0.5 font-mono text-[10px] font-black uppercase bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
-                        {player.position}
-                      </span>
-                      <h3
-                        onClick={() => setInspectedPlayer(player)}
-                        className="font-bold text-white text-sm uppercase tracking-tight mt-1 hover:text-[#00F5A0] cursor-pointer"
-                      >
-                        {player.firstName} {player.lastName}
-                      </h3>
-                      <span className="text-[11px] font-mono text-zinc-400">
-                        {player.nationality} • {player.age} YAŞ
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <StatBadge value={player.overall} size="md" />
-                      <span className="text-[10px] font-mono text-zinc-500 block mt-1">POT: {player.potential}</span>
-                    </div>
-                  </div>
+            <div className="overflow-x-auto border border-zinc-850 bg-[#080D1A] shadow-2xl">
+              <table className="w-full text-left border-collapse min-w-[950px]">
+                <thead>
+                  <tr className="border-b border-zinc-800 bg-[#040711] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
+                    <th className="py-3 px-4">OYUNCU</th>
+                    <th className="py-3 px-3">ESKİ KULÜBÜ</th>
+                    <th className="py-3 px-2 text-center">MEVKİ</th>
+                    <th className="py-3 px-2 text-center">YAŞ</th>
+                    <th className="py-3 px-3 text-center">OVR / POT</th>
+                    <th className="py-3 px-3 text-right">MAAŞ BEKLENTİSİ</th>
+                    <th className="py-3 px-3 text-right">İMZA PRİMİ</th>
+                    <th className="py-3 px-3 text-center">İSTENEN SÖZLEŞME</th>
+                    <th className="py-3 px-3 text-center">GÖZLEM</th>
+                    <th className="py-3 px-4 text-center">İŞLEM</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-850 text-xs font-semibold">
+                  {paginatedFreeAgents.map((player) => {
+                    const masked = getMaskedPlayer(player);
+                    const signingBonusEstimate = Math.round(player.wage * 6 / 5000) * 5000;
+                    const contractDesire = player.age >= 32 ? '1 Yıl' : player.age <= 22 ? '3 Yıl' : '2 Yıl';
+                    const scoutingLevel = player.scoutingReport?.scoutedLevel ?? 55;
 
-                  <div className="pt-3 border-t border-zinc-800 flex items-center justify-between text-xs">
-                    <div>
-                      <span className="text-[10px] font-mono text-zinc-500 block uppercase">Maaş Beklentisi</span>
-                      <span className="font-mono font-bold text-[#00F5A0]">€{player.wage.toLocaleString('tr-TR')}/hf</span>
-                    </div>
-                    <button
-                      onClick={() => setNegotiationTargetPlayer(player)}
-                      className="px-3 py-1.5 bg-[#00F5A0] text-black font-mono font-bold text-xs uppercase hover:bg-[#00D68B] border border-white"
-                    >
-                      Teklif Yap
-                    </button>
-                  </div>
-                </div>
-              ))}
+                    return (
+                      <tr
+                        key={player.id}
+                        className="hover:bg-zinc-900/60 transition-colors group"
+                      >
+                        <td
+                          onClick={() => setInspectedPlayer(player)}
+                          className="py-3 px-4 cursor-pointer"
+                        >
+                          <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#00F5A0] transition-colors">
+                            {player.firstName} {player.lastName}
+                          </div>
+                          <div className="text-[10px] font-mono text-zinc-500">
+                            {player.nationality}
+                          </div>
+                        </td>
+
+                        <td className="py-3 px-3 text-zinc-300 font-mono text-[11px]">
+                          {player.previousClubName || 'Serbest / Kulüpsüz'}
+                        </td>
+
+                        <td className="py-3 px-2 text-center">
+                          <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-zinc-900 border border-zinc-700 text-[#00F5A0]">
+                            {player.position}
+                          </span>
+                        </td>
+
+                        <td className="py-3 px-2 text-center font-mono text-zinc-300">
+                          {player.age}
+                        </td>
+
+                        <td className="py-3 px-3 text-center font-mono">
+                          <span className="font-bold text-white">{masked.overallDisplay}</span>
+                          <span className="text-zinc-500 mx-1">/</span>
+                          <span className="text-[#00D4FF] font-bold">{masked.potentialDisplay}</span>
+                        </td>
+
+                        <td className="py-3 px-3 text-right font-mono text-[#00F5A0] font-bold">
+                          €{player.wage.toLocaleString('tr-TR')}/hf
+                        </td>
+
+                        <td className="py-3 px-3 text-right font-mono text-zinc-300">
+                          €{signingBonusEstimate.toLocaleString('tr-TR')}
+                        </td>
+
+                        <td className="py-3 px-3 text-center font-mono text-zinc-400">
+                          {contractDesire}
+                        </td>
+
+                        <td className="py-3 px-3 text-center">
+                          <span className="px-2 py-0.5 font-mono text-[10px] font-black uppercase bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/30">
+                            %{scoutingLevel}
+                          </span>
+                        </td>
+
+                        <td className="py-3 px-4 text-center">
+                          <button
+                            onClick={() => setNegotiationTargetPlayer(player)}
+                            className="px-3 py-1.5 bg-[#00F5A0] text-black font-mono font-bold text-xs uppercase hover:bg-[#00D68B] transition-all border border-white"
+                          >
+                            Sözleşme Görüşmesi
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           )}
+
+          {/* Pagination Controls for Free Agents */}
+          <div className="flex items-center justify-between p-3 bg-[#080D1A] border border-zinc-800 text-xs font-mono">
+            <span className="text-zinc-400">
+              Toplam {freeAgents.length} serbest oyuncu • Sayfa {freeAgentPage} / {freeAgentTotalPages}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                disabled={freeAgentPage <= 1}
+                onClick={() => setFreeAgentPage((prev) => Math.max(1, prev - 1))}
+                className="px-3 py-1.5 bg-[#040810] border border-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed hover:border-zinc-600 flex items-center gap-1 text-white"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" /> Önceki
+              </button>
+              <button
+                disabled={freeAgentPage >= freeAgentTotalPages}
+                onClick={() => setFreeAgentPage((prev) => Math.min(freeAgentTotalPages, prev + 1))}
+                className="px-3 py-1.5 bg-[#040810] border border-zinc-800 disabled:opacity-30 disabled:cursor-not-allowed hover:border-zinc-600 flex items-center gap-1 text-white"
+              >
+                Sonraki <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
       )}
 

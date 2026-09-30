@@ -143,6 +143,7 @@ export interface Player {
   isLoaned?: boolean;
   parentClubId?: string;
   parentClubName?: string;
+  previousClubName?: string;
   agent?: any;
 
   // SquadCraft Player 2.0 & Draft Economy Fields

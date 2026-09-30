@@ -32,9 +32,10 @@ export function simulateAIFixture(
   const awayPower = awayAvgOvr * 0.6 + awayRep * 0.4;
   const powerDiff = (homePower - awayPower) / 10; // e.g. +0.5 to -0.5
 
-  // Expected goals (xG)
-  const homeExpected = Math.max(0.4, Math.min(3.8, 1.45 + powerDiff * 0.8 + (Math.random() * 0.6 - 0.3)));
-  const awayExpected = Math.max(0.3, Math.min(3.5, 1.15 - powerDiff * 0.7 + (Math.random() * 0.6 - 0.3)));
+  // Expected goals (xG) calibrated for authentic league distribution:
+  // Target: ~2.55-2.65 avg goals per match, 46-48% Over 2.5, 52-54% Under 2.5
+  const homeExpected = Math.max(0.4, Math.min(3.2, 1.42 + powerDiff * 0.72 + (Math.random() * 0.36 - 0.18)));
+  const awayExpected = Math.max(0.3, Math.min(2.8, 1.14 - powerDiff * 0.65 + (Math.random() * 0.36 - 0.18)));
 
   // Poisson-like sample
   const sampleGoals = (lambda: number) => {

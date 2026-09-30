@@ -42,7 +42,7 @@ export function getPositionSuitability(playerPos: PlayerPosition, secondaryPosit
 // Progressive, bounded fatigue curve
 export function calculateFatigueMultiplier(fitness: number): number {
   const fitClamped = Math.max(30, Math.min(100, fitness));
-  return 0.82 + 0.18 * Math.pow(fitClamped / 100, 1.25);
+  return 0.74 + 0.26 * Math.pow(fitClamped / 100, 1.5);
 }
 
 // Calculate effective attribute of a player accounting for suitability, fitness, morale, form, consistency, and bigMatchPerformance

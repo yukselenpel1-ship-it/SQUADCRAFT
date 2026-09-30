@@ -99,22 +99,23 @@ export function computeTacticalModifiers(
   switch (tactics.pressing) {
     case 'Hafif':
       fatigueBurnRateMult *= 0.80;
-      turnoverForcedBonus = -0.05;
+      turnoverForcedBonus = -0.04;
       foulRiskMult = 0.75;
       break;
     case 'Orta':
       break;
     case 'Yoğun':
-      fatigueBurnRateMult *= 1.25;
-      turnoverForcedBonus = +0.08;
+      fatigueBurnRateMult *= 1.35;
+      turnoverForcedBonus = +0.06;
       foulRiskMult = 1.25;
-      defenseSecurityMult *= 1.05;
+      defenseSecurityMult *= 1.04;
+      counterVulnerabilityMult *= 1.15;
       break;
     case 'Aşırı':
-      fatigueBurnRateMult *= 1.60;
-      turnoverForcedBonus = +0.16;
-      foulRiskMult = 1.55;
-      counterVulnerabilityMult *= 1.20; // Space left behind if pressed past
+      fatigueBurnRateMult *= 1.80; // High stamina burn in second half
+      turnoverForcedBonus = +0.10; // Calibrated down from excessive 0.16
+      foulRiskMult = 1.60;
+      counterVulnerabilityMult *= 1.35; // Significant defensive space left behind
       break;
   }
 
@@ -133,15 +134,15 @@ export function computeTacticalModifiers(
       break;
     case 'Doğrudan':
       possessionShareBonus -= 4;
-      chanceCreationMult *= 1.06;
-      if (teamRatings.counterAttackAbility > 75) {
-        chanceCreationMult *= 1.08;
+      chanceCreationMult *= 1.08;
+      if (teamRatings.counterAttackAbility > 68) {
+        chanceCreationMult *= 1.12;
       }
       break;
     case 'Uzun':
       possessionShareBonus -= 8;
-      if (teamRatings.physicalStrength >= 75) {
-        chanceCreationMult *= 1.10;
+      if (teamRatings.physicalStrength >= 72) {
+        chanceCreationMult *= 1.12;
       } else {
         chanceCreationMult *= 0.90;
       }
@@ -154,26 +155,43 @@ export function computeTacticalModifiers(
   const isDeepLine = tactics.defensiveLine === 'Derin' || tactics.defensiveLine === 'Çok Derin';
 
   if (isHighLine) {
-    // High line compresses pressing, but if opponent has fast forwards, gives them breakaway threat
-    turnoverForcedBonus += 0.06;
-    if (opponentRatings.counterAttackAbility > 72) {
-      breakawayThreatBonus = (opponentRatings.counterAttackAbility - 70) * 0.015;
+    // High line compresses pressing, but gives opponent breakaway threat
+    turnoverForcedBonus += 0.04;
+    counterVulnerabilityMult *= 1.25;
+    breakawayThreatBonus += 0.25;
+    if (opponentRatings.counterAttackAbility > 65) {
+      breakawayThreatBonus += (opponentRatings.counterAttackAbility - 65) * 0.02;
     }
   } else if (isDeepLine) {
-    // Deep line protects against breakaways, but allows opponent more long shots and territorial possession
-    defenseSecurityMult *= 1.12;
-    possessionShareBonus -= 4;
+    // Deep line compact shape provides robust defense in the box
+    defenseSecurityMult *= 1.25;
+    possessionShareBonus -= 5;
   }
 
   // 6. Tactical Matchups Interaction
-  // Interaction A: High press vs technically weak midfield -> huge turnovers
-  if ((tactics.pressing === 'Yoğun' || tactics.pressing === 'Aşırı') && opponentRatings.possessionAbility < 72) {
-    turnoverForcedBonus += 0.10;
-    possessionShareBonus += 4;
+  const isHighPress = tactics.pressing === 'Yoğun' || tactics.pressing === 'Aşırı';
+  const isOpponentHighPress = opponentTactics.pressing === 'Yoğun' || opponentTactics.pressing === 'Aşırı';
+  const isOpponentHighLine = opponentTactics.defensiveLine === 'Yüksek' || opponentTactics.defensiveLine === 'Çok Yüksek';
+  const isDirectOrCounter = tactics.passingStyle === 'Doğrudan' || tactics.passingStyle === 'Uzun' || teamRatings.counterAttackAbility >= 65;
+
+  // Interaction A: High press vs technically weak midfield
+  if (isHighPress && opponentRatings.possessionAbility < 70) {
+    turnoverForcedBonus += 0.08;
+    possessionShareBonus += 3;
   }
-  // Interaction B: High press vs high technical midfield -> press is bypassed
-  if ((tactics.pressing === 'Yoğun' || tactics.pressing === 'Aşırı') && opponentRatings.possessionAbility >= 82) {
-    counterVulnerabilityMult *= 1.15;
+  // Interaction B: High press vs high technical midfield -> press is bypassed easily
+  if (isHighPress && opponentRatings.possessionAbility >= 78) {
+    counterVulnerabilityMult *= 1.25;
+    breakawayThreatBonus += 0.15;
+  }
+  // Interaction C: Low Block / Deep line defending against High Line / High Press
+  // Compresses space, absorbs pressure, and launches lethal direct counters
+  if (isDeepLine && (isOpponentHighLine || isOpponentHighPress)) {
+    defenseSecurityMult *= 1.20;
+    if (isDirectOrCounter) {
+      breakawayThreatBonus += 0.40;
+      chanceCreationMult *= 1.22;
+    }
   }
 
   // 7. Width Modifiers

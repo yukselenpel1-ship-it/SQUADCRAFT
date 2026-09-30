@@ -74,8 +74,6 @@ export default function MainMenuPage() {
         router.push('/draft');
       } else if (e.key === 'k' || e.key === 'K') {
         router.push('/career/new');
-      } else if (e.key === 's' || e.key === 'S') {
-        router.push('/settings');
       } else if (e.key === 'm' || e.key === 'M' || e.key === 'F1') {
         e.preventDefault();
         setIsFeedbackOpen(true);
@@ -164,12 +162,6 @@ export default function MainMenuPage() {
             >
               [ DRAFT LEAGUE ]
             </Link>
-            <Link
-              href="/settings"
-              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-zinc-900/90 text-zinc-300 border border-zinc-800 hover:border-zinc-500 hover:text-white transition-all"
-            >
-              [ AYARLAR ]
-            </Link>
           </nav>
 
           {/* Right: Server Telemetry & Quick Action HUD */}
@@ -194,19 +186,6 @@ export default function MainMenuPage() {
                 F1
               </kbd>
             </button>
-
-            {/* Settings Button */}
-            <Link
-              href="/settings"
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-zinc-700 hover:border-zinc-500 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
-              title="Ayarlar (Kısayol: S)"
-            >
-              <Settings className="w-3.5 h-3.5 text-zinc-400" />
-              <span className="hidden sm:inline">Ayarlar</span>
-              <kbd className="hidden md:inline px-1 py-0.2 text-[9px] font-mono bg-zinc-900 text-zinc-400 border border-zinc-700">
-                S
-              </kbd>
-            </Link>
           </div>
         </div>
       </header>
@@ -289,13 +268,13 @@ export default function MainMenuPage() {
                   👥 2–8 Menajer
                 </span>
                 <span className="px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-[11px] font-bold text-zinc-200">
-                  ⚡ Snake Draft
+                  ⚡ Snake Draft & Bütçe
                 </span>
                 <span className="px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-[11px] font-bold text-zinc-200">
                   ⏱️ 60sn Seçim
                 </span>
                 <span className="px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-[11px] font-bold text-[#00D4FF]">
-                  🏆 6 Hafta Lig
+                  🟢 Hazır Sistemi & Canlı Senkron
                 </span>
               </div>
             </div>
@@ -355,22 +334,22 @@ export default function MainMenuPage() {
               </h2>
 
               <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed">
-                Kendi menajerlik kariyerine başla. Kurgusal Alveria liginde kulübünü seç, transferler yap, taktiklerini oluştur ve kupaya uzan!
+                2000+ futbolcu evreni, dinamik transfer pazarlığı, altyapı akademisi, scouting ve yaşayan kariyer haberleriyle kulübünü zirveye taşı!
               </p>
 
               {/* Athletic Specs Badges */}
               <div className="flex flex-wrap gap-1.5 pt-2">
                 <span className="px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-[11px] font-bold text-zinc-200">
-                  🌍 16 Özgün Kulüp
+                  🌍 2000+ Futbolcu
                 </span>
                 <span className="px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-[11px] font-bold text-zinc-200">
-                  📋 Taktik Motoru
+                  💼 Transfer Masası
                 </span>
                 <span className="px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-[11px] font-bold text-zinc-200">
-                  📈 Oyuncu Gelişimi
+                  📈 Gelişim & Akademi
                 </span>
                 <span className="px-2.5 py-1 bg-zinc-950 border border-zinc-800 text-[11px] font-bold text-[#00F5A0]">
-                  💾 Otomatik Kayıt
+                  📰 Yaşayan Haberler
                 </span>
               </div>
             </div>
@@ -420,13 +399,13 @@ export default function MainMenuPage() {
               </div>
               <div className="min-w-0">
                 <div className="text-[10px] font-mono font-bold text-[#00F5A0] uppercase tracking-wider">
-                  DATABASE // 01
+                  DATABASE 2.0 // 01
                 </div>
                 <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#00F5A0] transition-colors truncate">
-                  Özgün Futbol Evreni
+                  2000+ Futbolcu Evreni
                 </h3>
                 <p className="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">
-                  16 kurgusal kulüp ve tamamen özgün futbolcu veri tabanı.
+                  10 küresel bölge, potansiyel gelişim eğrileri, gizli özellikler ve serbest oyuncu havuzu.
                 </p>
               </div>
             </div>
@@ -452,10 +431,10 @@ export default function MainMenuPage() {
                   MULTIPLAYER // 02
                 </div>
                 <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#00D4FF] transition-colors truncate">
-                  Canlı Draft Odası
+                  Draft & Bütçe Ekonomisi
                 </h3>
                 <p className="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">
-                  Gerçek zamanlı sıra, süre sınırlı seçimler ve bot desteği.
+                  €100M-€300M lobi bütçe seçimi, Hazır sistemi ve canlı maç senkronizasyonu.
                 </p>
               </div>
             </div>
@@ -481,10 +460,10 @@ export default function MainMenuPage() {
                   HYPER-SIM // 03
                 </div>
                 <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#00F5A0] transition-colors truncate">
-                  Taktik & Analitik
+                  Taktik, Scouting & Haberler
                 </h3>
                 <p className="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">
-                  Dizilişler, geçiş presi, kondisyon ve canlı maç motoru.
+                  9 diziliş, taktik denge, derin gözlem ağı, akademi ve canlı haber bülteni.
                 </p>
               </div>
             </div>
@@ -549,10 +528,6 @@ export default function MainMenuPage() {
             <div className="flex items-center gap-1">
               <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-bold">M</kbd>
               <span>GERİ BİLDİRİM</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-bold">S</kbd>
-              <span>AYARLAR</span>
             </div>
           </div>
 

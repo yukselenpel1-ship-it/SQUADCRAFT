@@ -50,6 +50,7 @@ import {
   Award,
   Star,
   CheckCircle2,
+  LogOut,
 } from 'lucide-react';
 
 // ============================================================================
@@ -213,6 +214,11 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         lastStateVersionRef.current = res.state.room.stateVersion || 1;
 
         // Route Guards
+        if (res.state.room.status === 'CLOSED' || res.state.room.status === 'TERMINATED') {
+          alert('Oda kurucusu odadan ayrıldığı için oda kapatıldı.');
+          router.push('/');
+          return;
+        }
         if (res.state.room.status === 'LOBBY') {
           router.push(`/draft/room/${roomCode}`);
           return;
@@ -267,7 +273,12 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
     hydrate();
 
     // 1. Realtime broadcast & Postgres changes listener
-    const unsubscribe = DraftMultiplayerStore.subscribeToRoom(roomCode, () => {
+    const unsubscribe = DraftMultiplayerStore.subscribeToRoom(roomCode, (event) => {
+      if (event?.type === 'BROADCAST_ROOM_CLOSED') {
+        alert('Oda kurucusu odadan ayrıldığı için oda kapatıldı.');
+        router.push('/');
+        return;
+      }
       hydrate(true);
     });
 
@@ -599,6 +610,18 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
     }
   };
 
+  const handleLeaveRoom = async () => {
+    const isHost = currentMember?.isHost || room.hostMemberId === currentMember?.id;
+    if (isHost && currentMember) {
+      const confirmed = window.confirm('Oda kurucususunuz. Odadan ayrıldığınızda oda kapatılacak ve tüm üyeler ana sayfaya yönlendirilecektir. Ayrılmak istiyor musunuz?');
+      if (!confirmed) return;
+      await DraftMultiplayerStore.closeRoomByHost(room.id, currentMember.id);
+      router.push('/');
+    } else {
+      router.push('/draft');
+    }
+  };
+
   // Helper for Positional Colors
   const getPosColorClass = (pos: string) => {
     if (pos === 'GK') return 'bg-amber-500/20 text-amber-400 border-amber-500/40';
@@ -809,6 +832,16 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               title="Geri Bildirim"
             >
               <MessageSquare className="w-3.5 h-3.5 text-[#00F5A0]" />
+            </button>
+
+            {/* Leave Room Button */}
+            <button
+              onClick={handleLeaveRoom}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-wider transition rounded"
+              title="Odadan Ayrıl"
+            >
+              <LogOut className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <span className="hidden sm:inline">ODADAN AYRIL</span>
             </button>
           </div>
         </div>

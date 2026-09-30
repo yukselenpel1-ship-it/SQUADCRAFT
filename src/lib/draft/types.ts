@@ -12,7 +12,9 @@ export type RoomStatus =
   | 'LEAGUE_READY'
   | 'LEAGUE_ACTIVE'
   | 'LEAGUE_COMPLETED'
-  | 'ARCHIVED';
+  | 'ARCHIVED'
+  | 'CLOSED'
+  | 'TERMINATED';
 
 export type LeagueFormat = 'SINGLE_ROUND' | 'DOUBLE_ROUND';
 export type SquadSizeOption = 16 | 18 | 20 | 22;
@@ -222,6 +224,7 @@ export type MultiplayerActionType =
   | 'UPDATE_CLUB'
   | 'ADD_BOT'
   | 'REMOVE_BOT'
+  | 'CLOSE_ROOM'
   | 'REMATCH';
 
 export interface MultiplayerActionLog {

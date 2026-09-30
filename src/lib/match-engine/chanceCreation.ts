@@ -122,8 +122,8 @@ export function simulateMinuteAttack(
     chanceType = 'PENALTY';
     coords = isHome ? { x: 88, y: 50 } : { x: 12, y: 50 };
   }
-  // Breakaway check (boosted by fast wingers & opponent high line, suppressed by sweeper keeper)
-  else if (chanceRoll < 0.035 + 0.14 * (1 + defMods.breakawayThreatBonus) * (hasFastWinger ? 1.25 : 1.0) * (hasSweeperKeeper ? 0.80 : 1.0)) {
+  // Breakaway check (boosted by fast wingers, opponent high line, low block counter attacks, suppressed by sweeper keeper)
+  else if (chanceRoll < 0.035 + 0.15 * (1 + (defMods.breakawayThreatBonus || 0) + (attMods.breakawayThreatBonus || 0)) * (hasFastWinger ? 1.25 : 1.0) * (hasSweeperKeeper ? 0.80 : 1.0)) {
     chanceType = 'ONE_ON_ONE';
     coords = isHome ? { x: 84 + Math.random() * 8, y: 45 + Math.random() * 10 } : { x: 8 + Math.random() * 8, y: 45 + Math.random() * 10 };
   }

@@ -315,7 +315,15 @@ export function processSingleDay(state: DailyProcessorState): {
   updatedClubs = aiMarketRes.updatedClubs;
 
   // 8. Generate Daily News
-  const generatedNews = generateDailyNews(nextDate, updatedClubs, state.standings, state.fixtures);
+  const generatedNews = generateDailyNews(
+    nextDate,
+    updatedClubs,
+    currentStandings,
+    currentFixtures,
+    updatedPlayers,
+    state.userClubId,
+    finRes.updatedFinances
+  );
   const combinedNews = [...aiMarketRes.completedNews, ...generatedNews];
 
   const updatedState: DailyProcessorState = {
