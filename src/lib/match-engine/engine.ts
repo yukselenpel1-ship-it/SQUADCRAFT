@@ -252,6 +252,16 @@ export class MatchEngine {
     const minute = this.state.minute;
     const newEvents: MatchEngineEvent[] = [];
 
+    // Track minutes played for all active pitch players
+    for (const id of this.state.home.activePitchPlayerIds) {
+      const p = this.state.home.players[id];
+      if (p) p.minutesPlayed += 1;
+    }
+    for (const id of this.state.away.activePitchPlayerIds) {
+      const p = this.state.away.players[id];
+      if (p) p.minutesPlayed += 1;
+    }
+
     // Halftime / Fulltime checks
     if (minute === 45) {
       const halfEvent: MatchEngineEvent = {

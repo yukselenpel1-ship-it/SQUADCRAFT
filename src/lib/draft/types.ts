@@ -50,6 +50,9 @@ export interface DraftRules {
   clubBudgets?: { id: string; memberId: string; code?: string; budget?: number; spentBudget?: number; squadPlayerIds?: string[] }[];
   botConfigs?: Record<string, { difficulty: BotDifficulty; personality?: BotPersonality }>;
   matchSpeed?: 1 | 2 | 3 | 4; // 1x Normal, 2x Hızlı, 3x Çok Hızlı, 4x Maksimum
+  seasonNumber?: number; // 1, 2, 3...
+  seasonHistory?: PastSeasonHistory[];
+  seasonPlayerStats?: Record<string, PlayerSeasonStats>;
 }
 
 export interface LiveMatchweekState {
@@ -149,6 +152,9 @@ export interface MultiplayerRoom {
   status: RoomStatus;
   rules: DraftRules;
   stateVersion: number;
+  seasonNumber?: number; // 1, 2, 3...
+  seasonHistory?: PastSeasonHistory[];
+  seasonPlayerStats?: Record<string, PlayerSeasonStats>;
   currentMatchweek?: number;
   totalMatchweeks?: number;
   leaguePhase?: LeaguePhase;
@@ -319,6 +325,7 @@ export type DraftFixtureStatus = 'AWAITING_TACTICS' | 'READY' | 'SIMULATING' | '
 export interface DraftFixture {
   id: string;
   roomId: string;
+  seasonNumber?: number; // 1, 2, 3...
   round: number;
   homeClubId: string;
   awayClubId: string;
@@ -348,13 +355,56 @@ export interface DraftStanding {
   form: ('W' | 'D' | 'L')[];
 }
 
+export interface PlayerSeasonStats {
+  playerId: string;
+  playerName: string;
+  clubId: string;
+  clubName: string;
+  position: string;
+  appearances: number;
+  totalMinutes: number;
+  goals: number;
+  assists: number;
+  averageRating: number;
+  totalCards: number;
+  yellowCards: number;
+  redCards: number;
+  shots?: number;
+  shotsOnTarget?: number;
+  saves?: number;
+  cleanSheets?: number;
+}
+
+export interface SeasonLeaderboards {
+  topScorers: PlayerSeasonStats[];
+  topAssists: PlayerSeasonStats[];
+  bestRatings: PlayerSeasonStats[];
+}
+
+export interface PastSeasonHistory {
+  seasonNumber: number;
+  championClubId: string;
+  championClubName: string;
+  championManagerName?: string;
+  championBadge?: any;
+  finalStandings?: DraftStanding[];
+  standings?: DraftStanding[];
+  fixtures?: DraftFixture[];
+  awards?: LeagueAwards;
+  leaderboards?: SeasonLeaderboards;
+  topScorer?: { playerId: string; playerName: string; clubName: string; goals: number; matches?: number };
+  topAssists?: { playerId: string; playerName: string; clubName: string; assists: number; matches?: number };
+  mvp?: { playerId: string; playerName: string; clubName: string; rating: number; matches?: number };
+  completedAt: string;
+}
+
 export interface LeagueAwards {
   championClubId: string;
   championClubName: string;
-  topScorer?: { playerId: string; playerName: string; clubName: string; goals: number; assists?: number };
-  topAssists?: { playerId: string; playerName: string; clubName: string; assists: number };
-  bestRating?: { playerId: string; playerName: string; clubName: string; rating: number };
-  bestGoalkeeper?: { playerId: string; playerName: string; clubName: string; cleanSheets: number };
+  topScorer?: { playerId: string; playerName: string; clubName: string; goals: number; assists?: number; matches?: number };
+  topAssists?: { playerId: string; playerName: string; clubName: string; assists: number; matches?: number };
+  bestRating?: { playerId: string; playerName: string; clubName: string; rating: number; matches?: number };
+  bestGoalkeeper?: { playerId: string; playerName: string; clubName: string; cleanSheets: number; matches?: number };
   highestScoringMatch?: { homeName: string; awayName: string; score: string; totalGoals: number };
   biggestWin?: { winnerName: string; loserName: string; score: string; goalDiff: number };
   bestAttack?: { clubName: string; goalsFor: number };

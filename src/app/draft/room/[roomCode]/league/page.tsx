@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation';
 import { DraftMultiplayerStore, RoomFullState, HydratedRoomResult } from '@/lib/draft/multiplayerStore';
 import { getMultiplayerSessionId } from '@/lib/draft/sessionManager';
 import { SQUADCRAFT_VERSION } from '@/lib/version';
-import { DraftFixture, DraftStanding, LeagueAwards, DraftPick, RoomMember, DraftClub } from '@/lib/draft/types';
+import { DraftFixture, DraftStanding, LeagueAwards, DraftPick, RoomMember, DraftClub, PastSeasonHistory, PlayerSeasonStats } from '@/lib/draft/types';
+import { computeSeasonPlayerStats } from '@/lib/draft/matchEngineIntegration';
 import { Player, Formation, Mentality, Tempo, Pressing, PassingStyle, DefensiveLine, Width } from '@/types/game';
 import { BadgePreview } from '@/components/draft/BadgePreview';
 import { MatchReportModal } from '@/components/draft/MatchReportModal';
@@ -132,6 +133,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const [isLiveMatchModalOpen, setIsLiveMatchModalOpen] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [isRematchModalOpen, setIsRematchModalOpen] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -814,10 +816,20 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   // Rematch
   const handleRematch = () => {
     if (!currentMember || !isHost) return;
+    setIsRematchModalOpen(true);
+  };
+
+  const handleConfirmRematch = () => {
+    if (!currentMember || !isHost) return;
     const res = DraftMultiplayerStore.rematch(room.id, currentMember.id, true);
     if (res.state) {
-      router.push(`/draft/room/${roomCode}`);
+      setHydrationResult((prev) => ({ ...prev, state: res.state }));
+      setStatusMessage(`Sezon ${res.state.room.seasonNumber || 2} başarıyla başlatıldı! Kadrolar ve taktikler korundu.`);
+      setTimeout(() => setStatusMessage(null), 4000);
+    } else if (res.error) {
+      setErrorMessage(res.error);
     }
+    setIsRematchModalOpen(false);
   };
 
   // Filter squad
@@ -838,6 +850,12 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const benchAvgOvr = activeBench.length > 0 ? (activeBench.reduce((sum, p) => sum + p.overall, 0) / activeBench.length).toFixed(1) : '0.0';
 
   const progressPercent = fixtures.length > 0 ? Math.round((completedFixtures.length / fixtures.length) * 100) : 0;
+  const currentSeasonNum = room.seasonNumber || room.rules?.seasonNumber || 1;
+
+  // Real season player statistics leaderboards (FM-style Gol Krallığı, Asist, Reyting)
+  const { topScorers, topAssists, bestRatings } = React.useMemo(() => {
+    return computeSeasonPlayerStats(fixtures, clubs, playerPool, currentSeasonNum);
+  }, [fixtures, clubs, playerPool, currentSeasonNum]);
 
   // Filtered fixtures for Fixtures tab
   const displayedFixtures = fixtures.filter((f: DraftFixture) => {
@@ -924,6 +942,9 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                 {room.name}
               </span>
             </div>
+            <span className="px-2 py-0.5 bg-[#FFB800]/20 border border-[#FFB800]/50 text-[#FFB800] text-[10px] font-mono font-black uppercase tracking-wider">
+              SEZON {currentSeasonNum}
+            </span>
             <span className="text-zinc-600">|</span>
             <span className={`text-[11px] font-mono font-bold uppercase ${isSeasonComplete ? 'text-[#FFB800]' : 'text-[#00F5A0]'}`}>
               {isSeasonComplete ? '🏆 SEZON ŞAMPİYONLUĞU' : `⚽ HAFTA ${currentMatchweek} / ${totalMatchweeks}`}
@@ -1016,6 +1037,9 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               </div>
               <div>
                 <div className="flex items-center gap-2.5">
+                  <span className="text-[10px] font-mono font-black px-2 py-0.5 bg-[#FFB800]/20 border border-[#FFB800]/50 text-[#FFB800] uppercase tracking-wider">
+                    SEZON {currentSeasonNum}
+                  </span>
                   <span className="text-sm sm:text-base font-black text-white uppercase italic tracking-wider font-display">
                     {isSeasonComplete ? 'LİG SEZONU TAMAMLANDI' : `HAFTA ${currentMatchweek} / ${totalMatchweeks} İLERLEMESİ`}
                   </span>
@@ -1147,14 +1171,21 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                 </>
               )}
 
-              {isSeasonComplete && isHost && (
-                <button
-                  onClick={handleRematch}
-                  className="px-6 py-3 bg-gradient-to-r from-[#FFB800] to-[#E5A500] hover:from-[#FFE082] text-black font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center gap-2 active:scale-95"
-                >
-                  <RefreshCw className="w-4 h-4" />
-                  <span>YENİ SEZON BAŞLAT (REMATCH)</span>
-                </button>
+              {isSeasonComplete && (
+                isHost ? (
+                  <button
+                    onClick={handleRematch}
+                    className="px-6 py-3 bg-gradient-to-r from-[#FFB800] to-[#E5A500] hover:from-[#FFE082] text-black font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center gap-2 active:scale-95"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                    <span>YENİ SEZON BAŞLAT (REMATCH)</span>
+                  </button>
+                ) : (
+                  <div className="text-xs text-[#FFB800] font-bold px-4 py-2.5 bg-amber-950/60 border border-[#FFB800]/40 flex items-center gap-2">
+                    <Clock className="w-4 h-4 animate-spin" />
+                    <span>Kurucu yeni sezonu başlatmayı bekliyor.</span>
+                  </div>
+                )
               )}
             </div>
           </div>
@@ -1194,13 +1225,18 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                 </div>
               </div>
 
-              {isHost && (
+              {isHost ? (
                 <button
                   onClick={handleRematch}
                   className="px-6 py-3.5 bg-gradient-to-r from-[#FFB800] to-[#E5A500] hover:from-[#FFE082] text-black font-black text-xs uppercase tracking-wider transition shadow-lg active:scale-95"
                 >
                   🔄 AYNI KADROLARLA YENİ LİG (REMATCH)
                 </button>
+              ) : (
+                <div className="text-xs text-[#FFB800] font-bold px-4 py-2.5 bg-amber-950/60 border border-[#FFB800]/40 flex items-center gap-2">
+                  <Clock className="w-4 h-4 animate-spin" />
+                  <span>Kurucu yeni sezonu başlatmayı bekliyor.</span>
+                </div>
               )}
             </div>
 
@@ -2357,67 +2393,216 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         {/* ================================================================== */}
         {/* TAB 6: İSTATİSTİKLER (LEADERBOARDS & RECORDS)                      */}
         {/* ================================================================== */}
+        {/* ================================================================== */}
+        {/* TAB 6: İSTATİSTİKLER (LEADERBOARDS & RECORDS)                      */}
+        {/* ================================================================== */}
         {activeTab === 'players' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Top Scorers */}
-            <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-black text-white uppercase italic tracking-wider border-b border-zinc-800 pb-3 flex items-center gap-2 font-display">
-                <span>⚽</span>
-                <span>GOL KRALLIĞI</span>
-              </h3>
-              <div className="space-y-2.5 text-xs">
-                {awards?.topScorer ? (
-                  <div className="p-4 bg-zinc-950 border border-[#FFB800]/40 flex items-center justify-between">
-                    <div>
-                      <div className="font-black text-white uppercase text-sm">{awards.topScorer.playerName}</div>
-                      <div className="text-zinc-400 text-[11px] font-bold mt-0.5">{awards.topScorer.clubName}</div>
-                    </div>
-                    <span className="font-mono font-black text-[#FFB800] text-base">{awards.topScorer.goals} Gol</span>
-                  </div>
-                ) : (
-                  <div className="text-zinc-400 text-xs py-6 text-center">Maçlar oynandıkça goller listelenecektir.</div>
-                )}
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#070D14]/95 border border-zinc-800 p-4">
+              <div>
+                <h2 className="text-base font-black text-white uppercase italic tracking-wider font-display flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-[#00F5A0]" />
+                  <span>SEZON {currentSeasonNum} OYUNCU İSTATİSTİKLERİ VE LİDERLER</span>
+                </h2>
+                <p className="text-xs text-zinc-400 mt-1">
+                  Tamamlanan {completedFixtures.length} karşılaşmanın gerçek Match Engine verilerinden türetilmiştir.
+                </p>
               </div>
+              <span className="text-[11px] font-mono font-bold text-zinc-400 px-3 py-1 bg-zinc-950 border border-zinc-800">
+                GÜNCEL VERİ
+              </span>
             </div>
 
-            {/* Top Assists */}
-            <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-black text-white uppercase italic tracking-wider border-b border-zinc-800 pb-3 flex items-center gap-2 font-display">
-                <span>🎯</span>
-                <span>ASİST LİDERLİĞİ</span>
-              </h3>
-              <div className="space-y-2.5 text-xs">
-                {awards?.topAssists ? (
-                  <div className="p-4 bg-zinc-950 border border-[#00D4FF]/40 flex items-center justify-between">
-                    <div>
-                      <div className="font-black text-white uppercase text-sm">{awards.topAssists.playerName}</div>
-                      <div className="text-zinc-400 text-[11px] font-bold mt-0.5">{awards.topAssists.clubName}</div>
-                    </div>
-                    <span className="font-mono font-black text-[#00D4FF] text-base">{awards.topAssists.assists} Asist</span>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* 1. GOL KRALLIĞI */}
+              <div className="bg-[#070D14]/95 border border-zinc-800 p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-display">
+                    <span className="text-lg">⚽</span>
+                    <span>GOL KRALLIĞI</span>
+                  </h3>
+                  <span className="text-[10px] font-mono font-bold text-[#FFB800] uppercase bg-amber-950/40 px-2 py-0.5 border border-[#FFB800]/30">
+                    TOPLAM {topScorers.filter((p) => p.goals > 0).length} GOLCÜ
+                  </span>
+                </div>
+
+                {topScorers.length === 0 || topScorers.every((p) => p.goals === 0 && p.appearances === 0) ? (
+                  <div className="text-zinc-400 text-xs py-10 text-center space-y-1">
+                    <div className="text-lg">⚽</div>
+                    <div>Maçlar oynandıkça goller listelenecektir.</div>
                   </div>
                 ) : (
-                  <div className="text-zinc-400 text-xs py-6 text-center">Maçlar oynandıkça asistler listelenecektir.</div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                        <tr>
+                          <th className="py-2.5 px-2 text-center w-8">#</th>
+                          <th className="py-2.5 px-2">Futbolcu</th>
+                          <th className="py-2.5 px-2">Kulüp</th>
+                          <th className="py-2.5 px-2 text-center">Maç</th>
+                          <th className="py-2.5 px-2 text-right">Gol</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/60 font-mono">
+                        {topScorers.slice(0, 15).map((p, idx) => {
+                          const isTop = idx === 0 && p.goals > 0;
+                          const club = clubs.find((c) => c.id === p.clubId);
+                          return (
+                            <tr
+                              key={p.playerId}
+                              className={`transition ${isTop ? 'bg-amber-950/20 text-[#FFB800]' : 'hover:bg-zinc-900/50 text-zinc-200'}`}
+                            >
+                              <td className="py-2.5 px-2 text-center font-black">
+                                {idx === 0 ? '👑' : `${idx + 1}`}
+                              </td>
+                              <td className="py-2.5 px-2 font-sans">
+                                <div className="font-bold text-white truncate max-w-[130px]">{p.playerName}</div>
+                                <div className="text-[10px] text-zinc-500 font-mono">{p.position}</div>
+                              </td>
+                              <td className="py-2.5 px-2 font-sans">
+                                <div className="flex items-center gap-1.5 truncate max-w-[110px]" title={p.clubName}>
+                                  {club && <BadgePreview badge={club.badge} clubCode={club.code} size={14} />}
+                                  <span className="truncate text-zinc-300 text-[11px]">{p.clubName}</span>
+                                </div>
+                              </td>
+                              <td className="py-2.5 px-2 text-center text-zinc-400 font-bold">{p.appearances}</td>
+                              <td className="py-2.5 px-2 text-right font-black text-[#FFB800] text-sm">
+                                {p.goals}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
-            </div>
 
-            {/* Best Ratings */}
-            <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
-              <h3 className="text-sm font-black text-white uppercase italic tracking-wider border-b border-zinc-800 pb-3 flex items-center gap-2 font-display">
-                <span>⭐</span>
-                <span>EN YÜKSEK REYTİNGLER</span>
-              </h3>
-              <div className="space-y-2.5 text-xs">
-                {awards?.bestRating ? (
-                  <div className="p-4 bg-zinc-950 border border-[#00F5A0]/40 flex items-center justify-between">
-                    <div>
-                      <div className="font-black text-white uppercase text-sm">{awards.bestRating.playerName}</div>
-                      <div className="text-zinc-400 text-[11px] font-bold mt-0.5">{awards.bestRating.clubName}</div>
-                    </div>
-                    <span className="font-mono font-black text-[#00F5A0] text-base">{awards.bestRating.rating} / 10</span>
+              {/* 2. ASİST LİDERLİĞİ */}
+              <div className="bg-[#070D14]/95 border border-zinc-800 p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-display">
+                    <span className="text-lg">🎯</span>
+                    <span>ASİST LİDERLİĞİ</span>
+                  </h3>
+                  <span className="text-[10px] font-mono font-bold text-[#00D4FF] uppercase bg-cyan-950/40 px-2 py-0.5 border border-[#00D4FF]/30">
+                    TOPLAM {topAssists.filter((p) => p.assists > 0).length} ASİSTÇİ
+                  </span>
+                </div>
+
+                {topAssists.length === 0 || topAssists.every((p) => p.assists === 0 && p.appearances === 0) ? (
+                  <div className="text-zinc-400 text-xs py-10 text-center space-y-1">
+                    <div className="text-lg">🎯</div>
+                    <div>Maçlar oynandıkça asistler listelenecektir.</div>
                   </div>
                 ) : (
-                  <div className="text-zinc-400 text-xs py-6 text-center">Maçlar oynandıkça reytingler listelenecektir.</div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                        <tr>
+                          <th className="py-2.5 px-2 text-center w-8">#</th>
+                          <th className="py-2.5 px-2">Futbolcu</th>
+                          <th className="py-2.5 px-2">Kulüp</th>
+                          <th className="py-2.5 px-2 text-center">Maç</th>
+                          <th className="py-2.5 px-2 text-right">Asist</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/60 font-mono">
+                        {topAssists.slice(0, 15).map((p, idx) => {
+                          const isTop = idx === 0 && p.assists > 0;
+                          const club = clubs.find((c) => c.id === p.clubId);
+                          return (
+                            <tr
+                              key={p.playerId}
+                              className={`transition ${isTop ? 'bg-cyan-950/20 text-[#00D4FF]' : 'hover:bg-zinc-900/50 text-zinc-200'}`}
+                            >
+                              <td className="py-2.5 px-2 text-center font-black">
+                                {idx === 0 ? '👑' : `${idx + 1}`}
+                              </td>
+                              <td className="py-2.5 px-2 font-sans">
+                                <div className="font-bold text-white truncate max-w-[130px]">{p.playerName}</div>
+                                <div className="text-[10px] text-zinc-500 font-mono">{p.position}</div>
+                              </td>
+                              <td className="py-2.5 px-2 font-sans">
+                                <div className="flex items-center gap-1.5 truncate max-w-[110px]" title={p.clubName}>
+                                  {club && <BadgePreview badge={club.badge} clubCode={club.code} size={14} />}
+                                  <span className="truncate text-zinc-300 text-[11px]">{p.clubName}</span>
+                                </div>
+                              </td>
+                              <td className="py-2.5 px-2 text-center text-zinc-400 font-bold">{p.appearances}</td>
+                              <td className="py-2.5 px-2 text-right font-black text-[#00D4FF] text-sm">
+                                {p.assists}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+
+              {/* 3. EN YÜKSEK REYTİNGLER */}
+              <div className="bg-[#070D14]/95 border border-zinc-800 p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-display">
+                    <span className="text-lg">⭐</span>
+                    <span>EN YÜKSEK REYTİNGLER</span>
+                  </h3>
+                  <span className="text-[10px] font-mono font-bold text-[#00F5A0] uppercase bg-emerald-950/40 px-2 py-0.5 border border-[#00F5A0]/30">
+                    MİN. 1 MAÇ
+                  </span>
+                </div>
+
+                {bestRatings.length === 0 ? (
+                  <div className="text-zinc-400 text-xs py-10 text-center space-y-1">
+                    <div className="text-lg">⭐</div>
+                    <div>Maçlar oynandıkça reytingler listelenecektir.</div>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                        <tr>
+                          <th className="py-2.5 px-2 text-center w-8">#</th>
+                          <th className="py-2.5 px-2">Futbolcu</th>
+                          <th className="py-2.5 px-2">Kulüp</th>
+                          <th className="py-2.5 px-2 text-center">Maç</th>
+                          <th className="py-2.5 px-2 text-right">Reyting</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/60 font-mono">
+                        {bestRatings.slice(0, 15).map((p, idx) => {
+                          const isTop = idx === 0;
+                          const club = clubs.find((c) => c.id === p.clubId);
+                          return (
+                            <tr
+                              key={p.playerId}
+                              className={`transition ${isTop ? 'bg-emerald-950/20 text-[#00F5A0]' : 'hover:bg-zinc-900/50 text-zinc-200'}`}
+                            >
+                              <td className="py-2.5 px-2 text-center font-black">
+                                {idx === 0 ? '👑' : `${idx + 1}`}
+                              </td>
+                              <td className="py-2.5 px-2 font-sans">
+                                <div className="font-bold text-white truncate max-w-[130px]">{p.playerName}</div>
+                                <div className="text-[10px] text-zinc-500 font-mono">{p.position}</div>
+                              </td>
+                              <td className="py-2.5 px-2 font-sans">
+                                <div className="flex items-center gap-1.5 truncate max-w-[110px]" title={p.clubName}>
+                                  {club && <BadgePreview badge={club.badge} clubCode={club.code} size={14} />}
+                                  <span className="truncate text-zinc-300 text-[11px]">{p.clubName}</span>
+                                </div>
+                              </td>
+                              <td className="py-2.5 px-2 text-center text-zinc-400 font-bold">{p.appearances}</td>
+                              <td className="py-2.5 px-2 text-right font-black text-[#00F5A0] text-sm">
+                                {p.averageRating.toFixed(2)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
             </div>
@@ -2425,15 +2610,82 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         )}
 
         {/* ================================================================== */}
-        {/* TAB 7: DRAFT GEÇMİŞİ (DRAFT HISTORY TIMELINE)                      */}
+        {/* TAB 7: DRAFT GEÇMİŞİ (DRAFT HISTORY & PAST SEASONS)                */}
         {/* ================================================================== */}
         {activeTab === 'history' && (
-          <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
-              <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-display">
-                <History className="w-4 h-4 text-[#00F5A0]" />
-                <span>DRAFT SEÇİM KAYITLARI (TOPLAM {roomState.draftState?.picks.length || 0} SEÇİM)</span>
-              </h3>
+          <div className="space-y-6">
+            {/* Archived Past Seasons if any */}
+            {roomState.seasonHistory && roomState.seasonHistory.length > 0 && (
+              <div className="bg-[#070D14]/95 border border-[#FFB800]/50 p-6 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-display">
+                    <Trophy className="w-4 h-4 text-[#FFB800]" />
+                    <span>GEÇMİŞ SEZONLAR ARŞİVİ ({roomState.seasonHistory.length} SEZON)</span>
+                  </h3>
+                  <span className="text-[10px] font-mono font-bold text-[#FFB800] uppercase bg-amber-950/50 px-2.5 py-1 border border-[#FFB800]/40">
+                    KAYITLI SEZONLAR
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {roomState.seasonHistory.map((past) => (
+                    <div key={past.seasonNumber} className="bg-zinc-950 border border-zinc-800 p-4 space-y-3">
+                      <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                        <span className="text-xs font-black text-[#FFB800] font-mono uppercase">
+                          SEZON {past.seasonNumber}
+                        </span>
+                        <span className="text-[10px] text-zinc-500 font-mono">
+                          {new Date(past.completedAt).toLocaleDateString('tr-TR')}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-amber-950/60 border border-[#FFB800]/40 flex items-center justify-center text-lg">
+                          👑
+                        </div>
+                        <div>
+                          <div className="text-[10px] text-zinc-400 font-bold uppercase">ŞAMPİYON</div>
+                          <div className="font-black text-white text-sm uppercase">{past.championClubName}</div>
+                          <div className="text-[10px] text-zinc-400">Menajer: {past.championManagerName}</div>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 pt-1 border-t border-zinc-900 text-[11px] font-mono">
+                        {past.topScorer && (
+                          <div className="bg-zinc-900/60 p-2 border border-zinc-800">
+                            <div className="text-[9px] text-[#FFB800] font-bold">⚽ GOL KRALI</div>
+                            <div className="font-bold text-white truncate text-[10px] mt-0.5">{past.topScorer.playerName}</div>
+                            <div className="text-[#FFB800] font-black">{past.topScorer.goals} Gol</div>
+                          </div>
+                        )}
+                        {past.topAssists && (
+                          <div className="bg-zinc-900/60 p-2 border border-zinc-800">
+                            <div className="text-[9px] text-[#00D4FF] font-bold">🎯 ASİST</div>
+                            <div className="font-bold text-white truncate text-[10px] mt-0.5">{past.topAssists.playerName}</div>
+                            <div className="text-[#00D4FF] font-black">{past.topAssists.assists} Asist</div>
+                          </div>
+                        )}
+                        {past.mvp && (
+                          <div className="bg-zinc-900/60 p-2 border border-zinc-800">
+                            <div className="text-[9px] text-[#00F5A0] font-bold">⭐ MVP</div>
+                            <div className="font-bold text-white truncate text-[10px] mt-0.5">{past.mvp.playerName}</div>
+                            <div className="text-[#00F5A0] font-black">{past.mvp.rating}</div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Draft Selection Timeline */}
+            <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
+                <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-display">
+                  <History className="w-4 h-4 text-[#00F5A0]" />
+                  <span>DRAFT SEÇİM KAYITLARI (TOPLAM {roomState.draftState?.picks.length || 0} SEÇİM)</span>
+                </h3>
 
               {/* Filter by club */}
               <select
@@ -2497,8 +2749,44 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               </table>
             </div>
           </div>
-        )}
+        </div>
+      )}
       </main>
+
+      {/* Rematch Confirmation Modal */}
+      {isRematchModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-[#070D14] border-2 border-[#FFB800] max-w-md w-full p-6 shadow-2xl space-y-5 text-center">
+            <div className="w-14 h-14 mx-auto bg-amber-950/60 border border-[#FFB800]/50 rounded-2xl flex items-center justify-center text-2xl shadow-lg">
+              🔄
+            </div>
+            <div>
+              <h3 className="text-lg font-black text-white uppercase italic tracking-wider font-display">
+                YENİ SEZON BAŞLAT
+              </h3>
+              <p className="text-xs text-zinc-300 mt-2 leading-relaxed">
+                Mevcut kadrolar ve oyuncular korunacak. Puan durumu, fikstür ve sezon istatistikleri sıfırlanarak yeni sezon başlayacak.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setIsRematchModalOpen(false)}
+                className="w-1/2 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-700 font-black text-xs uppercase tracking-wider transition"
+              >
+                İPTAL
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmRematch}
+                className="w-1/2 py-2.5 bg-gradient-to-r from-[#FFB800] to-[#E5A500] hover:from-[#FFE082] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#FFB800]/20"
+              >
+                YENİ SEZONU BAŞLAT
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ==================================================================== */}
       {/* 7. FOOTER BROADCAST HUD                                              */}

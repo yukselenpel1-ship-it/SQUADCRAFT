@@ -396,7 +396,8 @@ export function executeDraftPick(
 export function generateDraftLeagueFixtures(
   roomId: string,
   clubs: DraftClub[],
-  format: LeagueFormat = 'DOUBLE_ROUND'
+  format: LeagueFormat = 'DOUBLE_ROUND',
+  seasonNumber: number = 1
 ): DraftFixture[] {
   const fixtures: DraftFixture[] = [];
   const teamIds = clubs.map((c) => c.id);
@@ -426,8 +427,9 @@ export function generateDraftLeagueFixtures(
 
       if (home !== 'BYE' && away !== 'BYE') {
         fixtures.push({
-          id: `fix-${roomId}-r${round}-${fixtureCounter++}`,
+          id: `fix-${roomId}-s${seasonNumber}-r${round}-${fixtureCounter++}`,
           roomId,
+          seasonNumber,
           round,
           homeClubId: round % 2 === 0 ? away : home,
           awayClubId: round % 2 === 0 ? home : away,
@@ -448,8 +450,9 @@ export function generateDraftLeagueFixtures(
       const f = fixtures[i];
       const returnRound = f.round + totalRoundsSingle;
       fixtures.push({
-        id: `fix-${roomId}-r${returnRound}-${fixtureCounter++}`,
+        id: `fix-${roomId}-s${seasonNumber}-r${returnRound}-${fixtureCounter++}`,
         roomId,
+        seasonNumber,
         round: returnRound,
         homeClubId: f.awayClubId,
         awayClubId: f.homeClubId,
