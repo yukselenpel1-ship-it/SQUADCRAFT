@@ -238,24 +238,30 @@ function mapDbMember(m: any): RoomMember {
 
 /**
  * Authoritatively calculates and reconciles clubs' budget & spentBudget from confirmed picks.
- * Guarantees budget never resets to €250M on refresh, reconnect, or tab switch.
+ * Guarantees budget never resets to €250M on refresh, reconnect, state update, or bot turn.
+ * Canonical Rule: remainingBudget = roomConfiguredInitialBudget - SUM(confirmed draft pick prices for this club)
  */
 export function reconcileClubsBudget(
   clubs: DraftClub[],
   rules: DraftRules,
   picks: DraftPick[] = [],
-  playerPool: Player[] = []
+  playerPool: Player[] = [],
+  roomCode: string = '',
+  event: string = 'RECONCILE'
 ): DraftClub[] {
   const initialBudget = rules?.draftBudget || DEFAULT_DRAFT_BUDGET;
   const pool = playerPool.length > 0 ? playerPool : getCachedDraftPlayerPool();
   const playerMap = new Map(pool.map((p) => [p.id, p]));
 
   return clubs.map((c) => {
-    // 1. Gather all matching picks (supporting snake_case & camelCase)
+    // 1. Gather all matching picks (supporting snake_case, camelCase, club id, club code, and member session)
     const matchingPicks = picks.filter((p) => {
       const pClubId = p.clubId || (p as any).club_id;
       const pMemberId = p.memberId || (p as any).member_id;
-      return (pClubId && pClubId === c.id) || (pMemberId && pMemberId === c.memberId);
+      return (
+        (pClubId && (pClubId === c.id || pClubId === c.code)) ||
+        (pMemberId && (pMemberId === c.memberId || pMemberId === c.id))
+      );
     });
 
     const pickPlayerIds = matchingPicks.map((p) => p.playerId || (p as any).player_id).filter(Boolean);
@@ -277,24 +283,29 @@ export function reconcileClubsBudget(
       }
     }
 
-    // Fallback to recorded spentBudget if picks weren't fully hydrated yet
-    if (spent === 0 && c.spentBudget && c.spentBudget > 0) {
+    // Never decrease recorded spend if squad or club already registered spend
+    if (c.spentBudget && Number(c.spentBudget) > spent) {
       spent = Number(c.spentBudget);
     }
 
+    // Canonical calculation: strictly initialBudget - confirmedSpend
     const canonicalBudget = Math.max(0, initialBudget - spent);
+    const previousRemaining = c.budget ?? initialBudget;
 
-    if (c.budget !== undefined && c.budget !== null && c.budget !== canonicalBudget && allPlayerIds.length > 0) {
-      console.log('[BUDGET_AUDIT]', {
-        source: 'RECONCILE_CLUBS_BUDGET',
-        oldBudget: c.budget,
-        newBudget: canonicalBudget,
-        roomBudget: initialBudget,
-        confirmedSpend: spent,
-        clubId: c.id,
-        timestamp: new Date().toISOString(),
-      });
-    }
+    // Visible Audit Logger with all required telemetry fields
+    console.log('[BUDGET_AUDIT]', {
+      event,
+      roomCode: roomCode || c.roomId || '',
+      clubId: c.id,
+      source: 'reconcileClubsBudget',
+      initialBudget,
+      confirmedSpend: spent,
+      previousRemaining,
+      calculatedRemaining: canonicalBudget,
+      newRemaining: canonicalBudget,
+      pickCount: allPlayerIds.length,
+      timestamp: new Date().toISOString(),
+    });
 
     return {
       ...c,
@@ -309,6 +320,8 @@ export function reconcileClubsBudget(
  * Maps database row to DraftClub
  */
 function mapDbClub(c: any, defaultBudget: number = DEFAULT_DRAFT_BUDGET): DraftClub {
+  const spent = c.spent_budget != null ? Number(c.spent_budget) : 0;
+  const remaining = c.budget != null ? Number(c.budget) : Math.max(0, defaultBudget - spent);
   return {
     id: c.id,
     roomId: c.room_id,
@@ -320,8 +333,8 @@ function mapDbClub(c: any, defaultBudget: number = DEFAULT_DRAFT_BUDGET): DraftC
     secondaryColor: c.secondary_color,
     badge: c.badge || {},
     squadPlayerIds: c.squad_player_ids || [],
-    budget: c.budget != null ? c.budget : defaultBudget,
-    spentBudget: c.spent_budget != null ? c.spent_budget : 0,
+    budget: remaining,
+    spentBudget: spent,
   };
 }
 
@@ -576,7 +589,9 @@ export class DraftMultiplayerStore {
         state.clubs,
         state.room.rules,
         state.draftState?.picks || [],
-        pool
+        pool,
+        state.room.roomCode,
+        'HYDRATE_ROOM'
       );
 
       // AUTO-REPAIR / FINALIZATION CHECK:
@@ -981,23 +996,60 @@ export class DraftMultiplayerStore {
               .eq('room_id', room.id)
               .order('global_pick_number', { ascending: true });
 
-            const existingMemPicks = memoryRooms[room.id]?.draftState?.picks || [];
+            const localRoom = loadRoomLocal(room.id) || loadRoomLocal(room.roomCode);
+            const memPicks = memoryRooms[room.id]?.draftState?.picks || [];
+            const localPicks = localRoom?.draftState?.picks || [];
+
             const mergedPickMap = new Map<string, any>();
             (dbPicks || []).forEach((p: any) => mergedPickMap.set(p.id, p));
-            existingMemPicks.forEach((p) => {
+            memPicks.forEach((p) => {
               if (!mergedPickMap.has(p.id)) {
                 mergedPickMap.set(p.id, p);
+              } else {
+                const existing = mergedPickMap.get(p.id);
+                if (p.draftPrice !== undefined && existing.draftPrice === undefined) {
+                  existing.draftPrice = p.draftPrice;
+                }
+              }
+            });
+            localPicks.forEach((p) => {
+              if (!mergedPickMap.has(p.id)) {
+                mergedPickMap.set(p.id, p);
+              } else {
+                const existing = mergedPickMap.get(p.id);
+                if (p.draftPrice !== undefined && existing.draftPrice === undefined) {
+                  existing.draftPrice = p.draftPrice;
+                }
               }
             });
             const allPicks = Array.from(mergedPickMap.values());
 
             draftState = reconstructDraftState(room.id, members, room.rules, allPicks);
 
+            // Merge any squads that already exist in memory / local storage
+            const memClubs = memoryRooms[room.id]?.clubs || localRoom?.clubs || [];
+            if (memClubs.length > 0) {
+              clubs = clubs.map((c) => {
+                const mc = memClubs.find((m) => m.id === c.id || m.memberId === c.memberId);
+                return {
+                  ...c,
+                  squadPlayerIds: Array.from(new Set([...(c.squadPlayerIds || []), ...(mc?.squadPlayerIds || [])])),
+                  spentBudget: Math.max(c.spentBudget || 0, mc?.spentBudget || 0),
+                };
+              });
+            }
+
             // Authoritatively reconcile and guarantee club squadPlayerIds and budget from canonical draft picks
-            clubs = reconcileClubsBudget(clubs, room.rules, draftState?.picks || [], getCachedDraftPlayerPool());
+            clubs = reconcileClubsBudget(clubs, room.rules, draftState?.picks || [], getCachedDraftPlayerPool(), room.roomCode, 'FETCH_ROOM');
           } else {
-            // In lobby or before drafting, enforce initial configured room budget
-            clubs = reconcileClubsBudget(clubs, room.rules, [], getCachedDraftPlayerPool());
+            // Check if draft already has picks in memory or local storage
+            const localRoom = loadRoomLocal(room.id) || loadRoomLocal(room.roomCode);
+            const memPicks = memoryRooms[room.id]?.draftState?.picks || localRoom?.draftState?.picks || [];
+            if (memPicks.length > 0) {
+              clubs = reconcileClubsBudget(clubs, room.rules, memPicks, getCachedDraftPlayerPool(), room.roomCode, 'FETCH_ROOM_LOBBY_RECOVER');
+            } else {
+              clubs = reconcileClubsBudget(clubs, room.rules, [], getCachedDraftPlayerPool(), room.roomCode, 'FETCH_ROOM_LOBBY');
+            }
           }
 
           let state: RoomFullState = {
@@ -2341,8 +2393,6 @@ export class DraftMultiplayerStore {
                 }),
                 supabase.from('draft_clubs').update({
                   squad_player_ids: club.squadPlayerIds,
-                  budget: club.budget,
-                  spent_budget: club.spentBudget,
                 }).eq('id', club.id),
               ]);
             } catch (dbErr) {
@@ -2421,30 +2471,15 @@ export class DraftMultiplayerStore {
       playerPrice
     );
 
-    const initialRoomBudget = state.room.rules.draftBudget || DEFAULT_DRAFT_BUDGET;
-    const newSpent = (club.spentBudget ?? 0) + playerPrice;
-    const newBudget = Math.max(0, initialRoomBudget - newSpent);
-
-    console.log('[BUDGET_AUDIT]', {
-      source: isAutoPick ? 'AUTO_PICK' : 'PLAYER_PICK',
-      oldBudget: club.budget,
-      newBudget,
-      roomBudget: initialRoomBudget,
-      confirmedSpend: newSpent,
-      clubId: club.id,
-      timestamp: new Date().toISOString(),
-    });
-
-    // Add player to club squad and deduct draft budget
-    const updatedClubs = state.clubs.map((c) =>
-      c.id === club.id
-        ? {
-            ...c,
-            squadPlayerIds: Array.from(new Set([...c.squadPlayerIds, playerId])),
-            budget: newBudget,
-            spentBudget: newSpent,
-          }
-        : c
+    const pickEvent = isAutoPick ? 'AUTO_PICK' : (member.isBot ? 'BOT_PICK' : 'PLAYER_PICK');
+    // Authoritatively reconcile ALL clubs from canonical picks
+    const reconciledClubs = reconcileClubsBudget(
+      state.clubs,
+      state.room.rules,
+      nextState.picks,
+      state.playerPool,
+      state.room.roomCode,
+      pickEvent
     );
 
     const resultingVersion = prevVersion + 1;
@@ -2453,7 +2488,7 @@ export class DraftMultiplayerStore {
     const intermediateState: RoomFullState = {
       ...state,
       room: updatedRoom,
-      clubs: updatedClubs,
+      clubs: reconciledClubs,
       draftState: nextState,
     };
 
@@ -2477,14 +2512,12 @@ export class DraftMultiplayerStore {
           time_taken_seconds: newPick.timeTakenSeconds,
         });
 
-        const updatedClubItem = updatedClubs.find((c) => c.id === club.id);
+        const updatedClubItem = reconciledClubs.find((c) => c.id === club.id);
         if (updatedClubItem) {
           await supabase
             .from('draft_clubs')
             .update({
               squad_player_ids: updatedClubItem.squadPlayerIds,
-              budget: updatedClubItem.budget,
-              spent_budget: updatedClubItem.spentBudget,
             })
             .eq('id', club.id);
         }

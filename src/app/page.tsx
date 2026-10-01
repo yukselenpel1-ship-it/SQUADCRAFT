@@ -10,7 +10,6 @@ import { FeedbackModal } from '@/components/draft/FeedbackModal';
 import { APP_VERSION } from '@/lib/version';
 import {
   Gamepad2,
-  Settings,
   MessageSquare,
   Globe,
   Users,
@@ -28,7 +27,7 @@ export default function MainMenuPage() {
   const { loadExistingCareer } = useGame();
   const [savedData, setSavedData] = useState<{ userClub: any; seasonYear: number | string } | null>(null);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'hub' | 'career' | 'draft' | 'settings'>('hub');
+  const [activeTab, setActiveTab] = useState<'hub' | 'career' | 'draft'>('hub');
 
   // Load existing career save state if present
   useEffect(() => {

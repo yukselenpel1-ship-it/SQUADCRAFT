@@ -472,17 +472,27 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
   const targetSquadSize = room.rules.squadSize || 18;
   const initialBudget = room.rules.draftBudget || DEFAULT_DRAFT_BUDGET;
 
-  const myPicks = (draftState.picks || []).filter(
-    (p) => (p.clubId && p.clubId === currentClub?.id) || (p.memberId && p.memberId === currentMember?.id)
+  const myPicks = (draftState.picks || []).filter((p) => {
+    const pClubId = p.clubId || (p as any).club_id;
+    const pMemberId = p.memberId || (p as any).member_id;
+    return (
+      (pClubId && (pClubId === currentClub?.id || pClubId === currentClub?.code)) ||
+      (pMemberId && (pMemberId === currentMember?.id || pMemberId === currentMember?.sessionId))
+    );
+  });
+  const mySquadPlayerIds = Array.from(
+    new Set([
+      ...(currentClub?.squadPlayerIds || []),
+      ...myPicks.map((p) => p.playerId || (p as any).player_id).filter(Boolean),
+    ])
   );
-  const mySquadPlayerIds = Array.from(new Set([...(currentClub?.squadPlayerIds || []), ...myPicks.map((p) => p.playerId)]));
   const mySquadLength = mySquadPlayerIds.length;
   const remainingPicks = Math.max(1, targetSquadSize - mySquadLength);
 
   const playerPoolMap = new Map((playerPool || []).map((p) => [p.id, p]));
   let canonicalSpent = 0;
   for (const pid of mySquadPlayerIds) {
-    const pickForPid = myPicks.find((p) => p.playerId === pid);
+    const pickForPid = myPicks.find((p) => (p.playerId || (p as any).player_id) === pid);
     if (pickForPid && pickForPid.draftPrice !== undefined && pickForPid.draftPrice !== null && pickForPid.draftPrice > 0) {
       canonicalSpent += Number(pickForPid.draftPrice);
     } else {
@@ -490,16 +500,36 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
       canonicalSpent += pl?.draftValue ?? (pl ? calculatePlayerDraftValue(pl) : MIN_PLAYER_DRAFT_PRICE);
     }
   }
-  if (canonicalSpent === 0 && currentClub?.spentBudget && currentClub.spentBudget > 0) {
-    canonicalSpent = currentClub.spentBudget;
+  if (currentClub?.spentBudget && Number(currentClub.spentBudget) > canonicalSpent) {
+    canonicalSpent = Number(currentClub.spentBudget);
   }
 
   const spentBudget = canonicalSpent;
-  // CANONICAL RULE: remainingBudget = initialBudget - confirmedSpend
-  // Never re-inject initial budget if player squad or spend is confirmed
-  const currentBudget = mySquadLength > 0 ? Math.max(0, initialBudget - spentBudget) : (currentClub?.budget ?? initialBudget);
+
+  // CANONICAL RULE: remainingBudget = roomConfiguredInitialBudget - SUM(confirmed draft pick prices for this club)
+  // NEVER fall back to DEFAULT_DRAFT_BUDGET (€250M) once drafting has begun or if spend exists
+  const calculatedRemaining = Math.max(0, initialBudget - spentBudget);
+  const currentBudget = mySquadLength > 0 ? calculatedRemaining : Math.min(calculatedRemaining, currentClub?.budget ?? calculatedRemaining);
   const minRequiredForRest = (remainingPicks - 1) * MIN_PLAYER_DRAFT_PRICE;
   const avgBudgetPerPick = currentBudget / remainingPicks;
+
+  useEffect(() => {
+    if (currentClub && roomCode) {
+      console.log('[BUDGET_AUDIT]', {
+        event: 'PAGE_RENDER',
+        roomCode,
+        clubId: currentClub.id,
+        source: 'LiveDraftContent',
+        initialBudget,
+        confirmedSpend: spentBudget,
+        previousRemaining: currentClub.budget ?? initialBudget,
+        calculatedRemaining,
+        newRemaining: currentBudget,
+        pickCount: mySquadLength,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }, [roomCode, currentClub?.id, currentBudget, spentBudget, mySquadLength, initialBudget, calculatedRemaining]);
 
   // Player pool filtering
   const pickedIds = new Set((draftState.picks || []).map((p) => p.playerId));
