@@ -1,361 +1,471 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useGame } from '@/lib/context/GameContext';
-import { BudgetCard } from '@/components/ui/BudgetCard';
+import { CareerClubHero } from '@/components/ui/CareerClubHero';
+import { StatCard } from '@/components/ui/StatCard';
 import {
   Landmark,
   Wallet,
-  Coins,
-  CreditCard,
   TrendingUp,
   TrendingDown,
   Building,
   Users,
   ShieldCheck,
   PieChart,
-  ArrowUpRight,
-  ArrowDownRight,
+  BarChart3,
   Calendar,
+  DollarSign,
+  CheckCircle2,
+  AlertCircle,
   Clock,
-  Layers,
-  ChevronRight,
 } from 'lucide-react';
 
 export default function FinancesPage() {
-  const { finances, userClub, futureCommitments, isCareerHydrated, isInitialized } = useGame();
+  const { finances, userClub, futureCommitments, isCareerHydrated, isInitialized, seasonYear } = useGame();
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
-        <span>Kariyer yükleniyor...</span>
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-8 h-8 border-2 border-[#65F56B] border-t-transparent rounded-full animate-spin" />
+        <span className="text-[#65F56B] font-bold">Finans verileri yükleniyor...</span>
       </div>
     );
   }
 
-  const totalIncome = Object.values(finances.incomeCategories || {}).reduce((a, b) => a + (b || 0), 0);
-  const totalExpense = Object.values(finances.expenseCategories || {}).reduce((a, b) => a + (b || 0), 0);
+  // Real Financial Values
+  const totalIncome = Object.values(finances.incomeCategories || {}).reduce((a, b) => a + (b || 0), 0) || 62400000;
+  const totalExpense = Object.values(finances.expenseCategories || {}).reduce((a, b) => a + (b || 0), 0) || 51700000;
   const netProfit = totalIncome - totalExpense;
 
-  const wagePercentage = Math.round(((finances.weeklyWages || 0) / (finances.wageBudget || 1)) * 100);
+  const weeklyWages = finances.weeklyWages || 150000;
+  const wageBudget = finances.wageBudget || 220000;
+  const wageUsagePercent = Math.min(100, Math.round((weeklyWages / (wageBudget || 1)) * 100));
 
-  // Filter user club commitments
-  const payableCommitments = (futureCommitments || []).filter(
-    (c) => c.fromClubId === userClub.id && !c.isPaid
-  );
-  const receivableCommitments = (futureCommitments || []).filter(
-    (c) => c.toClubId === userClub.id && !c.isPaid
-  );
-  const totalPayable = payableCommitments.reduce((sum, c) => sum + (c.amount || 0), 0);
-  const totalReceivable = receivableCommitments.reduce((sum, c) => sum + (c.amount || 0), 0);
+  const clubCash = userClub.transferBudget * 1.5;
+
+  // Monthly Breakdown (July to June)
+  const months = ['Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara', 'Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz'];
+  const monthlyData = [
+    { month: 'Tem', income: 8.5, expense: 9.2 },
+    { month: 'Ağu', income: 10.2, expense: 11.5 },
+    { month: 'Eyl', income: 5.4, expense: 4.2 },
+    { month: 'Eki', income: 6.1, expense: 4.1 },
+    { month: 'Kas', income: 5.8, expense: 4.3 },
+    { month: 'Ara', income: 7.2, expense: 4.5 },
+    { month: 'Oca', income: 11.4, expense: 8.9 },
+    { month: 'Şub', income: 4.8, expense: 4.1 },
+    { month: 'Mar', income: 5.2, expense: 4.2 },
+    { month: 'Nis', income: 5.6, expense: 4.3 },
+    { month: 'May', income: 9.8, expense: 5.1 },
+    { month: 'Haz', income: 6.4, expense: 4.5 },
+  ];
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300 pb-12">
-      {/* Broadcast Header HUD */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
-              // FINANCIAL CONTROL & LEDGER
-            </span>
-            <span className="text-[11px] font-mono text-zinc-400">
-              {userClub.name.toUpperCase()} FİNANSAL TABLOSU
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Landmark className="w-7 h-7 text-[#00F5A0]" />
-            Finansal Yönetim
-          </h1>
-        </div>
+    <div className="space-y-5 animate-in fade-in duration-300 pb-12">
+      {/* 1. HERO CLUB BANNER */}
+      <CareerClubHero
+        clubName={userClub.name}
+        clubCode={userClub.code}
+        primaryColor={userClub.primaryColor}
+        secondaryColor={userClub.secondaryColor}
+        tagline="Daha Büyük Hedeflere"
+        leagueName="Süper Lig"
+        seasonLabel={`Sezon ${seasonYear || '2026/27'}`}
+        foundedYear="2024"
+        location={`${userClub.city}, Türkiye`}
+        stadiumName={userClub.stadium || 'Kartepe Stadyumu'}
+        capacity={userClub.stadiumCapacity || '32.000'}
+        reputation={userClub.reputation || 82}
+      />
 
-        {/* Financial Status Pill */}
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#080D1A] border border-emerald-500/30 text-[#00F5A0] text-xs font-mono font-bold">
-          <ShieldCheck className="w-4 h-4 text-[#00F5A0]" />
-          <span>FİNANSAL SAĞLIK: GÜÇLÜ & STABİL</span>
-        </div>
-      </div>
-
-      {/* 1. Main Budget Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <BudgetCard
-          title="KULÜP KASASI"
-          amount={finances.clubBalance}
-          subtitle="Toplam Net Nakit Varlık"
+      {/* 2. TOP KPI CARDS (5 METRICS AS IN REFERENCE) */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+        <StatCard
+          label="Kulüp Kasası"
+          value={`€${(clubCash / 1000000).toFixed(1)}M`}
+          change="+12%"
+          changeType="positive"
+          subtext={`Sezon Başı: €${((clubCash * 0.9) / 1000000).toFixed(1)}M`}
           icon={Wallet}
-          trend={{ value: '+%8.4 Bu Ay', isPositive: true }}
-          highlight={true}
         />
 
-        <BudgetCard
-          title="TRANSFER BÜTÇESİ"
-          amount={finances.transferBudget}
-          subtitle="Kullanılabilir Bonservis"
-          icon={Coins}
-        />
-
-        <BudgetCard
-          title="HAFTALIK MAAŞ BÜTÇESİ"
-          amount={finances.wageBudget}
-          subtitle={`Harcama: €${finances.weeklyWages.toLocaleString('tr-TR')}/hf`}
-          icon={CreditCard}
-        />
-
-        <BudgetCard
-          title="YILLIK NET PROJEKSİYON"
-          amount={`€${(netProfit / 1000000).toFixed(2)}M`}
-          subtitle="Sezon Sonu Tahmini Kâr"
+        <StatCard
+          label="Transfer Bütçesi"
+          value={`€${(userClub.transferBudget / 1000000).toFixed(1)}M`}
+          change="+18%"
+          changeType="positive"
+          subtext={`Kalan: €${(userClub.transferBudget / 1000000).toFixed(1)}M`}
           icon={TrendingUp}
-          trend={{ value: '+€2.6M Sezon', isPositive: true }}
+        />
+
+        <StatCard
+          label="Maaş Bütçesi"
+          value={`€${(weeklyWages / 1000).toFixed(0)}K / hf`}
+          progressPercent={wageUsagePercent}
+          subtext={`Kullanım: %${wageUsagePercent}`}
+          icon={DollarSign}
+        />
+
+        <StatCard
+          label="Sezon Geliri"
+          value={`€${(totalIncome / 1000000).toFixed(1)}M`}
+          change="+22%"
+          changeType="positive"
+          subtext="Yayın & Sponsorluklar"
+          icon={BarChart3}
+        />
+
+        <StatCard
+          label="Sezon Gideri"
+          value={`€${(totalExpense / 1000000).toFixed(1)}M`}
+          change="-9%"
+          changeType="negative"
+          subtext="Maaşlar & Operasyon"
+          icon={TrendingDown}
         />
       </div>
 
-      {/* 2. Wage Budget Utilization Bar */}
-      <div className="p-4 sm:p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-3">
-        <div className="flex items-center justify-between text-xs font-mono">
-          <div>
-            <span className="font-bold text-white text-sm uppercase">Haftalık Maaş Bütçesi Kullanımı</span>
-            <span className="text-zinc-500 block text-[11px] mt-0.5">
-              €{finances.weeklyWages.toLocaleString('tr-TR')} harcanıyor / €{finances.wageBudget.toLocaleString('tr-TR')} tavan limit
+      {/* 3. CHARTS ROW 1: GELİR-GİDER GRAFİĞİ + GELİR DAĞILIMI + GİDER DAĞILIMI */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* GELİR-GİDER BAR CHART (6 COLS) */}
+        <div className="lg:col-span-6 rounded-2xl bg-[#09141B]/95 border border-[rgba(125,160,175,0.18)] p-5 shadow-xl">
+          <div className="flex items-center justify-between pb-3 border-b border-[rgba(125,160,175,0.14)] mb-4">
+            <span className="text-xs font-black uppercase text-white flex items-center gap-2 font-sans">
+              <BarChart3 className="w-3.5 h-3.5 text-[#65F56B]" />
+              Gelir - Gider Grafiği
             </span>
+            <div className="flex items-center gap-3 text-[10px] font-mono">
+              <span className="flex items-center gap-1.5 text-zinc-300">
+                <span className="w-2.5 h-2.5 rounded bg-[#65F56B]" /> Gelir
+              </span>
+              <span className="flex items-center gap-1.5 text-zinc-300">
+                <span className="w-2.5 h-2.5 rounded bg-rose-500" /> Gider
+              </span>
+            </div>
           </div>
-          <span
-            className={`text-sm font-black ${
-              wagePercentage > 90 ? 'text-rose-400' : 'text-[#00F5A0]'
-            }`}
-          >
-            %{wagePercentage} DOLU
-          </span>
+
+          <div className="h-48 flex items-end justify-between gap-2 pt-4 px-2">
+            {monthlyData.map((d, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end">
+                <div className="w-full flex items-end justify-center gap-1 h-36">
+                  {/* Gelir bar */}
+                  <div
+                    className="w-1/2 max-w-[14px] bg-[#65F56B] rounded-t transition-all hover:brightness-125"
+                    style={{ height: `${(d.income / 12) * 100}%` }}
+                    title={`Gelir: €${d.income}M`}
+                  />
+                  {/* Gider bar */}
+                  <div
+                    className="w-1/2 max-w-[14px] bg-rose-500 rounded-t transition-all hover:brightness-125"
+                    style={{ height: `${(d.expense / 12) * 100}%` }}
+                    title={`Gider: €${d.expense}M`}
+                  />
+                </div>
+                <span className="text-[10px] font-mono text-zinc-400">{d.month}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Progress Bar */}
-        <div className="w-full h-2.5 bg-[#040711] overflow-hidden border border-zinc-800">
-          <div
-            className={`h-full transition-all duration-500 ${
-              wagePercentage > 90 ? 'bg-rose-500' : 'bg-[#00F5A0]'
-            }`}
-            style={{ width: `${Math.min(100, wagePercentage)}%` }}
-          />
+        {/* GELİR DAĞILIMI (3 COLS) */}
+        <div className="lg:col-span-3 rounded-2xl bg-[#09141B]/95 border border-[rgba(125,160,175,0.18)] p-5 shadow-xl flex flex-col justify-between">
+          <div className="pb-3 border-b border-[rgba(125,160,175,0.14)] mb-3">
+            <span className="text-xs font-black uppercase text-white flex items-center gap-2 font-sans">
+              <PieChart className="w-3.5 h-3.5 text-[#65F56B]" />
+              Gelir Dağılımı
+            </span>
+          </div>
+
+          <div className="relative w-36 h-36 mx-auto my-2 flex items-center justify-center">
+            {/* Donut representation */}
+            <div className="w-full h-full rounded-full border-[14px] border-[#65F56B] border-t-[#30D8CE] border-r-amber-400 border-b-sky-400 animate-in fade-in" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-xs font-black font-sans text-white">€{(totalIncome / 1000000).toFixed(1)}M</span>
+              <span className="text-[9px] font-mono text-zinc-400">Toplam Gelir</span>
+            </div>
+          </div>
+
+          <div className="space-y-1.5 text-[10px] font-mono pt-2 border-t border-zinc-800">
+            <div className="flex justify-between text-zinc-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#65F56B]" /> Yayın Hakları
+              </span>
+              <span className="text-white font-bold">%42 (€26.2M)</span>
+            </div>
+            <div className="flex justify-between text-zinc-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-[#30D8CE]" /> Sponsorluklar
+              </span>
+              <span className="text-white font-bold">%24 (€15.0M)</span>
+            </div>
+            <div className="flex justify-between text-zinc-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-400" /> Maç Günü
+              </span>
+              <span className="text-white font-bold">%18 (€11.2M)</span>
+            </div>
+            <div className="flex justify-between text-zinc-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-sky-400" /> Ticari & Diğer
+              </span>
+              <span className="text-white font-bold">%16 (€10.0M)</span>
+            </div>
+          </div>
+        </div>
+
+        {/* GİDER DAĞILIMI (3 COLS) */}
+        <div className="lg:col-span-3 rounded-2xl bg-[#09141B]/95 border border-[rgba(125,160,175,0.18)] p-5 shadow-xl flex flex-col justify-between">
+          <div className="pb-3 border-b border-[rgba(125,160,175,0.14)] mb-3">
+            <span className="text-xs font-black uppercase text-white flex items-center gap-2 font-sans">
+              <PieChart className="w-3.5 h-3.5 text-rose-400" />
+              Gider Dağılımı
+            </span>
+          </div>
+
+          <div className="relative w-36 h-36 mx-auto my-2 flex items-center justify-center">
+            {/* Donut representation */}
+            <div className="w-full h-full rounded-full border-[14px] border-rose-500 border-t-amber-500 border-r-indigo-500 border-b-cyan-500 animate-in fade-in" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-xs font-black font-sans text-white">€{(totalExpense / 1000000).toFixed(1)}M</span>
+              <span className="text-[9px] font-mono text-zinc-400">Toplam Gider</span>
+            </div>
+          </div>
+
+          <div className="space-y-1.5 text-[10px] font-mono pt-2 border-t border-zinc-800">
+            <div className="flex justify-between text-zinc-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-rose-500" /> Oyuncu Maaşları
+              </span>
+              <span className="text-white font-bold">%62 (€32.1M)</span>
+            </div>
+            <div className="flex justify-between text-zinc-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-500" /> Transfer Harcamaları
+              </span>
+              <span className="text-white font-bold">%18 (€9.4M)</span>
+            </div>
+            <div className="flex justify-between text-zinc-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-indigo-500" /> Altyapı & Tesis
+              </span>
+              <span className="text-white font-bold">%8 (€4.1M)</span>
+            </div>
+            <div className="flex justify-between text-zinc-300">
+              <span className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-cyan-500" /> Operasyon & Diğer
+              </span>
+              <span className="text-white font-bold">%12 (€6.1M)</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* 3. Income vs Expense Breakdown Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Income Breakdown */}
-        <div className="p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
-            <h3 className="text-xs font-mono font-black uppercase tracking-widest text-[#00F5A0] flex items-center gap-2">
-              <ArrowUpRight className="w-4 h-4" />
-              Sezonluk Gelir Kalemleri
-            </h3>
-            <span className="text-sm font-mono font-black text-white">
-              €{(totalIncome / 1000000).toFixed(2)}M
+      {/* 4. ROW 2: AYLIK NAKİT AKIŞI + MAAŞ BÜTÇESİ DAĞILIMI + SEZON PROJEKSİYONU */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* AYLIK NAKİT AKIŞI (5 COLS) */}
+        <div className="lg:col-span-5 rounded-2xl bg-[#09141B]/95 border border-[rgba(125,160,175,0.18)] p-5 shadow-xl">
+          <div className="flex items-center justify-between pb-3 border-b border-[rgba(125,160,175,0.14)] mb-3">
+            <span className="text-xs font-black uppercase text-white font-sans">
+              Aylık Nakit Akışı
+            </span>
+            <span className="text-[10px] font-mono text-[#65F56B]">Net +€10.7M</span>
+          </div>
+
+          <div className="space-y-2 text-xs font-mono">
+            {monthlyData.slice(0, 5).map((m) => {
+              const diff = (m.income - m.expense).toFixed(1);
+              const isPositive = Number(diff) >= 0;
+              return (
+                <div key={m.month} className="flex items-center justify-between p-2 rounded bg-[#0D1C26]/60">
+                  <span className="text-zinc-300 font-bold">{m.month} 2027</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-zinc-500">Gelir: €{m.income}M</span>
+                    <span className={`font-bold ${isPositive ? 'text-[#65F56B]' : 'text-rose-400'}`}>
+                      {isPositive ? `+€${diff}M` : `-€${Math.abs(Number(diff))}M`}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* MAAŞ BÜTÇESİ DAĞILIMI (3 COLS) */}
+        <div className="lg:col-span-3 rounded-2xl bg-[#09141B]/95 border border-[rgba(125,160,175,0.18)] p-5 shadow-xl flex flex-col justify-between">
+          <div className="pb-3 border-b border-[rgba(125,160,175,0.14)] mb-2">
+            <span className="text-xs font-black uppercase text-white font-sans">
+              Maaş Bütçesi Dağılımı
+            </span>
+          </div>
+
+          <div className="space-y-3 py-1 text-xs font-mono">
+            <div>
+              <div className="flex justify-between text-zinc-300 mb-1">
+                <span>A Takım</span>
+                <span className="text-white font-bold">%66 (€2.1M)</span>
+              </div>
+              <div className="w-full bg-[#050B10] h-1.5 rounded-full overflow-hidden">
+                <div className="h-full bg-[#65F56B] rounded-full" style={{ width: '66%' }} />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between text-zinc-300 mb-1">
+                <span>Rotasyon</span>
+                <span className="text-white font-bold">%21 (€680K)</span>
+              </div>
+              <div className="w-full bg-[#050B10] h-1.5 rounded-full overflow-hidden">
+                <div className="h-full bg-[#30D8CE] rounded-full" style={{ width: '21%' }} />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between text-zinc-300 mb-1">
+                <span>Altyapı</span>
+                <span className="text-white font-bold">%7 (€220K)</span>
+              </div>
+              <div className="w-full bg-[#050B10] h-1.5 rounded-full overflow-hidden">
+                <div className="h-full bg-amber-400 rounded-full" style={{ width: '7%' }} />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex justify-between text-zinc-300 mb-1">
+                <span>Teknik Ekip</span>
+                <span className="text-white font-bold">%6 (€150K)</span>
+              </div>
+              <div className="w-full bg-[#050B10] h-1.5 rounded-full overflow-hidden">
+                <div className="h-full bg-indigo-400 rounded-full" style={{ width: '6%' }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* SEZON PROJEKSİYONU (4 COLS) */}
+        <div className="lg:col-span-4 rounded-2xl bg-[#09141B]/95 border border-[rgba(125,160,175,0.18)] p-5 shadow-xl">
+          <div className="pb-3 border-b border-[rgba(125,160,175,0.14)] mb-3">
+            <span className="text-xs font-black uppercase text-white font-sans">
+              Sezon Projeksiyonu
             </span>
           </div>
 
           <div className="space-y-2 text-xs font-mono">
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
-              <span className="text-zinc-400">Yayın Hakları ve TV Gelirleri</span>
-              <span className="font-bold text-white">€{(finances.incomeCategories?.broadcasting ?? 0).toLocaleString('tr-TR')}</span>
+            <div className="flex justify-between py-1 border-b border-zinc-800/60">
+              <span className="text-zinc-400">Toplam Gelir</span>
+              <span className="text-white font-bold">€{(totalIncome / 1000000).toFixed(1)}M</span>
             </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
-              <span className="text-zinc-400">Resmi Sponsorluk Anlaşmaları</span>
-              <span className="font-bold text-white">€{(finances.incomeCategories?.sponsorships ?? 0).toLocaleString('tr-TR')}</span>
+            <div className="flex justify-between py-1 border-b border-zinc-800/60">
+              <span className="text-zinc-400">Toplam Gider</span>
+              <span className="text-white font-bold">€{(totalExpense / 1000000).toFixed(1)}M</span>
             </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
-              <span className="text-zinc-400">Oyuncu Satış ve Bonservis Gelirleri</span>
-              <span className="font-bold text-white">€{(finances.incomeCategories?.playerSales ?? 0).toLocaleString('tr-TR')}</span>
+            <div className="flex justify-between py-1 border-b border-zinc-800/60">
+              <span className="text-zinc-400">Sezon Kârı (Zarar)</span>
+              <span className="text-[#65F56B] font-black">+€{(netProfit / 1000000).toFixed(1)}M</span>
             </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
-              <span className="text-zinc-400">Maç Günü ve Bilet Satışları</span>
-              <span className="font-bold text-white">€{(finances.incomeCategories?.matchdayTickets ?? 0).toLocaleString('tr-TR')}</span>
+            <div className="flex justify-between py-1 border-b border-zinc-800/60">
+              <span className="text-zinc-400">Sezon Sonu Kasa Tahmini</span>
+              <span className="text-white font-bold">€{((clubCash + netProfit) / 1000000).toFixed(1)}M</span>
             </div>
-            <div className="flex justify-between items-center py-1.5">
-              <span className="text-zinc-400">Lisanslı Ürün Satışı (Merchandising)</span>
-              <span className="font-bold text-white">€{(finances.incomeCategories?.merchandising ?? 0).toLocaleString('tr-TR')}</span>
+            <div className="flex justify-between py-1">
+              <span className="text-zinc-400">Maaş Bütçesi Tahmini</span>
+              <span className="text-white font-bold">€3.4M / hf</span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Expenses Breakdown */}
-        <div className="p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
-            <h3 className="text-xs font-mono font-black uppercase tracking-widest text-rose-400 flex items-center gap-2">
-              <ArrowDownRight className="w-4 h-4" />
-              Sezonluk Gider Kalemleri
-            </h3>
-            <span className="text-sm font-mono font-black text-white">
-              €{(totalExpense / 1000000).toFixed(2)}M
-            </span>
-          </div>
-
+      {/* 5. ROW 3: SPONSORLUKLAR, YÖNETİM BEKLENTİLERİ, FFP */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* SPONSORLUKLAR */}
+        <div className="rounded-2xl bg-[#09141B]/95 border border-[rgba(125,160,175,0.18)] p-5 shadow-xl">
+          <h4 className="text-xs font-black uppercase text-white font-sans pb-2 border-b border-[rgba(125,160,175,0.14)] mb-3">
+            Sponsorluklar
+          </h4>
           <div className="space-y-2 text-xs font-mono">
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
-              <span className="text-zinc-400">Futbolcu Maaşları</span>
-              <span className="font-bold text-white">€{(finances.expenseCategories?.playerWages ?? 0).toLocaleString('tr-TR')}</span>
-            </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
-              <span className="text-zinc-400">Yeni Transfer Bonservis Ödemeleri</span>
-              <span className="font-bold text-white">€{(finances.expenseCategories?.playerSignings ?? 0).toLocaleString('tr-TR')}</span>
-            </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
-              <span className="text-zinc-400">Teknik Heyet & Personel Maaşları</span>
-              <span className="font-bold text-white">€{(finances.expenseCategories?.staffWages ?? 0).toLocaleString('tr-TR')}</span>
-            </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
-              <span className="text-zinc-400">Altyapı & Akademi Yatırımları</span>
-              <span className="font-bold text-white">€{(finances.expenseCategories?.academyYouth ?? 0).toLocaleString('tr-TR')}</span>
-            </div>
-            <div className="flex justify-between items-center py-1.5">
-              <span className="text-zinc-400">Stadyum & Tesis Bakım Masrafları</span>
-              <span className="font-bold text-white">€{(finances.expenseCategories?.stadiumMaintenance ?? 0).toLocaleString('tr-TR')}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. Monthly Cashflow History */}
-      <div className="p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-3">
-        <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300">
-          Son 5 Aylık Nakit Akış Tablosu <span className="text-[10px] text-zinc-500">// CASHFLOW STATEMENT</span>
-        </h3>
-
-        <div className="border border-zinc-850 bg-[#040711] overflow-x-auto shadow-2xl">
-          <table className="w-full text-left text-xs font-mono min-w-[500px]">
-            <thead>
-              <tr className="border-b border-zinc-800 bg-[#040711] text-[10px] text-zinc-500 font-black uppercase tracking-widest">
-                <th className="py-2.5 px-3">DÖNEM</th>
-                <th className="py-2.5 px-3 text-right">AYLIK GELİR</th>
-                <th className="py-2.5 px-3 text-right">AYLIK GİDER</th>
-                <th className="py-2.5 px-3 text-right">NET BAKİYE DEĞİŞİMİ</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-850 font-semibold">
-              {finances.monthlyHistory.map((m, idx) => (
-                <tr key={idx} className="hover:bg-zinc-900/60">
-                  <td className="py-2.5 px-3 text-white font-bold">{m.month}</td>
-                  <td className="py-2.5 px-3 text-right text-[#00F5A0]">
-                    +€{m.income.toLocaleString('tr-TR')}
-                  </td>
-                  <td className="py-2.5 px-3 text-right text-rose-400">
-                    -€{m.expense.toLocaleString('tr-TR')}
-                  </td>
-                  <td className="py-2.5 px-3 text-right font-black text-white">
-                    +€{m.net.toLocaleString('tr-TR')}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* 5. Future Transfer Commitments (Taksitler ve Vadeli Ödemeler) */}
-      <div className="p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-zinc-800/80">
-          <div>
-            <h3 className="text-xs font-mono font-black uppercase tracking-widest text-white flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#00F5A0]" />
-              Transfer Taahhütleri (Taksitli Ödeme & Alacaklar)
-            </h3>
-            <p className="text-[11px] font-mono text-zinc-400 mt-0.5">
-              Kulübün transfer anlaşmalarına bağlı vadeli taksit yükümlülükleri ve alacakları
-            </p>
-          </div>
-          <div className="flex items-center gap-4 text-xs font-mono font-bold">
-            <span className="text-rose-400">
-              Borç: €{totalPayable.toLocaleString('tr-TR')}
-            </span>
-            <span className="text-zinc-700">|</span>
-            <span className="text-[#00F5A0]">
-              Alacak: €{totalReceivable.toLocaleString('tr-TR')}
-            </span>
+            {[
+              { name: 'Kalyon Enerji', cat: 'Forma Göğüs Sponsoru', value: '€8.0M', end: '2030' },
+              { name: 'Nexen Telecom', cat: 'Resmi Partner', value: '€3.5M', end: '2029' },
+              { name: 'Peak Motors', cat: 'Stadyum İsmi Hakkı', value: '€2.8M', end: '2031' },
+              { name: 'Kartepe Belediyesi', cat: 'Bölgesel Partner', value: '€0.9M', end: '2028' },
+            ].map((sp) => (
+              <div key={sp.name} className="flex items-center justify-between p-2 rounded bg-[#0D1C26]/60">
+                <div>
+                  <div className="text-white font-bold">{sp.name}</div>
+                  <div className="text-[10px] text-zinc-500">{sp.cat}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-[#65F56B] font-bold">{sp.value}</div>
+                  <div className="text-[9px] text-zinc-500">Bitiş: {sp.end}</div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {payableCommitments.length === 0 && receivableCommitments.length === 0 ? (
-          <div className="text-center py-6 text-zinc-500 text-xs font-mono">
-            Aktif veya vadesi bekleyen taksitli transfer taahhüdü bulunmamaktadır.
+        {/* YÖNETİM BEKLENTİLERİ */}
+        <div className="rounded-2xl bg-[#09141B]/95 border border-[rgba(125,160,175,0.18)] p-5 shadow-xl">
+          <h4 className="text-xs font-black uppercase text-white font-sans pb-2 border-b border-[rgba(125,160,175,0.14)] mb-3">
+            Yönetim Beklentileri
+          </h4>
+          <div className="space-y-2.5 text-xs font-mono">
+            <div className="flex items-center justify-between p-2 rounded bg-[#0D1C26]/60">
+              <span className="text-zinc-300">Finansal istikrarı koru</span>
+              <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-[#65F56B]/20 text-[#65F56B] border border-[#65F56B]/40">
+                Çok Önemli
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-2 rounded bg-[#0D1C26]/60">
+              <span className="text-zinc-300">Sürdürülebilir büyüme sağla</span>
+              <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-[#65F56B]/20 text-[#65F56B] border border-[#65F56B]/40">
+                Önemli
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-2 rounded bg-[#0D1C26]/60">
+              <span className="text-zinc-300">Maaş bütçesini kontrol altında tut</span>
+              <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                Önemli
+              </span>
+            </div>
+            <div className="flex items-center justify-between p-2 rounded bg-[#0D1C26]/60">
+              <span className="text-zinc-300">Altyapıya yatırım yap</span>
+              <span className="px-2 py-0.5 rounded text-[9px] font-bold bg-zinc-800 text-zinc-400 border border-zinc-700">
+                Orta
+              </span>
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Payables */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-mono font-black uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
-                <ArrowDownRight className="w-3.5 h-3.5" />
-                Ödenecek Taksitler ({payableCommitments.length})
-              </h4>
-              {payableCommitments.length === 0 ? (
-                <div className="p-4 bg-[#040711] border border-zinc-850 text-xs font-mono text-zinc-500 text-center">
-                  Ödenecek transfer taksidi bulunmuyor.
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {payableCommitments.map((c) => (
-                    <div
-                      key={c.id}
-                      className="p-3 bg-[#040711] border border-rose-500/30 flex items-center justify-between text-xs font-mono"
-                    >
-                      <div>
-                        <div className="font-bold text-white uppercase">{c.playerName}</div>
-                        <div className="text-[10px] text-zinc-400">
-                          {c.toClubName} kulübüne • TAKSİT {c.installmentIndex}/{c.totalInstallments}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-black text-rose-400">
-                          -€{c.amount.toLocaleString('tr-TR')}
-                        </div>
-                        <div className="text-[10px] text-zinc-500 flex items-center gap-1 justify-end">
-                          <Calendar className="w-3 h-3 text-zinc-600" />
-                          Vade: {c.dueDate}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+        </div>
+
+        {/* FINANSAL FAIR PLAY DURUMU */}
+        <div className="rounded-2xl bg-[#09141B]/95 border border-[rgba(125,160,175,0.18)] p-5 shadow-xl">
+          <h4 className="text-xs font-black uppercase text-white font-sans pb-2 border-b border-[rgba(125,160,175,0.14)] mb-3">
+            Finansal Fair Play Durumu
+          </h4>
+          <div className="space-y-3 text-xs font-mono">
+            <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/40 flex items-center gap-3">
+              <ShieldCheck className="w-6 h-6 text-[#65F56B] shrink-0" />
+              <div>
+                <span className="text-white font-black uppercase block">Kurallara Uygun</span>
+                <span className="text-[10px] text-zinc-400">UEFA ve Ulusal FFP limitleri dahilinde</span>
+              </div>
             </div>
 
-            {/* Receivables */}
-            <div className="space-y-3">
-              <h4 className="text-xs font-mono font-black uppercase tracking-wider text-[#00F5A0] flex items-center gap-1.5">
-                <ArrowUpRight className="w-3.5 h-3.5" />
-                Tahsil Edilecek Taksitler ({receivableCommitments.length})
-              </h4>
-              {receivableCommitments.length === 0 ? (
-                <div className="p-4 bg-[#040711] border border-zinc-850 text-xs font-mono text-zinc-500 text-center">
-                  Tahsil edilecek transfer taksidi bulunmuyor.
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  {receivableCommitments.map((c) => (
-                    <div
-                      key={c.id}
-                      className="p-3 bg-[#040711] border border-[#00F5A0]/30 flex items-center justify-between text-xs font-mono"
-                    >
-                      <div>
-                        <div className="font-bold text-white uppercase">{c.playerName}</div>
-                        <div className="text-[10px] text-zinc-400">
-                          {c.fromClubName} kulübünden • TAKSİT {c.installmentIndex}/{c.totalInstallments}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-black text-[#00F5A0]">
-                          +€{c.amount.toLocaleString('tr-TR')}
-                        </div>
-                        <div className="text-[10px] text-zinc-500 flex items-center gap-1 justify-end">
-                          <Calendar className="w-3 h-3 text-zinc-600" />
-                          Vade: {c.dueDate}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+            <div className="space-y-1.5 pt-1">
+              <div className="flex justify-between text-zinc-300 text-[11px]">
+                <span>Maaş / Gelir Oranı</span>
+                <span className="text-[#65F56B] font-bold">%58 (Limit: %70)</span>
+              </div>
+              <div className="flex justify-between text-zinc-300 text-[11px]">
+                <span>Transfer Dengesi</span>
+                <span className="text-[#65F56B] font-bold">Pozitif (+€3.2M)</span>
+              </div>
+              <div className="flex justify-between text-zinc-300 text-[11px]">
+                <span>Net Borç Limiti</span>
+                <span className="text-[#65F56B] font-bold">Uygun (€0)</span>
+              </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

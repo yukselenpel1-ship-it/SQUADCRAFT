@@ -9,6 +9,8 @@ import { ClubBadge } from '@/components/ui/ClubBadge';
 import { PlayerPortrait } from '@/components/ui/PlayerPortrait';
 import { PlayerModal } from '@/components/ui/PlayerModal';
 import { NegotiationModal } from '@/components/negotiation/NegotiationModal';
+import { CareerClubHero } from '@/components/ui/CareerClubHero';
+import { StatCard } from '@/components/ui/StatCard';
 import { EXTERNAL_CLUBS } from '@/lib/career/careerUniverse';
 import {
   getTransferWindowStatus,
@@ -273,55 +275,65 @@ export default function TransfersPage() {
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300 pb-12">
-      {/* Broadcast Header HUD */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
-              // TRANSFER & SCOUTING HEADQUARTERS
-            </span>
-            <span
-              className={`px-2 py-0.5 text-[10px] font-mono font-black uppercase border ${
-                windowStatus === 'OPEN'
-                  ? 'bg-emerald-500/20 text-[#00F5A0] border-[#00F5A0]/40'
-                  : 'bg-zinc-850 text-zinc-400 border-zinc-700'
-              }`}
-            >
-              {getDeadlineText()}
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <ArrowLeftRight className="w-7 h-7 text-[#00F5A0]" />
-            Transfer & Pazarlık Masası
-          </h1>
-        </div>
+    <div className="space-y-5 animate-in fade-in duration-300 pb-12">
+      {/* 1. HERO CLUB BANNER */}
+      <CareerClubHero
+        clubName={userClub.name}
+        clubCode={userClub.code}
+        primaryColor={userClub.primaryColor}
+        secondaryColor={userClub.secondaryColor}
+        tagline={`Transfer Masası & Resmi Pazarlıklar • ${getDeadlineText()}`}
+        leagueName="Süper Lig"
+        seasonLabel="Sezon 2026/27"
+        foundedYear="2024"
+        location={`${userClub.city}, Türkiye`}
+        stadiumName={userClub.stadium || 'Kartepe Stadyumu'}
+        capacity={userClub.stadiumCapacity || '32.000'}
+        reputation={userClub.reputation || 82}
+      />
 
-        {/* Transfer & Wage Budget Badges */}
-        <div className="flex items-center gap-3 bg-[#080D1A] p-2.5 border border-zinc-800 text-xs font-mono">
-          <div className="px-3 text-center">
-            <span className="text-[10px] text-zinc-500 block uppercase font-bold">Transfer Bütçesi</span>
-            <span className="text-base font-black text-[#00F5A0]">
-              €{(finances.transferBudget / 1000000).toFixed(2)}M
-            </span>
-          </div>
-          <div className="px-3 text-center border-l border-zinc-800">
-            <span className="text-[10px] text-zinc-500 block uppercase font-bold">Kalan Maaş Limiti</span>
-            <span className="text-base font-black text-[#00D4FF]">
-              €{((finances.wageBudget - finances.weeklyWages) / 1000).toFixed(0)}K/hf
-            </span>
-          </div>
-        </div>
+      {/* 2. TOP KPI CARDS (4 CARDS AS IN SPEC) */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+        <StatCard
+          label="Transfer Bütçesi"
+          value={`€${(finances.transferBudget / 1000000).toFixed(1)}M`}
+          change="+18%"
+          changeType="positive"
+          subtext="Mevcut transfer harcama limiti"
+          icon={DollarSign}
+        />
+
+        <StatCard
+          label="Maaş Bütçesi"
+          value={`€${(finances.weeklyWages / 1000).toFixed(0)}K / hf`}
+          progressPercent={Math.min(100, Math.round((finances.weeklyWages / finances.wageBudget) * 100))}
+          subtext={`Kalan: €${Math.max(0, Math.round((finances.wageBudget - finances.weeklyWages) / 1000))}K`}
+          icon={Briefcase}
+        />
+
+        <StatCard
+          label="Kalan Bütçe"
+          value={`€${(finances.transferBudget / 1000000).toFixed(1)}M`}
+          subtext="Net harcanabilir kasa"
+          icon={ArrowLeftRight}
+        />
+
+        <StatCard
+          label="Güçlendirme Önceliği"
+          value="Santrafor, Sağ Bek"
+          subtext="Scout ve teknik heyet raporu"
+          icon={Users}
+        />
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-zinc-800 pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-[rgba(125,160,175,0.14)] pb-3 select-none">
         <button
           onClick={() => setActiveTab('MARKET')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${
             activeTab === 'MARKET'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#65F56B] text-black font-black shadow-[0_0_12px_rgba(101,245,107,0.3)]'
+              : 'bg-[#09141B] text-zinc-400 hover:text-white border border-[rgba(125,160,175,0.14)]'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -330,10 +342,10 @@ export default function TransfersPage() {
 
         <button
           onClick={() => setActiveTab('FREE_AGENTS')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${
             activeTab === 'FREE_AGENTS'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#65F56B] text-black font-black shadow-[0_0_12px_rgba(101,245,107,0.3)]'
+              : 'bg-[#09141B] text-zinc-400 hover:text-white border border-[rgba(125,160,175,0.14)]'
           }`}
         >
           <UserCheck className="w-4 h-4" />
@@ -342,25 +354,25 @@ export default function TransfersPage() {
 
         <button
           onClick={() => setActiveTab('OUTGOING')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 relative ${
             activeTab === 'OUTGOING'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#65F56B] text-black font-black shadow-[0_0_12px_rgba(101,245,107,0.3)]'
+              : 'bg-[#09141B] text-zinc-400 hover:text-white border border-[rgba(125,160,175,0.14)]'
           }`}
         >
           <Clock className="w-4 h-4" />
           <span>Görüşmeler ({userNegotiations.length})</span>
           {activeNegsCount > 0 && (
-            <span className="w-2 h-2 bg-[#00F5A0] animate-pulse rounded-full" />
+            <span className="w-2 h-2 bg-[#65F56B] animate-pulse rounded-full" />
           )}
         </button>
 
         <button
           onClick={() => setActiveTab('INCOMING')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 relative ${
             activeTab === 'INCOMING'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#65F56B] text-black font-black shadow-[0_0_12px_rgba(101,245,107,0.3)]'
+              : 'bg-[#09141B] text-zinc-400 hover:text-white border border-[rgba(125,160,175,0.14)]'
           }`}
         >
           <DollarSign className="w-4 h-4" />
@@ -372,22 +384,22 @@ export default function TransfersPage() {
 
         <button
           onClick={() => setActiveTab('SHORTLIST')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${
             activeTab === 'SHORTLIST'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#65F56B] text-black font-black shadow-[0_0_12px_rgba(101,245,107,0.3)]'
+              : 'bg-[#09141B] text-zinc-400 hover:text-white border border-[rgba(125,160,175,0.14)]'
           }`}
         >
           <Bookmark className="w-4 h-4" />
-          <span>Gözlem Listesi ({shortlistedPlayers.length})</span>
+          <span>Gözlem Listem ({shortlistedPlayers.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab('HISTORY')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 ${
             activeTab === 'HISTORY'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#65F56B] text-black font-black shadow-[0_0_12px_rgba(101,245,107,0.3)]'
+              : 'bg-[#09141B] text-zinc-400 hover:text-white border border-[rgba(125,160,175,0.14)]'
           }`}
         >
           <History className="w-4 h-4" />
