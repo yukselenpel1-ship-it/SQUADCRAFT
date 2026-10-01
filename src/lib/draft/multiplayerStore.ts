@@ -42,6 +42,7 @@ import {
   computeLeagueAwards,
   computeStandingsFromFixtures,
   computeSeasonPlayerStats,
+  extractFixtureSeasonNumber,
 } from './matchEngineIntegration';
 import { generateBotProfile, chooseBotDraftPick, generateBotTactics, getBotPickDelayMs } from './botManager';
 import { logMultiplayerAction, formatMultiplayerError } from './logger';
@@ -402,10 +403,11 @@ function mapDbClub(c: any, defaultBudget: number = DEFAULT_DRAFT_BUDGET): DraftC
  * Maps database row to DraftFixture
  */
 function mapDbFixture(f: any): DraftFixture {
+  const seasonNumber = extractFixtureSeasonNumber(f);
   return {
     id: f.id,
     roomId: f.room_id,
-    seasonNumber: f.season_number || f.seasonNumber || 1,
+    seasonNumber,
     round: f.round,
     homeClubId: f.home_club_id,
     awayClubId: f.away_club_id,
@@ -1062,8 +1064,11 @@ export class DraftMultiplayerStore {
               }
             }
           }
-          const fixtures: DraftFixture[] = Array.from(fixtureMap.values()).sort((a, b) => a.round - b.round);
           const currentSeason = room.seasonNumber || room.rules?.seasonNumber || 1;
+          const fixtures: DraftFixture[] = Array.from(fixtureMap.values())
+            .map((f) => ({ ...f, seasonNumber: extractFixtureSeasonNumber(f) }))
+            .filter((f) => f.seasonNumber === currentSeason)
+            .sort((a, b) => a.round - b.round);
           const standings: DraftStanding[] = computeStandingsFromFixtures(clubs, fixtures, currentSeason);
 
           if (room.rules?.currentMatchweek && (!room.currentMatchweek || room.currentMatchweek < room.rules.currentMatchweek)) {
@@ -3804,10 +3809,7 @@ export class DraftMultiplayerStore {
 
     let standings = state.standings;
     if (standings.length === 0 && state.clubs.length >= 2) {
-      standings = initializeDraftStandings(state.clubs);
-      fixtures.filter((f) => f.status === 'COMPLETED' && (!f.seasonNumber || f.seasonNumber === currentSeason)).forEach((f) => {
-        standings = updateDraftStandings(standings, f);
-      });
+      standings = computeStandingsFromFixtures(clubs, fixtures, currentSeason);
     } else {
       const seen = new Set<string>();
       standings = standings.filter((s) => {

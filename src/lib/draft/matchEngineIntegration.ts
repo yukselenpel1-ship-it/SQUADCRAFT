@@ -121,6 +121,27 @@ export function simulateDraftFixture(
 }
 
 /**
+ * Reliably derives the integer season number for any fixture.
+ * Resolves strictly in order:
+ * 1. Explicit fixture.seasonNumber (> 0)
+ * 2. Database column fixture.season_number (> 0)
+ * 3. Fixture ID format: fix-{roomId}-s{seasonNumber}-r{round}-{idx}
+ * 4. Fallback: 1 (legacy un-versioned fixtures)
+ */
+export function extractFixtureSeasonNumber(f: { id?: string; seasonNumber?: number; season_number?: number }): number {
+  if (typeof f?.seasonNumber === 'number' && f.seasonNumber > 0) return f.seasonNumber;
+  if (typeof f?.season_number === 'number' && f.season_number > 0) return f.season_number;
+  if (typeof f?.id === 'string') {
+    const sMatch = f.id.match(/-s(\d+)-/);
+    if (sMatch) {
+      const parsed = parseInt(sMatch[1], 10);
+      if (!isNaN(parsed) && parsed > 0) return parsed;
+    }
+  }
+  return 1;
+}
+
+/**
  * Recomputes Draft League Standings from scratch from all completed fixtures.
  * Idempotent, robust, and immune to stale database rows or multiple simulation triggers.
  */
@@ -149,17 +170,17 @@ export function computeStandingsFromFixtures(
   const uniqueFixtureMap = new Map<string, DraftFixture>();
   for (const f of fixtures) {
     if (!f || !f.id) continue;
-    if (seasonNumber && f.seasonNumber && f.seasonNumber !== seasonNumber) continue;
-    if (seasonNumber && !f.seasonNumber && seasonNumber !== 1) continue;
+    const fSeason = extractFixtureSeasonNumber(f);
+    if (seasonNumber && fSeason !== seasonNumber) continue;
 
     if (!uniqueFixtureMap.has(f.id)) {
-      uniqueFixtureMap.set(f.id, f);
+      uniqueFixtureMap.set(f.id, { ...f, seasonNumber: fSeason });
     } else {
       const existing = uniqueFixtureMap.get(f.id)!;
       const isFCompleted = (f.status === 'COMPLETED' || (f.status as string) === 'FINISHED') && f.homeScore !== undefined && f.awayScore !== undefined;
       const isExistingCompleted = (existing.status === 'COMPLETED' || (existing.status as string) === 'FINISHED') && existing.homeScore !== undefined && existing.awayScore !== undefined;
       if (isFCompleted && !isExistingCompleted) {
-        uniqueFixtureMap.set(f.id, f);
+        uniqueFixtureMap.set(f.id, { ...f, seasonNumber: fSeason });
       }
     }
   }
@@ -317,11 +338,11 @@ export function computeSeasonPlayerStats(
   const uniqueFixtureMap = new Map<string, DraftFixture>();
   for (const f of fixtures) {
     if (!f || !f.id) continue;
-    if (seasonNumber && f.seasonNumber && f.seasonNumber !== seasonNumber) continue;
-    if (seasonNumber && !f.seasonNumber && seasonNumber !== 1) continue;
+    const fSeason = extractFixtureSeasonNumber(f);
+    if (seasonNumber && fSeason !== seasonNumber) continue;
 
     if (!uniqueFixtureMap.has(f.id)) {
-      uniqueFixtureMap.set(f.id, f);
+      uniqueFixtureMap.set(f.id, { ...f, seasonNumber: fSeason });
     } else {
       const existing = uniqueFixtureMap.get(f.id)!;
       const isFCompleted =
@@ -333,7 +354,7 @@ export function computeSeasonPlayerStats(
         existing.homeScore !== undefined &&
         existing.awayScore !== undefined;
       if (isFCompleted && !isExistingCompleted) {
-        uniqueFixtureMap.set(f.id, f);
+        uniqueFixtureMap.set(f.id, { ...f, seasonNumber: fSeason });
       }
     }
   }
@@ -608,8 +629,8 @@ export function computeLeagueAwards(
 
   fixtures.forEach((f) => {
     if (f.status === 'COMPLETED' && f.homeScore !== undefined && f.awayScore !== undefined) {
-      if (seasonNumber && f.seasonNumber && f.seasonNumber !== seasonNumber) return;
-      if (seasonNumber && !f.seasonNumber && seasonNumber !== 1) return;
+      const fSeason = extractFixtureSeasonNumber(f);
+      if (seasonNumber && fSeason !== seasonNumber) return;
 
       const totalGoals = f.homeScore + f.awayScore;
       const homeClub = clubs.find((c) => c.id === f.homeClubId);
