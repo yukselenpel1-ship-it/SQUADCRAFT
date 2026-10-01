@@ -10,6 +10,7 @@ import { ClubBadge } from '@/components/ui/ClubBadge';
 import { StatBadge } from '@/components/ui/StatBadge';
 import { FitnessIndicator } from '@/components/ui/FitnessIndicator';
 import { PlayerModal } from '@/components/ui/PlayerModal';
+import { FifaMatchReportModal } from '@/components/match/FifaMatchReportModal';
 import { findManOfTheMatch } from '@/lib/match-engine/matchStats';
 import {
   Play,
@@ -94,8 +95,8 @@ export default function MatchCenterPage() {
   const homeClub = allClubs.find((c) => c.id === fixture?.homeClubId) || allClubs[0];
   const awayClub = allClubs.find((c) => c.id === fixture?.awayClubId) || allClubs[1];
 
-  const homePlayers = allPlayers.filter((p) => p.clubId === homeClub.id);
-  const awayPlayers = allPlayers.filter((p) => p.clubId === awayClub.id);
+  const homePlayers = homeClub ? allPlayers.filter((p) => p.clubId === homeClub.id) : [];
+  const awayPlayers = awayClub ? allPlayers.filter((p) => p.clubId === awayClub.id) : [];
 
   // Engine instance reference
   const engineRef = useRef<MatchEngine | null>(null);
@@ -120,7 +121,7 @@ export default function MatchCenterPage() {
 
   // Initialize engine on load
   useEffect(() => {
-    if (!isCareerHydrated || !isInitialized || !fixture || homePlayers.length === 0 || awayPlayers.length === 0) return;
+    if (!isCareerHydrated || !isInitialized || !fixture || !homeClub || !awayClub || homePlayers.length === 0 || awayPlayers.length === 0) return;
 
     const isUserHome = homeClub.id === userClub.id;
     const userTacticsSettings = tactics.settings;
@@ -847,68 +848,28 @@ export default function MatchCenterPage() {
         </div>
       </div>
 
-      {/* 5. POST MATCH SUMMARY MODAL */}
-      {showPostMatchModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 animate-in fade-in">
-          <div className="relative w-full max-w-2xl bg-[#080D1A] border-2 border-zinc-700 p-6 sm:p-8 shadow-2xl space-y-6 text-zinc-200">
-            <div className="text-center space-y-1">
-              <span className="px-3 py-1 text-xs font-mono font-black bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30 uppercase">
-                Maç Raporu • 90 Dakika
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-white">
-                {homeClub.name} {engineState.homeScore} - {engineState.awayScore} {awayClub.name}
-              </h2>
-            </div>
-
-            {/* Man of the Match Card */}
-            {manOfTheMatch && (
-              <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-zinc-900 to-amber-500/15 border border-amber-500/30 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Trophy className="w-7 h-7 text-amber-400" />
-                  <div>
-                    <span className="text-[10px] uppercase font-bold text-amber-300 block">Maçın Adamı (MVP)</span>
-                    <span className="text-sm font-black text-white">{manOfTheMatch.player.firstName} {manOfTheMatch.player.lastName}</span>
-                    <span className="text-xs text-zinc-400 block">{manOfTheMatch.currentPosition} • {manOfTheMatch.goals} Gol, {manOfTheMatch.assists} Asist</span>
-                  </div>
-                </div>
-                <StatBadge value={manOfTheMatch.matchRating} size="lg" />
-              </div>
-            )}
-
-            {/* Quick Final Stats Overview */}
-            <div className="grid grid-cols-3 gap-3 text-center bg-zinc-950 p-4 rounded-2xl border border-zinc-800 text-xs">
-              <div>
-                <span className="text-zinc-500 block">xG (Gol Beklentisi)</span>
-                <span className="text-base font-black text-white">{engineState.home.stats.xG} - {engineState.away.stats.xG}</span>
-              </div>
-              <div className="border-x border-zinc-800">
-                <span className="text-zinc-500 block">Topa Sahip Olma</span>
-                <span className="text-base font-black text-[#00F5A0]">%{engineState.homePossessionPercent} - %{engineState.awayPossessionPercent}</span>
-              </div>
-              <div>
-                <span className="text-zinc-500 block">İsabetli Şut</span>
-                <span className="text-base font-black text-white">{engineState.home.stats.shotsOnTarget} - {engineState.away.stats.shotsOnTarget}</span>
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-end gap-3 pt-2">
-              <button
-                onClick={() => router.push('/league')}
-                className="px-5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-bold text-white transition-colors"
-              >
-                Puan Durumunu Gör
-              </button>
-              <button
-                onClick={() => setShowPostMatchModal(false)}
-                className="px-5 py-2.5 rounded-xl bg-[#00F5A0] text-black text-xs font-black hover:bg-[#00D68B] transition-colors"
-              >
-                Maç Merkezini İncele
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 5. EA SPORTS FC / FIFA MODERN POST-MATCH REPORT MODAL */}
+      <FifaMatchReportModal
+        isOpen={showPostMatchModal}
+        onClose={() => setShowPostMatchModal(false)}
+        homeClub={homeClub}
+        awayClub={awayClub}
+        homeScore={engineState.homeScore}
+        awayScore={engineState.awayScore}
+        homeStats={engineState.home.stats}
+        awayStats={engineState.away.stats}
+        homePossessionPercent={engineState.homePossessionPercent}
+        awayPossessionPercent={engineState.awayPossessionPercent}
+        events={engineState.events}
+        homePlayers={engineState.home.players}
+        awayPlayers={engineState.away.players}
+        manOfTheMatch={manOfTheMatch}
+        round={fixture?.round}
+        matchDate={fixture?.date}
+        onInspectPlayer={(p) => setInspectedPlayer(p)}
+        onViewStandings={() => router.push('/league')}
+        onContinue={() => router.push('/fixtures')}
+      />
 
       {/* 6. INSPECT PLAYER MODAL */}
       {inspectedPlayer && (
