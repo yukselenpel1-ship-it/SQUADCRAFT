@@ -135,6 +135,7 @@ export interface Player {
   injuryDetails?: {
     type: string;
     daysRemaining: number;
+    severity?: 'LIGHT' | 'MODERATE' | 'SEVERE';
   };
   isSuspended?: boolean;
   suspensionDetails?: {

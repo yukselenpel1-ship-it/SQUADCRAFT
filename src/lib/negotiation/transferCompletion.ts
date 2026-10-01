@@ -98,6 +98,7 @@ export function executeTransferCompletion({
     ...player,
     clubId: buyerClub.id,
     wage: contractPackage.wage,
+    contractYearsLeft: contractPackage.durationYears,
     contractStart: currentDate,
     contractEnd,
     squadRole: contractPackage.squadRole,

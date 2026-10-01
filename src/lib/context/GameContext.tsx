@@ -50,6 +50,7 @@ import {
   loadCareerState,
   clearCareerSave,
   simulatePendingAIMatches,
+  processMatchSuspension,
 } from '@/lib/career';
 import { generateCareerPlayerUniverse, EXTERNAL_CLUBS } from '@/lib/career/careerUniverse';
 
@@ -827,44 +828,94 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setFixtures(finalFixtures);
     setStandings(finalStandings);
 
-    // C. Update Player Stats & Ratings
-    let updatedPlayers = allPlayers;
-    if (playerUpdates && playerUpdates.length > 0) {
-      const updateMap = new Map(playerUpdates.map((u) => [u.playerId, u]));
-      updatedPlayers = allPlayers.map((p) => {
-        const u = updateMap.get(p.id);
-        if (!u) return p;
+    // C. Update Player Stats, Injuries & Suspensions
+    const injuryEvents = events.filter((ev) => ev.type === 'INJURY');
+    const injuryMap = new Map(injuryEvents.map((ev) => [ev.playerId, ev]));
+    const redCardPlayerIds = new Set(events.filter((ev) => ev.type === 'RED_CARD').map((ev) => ev.playerId));
 
-        const currentStats = p.seasonStats || {
-          appearances: 0,
-          goals: 0,
-          assists: 0,
-          yellowCards: 0,
-          redCards: 0,
-          cleanSheets: 0,
-          averageRating: 7.0,
+    const updateMap = playerUpdates && playerUpdates.length > 0
+      ? new Map(playerUpdates.map((u) => [u.playerId, u]))
+      : new Map();
+
+    const isMatchClub = (clubId?: string) => clubId === fixture.homeClubId || clubId === fixture.awayClubId;
+
+    const updatedPlayers = allPlayers.map((p) => {
+      const u = updateMap.get(p.id);
+
+      // Handle players who were ALREADY suspended from this fixture's clubs and did not play
+      if (!u && isMatchClub(p.clubId) && p.isSuspended) {
+        return processMatchSuspension(p, 1);
+      }
+
+      if (!u) return p;
+
+      const currentStats = p.seasonStats || {
+        appearances: 0,
+        goals: 0,
+        assists: 0,
+        yellowCards: 0,
+        redCards: 0,
+        cleanSheets: 0,
+        averageRating: 7.0,
+      };
+
+      const totalApps = currentStats.appearances + 1;
+      const totalRating = (currentStats.averageRating * currentStats.appearances + u.matchRating) / totalApps;
+      const newYellows = currentStats.yellowCards + u.yellowCards;
+      const newReds = currentStats.redCards + u.redCards;
+
+      // Match injury determination
+      let isInjured = p.isInjured;
+      let injuryDetails = p.injuryDetails;
+      const injEvent = injuryMap.get(p.id);
+      if (injEvent) {
+        const isSevere = injEvent.description?.includes('sakatlanarak oyuna devam edemiyor') || injEvent.description?.includes('SEVERE');
+        isInjured = true;
+        injuryDetails = {
+          type: isSevere ? 'Ciddi Bağ / Kas Yaralanması' : 'Hafif Darbe & Adale Zorlanması',
+          daysRemaining: isSevere ? 14 : 5,
+          severity: isSevere ? 'SEVERE' : 'LIGHT',
         };
+      }
 
-        const totalApps = currentStats.appearances + 1;
-        const totalRating = (currentStats.averageRating * currentStats.appearances + u.matchRating) / totalApps;
-
-        return {
-          ...p,
-          fitness: Math.min(100, Math.max(30, Math.round(u.fitness))),
-          form: Number(((p.form * 4 + u.matchRating) / 5).toFixed(1)),
-          seasonStats: {
-            appearances: totalApps,
-            goals: currentStats.goals + u.goals,
-            assists: currentStats.assists + u.assists,
-            yellowCards: currentStats.yellowCards + u.yellowCards,
-            redCards: currentStats.redCards + u.redCards,
-            cleanSheets: currentStats.cleanSheets + (p.position === 'GK' && (fixture.homeClubId === p.clubId ? awayScore === 0 : homeScore === 0) ? 1 : 0),
-            averageRating: Number(totalRating.toFixed(2)),
-          },
+      // Suspension determination (Red card or 4 yellow card accumulation)
+      let isSuspended = p.isSuspended;
+      let suspensionDetails = p.suspensionDetails;
+      if (redCardPlayerIds.has(p.id) || u.redCards > 0) {
+        isSuspended = true;
+        suspensionDetails = {
+          reason: 'Kırmızı Kart Cezası',
+          matchesRemaining: 1,
         };
-      });
-      setAllPlayers(updatedPlayers);
-    }
+      } else if (newYellows >= 4 && newYellows % 4 === 0 && u.yellowCards > 0) {
+        isSuspended = true;
+        suspensionDetails = {
+          reason: `Sarı Kart Cezası (${newYellows}. Sarı Kart)`,
+          matchesRemaining: 1,
+        };
+      }
+
+      return {
+        ...p,
+        fitness: Math.min(100, Math.max(30, Math.round(u.fitness))),
+        form: Number(((p.form * 4 + u.matchRating) / 5).toFixed(1)),
+        isInjured,
+        injuryDetails,
+        isSuspended,
+        suspensionDetails,
+        seasonStats: {
+          appearances: totalApps,
+          goals: currentStats.goals + u.goals,
+          assists: currentStats.assists + u.assists,
+          yellowCards: newYellows,
+          redCards: newReds,
+          cleanSheets: currentStats.cleanSheets + (p.position === 'GK' && (fixture.homeClubId === p.clubId ? awayScore === 0 : homeScore === 0) ? 1 : 0),
+          averageRating: Number(totalRating.toFixed(2)),
+        },
+      };
+    });
+
+    setAllPlayers(updatedPlayers);
 
     persist(
       currentDate,

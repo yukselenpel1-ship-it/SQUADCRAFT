@@ -6,7 +6,8 @@ import { matchRandom } from './random';
 export function selectShooter(
   attackingPlayers: PlayerInMatch[],
   chanceType: ChanceType,
-  isCompetitive: boolean = true
+  isCompetitive: boolean = true,
+  rng?: () => number
 ): PlayerInMatch {
   if (attackingPlayers.length === 0) {
     throw new Error('No active attacking players found');
@@ -96,7 +97,7 @@ export function selectShooter(
   });
 
   const totalWeight = weights.reduce((a, b) => a + b, 0);
-  let r = matchRandom() * totalWeight;
+  let r = matchRandom(rng) * totalWeight;
 
   for (let i = 0; i < weights.length; i++) {
     r -= weights[i];
@@ -112,7 +113,8 @@ export function selectAssister(
   attackingPlayers: PlayerInMatch[],
   excludePlayerId: string,
   isCross: boolean = false,
-  isCompetitive: boolean = true
+  isCompetitive: boolean = true,
+  rng?: () => number
 ): PlayerInMatch | undefined {
   const candidates = attackingPlayers.filter((p) => p.player.id !== excludePlayerId && p.currentPosition !== 'GK');
   if (candidates.length === 0) return undefined;
@@ -156,7 +158,7 @@ export function selectAssister(
   });
 
   const totalWeight = weights.reduce((a, b) => a + b, 0);
-  let r = matchRandom() * totalWeight;
+  let r = matchRandom(rng) * totalWeight;
 
   for (let i = 0; i < weights.length; i++) {
     r -= weights[i];

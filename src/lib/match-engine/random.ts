@@ -22,7 +22,8 @@ export function setActiveRng(rng: (() => number) | null) {
   activeRng = rng;
 }
 
-export function matchRandom(): number {
+export function matchRandom(customRng?: () => number): number {
+  if (customRng) return customRng();
   if (activeRng) return activeRng();
   return Math.random();
 }

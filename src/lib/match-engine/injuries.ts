@@ -13,7 +13,8 @@ export function evaluateInjuries(
   minute: number,
   teamId: string,
   activePlayers: PlayerInMatch[],
-  opponentAggressionLevel: number // 1 to 100
+  opponentAggressionLevel: number, // 1 to 100
+  rng?: () => number
 ): InjuryCheckResult {
   for (const pim of activePlayers) {
     if (!pim.isOnPitch || pim.isInjured) continue;
@@ -38,8 +39,8 @@ export function evaluateInjuries(
       prob *= 1.3;
     }
 
-    if (matchRandom() < prob) {
-      const isSevere = matchRandom() < 0.45;
+    if (matchRandom(rng) < prob) {
+      const isSevere = matchRandom(rng) < 0.45;
       pim.isInjured = true;
       pim.injurySeverity = isSevere ? 'SEVERE' : 'LIGHT';
 
@@ -50,7 +51,7 @@ export function evaluateInjuries(
       const event: MatchEngineEvent = {
         id: `inj-${minute}-${pim.player.id}`,
         minute,
-        second: Math.floor(matchRandom() * 59),
+        second: Math.floor(matchRandom(rng) * 59),
         type: 'INJURY',
         teamId,
         playerId: pim.player.id,

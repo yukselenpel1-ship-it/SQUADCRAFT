@@ -16,7 +16,8 @@ export function evaluateFoulsAndDiscipline(
   defendingPlayers: PlayerInMatch[],
   attackingPlayers: PlayerInMatch[],
   foulRiskMult: number,
-  isDangerousCounter: boolean = false
+  isDangerousCounter: boolean = false,
+  rng?: () => number
 ): DisciplineCheckResult {
   if (defendingPlayers.length === 0 || attackingPlayers.length === 0) {
     return { foulOccurred: false };
@@ -24,7 +25,7 @@ export function evaluateFoulsAndDiscipline(
 
   // Base foul probability per attacking sequence ~0.14
   const foulProb = Math.min(0.35, 0.13 * foulRiskMult);
-  if (matchRandom() >= foulProb) {
+  if (matchRandom(rng) >= foulProb) {
     return { foulOccurred: false };
   }
 
@@ -37,7 +38,7 @@ export function evaluateFoulsAndDiscipline(
   });
 
   const totalWeight = weights.reduce((a, b) => a + b, 0);
-  let r = matchRandom() * totalWeight;
+  let r = matchRandom(rng) * totalWeight;
   let foulerIndex = 0;
   for (let i = 0; i < weights.length; i++) {
     r -= weights[i];
@@ -47,7 +48,7 @@ export function evaluateFoulsAndDiscipline(
     }
   }
   const fouler = defendingPlayers[foulerIndex];
-  const victim = attackingPlayers[Math.floor(matchRandom() * attackingPlayers.length)];
+  const victim = attackingPlayers[Math.floor(matchRandom(rng) * attackingPlayers.length)];
 
   fouler.foulsCommitted += 1;
 
@@ -63,7 +64,7 @@ export function evaluateFoulsAndDiscipline(
 
   let event: MatchEngineEvent | undefined;
 
-  if (matchRandom() < cardProb) {
+  if (matchRandom(rng) < cardProb) {
     if (fouler.yellowCards === 1) {
       // Second Yellow -> RED!
       fouler.yellowCards += 1;
@@ -74,7 +75,7 @@ export function evaluateFoulsAndDiscipline(
       event = {
         id: `card-${minute}-${fouler.player.id}-2y`,
         minute,
-        second: Math.floor(matchRandom() * 59),
+        second: Math.floor(matchRandom(rng) * 59),
         type: 'RED_CARD',
         teamId: defendingTeamId,
         playerId: fouler.player.id,
@@ -86,7 +87,7 @@ export function evaluateFoulsAndDiscipline(
     } else {
       // Direct red check (very rare: 1.5% of cards)
       const directRedChance = isDangerousCounter ? 0.03 : 0.012;
-      if (matchRandom() < directRedChance && agg > 75) {
+      if (matchRandom(rng) < directRedChance && agg > 75) {
         fouler.redCards = 1;
         fouler.isOnPitch = false;
         cardType = 'RED';
@@ -94,7 +95,7 @@ export function evaluateFoulsAndDiscipline(
         event = {
           id: `card-${minute}-${fouler.player.id}-dr`,
           minute,
-          second: Math.floor(matchRandom() * 59),
+          second: Math.floor(matchRandom(rng) * 59),
           type: 'RED_CARD',
           teamId: defendingTeamId,
           playerId: fouler.player.id,
@@ -111,7 +112,7 @@ export function evaluateFoulsAndDiscipline(
         event = {
           id: `card-${minute}-${fouler.player.id}-yc`,
           minute,
-          second: Math.floor(matchRandom() * 59),
+          second: Math.floor(matchRandom(rng) * 59),
           type: 'YELLOW_CARD',
           teamId: defendingTeamId,
           playerId: fouler.player.id,
@@ -127,7 +128,7 @@ export function evaluateFoulsAndDiscipline(
     event = {
       id: `foul-${minute}-${fouler.player.id}`,
       minute,
-      second: Math.floor(matchRandom() * 59),
+      second: Math.floor(matchRandom(rng) * 59),
       type: 'FOUL',
       teamId: defendingTeamId,
       playerId: fouler.player.id,

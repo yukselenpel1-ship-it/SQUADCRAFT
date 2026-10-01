@@ -41,22 +41,24 @@ export interface SeasonBudgetResult {
 export function calculateSeasonBudgets(
   club: Club,
   rank: number,
-  totalClubs: number = 10,
+  totalClubs: number = 18,
   isUserClub: boolean = false,
   existingFinances?: FinanceSummary
 ): SeasonBudgetResult {
-  // 1. Prize Money based on ranking
-  let basePrize = 2_000_000;
+  // 1. Prize Money based on ranking (for 18-club league)
+  let basePrize = 1_500_000;
   if (rank === 1) basePrize = 12_000_000;
-  else if (rank === 2) basePrize = 9_000_000;
-  else if (rank === 3) basePrize = 7_000_000;
-  else if (rank === 4) basePrize = 5_500_000;
-  else if (rank === 5) basePrize = 4_500_000;
-  else if (rank === 6) basePrize = 3_800_000;
-  else if (rank === 7) basePrize = 3_200_000;
-  else if (rank === 8) basePrize = 2_700_000;
-  else if (rank === 9) basePrize = 2_200_000;
-  else basePrize = 1_800_000;
+  else if (rank === 2) basePrize = 9_500_000;
+  else if (rank === 3) basePrize = 7_500_000;
+  else if (rank === 4) basePrize = 6_000_000;
+  else if (rank === 5) basePrize = 5_000_000;
+  else if (rank === 6) basePrize = 4_200_000;
+  else if (rank === 7) basePrize = 3_600_000;
+  else if (rank === 8) basePrize = 3_100_000;
+  else if (rank === 9) basePrize = 2_700_000;
+  else if (rank <= 12) basePrize = 2_300_000;
+  else if (rank <= 15) basePrize = 1_900_000;
+  else basePrize = 1_500_000;
 
   const prizeMoney = Math.round(basePrize * (0.90 + (club.reputation / 100) * 0.20));
 

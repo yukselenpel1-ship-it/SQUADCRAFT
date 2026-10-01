@@ -30,6 +30,8 @@ export class MatchEngine {
   private momentum: MomentumState;
   private config: MatchSimulationConfig;
   private rng: () => number;
+  private fixtureId: string;
+  private eventCounter: number = 0;
 
   constructor(
     homeClub: Club,
@@ -50,6 +52,7 @@ export class MatchEngine {
     }
   ) {
     this.config = config;
+    this.fixtureId = fixtureId;
     this.rng = createSeededRandom(fixtureId);
     setActiveRng(this.rng);
     this.momentum = createInitialMomentum(config.enableHomeAdvantage);
@@ -58,7 +61,7 @@ export class MatchEngine {
       const consistency = p.hiddenAttributes?.consistency ?? 70;
       // spread: consistency 100 -> 0%, consistency 70 -> ±3.3%, consistency 50 -> ±5.5%
       const spread = (100 - consistency) * 0.0011;
-      return (matchRandom() - 0.5) * 2 * spread;
+      return (matchRandom(this.rng) - 0.5) * 2 * spread;
     };
 
     // Initialize Home Team Runtime
@@ -178,11 +181,11 @@ export class MatchEngine {
       consecutiveAttacks: 0,
     };
 
-    const addedTime1 = Math.floor(1 + matchRandom() * 3); // 1-3 min
-    const addedTime2 = Math.floor(2 + matchRandom() * 4); // 2-5 min
+    const addedTime1 = Math.floor(1 + matchRandom(this.rng) * 3); // 1-3 min
+    const addedTime2 = Math.floor(2 + matchRandom(this.rng) * 4); // 2-5 min
 
     const initialKickoffEvent: MatchEngineEvent = {
-      id: `kickoff-0`,
+      id: `ev-${fixtureId}-0-0-KICKOFF`,
       minute: 0,
       second: 0,
       type: 'KICKOFF',
@@ -222,6 +225,10 @@ export class MatchEngine {
     return this.state;
   }
 
+  public isMatchFinished(): boolean {
+    return this.state.isFinished;
+  }
+
   public applyTactics(isHome: boolean, newTactics: Partial<TacticalSettings>): void {
     const team = isHome ? this.state.home : this.state.away;
     team.tactics = {
@@ -230,18 +237,25 @@ export class MatchEngine {
     };
   }
 
+  private registerEvent(event: MatchEngineEvent): MatchEngineEvent {
+    this.eventCounter += 1;
+    event.id = `ev-${this.fixtureId}-${event.minute}-${this.eventCounter}-${event.type}${event.playerId ? `-${event.playerId}` : ''}`;
+    this.state.events.push(event);
+    this.state.commentaryLog.push(event.commentary);
+    this.state.latestEvent = event;
+    return event;
+  }
+
   public applyUserTactics(newTactics: Partial<TacticalSettings>): void {
     this.applyTactics(true, newTactics);
   }
 
   public makeSubstitution(isHome: boolean, playerOutId: string, playerInId: string): SubstitutionResult {
     const team = isHome ? this.state.home : this.state.away;
-    const res = performSubstitution(team, playerOutId, playerInId, this.state.minute);
+    const res = performSubstitution(team, playerOutId, playerInId, this.state.minute, this.rng);
 
     if (res.success && res.event) {
-      this.state.events.push(res.event);
-      this.state.commentaryLog.push(res.event.commentary);
-      this.state.latestEvent = res.event;
+      this.registerEvent(res.event);
     }
 
     return res;
@@ -293,9 +307,6 @@ export class MatchEngine {
         isImportant: true,
       };
       newEvents.push(fullEvent);
-      this.state.events.push(fullEvent);
-      this.state.commentaryLog.push(fullEvent.commentary);
-      this.state.latestEvent = fullEvent;
 
       updatePlayerMatchRatings(this.state.home.players, this.state.awayScore);
       updatePlayerMatchRatings(this.state.away.players, this.state.homeScore);
@@ -340,8 +351,8 @@ export class MatchEngine {
     const minuteHomePossRatio = homePossAbility / Math.max(1, totalPossAbility);
 
     // Accumulate passes
-    const passCount = Math.floor(7 + matchRandom() * 5);
-    if (matchRandom() < minuteHomePossRatio) {
+    const passCount = Math.floor(7 + matchRandom(this.rng) * 5);
+    if (matchRandom(this.rng) < minuteHomePossRatio) {
       this.state.home.stats.passes += passCount;
       this.state.home.stats.completedPasses += Math.floor(passCount * (this.state.home.ratings.possessionAbility / 100));
     } else {
@@ -358,12 +369,12 @@ export class MatchEngine {
     }
 
     // 5. Injury checks
-    const homeInjRes = evaluateInjuries(minute, this.state.home.club.id, homeActive, this.state.away.ratings.physicalStrength);
+    const homeInjRes = evaluateInjuries(minute, this.state.home.club.id, homeActive, this.state.away.ratings.physicalStrength, this.rng);
     if (homeInjRes.hasInjury && homeInjRes.event) {
       newEvents.push(homeInjRes.event);
     }
 
-    const awayInjRes = evaluateInjuries(minute, this.state.away.club.id, awayActive, this.state.home.ratings.physicalStrength);
+    const awayInjRes = evaluateInjuries(minute, this.state.away.club.id, awayActive, this.state.home.ratings.physicalStrength, this.rng);
     if (awayInjRes.hasInjury && awayInjRes.event) {
       newEvents.push(awayInjRes.event);
     }
@@ -374,7 +385,9 @@ export class MatchEngine {
       this.state.home.club.id,
       homeActive,
       awayActive,
-      homeMods.foulRiskMult
+      homeMods.foulRiskMult,
+      false,
+      this.rng
     );
     if (foulCheckHome.foulOccurred) {
       this.state.home.stats.fouls += 1;
@@ -388,7 +401,9 @@ export class MatchEngine {
       this.state.away.club.id,
       awayActive,
       homeActive,
-      awayMods.foulRiskMult
+      awayMods.foulRiskMult,
+      false,
+      this.rng
     );
     if (foulCheckAway.foulOccurred) {
       this.state.away.stats.fouls += 1;
@@ -406,7 +421,8 @@ export class MatchEngine {
       awayMods,
       minuteHomePossRatio,
       this.momentum,
-      this.config.enableHomeAdvantage ? this.config.homeAdvantageMultiplier : 1.0
+      this.config.enableHomeAdvantage ? this.config.homeAdvantageMultiplier : 1.0,
+      this.rng
     );
 
     if (attackRes.hasAttack) {
@@ -448,7 +464,8 @@ export class MatchEngine {
       this.state.home,
       false,
       this.state.homeScore,
-      this.state.awayScore
+      this.state.awayScore,
+      this.rng
     );
     aiEvents.forEach((ev) => newEvents.push(ev));
 
@@ -456,12 +473,10 @@ export class MatchEngine {
     updatePlayerMatchRatings(this.state.home.players, this.state.awayScore);
     updatePlayerMatchRatings(this.state.away.players, this.state.homeScore);
 
-    // Append to event and commentary logs
+    // Append to event and commentary logs with guaranteed unique deterministic IDs
     if (newEvents.length > 0) {
       newEvents.forEach((ev) => {
-        this.state.events.push(ev);
-        this.state.commentaryLog.push(ev.commentary);
-        this.state.latestEvent = ev;
+        this.registerEvent(ev);
       });
     }
 

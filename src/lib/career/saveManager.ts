@@ -60,7 +60,7 @@ export function migrateV1toV3(v1: CareerSaveDataV1): CareerSaveDataV3 {
 
 export function saveCareerState(data: any): boolean {
   try {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === 'undefined' && typeof localStorage === 'undefined') return false;
 
     if (data.saveVersion === 2) {
       const v3 = migrateV2toV3(data as CareerSaveDataV2);
@@ -124,7 +124,7 @@ export function applyEconomyAndContractMigrations(data: CareerSaveDataV3): Caree
 
 export function loadCareerState(): CareerSaveDataV3 | null {
   try {
-    if (typeof window === 'undefined') return null;
+    if (typeof window === 'undefined' && typeof localStorage === 'undefined') return null;
 
     // 1. Check V3 first
     const itemV3 = localStorage.getItem(SAVE_KEY_V3);

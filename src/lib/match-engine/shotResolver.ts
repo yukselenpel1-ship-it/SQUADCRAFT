@@ -21,24 +21,24 @@ export interface ShotResolutionResult {
   assisterRatingChange?: number;
 }
 
-export function calculateBaseXG(chanceType: ChanceType, distanceMeters: number): number {
+export function calculateBaseXG(chanceType: ChanceType, distanceMeters: number, rng?: () => number): number {
   switch (chanceType) {
     case 'PENALTY':
       return 0.76;
     case 'ONE_ON_ONE':
-      return 0.38 + matchRandom() * 0.12; // 0.38 - 0.50
+      return 0.38 + matchRandom(rng) * 0.12; // 0.38 - 0.50
     case 'CENTRAL_BOX':
-      return 0.15 + matchRandom() * 0.09; // 0.15 - 0.24
+      return 0.15 + matchRandom(rng) * 0.09; // 0.15 - 0.24
     case 'WIDE_CROSS_HEADER':
-      return 0.08 + matchRandom() * 0.07; // 0.08 - 0.15
+      return 0.08 + matchRandom(rng) * 0.07; // 0.08 - 0.15
     case 'WIDE_CROSS_VOLLEY':
-      return 0.10 + matchRandom() * 0.08; // 0.10 - 0.18
+      return 0.10 + matchRandom(rng) * 0.08; // 0.10 - 0.18
     case 'CORNER_HEADER':
-      return 0.06 + matchRandom() * 0.06; // 0.06 - 0.12
+      return 0.06 + matchRandom(rng) * 0.06; // 0.06 - 0.12
     case 'DIRECT_FREE_KICK':
-      return 0.05 + matchRandom() * 0.05; // 0.05 - 0.10
+      return 0.05 + matchRandom(rng) * 0.05; // 0.05 - 0.10
     case 'LONG_SHOT':
-      return 0.02 + matchRandom() * 0.03; // 0.02 - 0.05
+      return 0.02 + matchRandom(rng) * 0.03; // 0.02 - 0.05
     default:
       return 0.09;
   }
@@ -50,7 +50,8 @@ export function resolveShot(
   goalkeeper: PlayerInMatch,
   defendingOverallDefense: number,
   assister?: PlayerInMatch,
-  isCompetitive: boolean = true
+  isCompetitive: boolean = true,
+  rng?: () => number
 ): ShotResolutionResult {
   const isHeader = chanceType === 'WIDE_CROSS_HEADER' || chanceType === 'CORNER_HEADER';
   const isLongShot = chanceType === 'LONG_SHOT' || chanceType === 'DIRECT_FREE_KICK';
@@ -61,7 +62,7 @@ export function resolveShot(
   const gkArch = goalkeeper.player.archetype;
 
   // Base xG
-  let xG = calculateBaseXG(chanceType, isLongShot ? 24 : 12);
+  let xG = calculateBaseXG(chanceType, isLongShot ? 24 : 12, rng);
 
   // Playmaker Assister Impact: Great vision/passing increases chance quality (xG)
   if (assister) {
@@ -131,7 +132,7 @@ export function resolveShot(
   let goalProbability = xG * (1.10 / defContest);
   goalProbability = Math.max(0.01, Math.min(0.85, goalProbability));
 
-  const roll = matchRandom();
+  const roll = matchRandom(rng);
 
   if (roll < goalProbability) {
     // GOAL!
@@ -155,7 +156,7 @@ export function resolveShot(
 
   // If not a goal, determine if on target, saved, blocked, or off target
   shooter.shots += 1;
-  const onTargetRoll = matchRandom();
+  const onTargetRoll = matchRandom(rng);
   const onTargetThreshold = Math.min(0.85, 0.45 + (fin / 100) * 0.35);
 
   if (onTargetRoll < onTargetThreshold) {
@@ -163,7 +164,7 @@ export function resolveShot(
     shooter.shotsOnTarget += 1;
 
     // Check for post/crossbar (approx 4% of on-target non-goals)
-    if (matchRandom() < 0.05) {
+    if (matchRandom(rng) < 0.05) {
       return {
         outcome: 'POST',
         xG,
@@ -184,7 +185,7 @@ export function resolveShot(
     };
   } else {
     // Defender Block check (approx 20% of off-target shots)
-    if (matchRandom() < 0.25 && defendingOverallDefense > 65) {
+    if (matchRandom(rng) < 0.25 && defendingOverallDefense > 65) {
       return {
         outcome: 'BLOCKED_SHOT',
         xG,

@@ -45,7 +45,8 @@ export function simulateMinuteAttack(
   awayMods: TacticalModifiers,
   homePossessionRatio: number, // e.g. 0.54
   momentum: MomentumState,
-  homeAdvantageMultiplier: number = 1.05
+  homeAdvantageMultiplier: number = 1.05,
+  rng?: () => number
 ): AttackSequenceResult {
   const result: AttackSequenceResult = {
     hasAttack: false,
@@ -75,7 +76,7 @@ export function simulateMinuteAttack(
   const homeProb = baseChanceProb * homePossessionRatio * homeAttackStrength * homePlayerCountMult;
   const awayProb = baseChanceProb * (1 - homePossessionRatio) * awayAttackStrength * awayPlayerCountMult;
 
-  const roll = matchRandom();
+  const roll = matchRandom(rng);
   let attackingTeam: 'HOME' | 'AWAY' | 'NONE' = 'NONE';
 
   if (roll < homeProb) {
@@ -113,10 +114,10 @@ export function simulateMinuteAttack(
 
   // Chance Type determination
   let chanceType: ChanceType = 'CENTRAL_BOX';
-  let coords: PitchCoordinates = isHome ? { x: 75 + matchRandom() * 18, y: 35 + matchRandom() * 30 } : { x: 7 + matchRandom() * 18, y: 35 + matchRandom() * 30 };
+  let coords: PitchCoordinates = isHome ? { x: 75 + matchRandom(rng) * 18, y: 35 + matchRandom(rng) * 30 } : { x: 7 + matchRandom(rng) * 18, y: 35 + matchRandom(rng) * 30 };
   let isCross = false;
 
-  const chanceRoll = matchRandom();
+  const chanceRoll = matchRandom(rng);
 
   // Penalty check (~3.5% of attacking chances)
   if (chanceRoll < 0.035) {
@@ -126,36 +127,36 @@ export function simulateMinuteAttack(
   // Breakaway check (boosted by fast wingers, opponent high line, low block counter attacks, suppressed by sweeper keeper)
   else if (chanceRoll < 0.035 + 0.15 * (1 + (defMods.breakawayThreatBonus || 0) + (attMods.breakawayThreatBonus || 0)) * (hasFastWinger ? 1.25 : 1.0) * (hasSweeperKeeper ? 0.80 : 1.0)) {
     chanceType = 'ONE_ON_ONE';
-    coords = isHome ? { x: 84 + matchRandom() * 8, y: 45 + matchRandom() * 10 } : { x: 8 + matchRandom() * 8, y: 45 + matchRandom() * 10 };
+    coords = isHome ? { x: 84 + matchRandom(rng) * 8, y: 45 + matchRandom(rng) * 10 } : { x: 8 + matchRandom(rng) * 8, y: 45 + matchRandom(rng) * 10 };
   }
   // Wide cross check (boosted by wide play and target forwards)
   else if (chanceRoll < 0.42 * attMods.crossingFrequencyMult * (hasTargetForward ? 1.25 : 1.0)) {
-    chanceType = matchRandom() < 0.65 ? 'WIDE_CROSS_HEADER' : 'WIDE_CROSS_VOLLEY';
+    chanceType = matchRandom(rng) < 0.65 ? 'WIDE_CROSS_HEADER' : 'WIDE_CROSS_VOLLEY';
     isCross = true;
-    coords = isHome ? { x: 82 + matchRandom() * 10, y: 30 + matchRandom() * 40 } : { x: 10 + matchRandom() * 10, y: 30 + matchRandom() * 40 };
+    coords = isHome ? { x: 82 + matchRandom(rng) * 10, y: 30 + matchRandom(rng) * 40 } : { x: 10 + matchRandom(rng) * 10, y: 30 + matchRandom(rng) * 40 };
   }
   // Corner check (~16% of chances)
   else if (chanceRoll < 0.58) {
     chanceType = 'CORNER_HEADER';
-    coords = isHome ? { x: 86 + matchRandom() * 8, y: 40 + matchRandom() * 20 } : { x: 6 + matchRandom() * 8, y: 40 + matchRandom() * 20 };
+    coords = isHome ? { x: 86 + matchRandom(rng) * 8, y: 40 + matchRandom(rng) * 20 } : { x: 6 + matchRandom(rng) * 8, y: 40 + matchRandom(rng) * 20 };
   }
   // Long shot check (reduced if playmakers seek incisive box through balls)
   else if (chanceRoll < (hasPlaymaker ? 0.70 : 0.76)) {
     chanceType = 'LONG_SHOT';
-    coords = isHome ? { x: 72 + matchRandom() * 6, y: 35 + matchRandom() * 30 } : { x: 22 + matchRandom() * 6, y: 35 + matchRandom() * 30 };
+    coords = isHome ? { x: 72 + matchRandom(rng) * 6, y: 35 + matchRandom(rng) * 30 } : { x: 22 + matchRandom(rng) * 6, y: 35 + matchRandom(rng) * 30 };
   }
   // Central box play (dominant when playmakers unlock defense)
   else {
     chanceType = 'CENTRAL_BOX';
-    coords = isHome ? { x: 84 + matchRandom() * 8, y: 40 + matchRandom() * 20 } : { x: 8 + matchRandom() * 8, y: 40 + matchRandom() * 20 };
+    coords = isHome ? { x: 84 + matchRandom(rng) * 8, y: 40 + matchRandom(rng) * 20 } : { x: 8 + matchRandom(rng) * 8, y: 40 + matchRandom(rng) * 20 };
   }
 
   result.pitchCoords = coords;
 
   // Select Shooter & Assister based on chance context
-  const shooter = selectShooter(activeAttackers, chanceType);
+  const shooter = selectShooter(activeAttackers, chanceType, true, rng);
   const assister = chanceType !== 'PENALTY'
-    ? selectAssister(activeAttackers, shooter.player.id, isCross)
+    ? selectAssister(activeAttackers, shooter.player.id, isCross, true, rng)
     : undefined;
 
   // Resolve Shot
@@ -164,7 +165,9 @@ export function simulateMinuteAttack(
     shooter,
     goalkeeper,
     defTeam.ratings.defensiveStrength,
-    assister
+    assister,
+    true,
+    rng
   );
 
   // If corner awarded
@@ -227,7 +230,7 @@ export function simulateMinuteAttack(
   const event: MatchEngineEvent = {
     id: `ev-${minute}-${shooter.player.id}`,
     minute,
-    second: Math.floor(matchRandom() * 59),
+    second: Math.floor(matchRandom(rng) * 59),
     type: shotRes.outcome,
     teamId: attTeam.club.id,
     playerId: shooter.player.id,

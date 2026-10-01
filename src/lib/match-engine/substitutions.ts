@@ -13,7 +13,8 @@ export function performSubstitution(
   team: MatchTeamRuntime,
   playerOutId: string,
   playerInId: string,
-  minute: number
+  minute: number,
+  rng?: () => number
 ): SubstitutionResult {
   // Check maximum substitutions
   if (team.substitutionsUsed >= team.maxSubstitutions) {
@@ -74,7 +75,7 @@ export function performSubstitution(
   const event: MatchEngineEvent = {
     id: `sub-${minute}-${playerInId}`,
     minute,
-    second: Math.floor(matchRandom() * 59),
+    second: Math.floor(matchRandom(rng) * 59),
     type: 'SUBSTITUTION',
     teamId: team.club.id,
     playerId: playerIn.player.id,
