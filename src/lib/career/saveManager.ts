@@ -2,6 +2,7 @@ import { CareerSaveDataV3, CareerSaveDataV2, CareerSaveDataV1 } from './types';
 import { generateClubScouts } from '../scouting/scoutGenerator';
 import { generatePlayerHiddenProfile } from '../scouting/playerPersonality';
 import { initializeClubAcademy } from '../youth/academyQuality';
+import { MOCK_CLUBS } from '../data/mockData';
 
 export const SAVE_KEY_V3 = 'SquadCraftSaveV3';
 export const SAVE_KEY_V2 = 'SquadCraftSaveV2';
@@ -106,8 +107,84 @@ export function saveCareerStateSync(data: any): boolean {
   }
 }
 
+/**
+ * Detects and repairs saves corrupted by repeated migration multiplications.
+ * Specifically checks for budgets that were multiplied by powers of 2 beyond legitimate gameplay bounds.
+ */
+export function repairCorruptedEconomy(data: CareerSaveDataV3): boolean {
+  if (!data || !data.clubs) return false;
+  let repaired = false;
+
+  // Calculate purchases and sales per club from transferHistory
+  const purchasesByClub: Record<string, number> = {};
+  const salesByClub: Record<string, number> = {};
+
+  (data.transferHistory || []).forEach((t: any) => {
+    if (t.toClubId && t.fee) {
+      purchasesByClub[t.toClubId] = (purchasesByClub[t.toClubId] || 0) + Number(t.fee);
+    }
+    if (t.fromClubId && t.fee) {
+      salesByClub[t.fromClubId] = (salesByClub[t.fromClubId] || 0) + Math.round(Number(t.fee) * 0.85);
+    }
+  });
+
+  data.clubs = data.clubs.map((c: any) => {
+    const mockClub = MOCK_CLUBS.find((m) => m.id === c.id);
+    const baseBudget = mockClub ? mockClub.transferBudget * 2 : 50_000_000;
+    const spent = purchasesByClub[c.id] || 0;
+    const earned = salesByClub[c.id] || 0;
+    const legitimateBudget = Math.max(1_000_000, baseBudget - spent + earned);
+
+    // If budget is heavily corrupted (e.g. > €120M and > 2.5x legitimate budget):
+    // Normal maximum budget in SquadCraft with v2 is €74M (Zirve).
+    // An inflated budget like €409.6M or €1.638T is an obvious result of 2^N multiplications.
+    if (c.transferBudget > 120_000_000 && c.transferBudget > legitimateBudget * 2.5) {
+      console.warn(
+        `[EconomyRepair] Corrupted budget detected for club ${c.name} (${c.id}): €${c.transferBudget.toLocaleString('tr-TR')}. Restoring to legitimate budget: €${legitimateBudget.toLocaleString('tr-TR')}`
+      );
+      repaired = true;
+      return {
+        ...c,
+        transferBudget: legitimateBudget,
+      };
+    }
+    return c;
+  });
+
+  // Repair and synchronize user club finances
+  if (data.finances && data.userClubId) {
+    const userClub = data.clubs.find((c: any) => c.id === data.userClubId) || data.clubs[0];
+    if (data.finances.transferBudget > 120_000_000 || (repaired && data.finances.transferBudget !== userClub.transferBudget)) {
+      console.warn(
+        `[EconomyRepair] Synchronizing finances.transferBudget from €${data.finances.transferBudget.toLocaleString('tr-TR')} to €${userClub.transferBudget.toLocaleString('tr-TR')}`
+      );
+      data.finances = {
+        ...data.finances,
+        transferBudget: userClub.transferBudget,
+      };
+      repaired = true;
+    }
+  }
+
+  if (repaired) {
+    data.careerEconomyVersion = 2;
+  }
+
+  return repaired;
+}
+
+if (typeof window !== 'undefined') {
+  (window as any).__repairCareerEconomy = repairCorruptedEconomy;
+}
+
 export function applyEconomyAndContractMigrations(data: CareerSaveDataV3): CareerSaveDataV3 {
   let needsSave = false;
+
+  // 0. Repair corrupted economy if save was inflated by previous repeated migrations
+  const wasRepaired = repairCorruptedEconomy(data);
+  if (wasRepaired) {
+    needsSave = true;
+  }
 
   // 1. One-time versioned budget migration (+100% / x2 across user and AI clubs)
   if (!data.careerEconomyVersion || data.careerEconomyVersion < 2) {

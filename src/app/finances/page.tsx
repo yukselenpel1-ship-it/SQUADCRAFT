@@ -34,21 +34,21 @@ export default function FinancesPage() {
     );
   }
 
-  const totalIncome = Object.values(finances.incomeCategories).reduce((a, b) => a + b, 0);
-  const totalExpense = Object.values(finances.expenseCategories).reduce((a, b) => a + b, 0);
+  const totalIncome = Object.values(finances.incomeCategories || {}).reduce((a, b) => a + (b || 0), 0);
+  const totalExpense = Object.values(finances.expenseCategories || {}).reduce((a, b) => a + (b || 0), 0);
   const netProfit = totalIncome - totalExpense;
 
-  const wagePercentage = Math.round((finances.weeklyWages / finances.wageBudget) * 100);
+  const wagePercentage = Math.round(((finances.weeklyWages || 0) / (finances.wageBudget || 1)) * 100);
 
   // Filter user club commitments
-  const payableCommitments = futureCommitments.filter(
+  const payableCommitments = (futureCommitments || []).filter(
     (c) => c.fromClubId === userClub.id && !c.isPaid
   );
-  const receivableCommitments = futureCommitments.filter(
+  const receivableCommitments = (futureCommitments || []).filter(
     (c) => c.toClubId === userClub.id && !c.isPaid
   );
-  const totalPayable = payableCommitments.reduce((sum, c) => sum + c.amount, 0);
-  const totalReceivable = receivableCommitments.reduce((sum, c) => sum + c.amount, 0);
+  const totalPayable = payableCommitments.reduce((sum, c) => sum + (c.amount || 0), 0);
+  const totalReceivable = receivableCommitments.reduce((sum, c) => sum + (c.amount || 0), 0);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
@@ -156,23 +156,23 @@ export default function FinancesPage() {
           <div className="space-y-2 text-xs font-mono">
             <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
               <span className="text-zinc-400">Yayın Hakları ve TV Gelirleri</span>
-              <span className="font-bold text-white">€{finances.incomeCategories.broadcasting.toLocaleString('tr-TR')}</span>
+              <span className="font-bold text-white">€{(finances.incomeCategories?.broadcasting ?? 0).toLocaleString('tr-TR')}</span>
             </div>
             <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
               <span className="text-zinc-400">Resmi Sponsorluk Anlaşmaları</span>
-              <span className="font-bold text-white">€{finances.incomeCategories.sponsorships.toLocaleString('tr-TR')}</span>
+              <span className="font-bold text-white">€{(finances.incomeCategories?.sponsorships ?? 0).toLocaleString('tr-TR')}</span>
             </div>
             <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
               <span className="text-zinc-400">Oyuncu Satış ve Bonservis Gelirleri</span>
-              <span className="font-bold text-white">€{finances.incomeCategories.playerSales.toLocaleString('tr-TR')}</span>
+              <span className="font-bold text-white">€{(finances.incomeCategories?.playerSales ?? 0).toLocaleString('tr-TR')}</span>
             </div>
             <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
               <span className="text-zinc-400">Maç Günü ve Bilet Satışları</span>
-              <span className="font-bold text-white">€{finances.incomeCategories.matchdayTickets.toLocaleString('tr-TR')}</span>
+              <span className="font-bold text-white">€{(finances.incomeCategories?.matchdayTickets ?? 0).toLocaleString('tr-TR')}</span>
             </div>
             <div className="flex justify-between items-center py-1.5">
               <span className="text-zinc-400">Lisanslı Ürün Satışı (Merchandising)</span>
-              <span className="font-bold text-white">€{finances.incomeCategories.merchandising.toLocaleString('tr-TR')}</span>
+              <span className="font-bold text-white">€{(finances.incomeCategories?.merchandising ?? 0).toLocaleString('tr-TR')}</span>
             </div>
           </div>
         </div>
@@ -192,23 +192,23 @@ export default function FinancesPage() {
           <div className="space-y-2 text-xs font-mono">
             <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
               <span className="text-zinc-400">Futbolcu Maaşları</span>
-              <span className="font-bold text-white">€{finances.expenseCategories.playerWages.toLocaleString('tr-TR')}</span>
+              <span className="font-bold text-white">€{(finances.expenseCategories?.playerWages ?? 0).toLocaleString('tr-TR')}</span>
             </div>
             <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
               <span className="text-zinc-400">Yeni Transfer Bonservis Ödemeleri</span>
-              <span className="font-bold text-white">€{finances.expenseCategories.playerSignings.toLocaleString('tr-TR')}</span>
+              <span className="font-bold text-white">€{(finances.expenseCategories?.playerSignings ?? 0).toLocaleString('tr-TR')}</span>
             </div>
             <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
               <span className="text-zinc-400">Teknik Heyet & Personel Maaşları</span>
-              <span className="font-bold text-white">€{finances.expenseCategories.staffWages.toLocaleString('tr-TR')}</span>
+              <span className="font-bold text-white">€{(finances.expenseCategories?.staffWages ?? 0).toLocaleString('tr-TR')}</span>
             </div>
             <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
               <span className="text-zinc-400">Altyapı & Akademi Yatırımları</span>
-              <span className="font-bold text-white">€{finances.expenseCategories.academyYouth.toLocaleString('tr-TR')}</span>
+              <span className="font-bold text-white">€{(finances.expenseCategories?.academyYouth ?? 0).toLocaleString('tr-TR')}</span>
             </div>
             <div className="flex justify-between items-center py-1.5">
               <span className="text-zinc-400">Stadyum & Tesis Bakım Masrafları</span>
-              <span className="font-bold text-white">€{finances.expenseCategories.stadiumMaintenance.toLocaleString('tr-TR')}</span>
+              <span className="font-bold text-white">€{(finances.expenseCategories?.stadiumMaintenance ?? 0).toLocaleString('tr-TR')}</span>
             </div>
           </div>
         </div>

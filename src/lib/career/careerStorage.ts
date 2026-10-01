@@ -82,8 +82,8 @@ export async function saveCareerToIndexedDB(data: CareerSaveDataV3): Promise<Sav
       return { success: false, error: 'SSR environment' };
     }
 
-    // Ensure migrations are applied
-    const preparedData = applyEconomyAndContractMigrations(data);
+    // Normal save stores exact state without mutating economy
+    const preparedData = data;
     const serialized = JSON.stringify(preparedData);
     const byteSize = new Blob([serialized]).size;
 

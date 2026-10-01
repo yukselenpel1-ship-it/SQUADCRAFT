@@ -346,8 +346,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
           setFixtures(saved.fixtures);
           setInboxMessages(saved.inboxMessages);
           setTransferOffers(saved.transferOffers);
-          setShortlistIds(saved.shortlistIds);
-          setFinances(saved.finances);
+          let resolvedFinances = saved.finances;
+          if (resolvedFinances && saved.clubs && saved.userClubId) {
+            const uClub = saved.clubs.find((c: any) => c.id === saved.userClubId);
+            if (uClub && resolvedFinances.transferBudget !== uClub.transferBudget) {
+              resolvedFinances = { ...resolvedFinances, transferBudget: uClub.transferBudget };
+            }
+          }
+          setFinances(resolvedFinances);
           setNewsFeed(saved.newsFeed || []);
           setCareerHistory(saved.careerHistory || []);
           if (saved.activeNegotiations) setActiveNegotiations(saved.activeNegotiations);
@@ -479,7 +485,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       youthPlayers: youths,
       managerContract,
       seasonNumber,
-      careerEconomyVersion: 2,
+      careerEconomyVersion,
       settings: {
         autoSave: true,
         defaultMatchSpeed: 1,
@@ -1372,7 +1378,14 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setInboxMessages(saved.inboxMessages);
       setTransferOffers(saved.transferOffers);
       setShortlistIds(saved.shortlistIds);
-      setFinances(saved.finances);
+      let resolvedFinances = saved.finances;
+      if (resolvedFinances && saved.clubs && saved.userClubId) {
+        const uClub = saved.clubs.find((c: any) => c.id === saved.userClubId);
+        if (uClub && resolvedFinances.transferBudget !== uClub.transferBudget) {
+          resolvedFinances = { ...resolvedFinances, transferBudget: uClub.transferBudget };
+        }
+      }
+      setFinances(resolvedFinances);
       setNewsFeed(saved.newsFeed || []);
       setCareerHistory(saved.careerHistory || []);
       if (saved.activeNegotiations) setActiveNegotiations(saved.activeNegotiations);
@@ -1438,6 +1451,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     userClubId,
     managerContract,
     seasonNumber,
+    careerEconomyVersion,
   });
 
   useEffect(() => {
@@ -1473,27 +1487,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
       userClubId,
       managerContract,
       seasonNumber,
+      careerEconomyVersion,
     };
   });
 
   useEffect(() => {
     if (!isInitialized) return;
 
-    const handleLifecycleSave = () => {
-      if (document.visibilityState === 'hidden') {
-        const s = stateRef.current;
-        saveCareerState({
-          saveVersion: 3,
-          savedAt: new Date().toISOString(),
-          ...s,
-          clubs: s.allClubs,
-          players: s.allPlayers,
-          settings: { autoSave: true, defaultMatchSpeed: 1, debugMode: false },
-        });
-      }
-    };
+    let lastSaveTime = 0;
+    const triggerSave = () => {
+      const now = Date.now();
+      if (now - lastSaveTime < 500) return;
+      lastSaveTime = now;
 
-    const handlePageHide = () => {
       const s = stateRef.current;
       saveCareerState({
         saveVersion: 3,
@@ -1501,16 +1507,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
         ...s,
         clubs: s.allClubs,
         players: s.allPlayers,
+        careerEconomyVersion: s.careerEconomyVersion || 2,
         settings: { autoSave: true, defaultMatchSpeed: 1, debugMode: false },
       });
     };
 
-    document.addEventListener('visibilitychange', handleLifecycleSave);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        triggerSave();
+      }
+    };
+
+    const handlePageHide = () => {
+      triggerSave();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
     window.addEventListener('pagehide', handlePageHide);
     window.addEventListener('beforeunload', handlePageHide);
 
     return () => {
-      document.removeEventListener('visibilitychange', handleLifecycleSave);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('pagehide', handlePageHide);
       window.removeEventListener('beforeunload', handlePageHide);
     };
@@ -2359,6 +2376,18 @@ export function GameProvider({ children }: { children: ReactNode }) {
         clubBalance: prev.clubBalance + offer.fee,
         transferBudget: prev.transferBudget + Math.round(offer.fee * 0.8),
       }));
+
+      setAllClubs((prevClubs) =>
+        prevClubs.map((c) =>
+          c.id === userClubId
+            ? {
+                ...c,
+                balance: c.balance + offer.fee,
+                transferBudget: c.transferBudget + Math.round(offer.fee * 0.8),
+              }
+            : c
+        )
+      );
 
       const soldPlayer = getPlayerById(offer.playerId);
       const buyerClub = getClubById(offer.fromClubId);
