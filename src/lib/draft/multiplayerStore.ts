@@ -32,7 +32,7 @@ import {
   initializeDraftStandings,
   generateDefaultDraftTactics,
 } from './draftEngine';
-import { getCachedDraftPlayerPool, calculatePlayerDraftValue } from './playerPool';
+import { getCachedDraftPlayerPool, getCachedDraftPlayerPoolMap, calculatePlayerDraftValue } from './playerPool';
 import { createDefaultBadgeConfig } from './badgeGenerator';
 import { FICTIONAL_CLUB_PRESETS } from './clubValidation';
 import { resolveMemberConnection, evaluateHostMigration } from './sessionManager';
@@ -150,7 +150,7 @@ export function reconstructDraftState(
     const clubId = p.clubId || p.club_id || '';
     const playerId = p.playerId || p.player_id || '';
     if ((priceNum === undefined || priceNum <= 0) && playerId) {
-      const pl = getCachedDraftPlayerPool().find((x) => x.id === playerId);
+      const pl = getCachedDraftPlayerPoolMap().get(playerId);
       if (pl) {
         priceNum = pl.draftValue ?? calculatePlayerDraftValue(pl);
       }
@@ -554,6 +554,9 @@ export function getRecentRoomCodes(): string[] {
 }
 
 export class DraftMultiplayerStore {
+  private static finalizingRooms = new Map<string, Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode }>>();
+  private static repairingRooms = new Map<string, Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode }>>();
+
   /**
    * Checks whether the Supabase multiplayer backend is configured and responsive.
    */
@@ -563,19 +566,73 @@ export class DraftMultiplayerStore {
 
   /**
    * Subscribes to real-time room events (Supabase Broadcast + Postgres Changes).
+   * Scoped strictly by room_code for multiplayer_rooms and room_id for child tables.
    */
   public static subscribeToRoom(
     roomCode: string,
-    onUpdate: (event: { type: string; payload?: any }) => void
+    onUpdate: (event: { type: string; payload?: any }) => void,
+    knownRoomId?: string
   ): () => void {
     const supabase = getSupabaseClient();
     if (!supabase) return () => {};
 
     const cleanCode = roomCode.trim().toUpperCase();
-    const channelName = `squadcraft_room_${cleanCode}`;
-    const channel = supabase.channel(channelName);
+    let currentRoomId =
+      knownRoomId ||
+      roomCodeMap[cleanCode] ||
+      memoryRooms[cleanCode]?.room?.id;
 
-    channel
+    if (!currentRoomId) {
+      const local = loadRoomLocal(cleanCode);
+      if (local?.room?.id) currentRoomId = local.room.id;
+    }
+
+    const mainChannelName = `squadcraft_room_${cleanCode}`;
+    const mainChannel = supabase.channel(mainChannelName);
+    let childChannel: any = null;
+
+    const setupChildSubscriptions = (rId: string) => {
+      if (childChannel || !rId) return;
+      currentRoomId = rId;
+      const childChannelName = `squadcraft_room_child_${rId}`;
+      childChannel = supabase.channel(childChannelName);
+      childChannel
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'multiplayer_members', filter: `room_id=eq.${rId}` },
+          (payload: any) => {
+            console.log(`REALTIME_EVENT multiplayer_members ${rId}`);
+            onUpdate({ type: 'PG_MEMBER', payload });
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'draft_clubs', filter: `room_id=eq.${rId}` },
+          (payload: any) => {
+            console.log(`REALTIME_EVENT draft_clubs ${rId}`);
+            onUpdate({ type: 'PG_CLUB', payload });
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'draft_picks', filter: `room_id=eq.${rId}` },
+          (payload: any) => {
+            console.log(`REALTIME_EVENT draft_picks ${rId}`);
+            onUpdate({ type: 'PG_PICK', payload });
+          }
+        )
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'draft_fixtures', filter: `room_id=eq.${rId}` },
+          (payload: any) => {
+            console.log(`REALTIME_EVENT draft_fixtures ${rId}`);
+            onUpdate({ type: 'PG_FIXTURE', payload });
+          }
+        )
+        .subscribe();
+    };
+
+    mainChannel
       .on('broadcast', { event: 'ROOM_UPDATE' }, (payload) => {
         onUpdate({ type: 'BROADCAST_ROOM_UPDATE', payload });
       })
@@ -585,38 +642,53 @@ export class DraftMultiplayerStore {
       .on('broadcast', { event: 'ROOM_CLOSED' }, (payload) => {
         onUpdate({ type: 'BROADCAST_ROOM_CLOSED', payload });
       })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'multiplayer_rooms', filter: `room_code=eq.${cleanCode}` }, (payload) => {
-        onUpdate({ type: 'PG_ROOM', payload });
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'multiplayer_members' }, (payload) => {
-        onUpdate({ type: 'PG_MEMBER', payload });
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'draft_clubs' }, (payload) => {
-        onUpdate({ type: 'PG_CLUB', payload });
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'draft_picks' }, (payload) => {
-        onUpdate({ type: 'PG_PICK', payload });
-      })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'draft_fixtures' }, (payload) => {
-        onUpdate({ type: 'PG_FIXTURE', payload });
-      })
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'multiplayer_rooms', filter: `room_code=eq.${cleanCode}` },
+        (payload) => {
+          console.log(`REALTIME_EVENT multiplayer_rooms ${cleanCode}`);
+          if (payload?.new && (payload.new as any).id) {
+            const newRoomId = (payload.new as any).id;
+            roomCodeMap[cleanCode] = newRoomId;
+            if (!currentRoomId) {
+              setupChildSubscriptions(newRoomId);
+            }
+          }
+          onUpdate({ type: 'PG_ROOM', payload });
+        }
+      )
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') {
           // Connected to realtime
         }
       });
 
-    return () => {
+    if (currentRoomId) {
+      setupChildSubscriptions(currentRoomId);
+    }
+
+    const cleanup = () => {
       try {
-        supabase.removeChannel(channel);
+        supabase.removeChannel(mainChannel);
+        if (childChannel) {
+          supabase.removeChannel(childChannel);
+        }
       } catch (e) {
         console.warn('Realtime channel remove warning:', e);
       }
     };
+
+    (cleanup as any).setRoomId = (id: string) => {
+      if (id && !currentRoomId) {
+        setupChildSubscriptions(id);
+      }
+    };
+
+    return cleanup;
   }
 
   /**
-   * One canonical hydration function for all room pages.
+   * One canonical hydration function for all room pages (READ-ONLY).
    */
   public static async hydrateDraftRoom(
     roomCodeOrId: string,
@@ -657,17 +729,15 @@ export class DraftMultiplayerStore {
         'HYDRATE_ROOM'
       );
 
-      // AUTO-REPAIR / FINALIZATION CHECK:
-      // If draft state is complete or status is DRAFTING with full picks, guarantee transition to LEAGUE_ACTIVE
-      const totalPicksRequired = (state.room.rules.squadSize || 18) * state.members.filter((m) => !m.isSpectator).length;
-      const isDraftFinished = state.draftState?.isCompleted || (state.draftState?.picks.length || 0) >= totalPicksRequired;
-
-      if (isDraftFinished && (state.room.status === 'DRAFTING' || state.room.status === 'DRAFT_FINALIZING' || state.fixtures.length === 0 || state.standings.length === 0)) {
-        const finalRes = this.finalizeDraftLeague(state.room.id);
-        if (finalRes.success && finalRes.state) {
-          state = finalRes.state;
-        }
+      // READ-ONLY: If fixtures or standings exist in room.rules but not top-level, populate without mutating DB
+      if (state.fixtures.length === 0 && Array.isArray(state.room.rules?.fixtures) && state.room.rules.fixtures.length > 0) {
+        state.fixtures = state.room.rules.fixtures;
       }
+      if (state.standings.length === 0 && Array.isArray(state.room.rules?.standings) && state.room.rules.standings.length > 0) {
+        state.standings = state.room.rules.standings;
+      }
+
+      const totalPicksRequired = (state.room.rules.squadSize || 18) * state.members.filter((m) => !m.isSpectator).length;
 
       const currentMember = state.members.find((m) => m.sessionId === sessionId);
       const currentClub = currentMember ? state.clubs.find((c) => c.memberId === currentMember.id) : undefined;
@@ -1158,7 +1228,7 @@ export class DraftMultiplayerStore {
                 const pId = p.playerId || p.player_id;
                 let price = p.draftPrice ?? p.purchase_price ?? p.draft_price;
                 if ((price === undefined || price === null || price <= 0) && pId) {
-                  const pl = getCachedDraftPlayerPool().find((x) => x.id === pId);
+                  const pl = getCachedDraftPlayerPoolMap().get(pId);
                   if (pl) {
                     price = pl.draftValue ?? calculatePlayerDraftValue(pl);
                   }
@@ -1241,23 +1311,12 @@ export class DraftMultiplayerStore {
             seasonPlayerStats,
           };
 
-          // AUTO-REPAIR / FINALIZATION CHECK:
-          // If all required picks are completed, but status is still DRAFTING, or fixtures/standings are missing:
-          const totalPicksRequired = (room.rules.squadSize || 18) * members.filter((m) => !m.isSpectator).length;
-          const isDraftFinished = draftState?.isCompleted || (draftState?.picks.length || 0) >= totalPicksRequired;
-
-          if (
-            isDraftFinished &&
-            (room.status === 'DRAFTING' ||
-              room.status === 'DRAFT_FINALIZING' ||
-              fixtures.length === 0 ||
-              standings.length === 0)
-          ) {
-            memoryRooms[room.id] = state;
-            const finalRes = this.finalizeDraftLeague(room.id);
-            if (finalRes.success && finalRes.state) {
-              state = finalRes.state;
-            }
+          // READ-ONLY: If fixtures or standings exist in room.rules but not top-level, populate without mutating DB
+          if (state.fixtures.length === 0 && Array.isArray(room.rules?.fixtures) && room.rules.fixtures.length > 0) {
+            state.fixtures = room.rules.fixtures;
+          }
+          if (state.standings.length === 0 && Array.isArray(room.rules?.standings) && room.rules.standings.length > 0) {
+            state.standings = room.rules.standings;
           }
 
           memoryRooms[room.id] = state;
@@ -3111,6 +3170,100 @@ export class DraftMultiplayerStore {
   }
 
   /**
+   * Async server-authoritative post-draft finalization transaction (Awaited DB writes, Single In-Flight Owner).
+   */
+  public static async finalizeDraftLeagueAsync(
+    roomId: string
+  ): Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode }> {
+    if (this.finalizingRooms.has(roomId)) {
+      return this.finalizingRooms.get(roomId)!;
+    }
+
+    const task = (async () => {
+      try {
+        console.log('LEAGUE_FINALIZATION_START', roomId);
+        const syncRes = this.finalizeDraftLeague(roomId);
+        if (!syncRes.success || !syncRes.state) {
+          return syncRes;
+        }
+
+        const supabase = getSupabaseClient();
+        if (supabase) {
+          const state = syncRes.state;
+          const { room, clubs, fixtures, standings } = state;
+
+          await supabase
+            .from('multiplayer_rooms')
+            .update({
+              status: 'LEAGUE_ACTIVE',
+              rules: room.rules,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', room.id);
+
+          await Promise.all(
+            clubs.map((club) =>
+              supabase
+                .from('draft_clubs')
+                .update({ squad_player_ids: club.squadPlayerIds })
+                .eq('id', club.id)
+            )
+          );
+
+          if (fixtures.length > 0) {
+            const fixRows = fixtures.map((f) => ({
+              id: f.id,
+              room_id: room.id,
+              round: f.round,
+              home_club_id: f.homeClubId,
+              away_club_id: f.awayClubId,
+              status: f.status,
+              home_tactics: f.homeTactics,
+              away_tactics: f.awayTactics,
+              home_score: f.homeScore,
+              away_score: f.awayScore,
+              match_result: f.matchResult,
+              simulated_at: f.simulatedAt,
+            }));
+            await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
+          }
+
+          if (standings.length > 0) {
+            try {
+              await supabase.from('draft_standings').delete().eq('room_id', room.id);
+              const rows = standings.map((s) => ({
+                room_id: room.id,
+                club_id: s.clubId,
+                rank: s.rank,
+                played: s.played,
+                won: s.won,
+                drawn: s.drawn,
+                lost: s.lost,
+                goals_for: s.goalsFor,
+                goals_against: s.goalsAgainst,
+                goal_difference: s.goalDifference,
+                points: s.points,
+                form: s.form,
+              }));
+              await supabase.from('draft_standings').insert(rows);
+            } catch (stErr) {
+              console.warn('Finalize standings sync warning:', stErr);
+            }
+          }
+        }
+
+        console.log('LEAGUE_FINALIZATION_END', roomId);
+        return syncRes;
+      } finally {
+        this.finalizingRooms.delete(roomId);
+      }
+    })();
+
+    this.finalizingRooms.set(roomId, task);
+    return task;
+  }
+
+  /**
    * Advances the league to the next matchweek:
    * 1. Simulates any unplayed / bot fixtures in current matchweek.
    * 2. Updates standings and league awards.
@@ -3947,6 +4100,101 @@ export class DraftMultiplayerStore {
     }
 
     return { success: true, state: newState };
+  }
+
+  /**
+   * Async Diagnostic / Host repair tool (Awaited DB writes, Single In-Flight Owner).
+   */
+  public static async repairRoomStateAsync(
+    roomId: string,
+    hostMemberId?: string
+  ): Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode }> {
+    if (this.repairingRooms.has(roomId)) {
+      return this.repairingRooms.get(roomId)!;
+    }
+
+    const task = (async () => {
+      try {
+        console.log('LEAGUE_REPAIR_START', roomId);
+        const syncRes = this.repairRoomState(roomId, hostMemberId);
+        if (!syncRes.success || !syncRes.state) {
+          return syncRes;
+        }
+
+        const supabase = getSupabaseClient();
+        if (supabase) {
+          const state = syncRes.state;
+          const { room, clubs, fixtures, standings } = state;
+
+          await supabase
+            .from('multiplayer_rooms')
+            .update({
+              status: room.status,
+              rules: room.rules,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', room.id);
+
+          await Promise.all(
+            clubs.map((club) =>
+              supabase
+                .from('draft_clubs')
+                .update({ squad_player_ids: club.squadPlayerIds })
+                .eq('id', club.id)
+            )
+          );
+
+          if (fixtures.length > 0) {
+            const fixRows = fixtures.map((f) => ({
+              id: f.id,
+              room_id: room.id,
+              round: f.round,
+              home_club_id: f.homeClubId,
+              away_club_id: f.awayClubId,
+              status: f.status,
+              home_tactics: f.homeTactics,
+              away_tactics: f.awayTactics,
+              home_score: f.homeScore,
+              away_score: f.awayScore,
+              match_result: f.matchResult,
+              simulated_at: f.simulatedAt,
+            }));
+            await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
+          }
+
+          if (standings.length > 0) {
+            try {
+              await supabase.from('draft_standings').delete().eq('room_id', room.id);
+              const rows = standings.map((s) => ({
+                room_id: room.id,
+                club_id: s.clubId,
+                rank: s.rank,
+                played: s.played,
+                won: s.won,
+                drawn: s.drawn,
+                lost: s.lost,
+                goals_for: s.goalsFor,
+                goals_against: s.goalsAgainst,
+                goal_difference: s.goalDifference,
+                points: s.points,
+                form: s.form,
+              }));
+              await supabase.from('draft_standings').insert(rows);
+            } catch (e) {
+              console.warn('Repair standings sync warning:', e);
+            }
+          }
+        }
+
+        console.log('LEAGUE_REPAIR_END', roomId);
+        return syncRes;
+      } finally {
+        this.repairingRooms.delete(roomId);
+      }
+    })();
+
+    this.repairingRooms.set(roomId, task);
+    return task;
   }
 
   /**

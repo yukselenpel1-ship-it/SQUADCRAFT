@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, useRef, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -166,24 +166,101 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const [selectedBenchId, setSelectedBenchId] = useState<string | null>(null);
   const [dismissedLiveMw, setDismissedLiveMw] = useState<number | null>(null);
 
+  const fetchInFlightRef = useRef(false);
+  const fetchQueuedRef = useRef(false);
+  const latestRequestIdRef = useRef(0);
+  const isRepairingRef = useRef(false);
+  const hasRepairedRef = useRef(false);
+  const isMountedRef = useRef(true);
+
+  // FM-style Gol Krallığı, Asist, Reyting computed unconditionally at top level (Rules of Hooks)
+  const seasonStats = React.useMemo(() => {
+    if (!hydrationResult.state) {
+      return { topScorers: [], topAssists: [], bestRatings: [] };
+    }
+    const { fixtures, clubs, playerPool, room } = hydrationResult.state;
+    const currentSeasonNum = room.seasonNumber || room.rules?.seasonNumber || 1;
+    return computeSeasonPlayerStats(fixtures, clubs, playerPool, currentSeasonNum);
+  }, [hydrationResult.state]);
+  const { topScorers, topAssists, bestRatings } = seasonStats;
+
   const sessionId = getMultiplayerSessionId();
 
   const fetchState = async () => {
+    if (!isMountedRef.current) return;
+
+    if (fetchInFlightRef.current) {
+      fetchQueuedRef.current = true;
+      console.log('LEAGUE_FETCH_SKIPPED_IN_FLIGHT');
+      console.log('LEAGUE_FETCH_QUEUED');
+      return;
+    }
+
+    fetchInFlightRef.current = true;
+    const currentRequestId = ++latestRequestIdRef.current;
+    console.log('LEAGUE_FETCH_START', currentRequestId);
+
     try {
-      const res = await DraftMultiplayerStore.hydrateDraftRoom(roomCode, sessionId);
+      // 15-second network timeout protection
+      const res = await Promise.race([
+        DraftMultiplayerStore.hydrateDraftRoom(roomCode, sessionId),
+        new Promise<HydratedRoomResult>((_, reject) =>
+          setTimeout(() => reject(new Error('NETWORK_TIMEOUT')), 15000)
+        ),
+      ]);
+
+      if (!isMountedRef.current || currentRequestId !== latestRequestIdRef.current) {
+        return; // Ignore stale response
+      }
+
+      // Single-owner idempotent repair if missing fixtures/standings in active league
+      if (
+        res.status === 'SUCCESS' &&
+        res.state &&
+        res.state.room.status === 'LEAGUE_ACTIVE' &&
+        (res.state.fixtures.length === 0 || res.state.standings.length === 0) &&
+        !isRepairingRef.current &&
+        !hasRepairedRef.current
+      ) {
+        isRepairingRef.current = true;
+        const repairRes = await DraftMultiplayerStore.repairRoomStateAsync(
+          res.state.room.id,
+          res.state.members[0]?.id
+        );
+        hasRepairedRef.current = true;
+        isRepairingRef.current = false;
+        if (repairRes.success && repairRes.state && isMountedRef.current) {
+          res.state = repairRes.state;
+        }
+      }
+
+      // Single-owner idempotent finalization if drafting completed
+      if (
+        res.status === 'SUCCESS' &&
+        res.state &&
+        res.state.room.status === 'DRAFTING' &&
+        res.state.draftState?.isCompleted &&
+        !isRepairingRef.current &&
+        !hasRepairedRef.current
+      ) {
+        isRepairingRef.current = true;
+        const finalRes = await DraftMultiplayerStore.finalizeDraftLeagueAsync(res.state.room.id);
+        hasRepairedRef.current = true;
+        isRepairingRef.current = false;
+        if (finalRes.success && finalRes.state && isMountedRef.current) {
+          res.state = finalRes.state;
+        }
+      }
+
       setHydrationResult(res);
 
       if (res.status === 'SUCCESS' && res.state) {
         if (res.state.room.status === 'LOBBY') {
           router.push(`/draft/room/${roomCode}`);
-        } else if (res.state.room.status === 'DRAFTING') {
-          if (res.state.draftState?.isCompleted) {
-            DraftMultiplayerStore.finalizeDraftLeague(res.state.room.id);
-          } else {
-            router.push(`/draft/room/${roomCode}/draft`);
-          }
-        } else if (res.state.room.status === 'LEAGUE_ACTIVE' && (res.state.fixtures.length === 0 || res.state.standings.length === 0)) {
-          DraftMultiplayerStore.repairRoomState(res.state.room.id, res.state.members[0]?.id);
+          return;
+        } else if (res.state.room.status === 'DRAFTING' && !res.state.draftState?.isCompleted) {
+          router.push(`/draft/room/${roomCode}/draft`);
+          return;
         }
 
         // Initialize custom lineup from myClub if not initialized yet
@@ -207,28 +284,38 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               }
             }
           }
-          if (res.state.room.status === 'CLOSED' || res.state.room.status === 'TERMINATED') {
-            alert('Oda kurucusu odadan ayrıldığı için oda kapatıldı.');
-            router.push('/');
-            return;
-          }
+        }
 
-          if (res.state.room.status === 'DRAFTING') {
-            router.push(`/draft/room/${roomCode}/draft`);
-            return;
-          }
-          if (res.state.room.status === 'LOBBY') {
-            router.push(`/draft/room/${roomCode}`);
-            return;
-          }
+        if (res.state.room.status === 'CLOSED' || res.state.room.status === 'TERMINATED') {
+          alert('Oda kurucusu odadan ayrıldığı için oda kapatıldı.');
+          router.push('/');
+          return;
         }
       }
-    } catch (e) {
-      console.warn('League fetch state error:', e);
+    } catch (e: any) {
+      if (!isMountedRef.current || currentRequestId !== latestRequestIdRef.current) return;
+      if (e?.message === 'NETWORK_TIMEOUT') {
+        setHydrationResult({
+          status: 'TIMEOUT',
+          errorCode: 'SC-MP-005',
+          errorMessage: 'Sunucu bağlantısı zaman aşımına uğradı (15s).',
+        });
+      } else {
+        console.warn('League fetch state error:', e);
+      }
+    } finally {
+      fetchInFlightRef.current = false;
+      console.log('LEAGUE_FETCH_END', currentRequestId);
+
+      if (fetchQueuedRef.current && isMountedRef.current) {
+        fetchQueuedRef.current = false;
+        setTimeout(fetchState, 50);
+      }
     }
   };
 
   useEffect(() => {
+    isMountedRef.current = true;
     fetchState();
 
     const unsubscribe = DraftMultiplayerStore.subscribeToRoom(roomCode, (event) => {
@@ -251,16 +338,24 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     document.addEventListener('visibilitychange', handleVisibility);
     window.addEventListener('focus', handleFocus);
 
-    const interval = setInterval(() => {
-      fetchState();
+    // Visual timer only - does NOT trigger network requests
+    const timerInterval = setInterval(() => {
       setElapsedSeconds((prev) => prev + 1);
     }, 1000);
 
+    // Fallback polling interval: 8-10 seconds when Realtime connected, 5 seconds when disconnected
+    const fallbackPollMs = DraftMultiplayerStore.isServerConnected() ? 8000 : 5000;
+    const pollInterval = setInterval(() => {
+      fetchState();
+    }, fallbackPollMs);
+
     return () => {
+      isMountedRef.current = false;
       unsubscribe();
       document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('focus', handleFocus);
-      clearInterval(interval);
+      clearInterval(timerInterval);
+      clearInterval(pollInterval);
     };
   }, [roomCode]);
 
@@ -333,7 +428,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
           <div className="w-full bg-zinc-950 h-2 border border-zinc-800">
             <div
               className="bg-gradient-to-r from-[#00F5A0] to-[#00D4FF] h-full transition-all duration-1000 shadow-[0_0_10px_#00F5A0]"
-              style={{ width: `${Math.min(100, (elapsedSeconds / 8) * 100)}%` }}
+              style={{ width: `${Math.min(100, (elapsedSeconds / 15) * 100)}%` }}
             />
           </div>
         </div>
@@ -342,7 +437,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   }
 
   // Timeout or Error State
-  if (hydrationResult.status === 'TIMEOUT' || hydrationResult.status === 'ERROR' || (hydrationResult.status === 'LOADING' && elapsedSeconds >= 8)) {
+  if (hydrationResult.status === 'TIMEOUT' || hydrationResult.status === 'ERROR') {
     return (
       <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden select-none font-sans">
         <div
@@ -852,10 +947,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const progressPercent = fixtures.length > 0 ? Math.round((completedFixtures.length / fixtures.length) * 100) : 0;
   const currentSeasonNum = room.seasonNumber || room.rules?.seasonNumber || 1;
 
-  // Real season player statistics leaderboards (FM-style Gol Krallığı, Asist, Reyting)
-  const { topScorers, topAssists, bestRatings } = React.useMemo(() => {
-    return computeSeasonPlayerStats(fixtures, clubs, playerPool, currentSeasonNum);
-  }, [fixtures, clubs, playerPool, currentSeasonNum]);
+  // Real season player statistics leaderboards (FM-style Gol Krallığı, Asist, Reyting) are computed at top level
 
   // Filtered fixtures for Fixtures tab
   const displayedFixtures = fixtures.filter((f: DraftFixture) => {

@@ -667,14 +667,24 @@ export function generateDraftPlayerPool(): Player[] {
 
 // Singleton pool instance for consistent fast access in memory (<1ms cached retrieval)
 let cachedDraftPool: Player[] | null = null;
+let cachedDraftPoolMap: Map<string, Player> | null = null;
 
 export function getCachedDraftPlayerPool(): Player[] {
   if (!cachedDraftPool) {
     cachedDraftPool = generateDraftPlayerPool();
+    cachedDraftPoolMap = new Map(cachedDraftPool.map((p) => [p.id, p]));
   }
   return cachedDraftPool;
 }
 
+export function getCachedDraftPlayerPoolMap(): Map<string, Player> {
+  if (!cachedDraftPoolMap) {
+    getCachedDraftPlayerPool();
+  }
+  return cachedDraftPoolMap!;
+}
+
 export function resetCachedDraftPlayerPool(): void {
   cachedDraftPool = null;
+  cachedDraftPoolMap = null;
 }
