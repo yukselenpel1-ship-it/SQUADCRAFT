@@ -12,6 +12,7 @@ import {
 import { getMultiplayerSessionId } from '@/lib/draft/sessionManager';
 import { Player, PlayerPosition } from '@/types/game';
 import { BadgePreview } from '@/components/draft/BadgePreview';
+import { PlayerPortrait } from '@/components/ui/PlayerPortrait';
 import { countSquadPositions, getSnakeTurnMemberId } from '@/lib/draft/draftEngine';
 import { FeedbackModal } from '@/components/draft/FeedbackModal';
 import { DEFAULT_DRAFT_BUDGET, MIN_PLAYER_DRAFT_PRICE, DraftPick } from '@/lib/draft/types';
@@ -1191,6 +1192,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                     >
                       {/* Left: Position & Player Info */}
                       <div className="flex items-center gap-2 min-w-0">
+                        <PlayerPortrait player={player} size="xs" />
                         <span
                           className={`w-7 h-7 rounded border flex items-center justify-center font-mono font-black text-[11px] shrink-0 ${getPosColorClass(
                             player.position
@@ -1302,17 +1304,20 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               <div className="relative p-5 bg-gradient-to-b from-[#0B1522] to-[#050B12] border border-[#00D4FF]/30 shadow-xl overflow-hidden rounded-xl">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#00D4FF]/10 rounded-full blur-2xl pointer-events-none" />
 
-                <div className="relative flex items-start justify-between">
-                  <div>
-                    <div className="text-3xl sm:text-4xl font-black font-mono text-[#00F5A0] leading-none">
-                      {activeSpotlightPlayer.overall}
-                    </div>
-                    <div
-                      className={`inline-block px-2 py-0.5 mt-1 text-xs font-mono font-black border rounded ${getPosColorClass(
-                        activeSpotlightPlayer.position
-                      )}`}
-                    >
-                      {activeSpotlightPlayer.position}
+                <div className="relative flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <PlayerPortrait player={activeSpotlightPlayer} size="lg" shape="card" priority={true} />
+                    <div>
+                      <div className="text-3xl sm:text-4xl font-black font-mono text-[#00F5A0] leading-none">
+                        {activeSpotlightPlayer.overall}
+                      </div>
+                      <div
+                        className={`inline-block px-2 py-0.5 mt-1 text-xs font-mono font-black border rounded ${getPosColorClass(
+                          activeSpotlightPlayer.position
+                        )}`}
+                      >
+                        {activeSpotlightPlayer.position}
+                      </div>
                     </div>
                   </div>
 

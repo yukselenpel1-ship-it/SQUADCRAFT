@@ -18,7 +18,7 @@ import {
   createChampionshipBonus,
 } from '@/lib/negotiation';
 import { ClubBadge } from '@/components/ui/ClubBadge';
-import { PlayerAvatar } from '@/components/ui/PlayerAvatar';
+import { PlayerPortrait } from '@/components/ui/PlayerPortrait';
 import {
   X,
   CheckCircle2,
@@ -222,11 +222,9 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
         {/* 2. Player Overview Strip */}
         <div className="px-4 sm:px-6 py-3 bg-[#05070D] border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
           <div className="flex items-center gap-3">
-            <PlayerAvatar
-              firstName={player.firstName}
-              lastName={player.lastName}
-              position={player.position}
-              size="sm"
+            <PlayerPortrait
+              player={player}
+              size="md"
             />
             <div>
               <div className="flex items-center gap-2">

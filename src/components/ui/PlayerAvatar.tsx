@@ -1,23 +1,43 @@
 import React from 'react';
 import { PlayerPosition } from '@/types/game';
+import { PlayerPortrait } from './PlayerPortrait';
 
-interface PlayerAvatarProps {
+export interface PlayerAvatarProps {
+  id?: string;
   firstName: string;
   lastName: string;
   position: PlayerPosition;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   showPositionBadge?: boolean;
   className?: string;
+  age?: number;
+  nationality?: string;
 }
 
 export const PlayerAvatar: React.FC<PlayerAvatarProps> = ({
+  id,
   firstName,
   lastName,
   position,
   size = 'md',
   showPositionBadge = false,
   className = '',
+  age,
+  nationality,
 }) => {
+  // If an ID is provided, seamlessly render the high-fidelity fictional portrait!
+  if (id) {
+    return (
+      <PlayerPortrait
+        player={{ id, firstName, lastName, position, age, nationality }}
+        size={size}
+        showPositionBadge={showPositionBadge}
+        className={className}
+      />
+    );
+  }
+
+  // Fallback to stylized initials badge if no ID is present
   const getInitials = () => {
     const f = firstName ? firstName[0] : '';
     const l = lastName ? lastName[0] : '';

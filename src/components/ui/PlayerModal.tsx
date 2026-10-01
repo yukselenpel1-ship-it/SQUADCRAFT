@@ -6,6 +6,7 @@ import { Player, Club, PlayerPosition } from '@/types/game';
 import { FitnessIndicator } from './FitnessIndicator';
 import { MoraleIndicator } from './MoraleIndicator';
 import { ClubBadge } from './ClubBadge';
+import { PlayerPortrait } from './PlayerPortrait';
 import { useGame } from '@/lib/context/GameContext';
 import { AssignScoutModal } from './AssignScoutModal';
 import { LoanOfferModal } from './LoanOfferModal';
@@ -449,28 +450,28 @@ const derivePlayStyles = (p: Player): PlayStyle[] => {
   return styles.slice(0, 4); // Max 4 playstyles per player
 };
 
-// Modern FIFA Attribute Row with Glowing Slider
+// Modern FIFA Attribute Row with Non-Overlapping Precision Slider
 const FifaAttributeRow: React.FC<{ label: string; value: string | number }> = ({ label, value }) => {
   const theme = getFifaColorTier(value);
   const percent = getNumericPercent(value);
 
   return (
-    <div className="group py-1.5 px-2.5 rounded-lg hover:bg-white/[0.04] transition-all">
-      <div className="flex justify-between items-center text-xs mb-1">
-        <span className="text-zinc-300 font-medium group-hover:text-white transition-colors">{label}</span>
+    <div className="group py-1.5 px-2 rounded-lg hover:bg-white/[0.04] transition-all">
+      <div className="flex justify-between items-center text-xs mb-1.5 gap-2 min-w-0">
+        <span className="text-zinc-300 font-medium group-hover:text-white transition-colors truncate min-w-0 text-[11px] sm:text-xs">
+          {label}
+        </span>
         <span
-          className={`font-mono font-black text-xs px-2 py-0.5 rounded border transition-all ${theme.text} ${theme.bg} ${theme.border} ${theme.glow}`}
+          className={`font-mono font-black text-[11px] px-1.5 py-0.5 rounded border transition-all shrink-0 ${theme.text} ${theme.bg} ${theme.border} ${theme.glow}`}
         >
           {value}
         </span>
       </div>
-      <div className="w-full bg-zinc-900/90 h-2 rounded-full overflow-hidden border border-zinc-800 p-0.5">
+      <div className="w-full bg-zinc-900/90 h-1.5 rounded-full overflow-hidden border border-zinc-800/80">
         <div
-          className="h-full rounded-full transition-all duration-300 relative"
+          className="h-full rounded-full transition-all duration-300"
           style={{ width: `${percent}%`, backgroundColor: theme.bar }}
-        >
-          <div className="absolute right-0 top-0 bottom-0 w-2 bg-white/40 rounded-full blur-[1px]" />
-        </div>
+        />
       </div>
     </div>
   );
@@ -589,15 +590,15 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                     )}
                   </div>
 
-                  {/* Player Visual Silhouette / Avatar with Stadium Flare */}
+                  {/* Player Visual Portrait / Fictional Studio Avatar with Stadium Flare */}
                   <div className="relative w-36 h-36 flex items-center justify-center">
                     <div
                       className={`absolute inset-2 rounded-full blur-xl opacity-40 ${
                         isEliteCard ? 'bg-[#00F5A0]' : 'bg-amber-400'
                       }`}
                     />
-                    <div className="relative z-10 w-28 h-28 rounded-full bg-gradient-to-t from-black/80 to-zinc-800/40 border border-white/20 flex flex-col items-center justify-center overflow-hidden">
-                      <User className="w-16 h-16 text-zinc-300/80 stroke-[1.2]" />
+                    <div className="relative z-10 w-28 h-28 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
+                      <PlayerPortrait player={player} size="card" shape="card" priority={true} />
                     </div>
                   </div>
                 </div>
@@ -805,39 +806,59 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                 {/* TAB 1: BİLGİ & KÜNYE (BIO & QUICK HUD) */}
                 {activeTab === 'bio' && (
                   <div className="space-y-6 animate-in fade-in duration-200">
-                    {/* 6 Horizontal Metric Cards */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 font-mono text-xs">
-                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800">
-                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Piyasa Değeri</span>
-                        <span className="text-sm font-black text-white">{masked.marketValueDisplay}</span>
+                    {/* 6 Horizontal Metric Cards - Perfectly Balanced, Non-Overlapping */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-2.5 font-mono text-xs">
+                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 min-w-0 flex flex-col justify-between">
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1 truncate">Piyasa Değeri</span>
+                        <span className="text-sm font-black text-white truncate">{masked.marketValueDisplay}</span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800">
-                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Haftalık Maaş</span>
-                        <span className="text-sm font-black text-[#00F5A0]">{masked.wageDisplay}</span>
+                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 min-w-0 flex flex-col justify-between">
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1 truncate">Haftalık Maaş</span>
+                        <span className="text-sm font-black text-[#00F5A0] truncate">{masked.wageDisplay}</span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800">
-                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Sözleşme Bitiş</span>
-                        <span className="text-sm font-black text-amber-300">
+                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 min-w-0 flex flex-col justify-between">
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1 truncate">Sözleşme Bitiş</span>
+                        <span className="text-sm font-black text-amber-300 truncate">
                           {player.contractUntil || player.contractEnd?.split('-')[0] || '2028'}
                         </span>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800">
-                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Kondisyon</span>
-                        <div className="flex items-center gap-2">
-                          <FitnessIndicator value={player.fitness} isInjured={player.isInjured} />
-                          <span className="text-xs font-bold text-zinc-300">%{player.fitness}</span>
+                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 min-w-0 flex flex-col justify-between">
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1 truncate">Kondisyon</span>
+                        {player.isInjured ? (
+                          <span className="text-xs font-bold text-rose-400 flex items-center gap-1">
+                            <AlertTriangle className="w-3.5 h-3.5 shrink-0" /> Sakat
+                          </span>
+                        ) : (
+                          <div className="flex items-center justify-between gap-1.5 min-w-0">
+                            <div className="flex-1 bg-zinc-800/90 h-2 rounded-full overflow-hidden border border-zinc-700/60 min-w-[32px]">
+                              <div
+                                className={`h-full rounded-full transition-all duration-300 ${
+                                  player.fitness >= 85 ? 'bg-[#00F5A0]' : player.fitness >= 70 ? 'bg-amber-400' : 'bg-rose-500'
+                                }`}
+                                style={{ width: `${Math.min(100, Math.max(5, player.fitness))}%` }}
+                              />
+                            </div>
+                            <span className="text-xs font-black text-white shrink-0">%{player.fitness}</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 min-w-0 flex flex-col justify-between">
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1 truncate">Maç Keskinliği</span>
+                        <div className="flex items-center justify-between gap-1.5 min-w-0">
+                          <div className="flex-1 bg-zinc-800/90 h-2 rounded-full overflow-hidden border border-zinc-700/60 min-w-[32px]">
+                            <div
+                              className="h-full rounded-full bg-[#00D4FF] transition-all duration-300"
+                              style={{ width: `${Math.min(100, Math.max(5, player.matchSharpness ?? 85))}%` }}
+                            />
+                          </div>
+                          <span className="text-xs font-black text-[#00D4FF] shrink-0">%{player.matchSharpness ?? 85}</span>
                         </div>
                       </div>
-                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800">
-                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Maç Keskinliği</span>
-                        <div className="flex items-center gap-1.5">
-                          <Zap className="w-3.5 h-3.5 text-[#00D4FF]" />
-                          <span className="text-sm font-black text-[#00D4FF]">%{player.matchSharpness ?? 85}</span>
+                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 min-w-0 flex flex-col justify-between">
+                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1 truncate">Moral</span>
+                        <div className="truncate">
+                          <MoraleIndicator value={player.morale} showText={true} />
                         </div>
-                      </div>
-                      <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800">
-                        <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Moral</span>
-                        <MoraleIndicator value={player.morale} showText={true} />
                       </div>
                     </div>
 

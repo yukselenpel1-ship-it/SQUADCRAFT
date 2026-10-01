@@ -6,6 +6,7 @@ import { useGame } from '@/lib/context/GameContext';
 import { Player, Club } from '@/types/game';
 import { StatBadge } from '@/components/ui/StatBadge';
 import { ClubBadge } from '@/components/ui/ClubBadge';
+import { PlayerPortrait } from '@/components/ui/PlayerPortrait';
 import { PlayerModal } from '@/components/ui/PlayerModal';
 import { NegotiationModal } from '@/components/negotiation/NegotiationModal';
 import { EXTERNAL_CLUBS } from '@/lib/career/careerUniverse';
@@ -505,11 +506,16 @@ export default function TransfersPage() {
                         onClick={() => setInspectedPlayer(player)}
                         className="py-3 px-4 cursor-pointer"
                       >
-                        <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#00F5A0] transition-colors">
-                          {player.firstName} {player.lastName}
-                        </div>
-                        <div className="text-[10px] font-mono text-zinc-500">
-                          {player.nationality} {player.archetype ? `• ${player.archetype}` : ''}
+                        <div className="flex items-center gap-2.5">
+                          <PlayerPortrait player={player} size="sm" />
+                          <div>
+                            <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#00F5A0] transition-colors">
+                              {player.firstName} {player.lastName}
+                            </div>
+                            <div className="text-[10px] font-mono text-zinc-500">
+                              {player.nationality} {player.archetype ? `• ${player.archetype}` : ''}
+                            </div>
+                          </div>
                         </div>
                       </td>
 
@@ -678,11 +684,16 @@ export default function TransfersPage() {
                           onClick={() => setInspectedPlayer(player)}
                           className="py-3 px-4 cursor-pointer"
                         >
-                          <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#00F5A0] transition-colors">
-                            {player.firstName} {player.lastName}
-                          </div>
-                          <div className="text-[10px] font-mono text-zinc-500">
-                            {player.nationality}
+                          <div className="flex items-center gap-2.5">
+                            <PlayerPortrait player={player} size="sm" />
+                            <div>
+                              <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#00F5A0] transition-colors">
+                                {player.firstName} {player.lastName}
+                              </div>
+                              <div className="text-[10px] font-mono text-zinc-500">
+                                {player.nationality}
+                              </div>
+                            </div>
                           </div>
                         </td>
 
@@ -787,7 +798,9 @@ export default function TransfersPage() {
                   className="p-4 sm:p-5 bg-[#080D1A] border border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:border-zinc-700"
                 >
                   <div className="flex items-start sm:items-center gap-4">
-                    {club ? (
+                    {player ? (
+                      <PlayerPortrait player={player} size="lg" />
+                    ) : club ? (
                       <ClubBadge
                         code={club.code}
                         primaryColor={club.primaryColor}

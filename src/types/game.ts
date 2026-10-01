@@ -161,6 +161,8 @@ export interface Player {
   isRisingTalent?: boolean; // "YÜKSELEN YETENEK"
   hiddenAttributes?: HiddenPlayerAttributes;
   scoutingReport?: ScoutingReport;
+  portraitSeed?: string;
+  portraitUrl?: string;
   
   // İstatistikler (Sezon)
   seasonStats?: {

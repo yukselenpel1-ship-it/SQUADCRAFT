@@ -5,6 +5,7 @@ import { useGame } from '@/lib/context/GameContext';
 import { Player, PositionCategory } from '@/types/game';
 import { TrainingIntensity } from '@/lib/career/types';
 import { PlayerAvatar } from '@/components/ui/PlayerAvatar';
+import { PlayerPortrait } from '@/components/ui/PlayerPortrait';
 import { StatBadge } from '@/components/ui/StatBadge';
 import { FitnessIndicator } from '@/components/ui/FitnessIndicator';
 import { MoraleIndicator } from '@/components/ui/MoraleIndicator';
@@ -336,10 +337,8 @@ export default function SquadPage() {
 
                     <td className="py-2.5 px-3">
                       <div className="flex items-center gap-3">
-                        <PlayerAvatar
-                          firstName={player.firstName}
-                          lastName={player.lastName}
-                          position={player.position}
+                        <PlayerPortrait
+                          player={player}
                           size="sm"
                         />
                         <div>
@@ -464,7 +463,10 @@ export default function SquadPage() {
                   return (
                     <tr key={player.id} className="hover:bg-zinc-900/60 transition-colors">
                       <td className="py-3 px-4 font-bold text-white uppercase tracking-tight">
-                        {player.firstName} {player.lastName}
+                        <div className="flex items-center gap-2.5">
+                          <PlayerPortrait player={player} size="xs" />
+                          <span>{player.firstName} {player.lastName}</span>
+                        </div>
                       </td>
 
                       <td className="py-3 px-3 text-center">

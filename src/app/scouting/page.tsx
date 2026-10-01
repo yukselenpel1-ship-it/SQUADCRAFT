@@ -5,6 +5,7 @@ import { useGame } from '@/lib/context/GameContext';
 import { Player, PlayerPosition } from '@/types/game';
 import { StatBadge } from '@/components/ui/StatBadge';
 import { PlayerModal } from '@/components/ui/PlayerModal';
+import { PlayerPortrait } from '@/components/ui/PlayerPortrait';
 import { AssignScoutModal } from '@/components/ui/AssignScoutModal';
 import { SCOUTING_REGIONS } from '@/lib/scouting/regionalKnowledge';
 import { ScoutingRegionId } from '@/lib/scouting/types';
@@ -422,10 +423,15 @@ export default function ScoutingPage() {
                         onClick={() => setSelectedPlayer(player)}
                       >
                         <td className="p-3">
-                          <span className="font-bold text-white block uppercase">
-                            {player.firstName} {player.lastName}
-                          </span>
-                          <span className="text-[10px] font-mono text-zinc-500">{player.nationality}</span>
+                          <div className="flex items-center gap-2.5">
+                            <PlayerPortrait player={player} size="sm" />
+                            <div>
+                              <span className="font-bold text-white block uppercase">
+                                {player.firstName} {player.lastName}
+                              </span>
+                              <span className="text-[10px] font-mono text-zinc-500">{player.nationality}</span>
+                            </div>
+                          </div>
                         </td>
                         <td className="p-3 text-zinc-300 font-mono text-[11px]">
                           {club ? club.name : 'Serbest'}
