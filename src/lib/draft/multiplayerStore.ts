@@ -228,8 +228,38 @@ function mapDbRoom(r: any): MultiplayerRoom {
 /**
  * Maps database row to RoomMember
  */
-function mapDbMember(m: any): RoomMember {
-  const isBot = Boolean(m.is_bot || m.session_id?.startsWith('bot-session-') || m.id?.includes('bot'));
+function mapDbMember(m: any, rules?: DraftRules): RoomMember {
+  const isBot = Boolean(m.is_bot || m.session_id?.startsWith('bot-session') || m.id?.includes('bot'));
+  
+  let parsedDifficulty: BotDifficulty | undefined = undefined;
+  let parsedPersonality: BotPersonality | undefined = undefined;
+
+  // 1. Authoritative lookup from rules.botConfigs JSONB
+  if (rules?.botConfigs?.[m.id]) {
+    parsedDifficulty = rules.botConfigs[m.id].difficulty;
+    parsedPersonality = rules.botConfigs[m.id].personality;
+  }
+
+  // 2. Decode from persistent session_id (e.g. bot-session-KOLAY-Hücumcu-mem-...)
+  if (!parsedDifficulty && typeof m.session_id === 'string' && m.session_id.startsWith('bot-session-')) {
+    const afterPrefix = m.session_id.substring('bot-session-'.length);
+    const parts = afterPrefix.split('-');
+    if (parts[0] === 'KOLAY' || parts[0] === 'ORTA' || parts[0] === 'ZOR') {
+      parsedDifficulty = parts[0] as BotDifficulty;
+      if (parts[1] && ['Kontrollü', 'Hücumcu', 'Kontratakçı', 'Presçi', 'Dengeli'].includes(parts[1])) {
+        parsedPersonality = parts[1] as BotPersonality;
+      }
+    }
+  }
+
+  // 3. Fallback to DB fields if provided
+  if (!parsedDifficulty && m.bot_difficulty) {
+    parsedDifficulty = m.bot_difficulty;
+  }
+  if (!parsedPersonality && m.bot_personality) {
+    parsedPersonality = m.bot_personality;
+  }
+
   return {
     id: m.id,
     roomId: m.room_id,
@@ -239,8 +269,8 @@ function mapDbMember(m: any): RoomMember {
     isSpectator: Boolean(m.is_spectator),
     isReady: Boolean(m.is_ready),
     isBot,
-    botDifficulty: isBot ? (m.bot_difficulty || 'ORTA') : undefined,
-    botPersonality: isBot ? (m.bot_personality || 'Dengeli') : undefined,
+    botDifficulty: isBot ? (parsedDifficulty || 'ORTA') : undefined,
+    botPersonality: isBot ? (parsedPersonality || 'Dengeli') : undefined,
     clubId: m.club_id || undefined,
     isConnected: Boolean(m.is_connected),
     lastSeenAt: m.last_seen_at || new Date().toISOString(),
@@ -960,8 +990,19 @@ export class DraftMultiplayerStore {
         if (dbRoom && !error) {
           const room = mapDbRoom(dbRoom);
           const removedIds = new Set(room.rules.removedMemberIds || []);
-          const rawMembers: RoomMember[] = (dbRoom.multiplayer_members || []).map(mapDbMember);
-          const members: RoomMember[] = rawMembers.filter(
+          const rawMembers: RoomMember[] = (dbRoom.multiplayer_members || []).map((m: any) => mapDbMember(m, room.rules));
+          const localRoom = loadRoomLocal(room.id) || loadRoomLocal(room.roomCode);
+          const memMembers = memoryRooms[room.id]?.members || localRoom?.members || [];
+          const members: RoomMember[] = rawMembers.map((m) => {
+            if (m.isBot) {
+              const mem = memMembers.find((mm) => mm.id === m.id);
+              if (mem && mem.botDifficulty) {
+                m.botDifficulty = mem.botDifficulty;
+                m.botPersonality = mem.botPersonality || m.botPersonality;
+              }
+            }
+            return m;
+          }).filter(
             (m) =>
               !removedIds.has(m.id) &&
               !m.sessionId?.startsWith('removed-') &&
@@ -1664,11 +1705,12 @@ export class DraftMultiplayerStore {
 
     const botMemberId = `mem-${state.room.id}-bot-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const botClubId = `club-${state.room.id}-bot-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+    const botSessionId = `bot-session-${difficulty}-${botProfile.personality}-${botMemberId}`;
 
     const botMember: RoomMember = {
       id: botMemberId,
       roomId: state.room.id,
-      sessionId: `bot-session-${botMemberId}`,
+      sessionId: botSessionId,
       username: botProfile.username,
       isHost: false,
       isSpectator: false,
@@ -1700,6 +1742,13 @@ export class DraftMultiplayerStore {
     const updatedRules: DraftRules = {
       ...state.room.rules,
       stateVersion: resultingVersion,
+      botConfigs: {
+        ...(state.room.rules.botConfigs || {}),
+        [botMemberId]: {
+          difficulty,
+          personality: botProfile.personality,
+        },
+      },
     };
 
     const newState: RoomFullState = {
@@ -1809,11 +1858,12 @@ export class DraftMultiplayerStore {
 
     const botMemberId = `mem-${state.room.id}-bot-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const botClubId = `club-${state.room.id}-bot-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
+    const botSessionId = `bot-session-${difficulty}-${botProfile.personality}-${botMemberId}`;
 
     const botMember: RoomMember = {
       id: botMemberId,
       roomId: state.room.id,
-      sessionId: `bot-session-${botMemberId}`,
+      sessionId: botSessionId,
       username: botProfile.username,
       isHost: false,
       isSpectator: false,
@@ -1845,6 +1895,13 @@ export class DraftMultiplayerStore {
     const updatedRules: DraftRules = {
       ...state.room.rules,
       stateVersion: resultingVersion,
+      botConfigs: {
+        ...(state.room.rules.botConfigs || {}),
+        [botMemberId]: {
+          difficulty,
+          personality: botProfile.personality,
+        },
+      },
     };
 
     const newState: RoomFullState = {
@@ -2187,12 +2244,20 @@ export class DraftMultiplayerStore {
     const prevVersion = state.room.stateVersion || 1;
     const resultingVersion = prevVersion + 1;
 
+    const targetBot = state.members.find((m) => m.id === botMemberId);
+    const existingConfig = state.room.rules.botConfigs?.[botMemberId];
+    const newDifficulty = updates.difficulty || targetBot?.botDifficulty || existingConfig?.difficulty || 'ORTA';
+    const newPersonality = targetBot?.botPersonality || existingConfig?.personality || 'Dengeli';
+    const newSessionId = `bot-session-${newDifficulty}-${newPersonality}-${botMemberId}`;
+
     const updatedMembers = state.members.map((m) => {
       if (m.id === botMemberId) {
         return {
           ...m,
+          sessionId: newSessionId,
           username: updates.name ? updates.name : m.username,
-          botDifficulty: updates.difficulty || m.botDifficulty,
+          botDifficulty: newDifficulty,
+          botPersonality: newPersonality,
         };
       }
       return m;
@@ -2216,11 +2281,23 @@ export class DraftMultiplayerStore {
       return c;
     });
 
+    const updatedRules: DraftRules = {
+      ...state.room.rules,
+      stateVersion: resultingVersion,
+      botConfigs: {
+        ...(state.room.rules.botConfigs || {}),
+        [botMemberId]: {
+          difficulty: newDifficulty,
+          personality: newPersonality,
+        },
+      },
+    };
+
     const newState: RoomFullState = {
       ...state,
       members: updatedMembers,
       clubs: updatedClubs,
-      room: { ...state.room, stateVersion: resultingVersion, updatedAt: new Date().toISOString() },
+      room: { ...state.room, rules: updatedRules, stateVersion: resultingVersion, updatedAt: new Date().toISOString() },
     };
 
     memoryRooms[state.room.id] = newState;
@@ -2232,7 +2309,7 @@ export class DraftMultiplayerStore {
         const botM = updatedMembers.find((m) => m.id === botMemberId);
         const botC = updatedClubs.find((c) => c.memberId === botMemberId);
         if (botM) {
-          await supabase.from('multiplayer_members').update({ username: botM.username }).eq('id', botMemberId);
+          await supabase.from('multiplayer_members').update({ username: botM.username, session_id: newSessionId }).eq('id', botMemberId);
         }
         if (botC) {
           await supabase.from('draft_clubs').update({ name: botC.name, manager_name: botC.managerName, badge: botC.badge }).eq('id', botC.id);
@@ -2240,7 +2317,7 @@ export class DraftMultiplayerStore {
         await supabase
           .from('multiplayer_rooms')
           .update({
-            rules: { ...state.room.rules, stateVersion: resultingVersion },
+            rules: updatedRules,
             updated_at: new Date().toISOString(),
           })
           .eq('id', state.room.id);

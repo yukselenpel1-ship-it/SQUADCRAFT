@@ -480,6 +480,14 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
     }
   };
 
+  const handleChangeBotDifficulty = (botMemberId: string, diff: 'KOLAY' | 'ORTA' | 'ZOR') => {
+    if (!currentMember || !isHost) return;
+    const res = DraftMultiplayerStore.updateBot(room.id, currentMember.id, botMemberId, { difficulty: diff });
+    if (res.state) {
+      setHydrationResult((prev) => ({ ...prev, state: res.state }));
+    }
+  };
+
   const handleSaveClub = (updatedData: Partial<DraftClub>) => {
     if (!currentMember) return;
     const res = DraftMultiplayerStore.updateClub(room.id, currentMember.id, updatedData);
@@ -783,21 +791,47 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                           )}
                         </div>
 
-                        {/* Bot Badge */}
+                        {/* Bot Badge & Difficulty Selector */}
                         {member.isBot && (
-                          <div className="mt-1.5 flex items-center gap-1.5">
-                            <span
-                              className={`text-[10px] px-2 py-0.5 font-mono font-bold uppercase border flex items-center gap-1 ${
-                                member.botDifficulty === 'ZOR'
-                                  ? 'bg-amber-950/80 text-[#FFB800] border-amber-500/50'
-                                  : member.botDifficulty === 'KOLAY'
-                                  ? 'bg-emerald-950/80 text-[#00F5A0] border-emerald-500/50'
-                                  : 'bg-sky-950/80 text-[#00D4FF] border-sky-500/50'
-                              }`}
-                            >
-                              <Bot className="w-3 h-3" />
-                              <span>BOT • {member.botDifficulty || 'ORTA'}</span>
-                            </span>
+                          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                            {isHost ? (
+                              <div className="flex items-center gap-1 bg-zinc-950 border border-zinc-800 p-0.5 rounded text-[10px] font-mono font-bold">
+                                <Bot className="w-3 h-3 text-[#00D4FF] ml-1" />
+                                <span className="text-zinc-500 mr-0.5">BOT:</span>
+                                {(['KOLAY', 'ORTA', 'ZOR'] as const).map((diff) => (
+                                  <button
+                                    key={diff}
+                                    type="button"
+                                    onClick={() => handleChangeBotDifficulty(member.id, diff)}
+                                    className={`px-1.5 py-0.5 rounded transition ${
+                                      (member.botDifficulty || 'ORTA') === diff
+                                        ? diff === 'ZOR'
+                                          ? 'bg-amber-500/30 text-[#FFB800] border border-amber-500/60 font-black'
+                                          : diff === 'KOLAY'
+                                          ? 'bg-emerald-500/30 text-[#00F5A0] border border-emerald-500/60 font-black'
+                                          : 'bg-sky-500/30 text-[#00D4FF] border border-sky-500/60 font-black'
+                                        : 'text-zinc-500 hover:text-zinc-300'
+                                    }`}
+                                    title={`Zorluğu ${diff} olarak ayarla`}
+                                  >
+                                    {diff}
+                                  </button>
+                                ))}
+                              </div>
+                            ) : (
+                              <span
+                                className={`text-[10px] px-2 py-0.5 font-mono font-bold uppercase border flex items-center gap-1 ${
+                                  member.botDifficulty === 'ZOR'
+                                    ? 'bg-amber-950/80 text-[#FFB800] border-amber-500/50'
+                                    : member.botDifficulty === 'KOLAY'
+                                    ? 'bg-emerald-950/80 text-[#00F5A0] border-emerald-500/50'
+                                    : 'bg-sky-950/80 text-[#00D4FF] border-sky-500/50'
+                                }`}
+                              >
+                                <Bot className="w-3 h-3" />
+                                <span>BOT • {member.botDifficulty || 'ORTA'}</span>
+                              </span>
+                            )}
                             {member.botPersonality && (
                               <span className="text-[10px] text-zinc-400 font-mono">
                                 ({member.botPersonality})

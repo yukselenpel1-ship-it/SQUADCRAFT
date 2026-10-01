@@ -48,6 +48,7 @@ export interface DraftRules {
   liveMatchweek?: LiveMatchweekState;
   confirmedPicks?: DraftPick[];
   clubBudgets?: { id: string; memberId: string; code?: string; budget?: number; spentBudget?: number; squadPlayerIds?: string[] }[];
+  botConfigs?: Record<string, { difficulty: BotDifficulty; personality?: BotPersonality }>;
 }
 
 export interface LiveMatchweekState {
