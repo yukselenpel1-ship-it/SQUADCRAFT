@@ -8,7 +8,7 @@ import { ClubBadge } from '@/components/ui/ClubBadge';
 import { Calendar, Filter, ChevronRight, CheckCircle2, Clock } from 'lucide-react';
 
 export default function FixturesPage() {
-  const { fixtures, allClubs, userClub, seasonEndSummary, startNextSeasonRoll, seasonYear } = useGame();
+  const { fixtures, allClubs, userClub, seasonEndSummary, startNextSeasonRoll, seasonYear, isCareerHydrated, isInitialized } = useGame();
   const [selectedFilter, setSelectedFilter] = useState<'ALL' | 'MY_CLUB' | 'PLAYED' | 'UPCOMING'>('ALL');
 
   const getClub = (id: string) => allClubs.find((c) => c.id === id);
@@ -28,6 +28,15 @@ export default function FixturesPage() {
 
   // Group by round
   const rounds = Array.from(new Set(filteredFixtures.map((f) => f.round))).sort((a, b) => a - b);
+
+  if (!isCareerHydrated || !isInitialized) {
+    return (
+      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">

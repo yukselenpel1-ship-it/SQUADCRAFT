@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useGame } from '@/lib/context/GameContext';
-import { loadCareerState } from '@/lib/career';
+import { loadCareerState, loadCareerMetadata } from '@/lib/career';
 import { FeedbackModal } from '@/components/draft/FeedbackModal';
 import { APP_VERSION } from '@/lib/version';
 import {
@@ -40,10 +40,21 @@ export default function MainMenuPage() {
 
   // Load existing career save state canonical hydration check
   useEffect(() => {
+    // 1. Instant synchronous check from lightweight localStorage metadata (< 1KB)
+    const meta = loadCareerMetadata();
+    if (meta && meta.exists) {
+      setSavedData({
+        userClub: { id: meta.userClubId, name: meta.clubName },
+        seasonYear: meta.seasonYear,
+        currentDate: meta.currentDate,
+      });
+    }
+
+    // 2. Full hydration check from GameContext / IndexedDB
     if (isCareerHydrated) {
       if (hasCareerSave && savedCareerPreview) {
         setSavedData(savedCareerPreview);
-      } else {
+      } else if (!meta) {
         // Direct read fallback to ensure absolute reliability across browser environments
         try {
           const direct = loadCareerState();
@@ -65,12 +76,12 @@ export default function MainMenuPage() {
   }, [isCareerHydrated, hasCareerSave, savedCareerPreview]);
 
   const handleContinueCareer = useCallback(
-    (e?: React.MouseEvent) => {
+    async (e?: React.MouseEvent) => {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
       }
-      const success = loadExistingCareer();
+      const success = await loadExistingCareer();
       if (success) {
         router.push('/dashboard');
       } else {
@@ -623,9 +634,9 @@ export default function MainMenuPage() {
                 İPTAL
               </button>
               <button
-                onClick={() => {
+                onClick={async () => {
                   setIsNewCareerConfirmOpen(false);
-                  resetEntireCareer();
+                  await resetEntireCareer();
                   setSavedData(null);
                   router.push('/career/new');
                 }}

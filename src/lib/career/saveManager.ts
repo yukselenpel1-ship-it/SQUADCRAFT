@@ -58,22 +58,50 @@ export function migrateV1toV3(v1: CareerSaveDataV1): CareerSaveDataV3 {
   return migrateV2toV3(v2);
 }
 
-export function saveCareerState(data: any): boolean {
-  try {
-    if (typeof window === 'undefined' && typeof localStorage === 'undefined') return false;
+import {
+  saveCareerToIndexedDB,
+  loadCareerFromIndexedDB,
+  loadCareerMetadata,
+  deleteCareerFromIndexedDB,
+  clearCareerMetadata,
+  SaveResult,
+} from './careerStorage';
 
+export async function saveCareerState(data: any): Promise<SaveResult> {
+  try {
+    if (typeof window === 'undefined') return { success: false, error: 'SSR' };
+
+    let preparedData = data;
     if (data.saveVersion === 2) {
-      const v3 = migrateV2toV3(data as CareerSaveDataV2);
-      localStorage.setItem(SAVE_KEY_V3, JSON.stringify(v3));
-      localStorage.setItem(SAVE_KEY_V2, JSON.stringify(data));
-      return true;
+      preparedData = migrateV2toV3(data as CareerSaveDataV2);
     }
 
-    const serialized = JSON.stringify(data);
-    localStorage.setItem(SAVE_KEY_V3, serialized);
-    return true;
+    // 1. Canonical Storage: IndexedDB
+    const result = await saveCareerToIndexedDB(preparedData as CareerSaveDataV3);
+
+    // 2. Best-effort backup to localStorage if under 2MB (won't throw or block)
+    try {
+      const serialized = JSON.stringify(preparedData);
+      if (serialized.length < 2 * 1024 * 1024) {
+        localStorage.setItem(SAVE_KEY_V3, serialized);
+      }
+    } catch {
+      // Ignored: IndexedDB is canonical
+    }
+
+    return result;
   } catch (err) {
     console.error('SquadCraft Save Error:', err);
+    return { success: false, error: err };
+  }
+}
+
+export function saveCareerStateSync(data: any): boolean {
+  try {
+    if (typeof window === 'undefined') return false;
+    saveCareerState(data).catch((e) => console.warn('Async save warning:', e));
+    return true;
+  } catch {
     return false;
   }
 }
@@ -171,6 +199,9 @@ export function loadCareerState(): CareerSaveDataV3 | null {
 export function hasCareerSave(): boolean {
   try {
     if (typeof window === 'undefined') return false;
+    const meta = loadCareerMetadata();
+    if (meta && meta.exists) return true;
+
     return Boolean(
       localStorage.getItem(SAVE_KEY_V3) ||
       localStorage.getItem(SAVE_KEY_V2) ||
@@ -184,13 +215,20 @@ export function hasCareerSave(): boolean {
 export function clearCareerSave(): boolean {
   try {
     if (typeof window === 'undefined') return false;
+    clearCareerMetadata();
     localStorage.removeItem(SAVE_KEY_V3);
     localStorage.removeItem(SAVE_KEY_V2);
     localStorage.removeItem(SAVE_KEY_V1);
+    deleteCareerFromIndexedDB().catch((e) => console.warn('IDB clear warning:', e));
     return true;
   } catch {
     return false;
   }
+}
+
+export async function clearCareerSaveAsync(): Promise<boolean> {
+  const res = await deleteCareerFromIndexedDB();
+  return res.success;
 }
 
 

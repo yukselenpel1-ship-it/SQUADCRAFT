@@ -41,6 +41,8 @@ export default function ScoutingPage() {
     fireScout,
     getMaskedPlayer,
     getClubById,
+    isCareerHydrated,
+    isInitialized,
   } = useGame();
 
   const [activeTab, setActiveTab] = useState<'dashboard' | 'scouts' | 'assignments' | 'search' | 'reports' | 'regions'>('dashboard');
@@ -62,6 +64,15 @@ export default function ScoutingPage() {
   });
 
   const totalWeeklyScoutWages = scouts.reduce((acc, s) => acc + s.wage, 0);
+
+  if (!isCareerHydrated || !isInitialized) {
+    return (
+      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">

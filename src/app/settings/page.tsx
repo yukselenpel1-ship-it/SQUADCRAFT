@@ -21,6 +21,8 @@ export default function SettingsPage() {
     managerContract,
     resetEntireCareer,
     userClub,
+    isCareerHydrated,
+    isInitialized,
   } = useGame();
 
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
@@ -29,12 +31,21 @@ export default function SettingsPage() {
   const [confirmResetOpen, setConfirmResetOpen] = useState(false);
   const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(null);
 
-  const handleConfirmReset = () => {
-    resetEntireCareer();
+  const handleConfirmReset = async () => {
+    await resetEntireCareer();
     setConfirmResetOpen(false);
     setResetSuccessMessage('Kariyer başarıyla sıfırlandı ve 1 Ağustos 2026 tarihine dönüldü.');
     setTimeout(() => setResetSuccessMessage(null), 4000);
   };
+
+  if (!isCareerHydrated || !isInitialized) {
+    return (
+      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 max-w-5xl animate-in fade-in duration-300">

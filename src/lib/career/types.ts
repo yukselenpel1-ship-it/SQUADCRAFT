@@ -154,6 +154,7 @@ export interface CareerSaveDataV3 {
   difficulty?: CareerDifficulty;
   careerEconomyVersion?: number;
   managerContract?: ManagerContract;
+  managerProfile?: ManagerProfile;
   seasonNumber?: number;
   settings: {
     autoSave: boolean;

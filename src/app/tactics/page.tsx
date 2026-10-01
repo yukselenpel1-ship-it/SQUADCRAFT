@@ -33,6 +33,8 @@ export default function TacticsPage() {
     swapLineupPlayer,
     swapPitchSlots,
     autoAssignTactics,
+    isCareerHydrated,
+    isInitialized,
   } = useGame();
 
   const [inspectedPlayer, setInspectedPlayer] = useState<Player | null>(null);
@@ -103,6 +105,15 @@ export default function TacticsPage() {
   };
 
   const activeRoster = activeSquadTab === 'BENCH' ? benchPlayers : reservePlayers;
+
+  if (!isCareerHydrated || !isInitialized) {
+    return (
+      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">

@@ -8,7 +8,7 @@ import { ClubBadge } from '@/components/ui/ClubBadge';
 import { Trophy, Award, Flame, Shield, Users, ChevronRight } from 'lucide-react';
 
 export default function LeaguePage() {
-  const { standings, allClubs, allPlayers, userClub, seasonEndSummary, startNextSeasonRoll } = useGame();
+  const { standings, allClubs, allPlayers, userClub, seasonEndSummary, startNextSeasonRoll, isCareerHydrated, isInitialized } = useGame();
 
   const getClub = (id: string) => allClubs.find((c) => c.id === id);
 
@@ -23,6 +23,15 @@ export default function LeaguePage() {
     .filter((p) => p.seasonStats && p.seasonStats.assists > 0)
     .sort((a, b) => (b.seasonStats?.assists || 0) - (a.seasonStats?.assists || 0))
     .slice(0, 5);
+
+  if (!isCareerHydrated || !isInitialized) {
+    return (
+      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">

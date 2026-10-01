@@ -124,25 +124,34 @@ export default function NewCareerPage() {
 
   const { startNewCareer, hasCareerSave } = useGame();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const executeCareerCreation = useCallback(() => {
-    const finalAge = typeof age === 'number' ? age : Number(age) || 35;
-    const setup: CareerSetupConfig = {
-      managerProfile: {
-        name: managerName.trim() || 'Menajer',
-        nationality,
-        age: Math.min(75, Math.max(21, finalAge)),
-        tacticalStyle,
-        difficulty,
-      },
-      selectedClubId,
-      leagueSize,
-      startingDate,
-      seasonYear: '2026/27',
-    };
+  const executeCareerCreation = useCallback(async () => {
+    setIsSubmitting(true);
+    try {
+      const finalAge = typeof age === 'number' ? age : Number(age) || 35;
+      const setup: CareerSetupConfig = {
+        managerProfile: {
+          name: managerName.trim() || 'Menajer',
+          nationality,
+          age: Math.min(75, Math.max(21, finalAge)),
+          tacticalStyle,
+          difficulty,
+        },
+        selectedClubId,
+        leagueSize,
+        startingDate,
+        seasonYear: '2026/27',
+      };
 
-    startNewCareer(setup);
-    router.push('/dashboard');
+      await startNewCareer(setup);
+      router.push('/dashboard');
+    } catch (err: any) {
+      console.error('Career creation error:', err);
+      alert('Kariyer başlatılamadı: ' + (err?.message || 'Bilinmeyen hata'));
+    } finally {
+      setIsSubmitting(false);
+    }
   }, [managerName, nationality, age, tacticalStyle, difficulty, selectedClubId, leagueSize, startingDate, startNewCareer, router]);
 
   const handleStartCareer = useCallback(() => {
@@ -967,10 +976,20 @@ export default function NewCareerPage() {
 
                 <button
                   onClick={handleStartCareer}
-                  className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-sm uppercase tracking-wider transition-all active:scale-95 shadow-xl shadow-emerald-500/20"
+                  disabled={isSubmitting}
+                  className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#00F5A0] hover:bg-[#00D68B] disabled:opacity-50 disabled:cursor-not-allowed text-black font-black text-sm uppercase tracking-wider transition-all active:scale-95 shadow-xl shadow-emerald-500/20"
                 >
-                  <Sparkles className="w-4 h-4 fill-black" />
-                  <span>KARİYERİ RESMEN BAŞLAT</span>
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      <span>KAYDEDİLİYOR...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 fill-black" />
+                      <span>KARİYERİ RESMEN BAŞLAT</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

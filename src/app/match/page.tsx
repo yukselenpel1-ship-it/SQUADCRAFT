@@ -8,13 +8,22 @@ import { Swords, Calendar, ArrowRight, Play } from 'lucide-react';
 
 export default function MatchIndexPage() {
   const router = useRouter();
-  const { nextMatch, userClub, allClubs } = useGame();
+  const { nextMatch, userClub, allClubs, isCareerHydrated, isInitialized } = useGame();
 
   useEffect(() => {
-    if (nextMatch) {
+    if (isCareerHydrated && nextMatch) {
       router.replace(`/match/${nextMatch.id}`);
     }
-  }, [nextMatch, router]);
+  }, [isCareerHydrated, nextMatch, router]);
+
+  if (!isCareerHydrated || !isInitialized) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
+      </div>
+    );
+  }
 
   const opponentClub = nextMatch
     ? allClubs.find(

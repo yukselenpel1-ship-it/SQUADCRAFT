@@ -86,7 +86,7 @@ function getOptimalLineupForFormation(players: Player[], formation: Formation): 
 export default function MatchCenterPage() {
   const params = useParams();
   const router = useRouter();
-  const { fixtures, allClubs, allPlayers, userClub, tactics, applyMatchResult } = useGame();
+  const { fixtures, allClubs, allPlayers, userClub, tactics, applyMatchResult, isCareerHydrated, isInitialized } = useGame();
 
   const matchId = params?.id as string;
   const fixture = fixtures.find((f) => f.id === matchId) || fixtures[0];
@@ -120,7 +120,7 @@ export default function MatchCenterPage() {
 
   // Initialize engine on load
   useEffect(() => {
-    if (!fixture || homePlayers.length === 0 || awayPlayers.length === 0) return;
+    if (!isCareerHydrated || !isInitialized || !fixture || homePlayers.length === 0 || awayPlayers.length === 0) return;
 
     const isUserHome = homeClub.id === userClub.id;
     const userTacticsSettings = tactics.settings;
@@ -307,10 +307,11 @@ export default function MatchCenterPage() {
     }
   };
 
-  if (!engineState) {
+  if (!isCareerHydrated || !isInitialized || !engineState) {
     return (
-      <div className="p-12 text-center text-zinc-400">
-        Maç motoru yükleniyor...
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer ve maç motoru yükleniyor...</span>
       </div>
     );
   }

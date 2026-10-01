@@ -13,3 +13,4 @@ export * from './seasonRollover';
 export * from './dailyProcessor';
 export * from './saveManager';
 export * from './leagueMatchSimulator';
+export * from './careerStorage';

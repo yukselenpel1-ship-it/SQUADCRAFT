@@ -36,6 +36,8 @@ export default function SquadPage() {
     currentDate,
     trainingIntensity,
     setTrainingIntensity,
+    isCareerHydrated,
+    isInitialized,
   } = useGame();
 
   const [activeSquadTab, setActiveSquadTab] = useState<'OVERVIEW' | 'CONTRACTS' | 'TRAINING' | 'INJURIES'>('OVERVIEW');
@@ -107,6 +109,15 @@ export default function SquadPage() {
   const injuredCount = userPlayers.filter((p) => p.isInjured).length;
   const suspendedCount = userPlayers.filter((p) => p.isSuspended).length;
   const expiringContractsCount = userPlayers.filter((p) => (p.contractYearsLeft ?? 2) <= 1).length;
+
+  if (!isCareerHydrated || !isInitialized) {
+    return (
+      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-5 animate-in fade-in duration-300 pb-12">
@@ -692,6 +703,10 @@ export default function SquadPage() {
           onClose={() => setSelectedPlayer(null)}
           isShortlisted={false}
           onToggleShortlist={() => {}}
+          onRenewContract={(p) => {
+            setRenewingPlayer(p);
+            setSelectedPlayer(null);
+          }}
           onMakeBid={() => {
             setRenewingPlayer(selectedPlayer);
             setSelectedPlayer(null);

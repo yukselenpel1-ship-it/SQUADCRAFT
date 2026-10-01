@@ -31,12 +31,23 @@ export default function InboxPage() {
     userClub,
     managerContract,
     respondToManagerContractOffer,
+    isCareerHydrated,
+    isInitialized,
   } = useGame();
 
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(
     inboxMessages.length > 0 ? inboxMessages[0].id : null
   );
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+
+  if (!isCareerHydrated || !isInitialized) {
+    return (
+      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
+      </div>
+    );
+  }
 
   const selectedMessage = inboxMessages.find((m) => m.id === selectedMessageId) || null;
 

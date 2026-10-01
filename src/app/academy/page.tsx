@@ -31,10 +31,21 @@ export default function AcademyPage() {
     promoteYouthPlayer,
     upgradeAcademy,
     getClubById,
+    isCareerHydrated,
+    isInitialized,
   } = useGame();
 
   const [selectedPlayer, setSelectedPlayer] = useState<YouthPlayer | null>(null);
   const [actionFeedback, setActionFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  if (!isCareerHydrated || !isInitialized) {
+    return (
+      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
+      </div>
+    );
+  }
 
   const levelCost = getFacilityUpgradeCost(academyFacilities.academyLevel);
   const coachingCost = Math.round(academyFacilities.youthCoachingQuality * 15_000);

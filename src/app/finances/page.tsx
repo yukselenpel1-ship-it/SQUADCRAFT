@@ -23,7 +23,16 @@ import {
 } from 'lucide-react';
 
 export default function FinancesPage() {
-  const { finances, userClub, futureCommitments } = useGame();
+  const { finances, userClub, futureCommitments, isCareerHydrated, isInitialized } = useGame();
+
+  if (!isCareerHydrated || !isInitialized) {
+    return (
+      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
+      </div>
+    );
+  }
 
   const totalIncome = Object.values(finances.incomeCategories).reduce((a, b) => a + b, 0);
   const totalExpense = Object.values(finances.expenseCategories).reduce((a, b) => a + b, 0);

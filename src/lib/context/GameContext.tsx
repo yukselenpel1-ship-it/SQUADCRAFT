@@ -51,6 +51,10 @@ import {
   clearCareerSave,
   simulatePendingAIMatches,
   processMatchSuspension,
+  saveCareerToIndexedDB,
+  loadCareerFromIndexedDB,
+  loadCareerMetadata,
+  clearCareerSaveAsync,
 } from '@/lib/career';
 import { generateCareerPlayerUniverse, EXTERNAL_CLUBS } from '@/lib/career/careerUniverse';
 
@@ -157,8 +161,9 @@ interface GameContextType {
   savedCareerPreview: { userClub: Club; seasonYear: string | number; currentDate?: string } | null;
   difficulty: CareerDifficulty;
   leagueSize: 10 | 14 | 18;
-  startNewCareer: (setup: import('@/lib/career/types').CareerSetupConfig) => void;
-  loadExistingCareer: () => boolean;
+  startNewCareer: (setup: import('@/lib/career/types').CareerSetupConfig) => Promise<boolean>;
+  loadExistingCareer: () => Promise<boolean>;
+  resetEntireCareer: () => Promise<void>;
 
   // General Actions
   advanceDay: () => DailyProcessingResult;
@@ -182,7 +187,6 @@ interface GameContextType {
   toggleShortlist: (playerId: string) => void;
   makeTransferBid: (playerId: string, fee: number) => void;
   startNextSeasonRoll: () => void;
-  resetEntireCareer: () => void;
   getPlayerById: (id: string) => Player | undefined;
   getClubById: (id: string) => Club | undefined;
 
@@ -297,88 +301,115 @@ export function GameProvider({ children }: { children: ReactNode }) {
   );
   const [youthPlayers, setYouthPlayers] = useState<YouthPlayer[]>([]);
 
-  // Load from local storage on mount (browser only)
+  // Load from IndexedDB on mount (browser only)
   useEffect(() => {
-    try {
-      const saved = loadCareerState();
-      if (saved) {
-        setHasSavedCareer(true);
-        setHasCareerSave(true);
-        const previewClub = saved.clubs?.find((c: any) => c.id === saved.userClubId) || saved.clubs?.[0] || MOCK_CLUBS[0];
-        setSavedCareerPreview({
-          userClub: previewClub,
-          seasonYear: saved.seasonYear || '2026/27',
-          currentDate: saved.currentDate || '2026-08-01',
-        });
-        if (saved.difficulty) setDifficulty(saved.difficulty);
-        if (saved.leagueSize) setLeagueSize(saved.leagueSize);
-        setUserClubId(saved.userClubId || 'kalyon-doruk');
-        setCurrentDate(saved.currentDate);
-        setSeasonYear(saved.seasonYear);
-        setSeasonStage(saved.seasonStage);
-        setTrainingIntensityState(saved.trainingIntensity);
-        setAllClubs(saved.clubs);
-        setAllPlayers(saved.players);
-        setTactics(saved.tactics);
-        setStandings(saved.standings);
-        setFixtures(saved.fixtures);
-        setInboxMessages(saved.inboxMessages);
-        setTransferOffers(saved.transferOffers);
-        setShortlistIds(saved.shortlistIds);
-        setFinances(saved.finances);
-        setNewsFeed(saved.newsFeed || []);
-        setCareerHistory(saved.careerHistory || []);
-        if (saved.activeNegotiations) setActiveNegotiations(saved.activeNegotiations);
-        if (saved.transferHistory) setTransferHistory(saved.transferHistory);
-        if (saved.futureCommitments) setFutureCommitments(saved.futureCommitments);
-        if (saved.scouts) setScouts(saved.scouts);
-        if (saved.scoutingAssignments) setScoutingAssignments(saved.scoutingAssignments);
-        if (saved.scoutingKnowledge) setScoutingKnowledge(saved.scoutingKnowledge);
-        if (saved.scoutingReports) setScoutingReports(saved.scoutingReports);
-        if (saved.playerHiddenProfiles) setPlayerHiddenProfiles(saved.playerHiddenProfiles);
-        if (saved.activeLoans) setActiveLoans(saved.activeLoans);
-        if (saved.academyFacilities) setAcademyFacilities(saved.academyFacilities);
-        if (saved.youthPlayers) setYouthPlayers(saved.youthPlayers);
-        if (saved.managerContract) setManagerContract(saved.managerContract);
-        if (saved.seasonNumber) setSeasonNumber(saved.seasonNumber);
-        if (saved.careerEconomyVersion) setCareerEconomyVersion(saved.careerEconomyVersion);
+    let isCancelled = false;
 
-        // If navigated directly to an active career route and save exists, mark active
-        if (typeof window !== 'undefined') {
-          const path = window.location.pathname;
-          if (
-            path.startsWith('/dashboard') ||
-            path.startsWith('/squad') ||
-            path.startsWith('/tactics') ||
-            path.startsWith('/fixtures') ||
-            path.startsWith('/league') ||
-            path.startsWith('/transfers') ||
-            path.startsWith('/scouting') ||
-            path.startsWith('/academy') ||
-            path.startsWith('/finances') ||
-            path.startsWith('/inbox') ||
-            path.startsWith('/settings') ||
-            path.startsWith('/match')
-          ) {
-            setHasActiveCareer(true);
-          }
+    async function hydrateCareer() {
+      try {
+        // Step 1: Fast synchronous metadata check from localStorage (< 1KB) for instant preview
+        const meta = loadCareerMetadata();
+        if (meta && meta.exists) {
+          setHasSavedCareer(true);
+          setHasCareerSave(true);
+          setSavedCareerPreview({
+            userClub: { id: meta.userClubId, name: meta.clubName } as any,
+            seasonYear: meta.seasonYear,
+            currentDate: meta.currentDate,
+          });
         }
-      } else {
+
+        // Step 2: Canonical async read from IndexedDB (with legacy localStorage migration fallback)
+        const saved = await loadCareerFromIndexedDB();
+        if (isCancelled) return;
+
+        if (saved && saved.clubs && saved.userClubId) {
+          setHasSavedCareer(true);
+          setHasCareerSave(true);
+          const previewClub = saved.clubs?.find((c: any) => c.id === saved.userClubId) || saved.clubs?.[0] || MOCK_CLUBS[0];
+          setSavedCareerPreview({
+            userClub: previewClub,
+            seasonYear: saved.seasonYear || '2026/27',
+            currentDate: saved.currentDate || '2026-08-01',
+          });
+          if (saved.difficulty) setDifficulty(saved.difficulty);
+          if (saved.leagueSize) setLeagueSize(saved.leagueSize);
+          setUserClubId(saved.userClubId || 'kalyon-doruk');
+          setCurrentDate(saved.currentDate);
+          setSeasonYear(saved.seasonYear);
+          setSeasonStage(saved.seasonStage);
+          setTrainingIntensityState(saved.trainingIntensity);
+          setAllClubs(saved.clubs);
+          setAllPlayers(saved.players);
+          setTactics(saved.tactics);
+          setStandings(saved.standings);
+          setFixtures(saved.fixtures);
+          setInboxMessages(saved.inboxMessages);
+          setTransferOffers(saved.transferOffers);
+          setShortlistIds(saved.shortlistIds);
+          setFinances(saved.finances);
+          setNewsFeed(saved.newsFeed || []);
+          setCareerHistory(saved.careerHistory || []);
+          if (saved.activeNegotiations) setActiveNegotiations(saved.activeNegotiations);
+          if (saved.transferHistory) setTransferHistory(saved.transferHistory);
+          if (saved.futureCommitments) setFutureCommitments(saved.futureCommitments);
+          if (saved.scouts) setScouts(saved.scouts);
+          if (saved.scoutingAssignments) setScoutingAssignments(saved.scoutingAssignments);
+          if (saved.scoutingKnowledge) setScoutingKnowledge(saved.scoutingKnowledge);
+          if (saved.scoutingReports) setScoutingReports(saved.scoutingReports);
+          if (saved.playerHiddenProfiles) setPlayerHiddenProfiles(saved.playerHiddenProfiles);
+          if (saved.activeLoans) setActiveLoans(saved.activeLoans);
+          if (saved.academyFacilities) setAcademyFacilities(saved.academyFacilities);
+          if (saved.youthPlayers) setYouthPlayers(saved.youthPlayers);
+          if (saved.managerContract) setManagerContract(saved.managerContract);
+          if (saved.seasonNumber) setSeasonNumber(saved.seasonNumber);
+          if (saved.careerEconomyVersion) setCareerEconomyVersion(saved.careerEconomyVersion);
+
+          // If navigated directly to an active career route and save exists, mark active
+          if (typeof window !== 'undefined') {
+            const path = window.location.pathname;
+            if (
+              path.startsWith('/dashboard') ||
+              path.startsWith('/squad') ||
+              path.startsWith('/tactics') ||
+              path.startsWith('/fixtures') ||
+              path.startsWith('/league') ||
+              path.startsWith('/transfers') ||
+              path.startsWith('/scouting') ||
+              path.startsWith('/academy') ||
+              path.startsWith('/finances') ||
+              path.startsWith('/inbox') ||
+              path.startsWith('/settings') ||
+              path.startsWith('/match')
+            ) {
+              setHasActiveCareer(true);
+            }
+          }
+        } else {
+          setHasSavedCareer(false);
+          setHasCareerSave(false);
+          setSavedCareerPreview(null);
+          setHasActiveCareer(false);
+        }
+      } catch (e) {
+        console.warn('GameContext hydration error:', e);
         setHasSavedCareer(false);
         setHasCareerSave(false);
         setSavedCareerPreview(null);
         setHasActiveCareer(false);
+      } finally {
+        if (!isCancelled) {
+          setIsInitialized(true);
+          setIsCareerHydrated(true);
+        }
       }
-    } catch (e) {
-      console.warn('GameContext hydration error:', e);
-      setHasSavedCareer(false);
-      setHasCareerSave(false);
-      setSavedCareerPreview(null);
-      setHasActiveCareer(false);
-    } finally {
-      setIsInitialized(true);
-      setIsCareerHydrated(true);
     }
+
+    hydrateCareer();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   // Save changes to local storage helper (V3 format)
@@ -412,7 +443,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     lSize = leagueSize,
     cls = allClubs
   ) => {
-    if (!isInitialized) return false;
+    if (!isInitialized || !isCareerHydrated) return false;
 
     saveCareerState({
       saveVersion: 3,
@@ -472,7 +503,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Auto-reconciliation to prevent tactics displaying "Boş" or mismatched squad IDs
   useEffect(() => {
-    if (!isInitialized) return;
+    if (!isInitialized || !isCareerHydrated) return;
     if (userPlayers.length >= 11) {
       const userPlayerIds = new Set(userPlayers.map((p) => p.id));
       const validAssigned = tactics.lineup.filter((s) => s.playerId && userPlayerIds.has(s.playerId));
@@ -1050,8 +1081,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   // 5. Reset Entire Career Save
-  const resetEntireCareer = () => {
-    clearCareerSave();
+  const resetEntireCareer = async (): Promise<void> => {
+    await clearCareerSaveAsync();
     const initialUniverse = generateCareerPlayerUniverse(MOCK_CLUBS);
     const kalyonPlayers = initialUniverse.filter((p) => p.clubId === 'kalyon-doruk');
     const initialScouts = generateClubScouts('kalyon-doruk', 80);
@@ -1113,7 +1144,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   };
 
   // 6. Start Brand New Career
-  const startNewCareer = (setup: import('@/lib/career/types').CareerSetupConfig) => {
+  const startNewCareer = async (setup: import('@/lib/career/types').CareerSetupConfig): Promise<boolean> => {
     const chosenClubId = setup.selectedClubId;
     const managerName = setup.managerProfile.name || 'Menajer';
     const diff = setup.managerProfile.difficulty || 'Standart';
@@ -1260,10 +1291,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setAcademyFacilities(initialAcademy);
     setYouthPlayers([]);
 
-    setHasActiveCareer(true);
-    setHasSavedCareer(true);
-
-    saveCareerState({
+    const initialSaveData: CareerSaveDataV3 = {
       saveVersion: 3,
       savedAt: new Date().toISOString(),
       seasonYear: '2026/27',
@@ -1298,18 +1326,35 @@ export function GameProvider({ children }: { children: ReactNode }) {
       managerContract: initialContract,
       seasonNumber: 1,
       careerEconomyVersion: 2,
+      managerProfile: setup.managerProfile,
       settings: {
         autoSave: true,
         defaultMatchSpeed: 1,
         debugMode: false,
       },
+    };
+
+    const saveRes = await saveCareerToIndexedDB(initialSaveData);
+    if (!saveRes.success) {
+      console.error('[startNewCareer] Initial IndexedDB save failed:', saveRes.error);
+      throw new Error('Kariyer kaydedilemedi: ' + (saveRes.error?.message || 'IndexedDB error'));
+    }
+
+    setSavedCareerPreview({
+      userClub: targetClub,
+      seasonYear: '2026/27',
+      currentDate: startDate,
     });
+    setHasActiveCareer(true);
+    setHasSavedCareer(true);
+    setHasCareerSave(true);
+    return true;
   };
 
   // 7. Load Saved Career
-  const loadExistingCareer = (): boolean => {
+  const loadExistingCareer = async (): Promise<boolean> => {
     try {
-      const saved = loadCareerState();
+      const saved = await loadCareerFromIndexedDB();
       if (!saved) return false;
 
       setUserClubId(saved.userClubId || 'kalyon-doruk');

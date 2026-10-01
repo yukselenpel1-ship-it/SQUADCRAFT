@@ -52,19 +52,22 @@ export default function DashboardPage() {
     managerContract,
     respondToManagerContractOffer,
     seasonNumber,
+    isCareerHydrated,
+    hasCareerSave,
   } = useGame();
 
-  // Guard: If initialized and no active career and no save exists, redirect to main menu
+  // Guard: Only after full hydration, if neither active career nor any save exists, redirect to main menu
   useEffect(() => {
-    if (isInitialized && !hasActiveCareer && !hasSavedCareer) {
+    if (isInitialized && isCareerHydrated && !hasActiveCareer && !hasSavedCareer && !hasCareerSave) {
       router.replace('/');
     }
-  }, [isInitialized, hasActiveCareer, hasSavedCareer, router]);
+  }, [isInitialized, isCareerHydrated, hasActiveCareer, hasSavedCareer, hasCareerSave, router]);
 
-  if (!isInitialized) {
+  if (!isInitialized || !isCareerHydrated) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex items-center justify-center text-zinc-500 font-mono text-xs">
-        Kariyer yükleniyor...
+      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <span>Kariyer yükleniyor...</span>
       </div>
     );
   }
