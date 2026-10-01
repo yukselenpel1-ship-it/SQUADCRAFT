@@ -193,8 +193,8 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
   const remainingBudgetAfterOffer = finances.transferBudget - totalTransferCommitment;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/95 select-none animate-in fade-in">
-      <div className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-[#070A12] border-2 border-zinc-700 shadow-2xl text-zinc-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-5 bg-black/95 select-none animate-in fade-in">
+      <div className="relative w-full max-w-4xl h-[100dvh] sm:h-auto sm:max-h-[92vh] flex flex-col bg-[#070A12] border-0 sm:border-2 border-zinc-700 shadow-2xl text-zinc-200 overflow-hidden">
         
         {/* 1. Modal Top Bar */}
         <div className="p-4 sm:p-5 bg-[#0B101D] border-b border-zinc-800 flex items-center justify-between shrink-0">
@@ -825,15 +825,15 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
         </div>
 
         {/* 5. Modal Footer Action Bar */}
-        <div className="p-4 bg-[#0B101D] border-t border-zinc-800 flex items-center justify-between gap-3 shrink-0 font-mono">
+        <div className="p-3 sm:p-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] bg-[#0B101D] border-t border-zinc-800 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 sm:gap-3 shrink-0 font-mono">
           <button
             onClick={handleWithdraw}
-            className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-xs font-bold text-rose-400 border border-zinc-700 uppercase"
+            className="px-3 sm:px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-xs font-bold text-rose-400 border border-zinc-700 uppercase"
           >
             Pazarlıktan Çekil
           </button>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-2.5">
             {activeNeg.stage === 'CLUB_NEGOTIATION' && !isFreeAgent && !isContractRenewal && (
               <>
                 {activeNeg.latestClubDemand && (
@@ -845,7 +845,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                         if (updated) setActiveNeg(updated);
                       }
                     }}
-                    className="px-4 py-2 bg-amber-500/20 text-amber-300 border border-amber-500 text-xs font-black uppercase hover:bg-amber-500/30"
+                    className="px-3 sm:px-4 py-2 bg-amber-500/20 text-amber-300 border border-amber-500 text-xs font-black uppercase hover:bg-amber-500/30"
                   >
                     Karşı Teklifi Kabul Et (€{(activeNeg.latestClubDemand.upfrontFee + (activeNeg.latestClubDemand.installmentsFee || 0)).toLocaleString('tr-TR')})
                   </button>
@@ -853,7 +853,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                 <button
                   onClick={handleSendClubOffer}
                   disabled={isOverTransferBudget}
-                  className="px-6 py-2 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase border border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                  className="px-4 sm:px-6 py-2 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase border border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 >
                   Kulübe Teklifi İlet
                 </button>
@@ -871,14 +871,14 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                         if (updated) setActiveNeg(updated);
                       }
                     }}
-                    className="px-4 py-2 bg-amber-500/20 text-amber-300 border border-amber-500 text-xs font-black uppercase hover:bg-amber-500/30"
+                    className="px-3 sm:px-4 py-2 bg-amber-500/20 text-amber-300 border border-amber-500 text-xs font-black uppercase hover:bg-amber-500/30"
                   >
                     Talebi Kabul Et (€{activeNeg.latestContractDemand.wage.toLocaleString('tr-TR')}/hf)
                   </button>
                 )}
                 <button
                   onClick={handleSendContractOffer}
-                  className="px-6 py-2 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase border border-white shadow-md"
+                  className="px-4 sm:px-6 py-2 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase border border-white shadow-md"
                 >
                   Sözleşme Teklifini Sun
                 </button>

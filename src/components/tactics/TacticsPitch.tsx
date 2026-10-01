@@ -82,35 +82,37 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
         {/* Pitch Lines (SVG Layer) */}
         <svg
+          viewBox="0 0 1000 1300"
+          preserveAspectRatio="none"
           className="absolute inset-0 w-full h-full pointer-events-none stroke-emerald-400/30"
-          strokeWidth="1.5"
+          strokeWidth="2"
           fill="none"
         >
           {/* Pitch Outer Margin */}
-          <rect x="5%" y="4%" width="90%" height="92%" />
+          <rect x="50" y="52" width="900" height="1196" />
 
           {/* Halfway Line */}
-          <line x1="5%" y1="50%" x2="95%" y2="50%" />
+          <line x1="50" y1="650" x2="950" y2="650" />
 
           {/* Center Circle */}
-          <circle cx="50%" cy="50%" r="14%" />
-          <circle cx="50%" cy="50%" r="1.5%" fill="#00F5A0" fillOpacity="0.4" />
+          <circle cx="500" cy="650" r="140" />
+          <circle cx="500" cy="650" r="15" fill="#00F5A0" fillOpacity="0.4" />
 
           {/* Top Penalty Box (Opponent Side) */}
-          <rect x="25%" y="4%" width="50%" height="18%" />
-          <rect x="37%" y="4%" width="26%" height="7%" />
-          <path d="M 40% 22% A 10% 8% 0 0 0 60% 22%" />
+          <rect x="250" y="52" width="500" height="234" />
+          <rect x="370" y="52" width="260" height="91" />
+          <path d="M 400 286 A 100 80 0 0 0 600 286" />
 
           {/* Bottom Penalty Box (Our Side / GK) */}
-          <rect x="25%" y="78%" width="50%" height="18%" />
-          <rect x="37%" y="89%" width="26%" height="7%" />
-          <path d="M 40% 78% A 10% 8% 0 0 1 60% 78%" />
+          <rect x="250" y="1014" width="500" height="234" />
+          <rect x="370" y="1157" width="260" height="91" />
+          <path d="M 400 1014 A 100 80 0 0 1 600 1014" />
 
           {/* Corner Arcs */}
-          <path d="M 5% 7% A 3% 3% 0 0 0 8% 4%" />
-          <path d="M 92% 4% A 3% 3% 0 0 0 95% 7%" />
-          <path d="M 5% 93% A 3% 3% 0 0 1 8% 96%" />
-          <path d="M 92% 96% A 3% 3% 0 0 1 95% 93%" />
+          <path d="M 50 91 A 30 30 0 0 0 80 52" />
+          <path d="M 920 52 A 30 30 0 0 0 950 91" />
+          <path d="M 50 1209 A 30 30 0 0 1 80 1248" />
+          <path d="M 920 1248 A 30 30 0 0 1 950 1209" />
         </svg>
 
         {/* Interactive Player Nodes on Pitch */}

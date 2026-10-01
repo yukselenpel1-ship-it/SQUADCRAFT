@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useGame } from '@/lib/context/GameContext';
 import { Player, Club } from '@/types/game';
 import { StatBadge } from '@/components/ui/StatBadge';
@@ -136,6 +137,56 @@ export default function TransfersPage() {
     return { text: 'Dengeli', color: 'text-zinc-400 bg-zinc-900/60 border-zinc-800' };
   };
 
+  // Helper to get status information for a negotiation
+  const getNegotiationStatusDisplay = (neg: any) => {
+    if (neg.stage === 'COMPLETED' || neg.playerStatus === 'ACCEPTED') {
+      return {
+        status: 'COMPLETED',
+        badgeText: 'KABUL EDİLDİ',
+        badgeClass: 'bg-emerald-950/80 text-[#00F5A0] border border-[#00F5A0]/60',
+        stageTitle: neg.isFreeAgent ? 'Serbest Oyuncu Sözleşmesi' : neg.isContractRenewal ? 'Sözleşme Yenileme' : 'Transfer Tamamlandı',
+      };
+    }
+    if (neg.clubStatus === 'WITHDRAWN' || neg.playerStatus === 'WITHDRAWN') {
+      return {
+        status: 'WITHDRAWN',
+        badgeText: 'MASADAN ÇEKİLİNDİ',
+        badgeClass: 'bg-zinc-900 text-zinc-400 border border-zinc-700',
+        stageTitle: 'Görüşme İptal Edildi',
+      };
+    }
+    if (neg.clubStatus === 'REJECTED' || neg.playerStatus === 'REJECTED' || neg.stage === 'FAILED') {
+      return {
+        status: 'REJECTED',
+        badgeText: 'REDDEDİLDİ',
+        badgeClass: 'bg-rose-950/80 text-rose-400 border border-rose-700/60',
+        stageTitle: neg.playerStatus === 'REJECTED' ? 'Oyuncu Talebi Reddetti' : 'Kulüp Bonservisi Reddetti',
+      };
+    }
+    if (neg.stage === 'PLAYER_NEGOTIATION') {
+      if (neg.clubStatus === 'ACCEPTED' && !neg.isFreeAgent && !neg.isContractRenewal) {
+        return {
+          status: 'CLUB_ACCEPTED',
+          badgeText: 'KULÜP ANLAŞTI',
+          badgeClass: 'bg-sky-950/80 text-[#00D4FF] border border-[#00D4FF]/60',
+          stageTitle: 'Kulüp Anlaştı // Oyuncu Sözleşmesi Görüşülüyor',
+        };
+      }
+      return {
+        status: 'PLAYER_NEGOTIATION',
+        badgeText: 'SÖZLEŞME GÖRÜŞMESİ',
+        badgeClass: 'bg-cyan-950/80 text-cyan-300 border border-cyan-600/60',
+        stageTitle: neg.isFreeAgent ? 'Serbest Oyuncu Sözleşmesi' : 'Kişisel Şartlar Görüşmesi',
+      };
+    }
+    return {
+      status: 'ACTIVE',
+      badgeText: 'KULÜP PAZARLIĞI',
+      badgeClass: 'bg-amber-950/80 text-amber-300 border border-amber-600/60',
+      stageTitle: 'Bonservis Pazarlığı Devam Ediyor',
+    };
+  };
+
   // 1. Market Players Filtered
   const marketPlayers = useMemo(() => {
     return allPlayers
@@ -194,10 +245,20 @@ export default function TransfersPage() {
   // 4. Incoming Offers
   const incomingOffers = transferOffers.filter((o) => o.toClubId === userClub.id);
 
-  // 5. Active Outgoing Negotiations
-  const activeOutgoingNegs = activeNegotiations.filter(
-    (n) => n.buyerClubId === userClub.id && n.stage !== 'COMPLETED' && n.stage !== 'FAILED'
-  );
+  // 5. User Negotiations (both active and completed)
+  const userNegotiations = useMemo(() => {
+    return activeNegotiations.filter((n) => n.buyerClubId === userClub.id);
+  }, [activeNegotiations, userClub.id]);
+
+  const activeNegsCount = useMemo(() => {
+    return userNegotiations.filter(
+      (n) =>
+        n.stage !== 'COMPLETED' &&
+        n.stage !== 'FAILED' &&
+        n.clubStatus !== 'WITHDRAWN' &&
+        n.playerStatus !== 'WITHDRAWN'
+    ).length;
+  }, [userNegotiations]);
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
@@ -276,9 +337,9 @@ export default function TransfersPage() {
           }`}
         >
           <Clock className="w-4 h-4" />
-          <span>Görüşmeler ({activeOutgoingNegs.length})</span>
-          {activeOutgoingNegs.length > 0 && (
-            <span className="w-2 h-2 bg-[#00F5A0] animate-pulse" />
+          <span>Görüşmeler ({userNegotiations.length})</span>
+          {activeNegsCount > 0 && (
+            <span className="w-2 h-2 bg-[#00F5A0] animate-pulse rounded-full" />
           )}
         </button>
 
@@ -693,58 +754,110 @@ export default function TransfersPage() {
         </div>
       )}
 
-      {/* 3. ACTIVE NEGOTIATIONS TAB */}
+      {/* 3. ACTIVE & RECENT NEGOTIATIONS TAB */}
       {activeTab === 'OUTGOING' && (
         <div className="space-y-4">
-          {activeOutgoingNegs.length === 0 ? (
+          {userNegotiations.length === 0 ? (
             <div className="p-8 bg-[#080D1A] border border-zinc-800 text-center text-zinc-400 font-mono text-sm">
-              Şu an devam eden herhangi bir aktif transfer görüşmeniz bulunmamaktadır.
+              Şu an devam eden herhangi bir transfer görüşmeniz bulunmamaktadır.
             </div>
           ) : (
-            activeOutgoingNegs.map((neg) => {
+            userNegotiations.map((neg) => {
               const player = getPlayer(neg.playerId);
               const club = getClub(neg.sellerClubId);
+              const statusInfo = getNegotiationStatusDisplay(neg);
+              const isCompleted = statusInfo.status === 'COMPLETED';
+              const contractData = neg.latestContractOffer || neg.latestContractDemand;
+              const clubFeeData = neg.latestClubOffer || neg.latestClubDemand;
 
               return (
                 <div
                   key={neg.id}
-                  className="p-4 bg-[#080D1A] border border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4"
+                  className="p-4 sm:p-5 bg-[#080D1A] border border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:border-zinc-700"
                 >
-                  <div className="flex items-center gap-4">
-                    {club && (
+                  <div className="flex items-start sm:items-center gap-4">
+                    {club ? (
                       <ClubBadge
                         code={club.code}
                         primaryColor={club.primaryColor}
                         secondaryColor={club.secondaryColor}
                         size="md"
                       />
+                    ) : (
+                      <div className="w-10 h-10 bg-emerald-950 border border-emerald-600/50 flex items-center justify-center text-emerald-400 font-mono font-bold text-xs shrink-0">
+                        SERBEST
+                      </div>
                     )}
-                    <div>
-                      <div className="flex items-center gap-2">
+
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
                         <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase bg-[#00D4FF]/20 text-[#00D4FF] border border-[#00D4FF]/30">
-                          {neg.stage === 'CLUB_NEGOTIATION' ? 'Kulüp Pazarlığı' : 'Oyuncu Sözleşmesi'}
+                          {statusInfo.stageTitle}
+                        </span>
+                        <span className={`px-2 py-0.5 text-[10px] font-mono font-black uppercase ${statusInfo.badgeClass}`}>
+                          {statusInfo.badgeText}
                         </span>
                         <span className="text-[11px] font-mono text-zinc-400">TARİH: {neg.lastUpdatedDate}</span>
                       </div>
-                      <h3 className="text-base font-bold text-white uppercase tracking-tight mt-1">
+
+                      <h3 className="text-base font-bold text-white uppercase tracking-tight">
                         {player?.firstName} {player?.lastName} ({player?.position})
                       </h3>
+
                       <p className="text-xs font-mono text-zinc-400">
-                        {club ? club.name : 'Serbest Oyuncu'} • GENEL GÜÇ: {player?.overall}
+                        {club ? club.name : 'Serbest Oyuncu'} • GENEL GÜÇ: {player?.overall} • YAŞ: {player?.age}
                       </p>
+
+                      {/* Financial terms card snippet */}
+                      <div className="flex flex-wrap items-center gap-2 pt-1.5 font-mono text-xs">
+                        {contractData && (
+                          <>
+                            <span className="px-2 py-0.5 bg-zinc-950 border border-zinc-800 text-emerald-400 font-bold">
+                              €{contractData.wage.toLocaleString('tr-TR')} / hafta
+                            </span>
+                            <span className="px-2 py-0.5 bg-zinc-950 border border-zinc-800 text-zinc-300">
+                              {contractData.durationYears} yıl
+                            </span>
+                            <span className="px-2 py-0.5 bg-zinc-950 border border-zinc-800 text-cyan-300">
+                              {contractData.squadRole}
+                            </span>
+                          </>
+                        )}
+                        {!neg.isFreeAgent && clubFeeData && (
+                          <span className="px-2 py-0.5 bg-zinc-950 border border-zinc-800 text-amber-300 font-bold">
+                            Bonservis: €{((clubFeeData.upfrontFee + (clubFeeData.installmentsFee || 0)) / 1000000).toFixed(2)}M
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    {player && (
+                  <div className="flex flex-wrap items-center gap-2.5 shrink-0 self-end md:self-center">
+                    {isCompleted ? (
+                      <>
+                        <Link
+                          href="/squad"
+                          className="px-3.5 py-2 bg-[#00F5A0] text-black font-mono font-bold text-xs uppercase hover:bg-[#00D68B] flex items-center gap-1.5 border border-white transition-all active:scale-95"
+                        >
+                          <UserCheck className="w-4 h-4" />
+                          Kadroda Gör
+                        </Link>
+                        <button
+                          onClick={() => setActiveTab('HISTORY')}
+                          className="px-3 py-2 bg-zinc-900 text-zinc-300 hover:text-white font-mono font-bold text-xs uppercase border border-zinc-700 transition-all"
+                        >
+                          Geçmişe Git
+                        </button>
+                      </>
+                    ) : player ? (
                       <button
                         onClick={() => setNegotiationTargetPlayer(player)}
-                        className="px-4 py-2 bg-[#00F5A0] text-black font-mono font-bold text-xs uppercase hover:bg-[#00D68B] flex items-center gap-1.5 border border-white"
+                        className="px-4 py-2 bg-[#00F5A0] text-black font-mono font-bold text-xs uppercase hover:bg-[#00D68B] flex items-center gap-1.5 border border-white transition-all active:scale-95"
                       >
                         <Briefcase className="w-4 h-4" />
                         Masaya Dön
                       </button>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               );

@@ -22,6 +22,7 @@ import {
   Radio,
   Check,
   Zap,
+  AlertTriangle,
 } from 'lucide-react';
 
 const FICTIONAL_NATIONALITIES = [
@@ -66,7 +67,6 @@ const BOARD_EXPECTATIONS: Record<string, { target: string; desc: string }> = {
 
 export default function NewCareerPage() {
   const router = useRouter();
-  const { startNewCareer } = useGame();
 
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4 | 5>(1);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -122,7 +122,10 @@ export default function NewCareerPage() {
   const highlightedStats = clubStatsMap[highlightedClub.id] || { avgOverall: 75, avgAge: 25, starPlayer: null };
   const highlightedExpectation = BOARD_EXPECTATIONS[highlightedClub.id] || { target: 'İlk 4', desc: 'Üst sıralarda yer almak.' };
 
-  const handleStartCareer = useCallback(() => {
+  const { startNewCareer, hasCareerSave } = useGame();
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
+  const executeCareerCreation = useCallback(() => {
     const finalAge = typeof age === 'number' ? age : Number(age) || 35;
     const setup: CareerSetupConfig = {
       managerProfile: {
@@ -141,6 +144,14 @@ export default function NewCareerPage() {
     startNewCareer(setup);
     router.push('/dashboard');
   }, [managerName, nationality, age, tacticalStyle, difficulty, selectedClubId, leagueSize, startingDate, startNewCareer, router]);
+
+  const handleStartCareer = useCallback(() => {
+    if (hasCareerSave) {
+      setIsConfirmModalOpen(true);
+      return;
+    }
+    executeCareerCreation();
+  }, [hasCareerSave, executeCareerCreation]);
 
   // Keyboard navigation for step progression
   useEffect(() => {
@@ -992,7 +1003,7 @@ export default function NewCareerPage() {
 
         {/* Shortcuts & Status HUD */}
         <div className="max-w-[1600px] mx-auto px-4 sm:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-          <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
+          <div className="hidden md:flex items-center gap-3 text-[11px] font-mono text-zinc-400">
             <div className="flex items-center gap-1">
               <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-bold">↵ ENTER</kbd>
               <span>İLERLE / BAŞLAT</span>
@@ -1015,6 +1026,49 @@ export default function NewCareerPage() {
           </div>
         </div>
       </footer>
+
+      {/* Existing Save Overwrite Confirmation Modal */}
+      {isConfirmModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 select-none animate-in fade-in">
+          <div className="relative w-full max-w-md bg-[#070A12] border-2 border-amber-500/80 p-5 sm:p-6 shadow-2xl text-zinc-200">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/40 text-amber-400 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400">
+                  DİKKAT // MEVCUT KAYIT
+                </div>
+                <h3 className="text-base font-black text-white uppercase">
+                  Yeni Kariyer Başlatılsın mı?
+                </h3>
+              </div>
+            </div>
+
+            <p className="text-xs font-mono text-zinc-300 leading-relaxed mb-6">
+              Mevcut kariyer kaydınız silinecek. Yeni kariyer başlatmak istiyor musunuz?
+            </p>
+
+            <div className="flex items-center justify-end gap-3 font-mono">
+              <button
+                onClick={() => setIsConfirmModalOpen(false)}
+                className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700 text-xs font-bold uppercase transition-colors"
+              >
+                İPTAL
+              </button>
+              <button
+                onClick={() => {
+                  setIsConfirmModalOpen(false);
+                  executeCareerCreation();
+                }}
+                className="px-5 py-2 bg-rose-600 hover:bg-rose-500 text-white border border-rose-400 text-xs font-black uppercase transition-colors shadow-lg"
+              >
+                YENİ KARİYER BAŞLAT
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Feedback Modal */}
       <FeedbackModal

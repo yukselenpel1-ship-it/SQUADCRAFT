@@ -151,7 +151,10 @@ interface GameContextType {
   // Career Mode Management
   hasActiveCareer: boolean;
   hasSavedCareer: boolean;
+  hasCareerSave: boolean;
   isInitialized: boolean;
+  isCareerHydrated: boolean;
+  savedCareerPreview: { userClub: Club; seasonYear: string | number; currentDate?: string } | null;
   difficulty: CareerDifficulty;
   leagueSize: 10 | 14 | 18;
   startNewCareer: (setup: import('@/lib/career/types').CareerSetupConfig) => void;
@@ -220,8 +223,11 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export function GameProvider({ children }: { children: ReactNode }) {
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
+  const [isCareerHydrated, setIsCareerHydrated] = useState<boolean>(false);
   const [hasActiveCareer, setHasActiveCareer] = useState<boolean>(false);
   const [hasSavedCareer, setHasSavedCareer] = useState<boolean>(false);
+  const [hasCareerSave, setHasCareerSave] = useState<boolean>(false);
+  const [savedCareerPreview, setSavedCareerPreview] = useState<{ userClub: Club; seasonYear: string | number; currentDate?: string } | null>(null);
   const [difficulty, setDifficulty] = useState<CareerDifficulty>('Standart');
   const [leagueSize, setLeagueSize] = useState<10 | 14 | 18>(10);
   const [userClubId, setUserClubId] = useState<string>('kalyon-doruk');
@@ -297,6 +303,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
       const saved = loadCareerState();
       if (saved) {
         setHasSavedCareer(true);
+        setHasCareerSave(true);
+        const previewClub = saved.clubs?.find((c: any) => c.id === saved.userClubId) || saved.clubs?.[0] || MOCK_CLUBS[0];
+        setSavedCareerPreview({
+          userClub: previewClub,
+          seasonYear: saved.seasonYear || '2026/27',
+          currentDate: saved.currentDate || '2026-08-01',
+        });
         if (saved.difficulty) setDifficulty(saved.difficulty);
         if (saved.leagueSize) setLeagueSize(saved.leagueSize);
         setUserClubId(saved.userClubId || 'kalyon-doruk');
@@ -352,12 +365,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
         }
       } else {
         setHasSavedCareer(false);
+        setHasCareerSave(false);
+        setSavedCareerPreview(null);
         setHasActiveCareer(false);
       }
-    } catch {
-      // ignore
+    } catch (e) {
+      console.warn('GameContext hydration error:', e);
+      setHasSavedCareer(false);
+      setHasCareerSave(false);
+      setSavedCareerPreview(null);
+      setHasActiveCareer(false);
     } finally {
       setIsInitialized(true);
+      setIsCareerHydrated(true);
     }
   }, []);
 
@@ -392,6 +412,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     lSize = leagueSize,
     cls = allClubs
   ) => {
+    if (!isInitialized) return false;
+
     saveCareerState({
       saveVersion: 3,
       savedAt: new Date().toISOString(),
@@ -433,6 +455,16 @@ export function GameProvider({ children }: { children: ReactNode }) {
         debugMode: false,
       },
     });
+
+    setHasSavedCareer(true);
+    setHasCareerSave(true);
+    const pClub = cls.find((c: any) => c.id === userClubId) || cls[0];
+    setSavedCareerPreview({
+      userClub: pClub,
+      seasonYear: sYear,
+      currentDate: cDate,
+    });
+    return true;
   };
 
   const userClub = allClubs.find((c) => c.id === userClubId) || allClubs[0];
@@ -440,6 +472,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Auto-reconciliation to prevent tactics displaying "Boş" or mismatched squad IDs
   useEffect(() => {
+    if (!isInitialized) return;
     if (userPlayers.length >= 11) {
       const userPlayerIds = new Set(userPlayers.map((p) => p.id));
       const validAssigned = tactics.lineup.filter((s) => s.playerId && userPlayerIds.has(s.playerId));
@@ -456,7 +489,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
         setTactics(healed);
       }
     }
-  }, [allPlayers, userClubId, userPlayers.length]);
+  }, [allPlayers, userClubId, userPlayers.length, isInitialized]);
 
   const unreadMessageCount = inboxMessages.filter((m) => !m.isRead).length;
 
@@ -1075,6 +1108,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setYouthPlayers([]);
     setHasActiveCareer(false);
     setHasSavedCareer(false);
+    setHasCareerSave(false);
+    setSavedCareerPreview(null);
   };
 
   // 6. Start Brand New Career
@@ -1282,6 +1317,8 @@ export function GameProvider({ children }: { children: ReactNode }) {
       setSeasonYear(saved.seasonYear);
       setSeasonStage(saved.seasonStage);
       setTrainingIntensityState(saved.trainingIntensity);
+      if (saved.difficulty) setDifficulty(saved.difficulty);
+      if (saved.leagueSize) setLeagueSize(saved.leagueSize);
       setAllClubs(saved.clubs);
       setAllPlayers(saved.players);
       setTactics(saved.tactics);
@@ -1304,14 +1341,135 @@ export function GameProvider({ children }: { children: ReactNode }) {
       if (saved.activeLoans) setActiveLoans(saved.activeLoans);
       if (saved.academyFacilities) setAcademyFacilities(saved.academyFacilities);
       if (saved.youthPlayers) setYouthPlayers(saved.youthPlayers);
+      if (saved.managerContract) setManagerContract(saved.managerContract);
+      if (saved.seasonNumber) setSeasonNumber(saved.seasonNumber);
+      if (saved.careerEconomyVersion) setCareerEconomyVersion(saved.careerEconomyVersion);
 
+      const previewClub = saved.clubs?.find((c: any) => c.id === saved.userClubId) || saved.clubs?.[0] || MOCK_CLUBS[0];
+      setSavedCareerPreview({
+        userClub: previewClub,
+        seasonYear: saved.seasonYear || '2026/27',
+        currentDate: saved.currentDate || '2026-08-01',
+      });
       setHasActiveCareer(true);
       setHasSavedCareer(true);
+      setHasCareerSave(true);
       return true;
     } catch {
       return false;
     }
   };
+
+  // Mobile lifecycle listeners: visibilitychange, pagehide & beforeunload
+  const stateRef = React.useRef({
+    currentDate,
+    seasonYear,
+    seasonStage,
+    trainingIntensity,
+    allPlayers,
+    tactics,
+    standings,
+    fixtures,
+    inboxMessages,
+    transferOffers,
+    shortlistIds,
+    finances,
+    newsFeed,
+    careerHistory,
+    activeNegotiations,
+    transferHistory,
+    futureCommitments,
+    scouts,
+    scoutingAssignments,
+    scoutingKnowledge,
+    scoutingReports,
+    playerHiddenProfiles,
+    activeLoans,
+    academyFacilities,
+    youthPlayers,
+    difficulty,
+    leagueSize,
+    allClubs,
+    userClubId,
+    managerContract,
+    seasonNumber,
+  });
+
+  useEffect(() => {
+    stateRef.current = {
+      currentDate,
+      seasonYear,
+      seasonStage,
+      trainingIntensity,
+      allPlayers,
+      tactics,
+      standings,
+      fixtures,
+      inboxMessages,
+      transferOffers,
+      shortlistIds,
+      finances,
+      newsFeed,
+      careerHistory,
+      activeNegotiations,
+      transferHistory,
+      futureCommitments,
+      scouts,
+      scoutingAssignments,
+      scoutingKnowledge,
+      scoutingReports,
+      playerHiddenProfiles,
+      activeLoans,
+      academyFacilities,
+      youthPlayers,
+      difficulty,
+      leagueSize,
+      allClubs,
+      userClubId,
+      managerContract,
+      seasonNumber,
+    };
+  });
+
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    const handleLifecycleSave = () => {
+      if (document.visibilityState === 'hidden') {
+        const s = stateRef.current;
+        saveCareerState({
+          saveVersion: 3,
+          savedAt: new Date().toISOString(),
+          ...s,
+          clubs: s.allClubs,
+          players: s.allPlayers,
+          settings: { autoSave: true, defaultMatchSpeed: 1, debugMode: false },
+        });
+      }
+    };
+
+    const handlePageHide = () => {
+      const s = stateRef.current;
+      saveCareerState({
+        saveVersion: 3,
+        savedAt: new Date().toISOString(),
+        ...s,
+        clubs: s.allClubs,
+        players: s.allPlayers,
+        settings: { autoSave: true, defaultMatchSpeed: 1, debugMode: false },
+      });
+    };
+
+    document.addEventListener('visibilitychange', handleLifecycleSave);
+    window.addEventListener('pagehide', handlePageHide);
+    window.addEventListener('beforeunload', handlePageHide);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleLifecycleSave);
+      window.removeEventListener('pagehide', handlePageHide);
+      window.removeEventListener('beforeunload', handlePageHide);
+    };
+  }, [isInitialized]);
 
 
   // 6. Negotiation Engine Handlers
@@ -2226,8 +2384,11 @@ export function GameProvider({ children }: { children: ReactNode }) {
     <GameContext.Provider
       value={{
         isInitialized,
+        isCareerHydrated,
         hasActiveCareer,
         hasSavedCareer,
+        hasCareerSave,
+        savedCareerPreview,
         difficulty,
         leagueSize,
         startNewCareer,

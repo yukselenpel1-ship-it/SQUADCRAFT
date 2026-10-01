@@ -567,7 +567,7 @@ export default function DraftHomePage() {
 
         {/* Shortcuts & Status HUD */}
         <div className="max-w-[1600px] mx-auto px-4 sm:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-          <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
+          <div className="hidden md:flex items-center gap-3 text-[11px] font-mono text-zinc-400">
             <div className="flex items-center gap-1">
               <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-bold">↵ ENTER</kbd>
               <span>ODAYA GİR / OLUŞTUR</span>

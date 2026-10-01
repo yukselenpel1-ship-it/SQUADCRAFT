@@ -20,30 +20,49 @@ import {
   Zap,
   Shield,
   Radio,
+  AlertTriangle,
 } from 'lucide-react';
 
 export default function MainMenuPage() {
   const router = useRouter();
-  const { loadExistingCareer } = useGame();
-  const [savedData, setSavedData] = useState<{ userClub: any; seasonYear: number | string } | null>(null);
+  const {
+    loadExistingCareer,
+    isCareerHydrated,
+    hasCareerSave,
+    savedCareerPreview,
+    resetEntireCareer,
+  } = useGame();
+
+  const [savedData, setSavedData] = useState<{ userClub: any; seasonYear: number | string; currentDate?: string } | null>(null);
+  const [isNewCareerConfirmOpen, setIsNewCareerConfirmOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'hub' | 'career' | 'draft'>('hub');
 
-  // Load existing career save state if present
+  // Load existing career save state canonical hydration check
   useEffect(() => {
-    try {
-      const save = loadCareerState();
-      if (save && save.clubs && save.userClubId) {
-        const userClub = save.clubs.find((c: any) => c.id === save.userClubId) || save.clubs[0];
-        setSavedData({
-          userClub,
-          seasonYear: save.seasonYear || 1,
-        });
+    if (isCareerHydrated) {
+      if (hasCareerSave && savedCareerPreview) {
+        setSavedData(savedCareerPreview);
+      } else {
+        // Direct read fallback to ensure absolute reliability across browser environments
+        try {
+          const direct = loadCareerState();
+          if (direct && direct.clubs && direct.userClubId) {
+            const userClub = direct.clubs.find((c: any) => c.id === direct.userClubId) || direct.clubs[0];
+            setSavedData({
+              userClub,
+              seasonYear: direct.seasonYear || '2026/27',
+              currentDate: direct.currentDate,
+            });
+          } else {
+            setSavedData(null);
+          }
+        } catch {
+          setSavedData(null);
+        }
       }
-    } catch (e) {
-      console.warn('Could not read existing save:', e);
     }
-  }, []);
+  }, [isCareerHydrated, hasCareerSave, savedCareerPreview]);
 
   const handleContinueCareer = useCallback(
     (e?: React.MouseEvent) => {
@@ -61,18 +80,33 @@ export default function MainMenuPage() {
     [loadExistingCareer, router]
   );
 
-  // SquadCraft Keyboard shortcuts
+  const handleNewCareerRequest = useCallback(
+    (e?: React.MouseEvent) => {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      if (savedData) {
+        setIsNewCareerConfirmOpen(true);
+      } else {
+        router.push('/career/new');
+      }
+    },
+    [savedData, router]
+  );
+
+  // SquadCraft Keyboard shortcuts (Desktop only, inputs/modals ignored)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Don't trigger if user is typing in an input or modal is open
-      if (isFeedbackOpen || e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      if (isFeedbackOpen || isNewCareerConfirmOpen || e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
       }
 
       if (e.key === 'd' || e.key === 'D') {
         router.push('/draft');
       } else if (e.key === 'k' || e.key === 'K') {
-        router.push('/career/new');
+        handleNewCareerRequest();
       } else if (e.key === 'm' || e.key === 'M' || e.key === 'F1') {
         e.preventDefault();
         setIsFeedbackOpen(true);
@@ -83,7 +117,7 @@ export default function MainMenuPage() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isFeedbackOpen, savedData, router, handleContinueCareer]);
+  }, [isFeedbackOpen, isNewCareerConfirmOpen, savedData, router, handleContinueCareer, handleNewCareerRequest]);
 
   return (
     <div className="relative min-h-screen w-full bg-[#04060A] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
@@ -149,12 +183,12 @@ export default function MainMenuPage() {
             >
               [ ANA MERKEZ ]
             </button>
-            <Link
-              href="/career/new"
+            <button
+              onClick={handleNewCareerRequest}
               className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-zinc-900/90 text-zinc-300 border border-zinc-800 hover:border-[#00F5A0] hover:text-[#00F5A0] transition-all"
             >
               [ KARİYER MODU ]
-            </Link>
+            </button>
             <Link
               href="/draft"
               className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-zinc-900/90 text-zinc-300 border border-zinc-800 hover:border-[#00D4FF] hover:text-[#00D4FF] transition-all"
@@ -288,7 +322,7 @@ export default function MainMenuPage() {
                 <ArrowRight className="w-4 h-4 stroke-[3]" />
               </Link>
 
-              <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] text-zinc-400">
+              <div className="hidden md:flex items-center gap-1.5 font-mono text-[10px] text-zinc-400">
                 <span>KISAYOL:</span>
                 <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#00D4FF] font-bold">
                   D
@@ -298,12 +332,12 @@ export default function MainMenuPage() {
           </div>
 
           {/* ------------------------------------------------------------------ */}
-          {/* TILE 2: YENİ KARİYER (CAREER MODE - 6 COLS)                         */}
+          {/* TILE 2: KARİYER MODU (CAREER MODE - 6 COLS)                         */}
           {/* ------------------------------------------------------------------ */}
-          <div className="lg:col-span-6 relative overflow-hidden bg-[#06140D] border-2 border-[#00F5A0] flex flex-col justify-between p-6 sm:p-7 group transition-all">
+          <div className="lg:col-span-6 relative overflow-hidden bg-[#06140D] border-2 border-[#00F5A0] flex flex-col justify-between p-5 sm:p-7 group transition-all">
             {/* Background Cutout Image with Sharp High-Contrast Linear Mask */}
             <div
-              className="absolute right-0 top-0 bottom-0 w-[55%] bg-cover bg-center pointer-events-none transition-transform duration-300 group-hover:scale-105"
+              className="absolute right-0 top-0 bottom-0 w-[55%] bg-cover bg-center pointer-events-none transition-transform duration-300 group-hover:scale-105 opacity-40 sm:opacity-100"
               style={{ backgroundImage: "url('/images/card-career-manager.jpg')" }}
             >
               {/* Sharp linear gradient: NO BLUR */}
@@ -329,11 +363,13 @@ export default function MainMenuPage() {
               </div>
 
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black italic tracking-tighter uppercase text-white group-hover:text-[#00F5A0] transition-colors">
-                YENİ KARİYER
+                {savedData ? 'KARİYERE DEVAM ET' : 'YENİ KARİYER'}
               </h2>
 
               <p className="text-xs sm:text-sm text-zinc-300 font-medium leading-relaxed">
-                2000+ futbolcu evreni, dinamik transfer pazarlığı, altyapı akademisi, scouting ve yaşayan kariyer haberleriyle kulübünü zirveye taşı!
+                {savedData
+                  ? `${savedData.userClub.name} ile Sezon ${savedData.seasonYear} kariyerine devam et. Kadron, taktiklerin ve fikstürün hazır!`
+                  : '2000+ futbolcu evreni, dinamik transfer pazarlığı, altyapı akademisi, scouting ve yaşayan kariyer haberleriyle kulübünü zirveye taşı!'}
               </p>
 
               {/* Athletic Specs Badges */}
@@ -354,32 +390,45 @@ export default function MainMenuPage() {
             </div>
 
             {/* CTA Button Bar */}
-            <div className="relative z-10 pt-6 mt-4 border-t border-zinc-800/80 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/career/new"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-md"
-                >
-                  <span>KARİYERE BAŞLA</span>
-                  <ArrowRight className="w-4 h-4 stroke-[3]" />
-                </Link>
-
-                {savedData && (
+            <div className="relative z-10 pt-4 sm:pt-6 mt-4 border-t border-zinc-800/80 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+              {savedData ? (
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto">
+                  {/* Primary: Continue Career */}
                   <button
                     onClick={handleContinueCareer}
-                    className="inline-flex items-center gap-1.5 px-4 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-white font-bold text-xs uppercase tracking-wider transition-all"
-                    title="Kayıtlı Kariyere Devam Et (Kısayol: C)"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg"
                   >
-                    <Play className="w-3.5 h-3.5 fill-current text-[#00F5A0]" />
-                    <span>DEVAM: {savedData.userClub.name}</span>
+                    <Play className="w-4 h-4 fill-current text-black" />
+                    <span>KARİYERE DEVAM ET</span>
+                    <span className="text-[11px] font-mono text-zinc-900 font-bold opacity-80 sm:inline hidden">
+                      ({savedData.userClub.name})
+                    </span>
                   </button>
-                )}
-              </div>
 
-              <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] text-zinc-400">
+                  {/* Below / Secondary: New Career */}
+                  <button
+                    onClick={handleNewCareerRequest}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-white font-bold text-xs uppercase tracking-wider transition-all active:scale-95"
+                  >
+                    <span>YENİ KARİYER</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Link
+                    href="/career/new"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-md"
+                  >
+                    <span>KARİYERE BAŞLA</span>
+                    <ArrowRight className="w-4 h-4 stroke-[3]" />
+                  </Link>
+                </div>
+              )}
+
+              <div className="hidden md:flex items-center gap-1.5 font-mono text-[10px] text-zinc-400">
                 <span>KISAYOL:</span>
                 <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#00F5A0] font-bold">
-                  K
+                  {savedData ? 'C' : 'K'}
                 </kbd>
               </div>
             </div>
@@ -504,8 +553,8 @@ export default function MainMenuPage() {
 
         {/* Controller Shortcuts & Status HUD */}
         <div className="max-w-[1600px] mx-auto px-4 sm:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-          {/* Left: Keyboard & Controller Shortcuts (SquadCraft Tactical HUD) */}
-          <div className="flex flex-wrap items-center gap-3 text-[11px] font-mono text-zinc-400">
+          {/* Left: Keyboard & Controller Shortcuts (SquadCraft Tactical HUD - Hidden on Mobile) */}
+          <div className="hidden md:flex flex-wrap items-center gap-3 text-[11px] font-mono text-zinc-400">
             <div className="flex items-center gap-1">
               <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-white font-bold">↵ ENTER</kbd>
               <span>SEÇ</span>
@@ -543,6 +592,51 @@ export default function MainMenuPage() {
           </div>
         </div>
       </footer>
+
+      {/* New Career Safety Confirmation Modal */}
+      {isNewCareerConfirmOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 select-none animate-in fade-in">
+          <div className="relative w-full max-w-md bg-[#070A12] border-2 border-amber-500/80 p-5 sm:p-6 shadow-2xl text-zinc-200">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-amber-500/10 border border-amber-500/40 text-amber-400 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400">
+                  DİKKAT // MEVCUT KAYIT
+                </div>
+                <h3 className="text-base font-black text-white uppercase">
+                  Yeni Kariyer Başlatılsın mı?
+                </h3>
+              </div>
+            </div>
+
+            <p className="text-xs font-mono text-zinc-300 leading-relaxed mb-6">
+              Mevcut kariyer kaydınız silinecek. Yeni kariyer başlatmak istiyor musunuz?
+            </p>
+
+            <div className="flex items-center justify-end gap-3 font-mono">
+              <button
+                onClick={() => setIsNewCareerConfirmOpen(false)}
+                className="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-700 text-xs font-bold uppercase transition-colors"
+              >
+                İPTAL
+              </button>
+              <button
+                onClick={() => {
+                  setIsNewCareerConfirmOpen(false);
+                  resetEntireCareer();
+                  setSavedData(null);
+                  router.push('/career/new');
+                }}
+                className="px-5 py-2 bg-rose-600 hover:bg-rose-500 text-white border border-rose-400 text-xs font-black uppercase transition-colors shadow-lg"
+              >
+                YENİ KARİYER BAŞLAT
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Feedback & Bug Reporting Modal */}
       <FeedbackModal
