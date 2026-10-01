@@ -1026,12 +1026,34 @@ export class DraftMultiplayerStore {
           );
           const dbFixtures: DraftFixture[] = (dbRoom.draft_fixtures || []).map(mapDbFixture);
           const rulesFixtures: DraftFixture[] = (room.rules?.fixtures || []);
-          const fixtures: DraftFixture[] = dbFixtures.length > 0 && dbFixtures.some((f) => f.status === 'COMPLETED')
-            ? dbFixtures
-            : rulesFixtures.length > 0
-            ? rulesFixtures
-            : dbFixtures;
+          const memFixtures: DraftFixture[] = memoryRooms[room.id]?.fixtures || [];
+          const localFixtures: DraftFixture[] = localRoom?.fixtures || [];
 
+          // Single Source of Truth: Canonical Fixture Reconciliation
+          // Merge fixtures across db, rules, memory, and local storage.
+          // Rule: A fixture with real scores (homeScore & awayScore !== undefined) is preserved and never dropped.
+          const fixtureMap = new Map<string, DraftFixture>();
+          const allCandidateFixtures = [...localFixtures, ...memFixtures, ...dbFixtures, ...rulesFixtures];
+          for (const f of allCandidateFixtures) {
+            if (!f || !f.id) continue;
+            const existing = fixtureMap.get(f.id);
+            if (!existing) {
+              fixtureMap.set(f.id, f);
+            } else {
+              const isFCompleted = (f.status === 'COMPLETED' || (f.status as string) === 'FINISHED') && f.homeScore !== undefined && f.awayScore !== undefined;
+              const isExistingCompleted = (existing.status === 'COMPLETED' || (existing.status as string) === 'FINISHED') && existing.homeScore !== undefined && existing.awayScore !== undefined;
+              if (isFCompleted || (!isExistingCompleted && f.status !== 'AWAITING_TACTICS')) {
+                fixtureMap.set(f.id, {
+                  ...existing,
+                  ...f,
+                  homeScore: f.homeScore ?? existing.homeScore,
+                  awayScore: f.awayScore ?? existing.awayScore,
+                  status: (isFCompleted ? 'COMPLETED' : f.status) as any,
+                });
+              }
+            }
+          }
+          const fixtures: DraftFixture[] = Array.from(fixtureMap.values()).sort((a, b) => a.round - b.round);
           const standings: DraftStanding[] = computeStandingsFromFixtures(clubs, fixtures);
 
           if (room.rules?.currentMatchweek && (!room.currentMatchweek || room.currentMatchweek < room.rules.currentMatchweek)) {
@@ -3488,7 +3510,8 @@ export class DraftMultiplayerStore {
    */
   public static finishLiveMatchweek(
     roomId: string,
-    memberId?: string
+    memberId?: string,
+    completedFixture?: DraftFixture
   ): { success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode } {
     const state = this.getRoom(roomId);
     if (!state) {
@@ -3499,13 +3522,67 @@ export class DraftMultiplayerStore {
     const currentMatchweek = state.room.currentMatchweek || 1;
     const totalMatchweeks = state.room.totalMatchweeks || Math.max(...state.fixtures.map((f) => f.round), 1);
 
-    const updatedFixtures = state.fixtures.map((f) =>
+    // 1. Merge completedFixture if provided
+    let updatedFixtures = state.fixtures.map((f) =>
+      completedFixture && f.id === completedFixture.id
+        ? { ...f, ...completedFixture, status: 'COMPLETED' as const }
+        : f
+    );
+
+    // 2. Ensure ALL fixtures in the current matchweek are completed with real Match Engine results
+    const roundFixtures = updatedFixtures.filter((f) => f.round === currentMatchweek);
+    for (const fix of roundFixtures) {
+      const isAlreadyCompleted =
+        (fix.status === 'COMPLETED' || (fix.status as string) === 'FINISHED') &&
+        fix.homeScore !== undefined &&
+        fix.awayScore !== undefined;
+
+      if (!isAlreadyCompleted) {
+        const homeClub = state.clubs.find((c) => c.id === fix.homeClubId);
+        const awayClub = state.clubs.find((c) => c.id === fix.awayClubId);
+        if (homeClub && awayClub) {
+          const homeM = state.members.find((m) => m.id === homeClub.memberId);
+          const awayM = state.members.find((m) => m.id === awayClub.memberId);
+
+          const homeTactics =
+            fix.homeTactics ||
+            homeClub.tactics ||
+            (homeM?.isBot
+              ? generateBotTactics(homeClub.id, homeClub.squadPlayerIds, state.playerPool, homeM.botDifficulty, homeM.botPersonality)
+              : generateDefaultDraftTactics(homeClub.id, homeClub.squadPlayerIds, state.playerPool));
+
+          const awayTactics =
+            fix.awayTactics ||
+            awayClub.tactics ||
+            (awayM?.isBot
+              ? generateBotTactics(awayClub.id, awayClub.squadPlayerIds, state.playerPool, awayM.botDifficulty, awayM.botPersonality)
+              : generateDefaultDraftTactics(awayClub.id, awayClub.squadPlayerIds, state.playerPool));
+
+          const { updatedFixture } = simulateDraftFixture(
+            fix,
+            homeClub,
+            awayClub,
+            homeTactics,
+            awayTactics,
+            state.playerPool
+          );
+          updatedFixtures = updatedFixtures.map((f) => (f.id === fix.id ? updatedFixture : f));
+        }
+      }
+    }
+
+    // 3. Mark all current week fixtures as COMPLETED
+    updatedFixtures = updatedFixtures.map((f) =>
       f.round === currentMatchweek ? { ...f, status: 'COMPLETED' as const } : f
     );
 
+    // 4. Calculate authoritative standings from all completed fixtures
     const updatedStandings = computeStandingsFromFixtures(state.clubs, updatedFixtures);
 
-    const nextUnfinished = updatedFixtures.find((f) => f.status !== 'COMPLETED');
+    // 5. Check if all fixtures across the league are completed
+    const nextUnfinished = updatedFixtures.find(
+      (f) => f.status !== 'COMPLETED' && (f.status as string) !== 'FINISHED'
+    );
     const isSeasonComplete = !nextUnfinished;
     const nextMatchweek = nextUnfinished ? nextUnfinished.round : totalMatchweeks;
     const roomStatus = isSeasonComplete ? 'LEAGUE_COMPLETED' : 'LEAGUE_ACTIVE';
@@ -3521,6 +3598,7 @@ export class DraftMultiplayerStore {
       status: isSeasonComplete ? 'COMPLETED' : 'PREPARING',
       readyMemberIds: [],
       completedMemberIds: [],
+      paceMs: state.room.liveMatchweek?.paceMs || 800,
     };
 
     const prevVersion = state.room.stateVersion || 1;
@@ -3581,22 +3659,49 @@ export class DraftMultiplayerStore {
           })
           .eq('id', state.room.id);
 
+        if (updatedStandings.length > 0) {
+          try {
+            await supabase.from('draft_standings').delete().eq('room_id', state.room.id);
+            const rows = updatedStandings.map((s) => ({
+              room_id: state.room.id,
+              club_id: s.clubId,
+              rank: s.rank,
+              played: s.played,
+              won: s.won,
+              drawn: s.drawn,
+              lost: s.lost,
+              goals_for: s.goalsFor,
+              goals_against: s.goalsAgainst,
+              goal_difference: s.goalDifference,
+              points: s.points,
+              form: s.form,
+            }));
+            await supabase.from('draft_standings').insert(rows);
+          } catch (stErr) {
+            console.warn('draft_standings sync notice:', stErr);
+          }
+        }
+
         if (updatedFixtures.length > 0) {
-          const fixRows = updatedFixtures.map((f) => ({
-            id: f.id,
-            room_id: state.room.id,
-            round: f.round,
-            home_club_id: f.homeClubId,
-            away_club_id: f.awayClubId,
-            status: f.status,
-            home_tactics: f.homeTactics,
-            away_tactics: f.awayTactics,
-            home_score: f.homeScore,
-            away_score: f.awayScore,
-            match_result: f.matchResult,
-            simulated_at: f.simulatedAt,
-          }));
-          await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
+          try {
+            const fixRows = updatedFixtures.map((f) => ({
+              id: f.id,
+              room_id: state.room.id,
+              round: f.round,
+              home_club_id: f.homeClubId,
+              away_club_id: f.awayClubId,
+              status: f.status,
+              home_tactics: f.homeTactics,
+              away_tactics: f.awayTactics,
+              home_score: f.homeScore,
+              away_score: f.awayScore,
+              match_result: f.matchResult,
+              simulated_at: f.simulatedAt,
+            }));
+            await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
+          } catch (fxErr) {
+            console.warn('draft_fixtures sync notice:', fxErr);
+          }
         }
 
         broadcastRealtimeUpdate(state.room.roomCode, 'FINISH_LIVE_MATCHWEEK', resultingVersion);
@@ -4097,90 +4202,56 @@ export class DraftMultiplayerStore {
   }
 
   /**
-   * Saves interactive live match simulation result and auto-simulates other bot matches in the round.
+   * Updates match presentation speed (1x, 2x, 3x, 4x) for live matchweek.
    */
-  public static saveLiveMatchResult(
+  public static updateMatchSpeed(
     roomId: string,
-    completedFixture: DraftFixture
+    hostMemberId: string,
+    matchSpeed: 1 | 2 | 3 | 4
   ): { success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode } {
     const state = this.getRoom(roomId);
     if (!state) {
       const err = formatMultiplayerError('SC-MP-001');
       return { success: false, error: err.message, errorCode: 'SC-MP-001' };
     }
+    if (state.room.hostMemberId !== hostMemberId) {
+      const err = formatMultiplayerError('SC-MP-007', 'Yalnızca oda kurucusu maç hızını değiştirebilir');
+      return { success: false, error: err.message, errorCode: 'SC-MP-007' };
+    }
 
     const prevVersion = state.room.stateVersion || 1;
     const resultingVersion = prevVersion + 1;
 
-    let updatedFixtures = state.fixtures.map((f) => (f.id === completedFixture.id ? completedFixture : f));
+    // Pace in ms per minute: 1x=800ms (~72s), 2x=400ms (~36s), 3x=266ms (~24s), 4x=200ms (~18s)
+    const paceMs = matchSpeed === 4 ? 200 : matchSpeed === 3 ? 266 : matchSpeed === 2 ? 400 : 800;
 
-    // Auto-simulate unplayed bot-vs-bot matches in the same matchweek
-    const targetRound = completedFixture.round;
-    const pendingBotFixtures = updatedFixtures.filter((f) => {
-      if (f.round !== targetRound || f.status === 'COMPLETED' || f.id === completedFixture.id) return false;
-      const hClub = state.clubs.find((c) => c.id === f.homeClubId);
-      const aClub = state.clubs.find((c) => c.id === f.awayClubId);
-      const hMember = state.members.find((m) => m.id === hClub?.memberId);
-      const aMember = state.members.find((m) => m.id === aClub?.memberId);
-      return hMember?.isBot && aMember?.isBot;
-    });
+    const updatedLiveMw: LiveMatchweekState = {
+      ...(state.room.liveMatchweek || {
+        matchweek: state.room.currentMatchweek || 1,
+        status: 'PREPARING',
+        readyMemberIds: [],
+      }),
+      paceMs,
+    };
 
-    for (const botFix of pendingBotFixtures) {
-      const hClub = state.clubs.find((c) => c.id === botFix.homeClubId);
-      const aClub = state.clubs.find((c) => c.id === botFix.awayClubId);
-      if (hClub && aClub) {
-        const hM = state.members.find((m) => m.id === hClub.memberId);
-        const aM = state.members.find((m) => m.id === aClub.memberId);
-        const hTactics =
-          botFix.homeTactics ||
-          generateBotTactics(hClub.id, hClub.squadPlayerIds, state.playerPool, hM?.botDifficulty, hM?.botPersonality);
-        const aTactics =
-          botFix.awayTactics ||
-          generateBotTactics(aClub.id, aClub.squadPlayerIds, state.playerPool, aM?.botDifficulty, aM?.botPersonality);
-        const { updatedFixture: simBotFix } = simulateDraftFixture(
-          botFix,
-          hClub,
-          aClub,
-          hTactics,
-          aTactics,
-          state.playerPool
-        );
-        updatedFixtures = updatedFixtures.map((f) => (f.id === botFix.id ? simBotFix : f));
-      }
-    }
+    const updatedRules: DraftRules = {
+      ...state.room.rules,
+      matchSpeed,
+      liveMatchweek: updatedLiveMw,
+      stateVersion: resultingVersion,
+    };
 
-    // Recompute authoritative standings directly from all completed fixtures
-    const updatedStandings = computeStandingsFromFixtures(state.clubs, updatedFixtures);
-
-    // Check matchweek progression and whole league completion
-    const totalMatchweeks = state.room.totalMatchweeks || Math.max(...updatedFixtures.map((f) => f.round), 1);
-    const nextUnfinished = updatedFixtures.find((f) => f.status !== 'COMPLETED');
-    const nextMatchweek = nextUnfinished ? nextUnfinished.round : totalMatchweeks;
-    const allCompleted = updatedFixtures.every((f) => f.status === 'COMPLETED');
-
-    let awards: LeagueAwards | undefined = state.awards;
-    let roomStatus = state.room.status;
-
-    if (allCompleted) {
-      roomStatus = 'LEAGUE_COMPLETED';
-      awards = computeLeagueAwards(updatedStandings, updatedFixtures, state.clubs, state.playerPool);
-      recordTelemetryEvent('LEAGUE_COMPLETED', { champion: awards.championClubName }, state.room.id);
-    }
+    const updatedRoom: MultiplayerRoom = {
+      ...state.room,
+      liveMatchweek: updatedLiveMw,
+      rules: updatedRules,
+      stateVersion: resultingVersion,
+      updatedAt: new Date().toISOString(),
+    };
 
     const newState: RoomFullState = {
       ...state,
-      room: {
-        ...state.room,
-        status: roomStatus,
-        currentMatchweek: nextMatchweek,
-        totalMatchweeks,
-        leaguePhase: allCompleted ? 'SEASON_COMPLETE' : 'MATCHWEEK_PREP',
-        stateVersion: resultingVersion,
-        updatedAt: new Date().toISOString(),
-      },
-      fixtures: updatedFixtures,
-      standings: updatedStandings,
-      awards,
+      room: updatedRoom,
     };
 
     memoryRooms[state.room.id] = newState;
@@ -4192,67 +4263,27 @@ export class DraftMultiplayerStore {
         await supabase
           .from('multiplayer_rooms')
           .update({
-            status: roomStatus,
-            rules: {
-              ...state.room.rules,
-              fixtures: updatedFixtures,
-              standings: updatedStandings,
-              currentMatchweek: nextMatchweek,
-              totalMatchweeks,
-              leaguePhase: allCompleted ? 'SEASON_COMPLETE' : 'MATCHWEEK_PREP',
-              stateVersion: resultingVersion,
-              awards,
-            },
+            rules: updatedRules,
             updated_at: new Date().toISOString(),
           })
           .eq('id', state.room.id);
 
-        if (updatedFixtures.length > 0) {
-          const fixRows = updatedFixtures.map((f) => ({
-            id: f.id,
-            room_id: state.room.id,
-            round: f.round,
-            home_club_id: f.homeClubId,
-            away_club_id: f.awayClubId,
-            status: f.status,
-            home_tactics: f.homeTactics,
-            away_tactics: f.awayTactics,
-            home_score: f.homeScore,
-            away_score: f.awayScore,
-            match_result: f.matchResult,
-            simulated_at: f.simulatedAt,
-          }));
-          await supabase.from('draft_fixtures').upsert(fixRows, { onConflict: 'id' });
-        }
-
-        if (updatedStandings.length > 0) {
-          try {
-            await supabase.from('draft_standings').delete().eq('room_id', state.room.id);
-            const rows = updatedStandings.map((s) => ({
-              room_id: state.room.id,
-              club_id: s.clubId,
-              rank: s.rank,
-              played: s.played,
-              won: s.won,
-              drawn: s.drawn,
-              lost: s.lost,
-              goals_for: s.goalsFor,
-              goals_against: s.goalsAgainst,
-              goal_difference: s.goalDifference,
-              points: s.points,
-              form: s.form,
-            }));
-            await supabase.from('draft_standings').insert(rows);
-          } catch (e) {
-            console.warn('Standings live result sync warning:', e);
-          }
-        }
-
-        broadcastRealtimeUpdate(state.room.roomCode, 'SIMULATE_MATCH', resultingVersion);
+        broadcastRealtimeUpdate(state.room.roomCode, 'MATCH_SPEED_UPDATED', resultingVersion);
       });
     }
 
     return { success: true, state: newState };
+  }
+
+  /**
+   * Saves interactive live match simulation result and authoritatively updates matchweek standings.
+   */
+  public static saveLiveMatchResult(
+    roomId: string,
+    completedFixture: DraftFixture,
+    memberId?: string
+  ): { success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode } {
+    return this.finishLiveMatchweek(roomId, memberId, completedFixture);
   }
 
   /**

@@ -49,6 +49,7 @@ export interface DraftRules {
   confirmedPicks?: DraftPick[];
   clubBudgets?: { id: string; memberId: string; code?: string; budget?: number; spentBudget?: number; squadPlayerIds?: string[] }[];
   botConfigs?: Record<string, { difficulty: BotDifficulty; personality?: BotPersonality }>;
+  matchSpeed?: 1 | 2 | 3 | 4; // 1x Normal, 2x Hızlı, 3x Çok Hızlı, 4x Maksimum
 }
 
 export interface LiveMatchweekState {

@@ -529,7 +529,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
       setDismissedLiveMw(room.liveMatchweek.matchweek);
     }
     if (currentMember) {
-      const res = DraftMultiplayerStore.finishLiveMatchweek(room.id, currentMember.id);
+      const res = DraftMultiplayerStore.finishLiveMatchweek(room.id, currentMember.id, completedFix);
       if (res.state) {
         setHydrationResult((prev) => ({ ...prev, state: res.state }));
         setSelectedFixture(completedFix);
@@ -550,6 +550,17 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     }
   };
 
+  // Set match simulation speed (1x, 2x, 3x, 4x)
+  const handleSetMatchSpeed = (speed: 1 | 2 | 3 | 4) => {
+    if (!currentMember || !isHost) return;
+    const res = DraftMultiplayerStore.updateMatchSpeed(room.id, currentMember.id, speed);
+    if (res.state) {
+      setHydrationResult((prev) => ({ ...prev, state: res.state }));
+      setStatusMessage(`Maç simülasyon hızı ${speed}x olarak güncellendi.`);
+      setTimeout(() => setStatusMessage(null), 2500);
+    }
+  };
+
   // Fast Simulate Fixture (Instantly simulate + auto-simulate other bots in week)
   const handleFastSimulateFixture = (fixtureId: string) => {
     const res = DraftMultiplayerStore.simulateFixture(room.id, fixtureId);
@@ -567,7 +578,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         setSelectedFixture(updated);
         setIsReportModalOpen(true);
       }
-      setStatusMessage('Maç ve haftanın yapay zeka karşılaşmaları simüle edildi!');
+      setStatusMessage('Maç ve haftanın yapay zeka karşılaşmaları simüle edildi! Puan durumu güncellendi.');
       setTimeout(() => setStatusMessage(null), 3000);
     }
   };
@@ -577,11 +588,17 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     const pendingInWeek = currentWeekFixtures.filter((f: DraftFixture) => f.status !== 'COMPLETED');
     if (pendingInWeek.length === 0) return;
 
+    let lastState: any = null;
     for (const f of pendingInWeek) {
-      DraftMultiplayerStore.simulateFixture(room.id, f.id);
+      const res = DraftMultiplayerStore.simulateFixture(room.id, f.id);
+      if (res.state) lastState = res.state;
     }
-    fetchState();
-    setStatusMessage(`Hafta ${currentMatchweek} maçlarının tamamı simüle edildi!`);
+    if (lastState) {
+      setHydrationResult((prev) => ({ ...prev, state: lastState }));
+    } else {
+      fetchState();
+    }
+    setStatusMessage(`Hafta ${currentMatchweek} maçlarının tamamı simüle edildi ve puan durumu güncellendi!`);
     setTimeout(() => setStatusMessage(null), 3000);
   };
 
@@ -1016,6 +1033,43 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
             {/* Broadcast Action CTAs */}
             <div className="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap">
+              {/* Match Speed Selector */}
+              <div className="flex items-center gap-1.5 bg-zinc-950/90 border border-zinc-800 px-3 py-2 text-xs">
+                <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase flex items-center gap-1">
+                  <Zap className="w-3.5 h-3.5 text-[#00F5A0]" />
+                  <span>HIZ:</span>
+                </span>
+                {([1, 2, 3, 4] as const).map((spd) => {
+                  const currentSpeed =
+                    room.rules?.matchSpeed ||
+                    (room.liveMatchweek?.paceMs === 200
+                      ? 4
+                      : room.liveMatchweek?.paceMs === 266
+                      ? 3
+                      : room.liveMatchweek?.paceMs === 400
+                      ? 2
+                      : 1);
+                  const isSelected = currentSpeed === spd;
+                  return (
+                    <button
+                      key={spd}
+                      onClick={() => isHost && handleSetMatchSpeed(spd)}
+                      disabled={!isHost}
+                      className={`px-2 py-0.5 font-mono text-[11px] font-black transition-all ${
+                        isSelected
+                          ? 'bg-[#00F5A0] text-black shadow-sm'
+                          : isHost
+                          ? 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+                          : 'text-zinc-600 cursor-not-allowed'
+                      }`}
+                      title={isHost ? `Maç hızını ${spd}x yap` : `Yalnızca kurucu hızı değiştirebilir (${spd}x)`}
+                    >
+                      {spd}x
+                    </button>
+                  );
+                })}
+              </div>
+
               {!isSeasonComplete && (
                 <>
                   {room.liveMatchweek?.status === 'LIVE' && (
@@ -1039,26 +1093,39 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                   )}
 
                   {(!room.liveMatchweek || room.liveMatchweek.status === 'PREPARING') && !isCurrentWeekFinished && (
-                    <button
-                      onClick={() => handleToggleReady(!isCurrentMemberReady)}
-                      className={`w-full sm:w-auto px-6 py-3 font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 active:scale-95 ${
-                        isCurrentMemberReady
-                          ? 'bg-zinc-900 border-2 border-amber-500/60 text-amber-300'
-                          : 'bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black border-2 border-[#00F5A0] shadow-[0_0_15px_rgba(0,245,160,0.3)]'
-                      }`}
-                    >
-                      {isCurrentMemberReady ? (
-                        <>
-                          <RotateCcw className="w-4 h-4 text-amber-400" />
-                          <span>HAZIR VERİLDİ (İPTAL ET)</span>
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 className="w-4 h-4 fill-current" />
-                          <span>HAZIR</span>
-                        </>
+                    <>
+                      <button
+                        onClick={() => handleToggleReady(!isCurrentMemberReady)}
+                        className={`w-full sm:w-auto px-6 py-3 font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 active:scale-95 ${
+                          isCurrentMemberReady
+                            ? 'bg-zinc-900 border-2 border-amber-500/60 text-amber-300'
+                            : 'bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black border-2 border-[#00F5A0] shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+                        }`}
+                      >
+                        {isCurrentMemberReady ? (
+                          <>
+                            <RotateCcw className="w-4 h-4 text-amber-400" />
+                            <span>HAZIR VERİLDİ (İPTAL ET)</span>
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle2 className="w-4 h-4 fill-current" />
+                            <span>HAZIR</span>
+                          </>
+                        )}
+                      </button>
+
+                      {isHost && (
+                        <button
+                          onClick={handleSimulateRemainingInWeek}
+                          className="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 hover:text-white font-bold text-xs uppercase tracking-wider transition flex items-center gap-1.5"
+                          title="Haftanın maçlarını Match Engine ile anında tamamla"
+                        >
+                          <Play className="w-3.5 h-3.5 text-[#00D4FF]" />
+                          <span>HAFTAYI OYNA</span>
+                        </button>
                       )}
-                    </button>
+                    </>
                   )}
 
                   {isHost && isCurrentWeekFinished && currentMatchweek < totalMatchweeks && (
@@ -2158,9 +2225,21 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                                 <span>CANLI İZLE</span>
                               </button>
                             ) : (
-                              <span className="text-[10px] font-mono text-zinc-400 px-2.5 py-1 bg-zinc-950 border border-zinc-800">
-                                ⏳ Beklemede
-                              </span>
+                              <div className="flex items-center gap-1.5">
+                                <span className="text-[10px] font-mono text-zinc-400 px-2.5 py-1 bg-zinc-950 border border-zinc-800">
+                                  ⏳ Beklemede
+                                </span>
+                                {isHost && (
+                                  <button
+                                    onClick={() => handleFastSimulateFixture(f.id)}
+                                    className="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-[#00D4FF] text-zinc-300 hover:text-white font-mono text-[10px] uppercase font-bold transition flex items-center gap-1"
+                                    title="Bu maçı Match Engine ile anında simüle et"
+                                  >
+                                    <Play className="w-3 h-3 text-[#00D4FF]" />
+                                    <span>Simüle</span>
+                                  </button>
+                                )}
+                              </div>
                             )}
                           </div>
                         </div>
@@ -2437,7 +2516,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         onClose={handleCloseLiveModal}
         onMatchFinished={handleLiveMatchFinished}
         startedAt={room.liveMatchweek?.startedAt}
-        paceMs={room.liveMatchweek?.paceMs || 800}
+        paceMs={room.liveMatchweek?.paceMs || (room.rules?.matchSpeed === 4 ? 200 : room.rules?.matchSpeed === 3 ? 266 : room.rules?.matchSpeed === 2 ? 400 : 800)}
         isMultiplayerSynced={room.liveMatchweek?.status === 'LIVE'}
       />
 

@@ -55,7 +55,9 @@ export function DraftLiveMatchModal({
   isMultiplayerSynced,
 }: DraftLiveMatchModalProps) {
   const [activeTab, setActiveTab] = useState<'RADAR' | 'STATS' | 'EVENTS' | 'LINEUPS'>('RADAR');
-  const [speed, setSpeed] = useState<number>(2); // 1 = 1x, 2 = 2x, 3 = 3x, 4 = 4x
+  const [speed, setSpeed] = useState<number>(
+    paceMs <= 200 ? 4 : paceMs <= 300 ? 3 : paceMs <= 500 ? 2 : 1
+  ); // 1 = 1x, 2 = 2x, 3 = 3x, 4 = 4x
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [engineState, setEngineState] = useState<MatchEngineState | null>(null);
   const [isFinished, setIsFinished] = useState<boolean>(false);

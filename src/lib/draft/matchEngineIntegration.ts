@@ -2,6 +2,7 @@ import { Club, Player, ClubTactics, TacticalSettings, Formation } from '@/types/
 import { MatchEngine } from '../match-engine/engine';
 import { MatchEngineEvent } from '../match-engine/types';
 import { DraftClub, DraftFixture, DraftStanding, LeagueAwards } from './types';
+import { generateDefaultDraftTactics } from './draftEngine';
 
 /**
  * Converts a DraftClub into a Club model compatible with MatchEngine.
@@ -30,8 +31,8 @@ export function draftClubToClub(draftClub: DraftClub): Club {
 /**
  * Extracts tactical settings from ClubTactics.
  */
-function extractTacticalSettings(tactics: ClubTactics): TacticalSettings {
-  return tactics.settings || {
+function extractTacticalSettings(tactics?: ClubTactics): TacticalSettings {
+  return tactics?.settings || {
     mentality: 'Dengeli',
     tempo: 'Standart',
     pressing: 'Orta',
@@ -48,9 +49,9 @@ export function simulateDraftFixture(
   fixture: DraftFixture,
   homeClub: DraftClub,
   awayClub: DraftClub,
-  homeTactics: ClubTactics,
-  awayTactics: ClubTactics,
-  playerPool: Player[],
+  homeTactics?: ClubTactics,
+  awayTactics?: ClubTactics,
+  playerPool: Player[] = [],
   serverNonce: string = 'server-v055'
 ): { updatedFixture: DraftFixture; matchResult: any } {
   const seed = `${fixture.roomId}-${fixture.id}-${serverNonce}`;
@@ -61,10 +62,21 @@ export function simulateDraftFixture(
   const homePlayers = playerPool.filter((p) => homeClub.squadPlayerIds.includes(p.id));
   const awayPlayers = playerPool.filter((p) => awayClub.squadPlayerIds.includes(p.id));
 
-  const homeStartingIds = homeTactics.lineup
+  const resolvedHomeTactics =
+    homeTactics ||
+    fixture.homeTactics ||
+    homeClub.tactics ||
+    generateDefaultDraftTactics(homeClub.id, homeClub.squadPlayerIds, playerPool);
+  const resolvedAwayTactics =
+    awayTactics ||
+    fixture.awayTactics ||
+    awayClub.tactics ||
+    generateDefaultDraftTactics(awayClub.id, awayClub.squadPlayerIds, playerPool);
+
+  const homeStartingIds = (resolvedHomeTactics?.lineup || [])
     .map((slot) => slot.playerId)
     .filter(Boolean) as string[];
-  const awayStartingIds = awayTactics.lineup
+  const awayStartingIds = (resolvedAwayTactics?.lineup || [])
     .map((slot) => slot.playerId)
     .filter(Boolean) as string[];
 
@@ -73,10 +85,10 @@ export function simulateDraftFixture(
     awayClubModel,
     homePlayers,
     awayPlayers,
-    extractTacticalSettings(homeTactics),
-    extractTacticalSettings(awayTactics),
-    homeTactics.formation as Formation,
-    awayTactics.formation as Formation,
+    extractTacticalSettings(resolvedHomeTactics),
+    extractTacticalSettings(resolvedAwayTactics),
+    (resolvedHomeTactics?.formation as Formation) || '4-3-3',
+    (resolvedAwayTactics?.formation as Formation) || '4-3-3',
     homeStartingIds.length >= 7 ? homeStartingIds : undefined,
     awayStartingIds.length >= 7 ? awayStartingIds : undefined,
     fixture.id,
@@ -88,8 +100,8 @@ export function simulateDraftFixture(
   const updatedFixture: DraftFixture = {
     ...fixture,
     status: 'COMPLETED',
-    homeTactics,
-    awayTactics,
+    homeTactics: resolvedHomeTactics,
+    awayTactics: resolvedAwayTactics,
     homeScore: matchState.homeScore,
     awayScore: matchState.awayScore,
     matchResult: matchState,
@@ -124,8 +136,26 @@ export function computeStandingsFromFixtures(
     form: [],
   }));
 
-  const completed = fixtures.filter(
-    (f) => f.status === 'COMPLETED' && f.homeScore !== undefined && f.awayScore !== undefined
+  // Deduplicate by fixture ID, keeping the latest completed version
+  const uniqueFixtureMap = new Map<string, DraftFixture>();
+  for (const f of fixtures) {
+    if (!uniqueFixtureMap.has(f.id)) {
+      uniqueFixtureMap.set(f.id, f);
+    } else {
+      const existing = uniqueFixtureMap.get(f.id)!;
+      const isFCompleted = (f.status === 'COMPLETED' || (f.status as string) === 'FINISHED') && f.homeScore !== undefined && f.awayScore !== undefined;
+      const isExistingCompleted = (existing.status === 'COMPLETED' || (existing.status as string) === 'FINISHED') && existing.homeScore !== undefined && existing.awayScore !== undefined;
+      if (isFCompleted && !isExistingCompleted) {
+        uniqueFixtureMap.set(f.id, f);
+      }
+    }
+  }
+
+  const completed = Array.from(uniqueFixtureMap.values()).filter(
+    (f) =>
+      (f.status === 'COMPLETED' || (f.status as string) === 'FINISHED') &&
+      f.homeScore !== undefined &&
+      f.awayScore !== undefined
   );
 
   // Sort completed fixtures by round / date to ensure chronological form
