@@ -139,10 +139,16 @@ export function reconstructDraftState(
 
   const picks: DraftPick[] = rawPicks.map((p) => {
     const rawPrice = p.draftPrice ?? p.draft_price ?? p.purchase_price ?? p.price;
-    const priceNum = rawPrice !== undefined && rawPrice !== null ? Number(rawPrice) : undefined;
+    let priceNum = rawPrice !== undefined && rawPrice !== null && !isNaN(Number(rawPrice)) ? Number(rawPrice) : undefined;
     const memberId = p.memberId || p.member_id || '';
     const clubId = p.clubId || p.club_id || '';
     const playerId = p.playerId || p.player_id || '';
+    if ((priceNum === undefined || priceNum <= 0) && playerId) {
+      const pl = getCachedDraftPlayerPool().find((x) => x.id === playerId);
+      if (pl) {
+        priceNum = pl.draftValue ?? calculatePlayerDraftValue(pl);
+      }
+    }
     const pickId = p.id || `pick-${roomId}-${p.global_pick_number || p.pick_index || Math.random().toString(36).substring(2, 7)}`;
     return {
       id: pickId,
@@ -1005,8 +1011,7 @@ export class DraftMultiplayerStore {
           }).filter(
             (m) =>
               !removedIds.has(m.id) &&
-              !m.sessionId?.startsWith('removed-') &&
-              !m.sessionId?.startsWith('deleted-') &&
+              !(typeof m.sessionId === 'string' && (m.sessionId.startsWith('removed-') || m.sessionId.startsWith('deleted-'))) &&
               m.username !== '[REMOVED_BOT]' &&
               m.username !== '[DELETED]'
           );
@@ -1111,11 +1116,27 @@ export class DraftMultiplayerStore {
                 }
               }
             });
-            const allPicks = Array.from(mergedPickMap.values()).sort(
-              (a, b) =>
-                (a.global_pick_number ?? a.globalPickNumber ?? a.pick_index ?? 0) -
-                (b.global_pick_number ?? b.globalPickNumber ?? b.pick_index ?? 0)
-            );
+            const allPicks = Array.from(mergedPickMap.values())
+              .map((p) => {
+                const pId = p.playerId || p.player_id;
+                let price = p.draftPrice ?? p.purchase_price ?? p.draft_price;
+                if ((price === undefined || price === null || price <= 0) && pId) {
+                  const pl = getCachedDraftPlayerPool().find((x) => x.id === pId);
+                  if (pl) {
+                    price = pl.draftValue ?? calculatePlayerDraftValue(pl);
+                  }
+                }
+                return {
+                  ...p,
+                  draftPrice: price,
+                  purchase_price: price,
+                };
+              })
+              .sort(
+                (a, b) =>
+                  (a.global_pick_number ?? a.globalPickNumber ?? a.pick_index ?? 0) -
+                  (b.global_pick_number ?? b.globalPickNumber ?? b.pick_index ?? 0)
+              );
 
             draftState = reconstructDraftState(room.id, members, room.rules, allPicks);
 
@@ -1690,7 +1711,7 @@ export class DraftMultiplayerStore {
 
     const removedIds = new Set(state.room.rules.removedMemberIds || []);
     const activeManagers = state.members.filter(
-      (m) => !m.isSpectator && !removedIds.has(m.id) && !m.sessionId?.startsWith('removed-')
+      (m) => !m.isSpectator && !removedIds.has(m.id) && !(typeof m.sessionId === 'string' && m.sessionId.startsWith('removed-'))
     );
     if (activeManagers.length >= state.room.rules.maxManagers) {
       const err = formatMultiplayerError('SC-MP-008');
@@ -1843,7 +1864,7 @@ export class DraftMultiplayerStore {
 
     const removedIds = new Set(state.room.rules.removedMemberIds || []);
     const activeManagers = state.members.filter(
-      (m) => !m.isSpectator && !removedIds.has(m.id) && !m.sessionId?.startsWith('removed-')
+      (m) => !m.isSpectator && !removedIds.has(m.id) && !(typeof m.sessionId === 'string' && m.sessionId.startsWith('removed-'))
     );
     if (activeManagers.length >= state.room.rules.maxManagers) {
       const err = formatMultiplayerError('SC-MP-008');
@@ -2524,7 +2545,7 @@ export class DraftMultiplayerStore {
               const playerPrice = lastPick.draftPrice || 0;
               const upsertPick = async () => {
                 try {
-                  await supabase.from('draft_picks').upsert({
+                  const { error: pickErr } = await supabase.from('draft_picks').upsert({
                     id: lastPick.id,
                     room_id: roomId,
                     round: lastPick.round,
@@ -2536,29 +2557,18 @@ export class DraftMultiplayerStore {
                     selected_at: lastPick.selectedAt,
                     is_auto_pick: lastPick.isAutoPick,
                     time_taken_seconds: lastPick.timeTakenSeconds,
-                    draft_price: playerPrice,
-                    purchase_price: playerPrice,
-                    pick_index: lastPick.globalPickNumber,
                   });
-                } catch {
-                  try {
-                    await supabase.from('draft_picks').insert({
-                      room_id: roomId,
-                      club_id: lastPick.clubId,
-                      player_id: lastPick.playerId,
-                      purchase_price: playerPrice,
-                      pick_index: lastPick.globalPickNumber,
-                    });
-                  } catch (e2) {
-                    console.warn('draft_picks fallback insert warning:', e2);
+                  if (pickErr) {
+                    console.warn('draft_picks upsert error in makePickAsync:', pickErr.message || pickErr);
                   }
+                } catch (e1) {
+                  console.warn('draft_picks upsert exception in makePickAsync:', e1);
                 }
               };
 
               await Promise.all([
                 supabase.from('multiplayer_rooms').update({
                   rules: res.state.room.rules,
-                  state_version: res.state.room.stateVersion,
                   updated_at: new Date().toISOString(),
                 }).eq('id', roomId),
                 upsertPick(),
@@ -2689,18 +2699,20 @@ export class DraftMultiplayerStore {
     if (supabase) {
       safeDbRun(async () => {
         // 1. Authoritatively update multiplayer_rooms with rules containing confirmedPicks and clubBudgets
-        await supabase
+        const { error: roomUpdateErr } = await supabase
           .from('multiplayer_rooms')
           .update({
             rules: updatedRules,
-            state_version: resultingVersion,
             updated_at: new Date().toISOString(),
           })
           .eq('id', state.room.id);
+        if (roomUpdateErr) {
+          console.warn('multiplayer_rooms update error in makePick:', roomUpdateErr.message || roomUpdateErr);
+        }
 
-        // 2. Resilient upsert into draft_picks (supporting both standard and minimal schema)
+        // 2. Resilient upsert into draft_picks (using only valid schema columns)
         try {
-          await supabase.from('draft_picks').upsert({
+          const { error: pickErr } = await supabase.from('draft_picks').upsert({
             id: newPick.id,
             room_id: state.room.id,
             round: newPick.round,
@@ -2712,22 +2724,12 @@ export class DraftMultiplayerStore {
             selected_at: newPick.selectedAt,
             is_auto_pick: newPick.isAutoPick,
             time_taken_seconds: newPick.timeTakenSeconds,
-            draft_price: playerPrice,
-            purchase_price: playerPrice,
-            pick_index: newPick.globalPickNumber,
           });
-        } catch {
-          try {
-            await supabase.from('draft_picks').insert({
-              room_id: state.room.id,
-              club_id: newPick.clubId,
-              player_id: newPick.playerId,
-              purchase_price: playerPrice,
-              pick_index: newPick.globalPickNumber,
-            });
-          } catch (e2) {
-            console.warn('draft_picks fallback insert notice:', e2);
+          if (pickErr) {
+            console.warn('draft_picks upsert error in makePick:', pickErr.message || pickErr);
           }
+        } catch (e1) {
+          console.warn('draft_picks upsert exception in makePick:', e1);
         }
 
         // 3. Update squad_player_ids on draft_clubs
