@@ -39,7 +39,7 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
             <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
             {/* Main Content Area (offset by sidebar on desktop) */}
-            <div className="relative z-10 lg:pl-64 flex flex-col min-h-screen">
+            <div className="relative lg:pl-64 flex flex-col min-h-screen">
               {/* Topbar */}
               <Topbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 

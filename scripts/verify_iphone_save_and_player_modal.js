@@ -237,13 +237,13 @@ const ARTIFACT_DIR = 'C:/Users/oguzh/.gemini/antigravity/brain/ec81c01c-7802-440
           await attrTabBtn.click();
           await page.waitForTimeout(800);
 
-          const techSection = await page.$('text=Teknik & Hücum');
-          const physSection = await page.$('text=Fizik & Savunma');
-          const mentSection = await page.$('text=Zihinsel & Özel');
+          const pacSection = await page.$('text=HIZ (PAC)');
+          const shoSection = await page.$('text=ŞUT (SHO)');
+          const pasSection = await page.$('text=PAS (PAS)');
 
-          if (techSection && physSection && mentSection) {
+          if (pacSection && shoSection && pasSection) {
             results.attributesTabRendered = true;
-            console.log('[PASS] Nitelikler tab rendered with 3 categorized columns & gauge bars.');
+            console.log('[PASS] Nitelikler tab rendered with FIFA categorized sections & sliders.');
           }
 
           const snapModalAttr = path.join(ARTIFACT_DIR, 'snap_mobile_player_modal_attributes.png');
