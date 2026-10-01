@@ -259,34 +259,36 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
         className="absolute inset-0 w-full h-full pointer-events-none stroke-emerald-400/35"
         strokeWidth="1.75"
         fill="none"
+        viewBox="0 0 1000 600"
+        preserveAspectRatio="none"
       >
         {/* Outer Boundary */}
-        <rect x="4%" y="6%" width="92%" height="88%" />
+        <rect x="40" y="36" width="920" height="528" />
 
         {/* Halfway Line */}
-        <line x1="50%" y1="6%" x2="50%" y2="94%" />
+        <line x1="500" y1="36" x2="500" y2="564" />
 
         {/* Center Circle & Spot */}
-        <circle cx="50%" cy="50%" r="14%" />
-        <circle cx="50%" cy="50%" r="1.5%" fill="#00F5A0" fillOpacity="0.8" />
+        <circle cx="500" cy="300" r="84" />
+        <circle cx="500" cy="300" r="9" fill="#00F5A0" fillOpacity="0.8" />
 
         {/* Left Goal Area (Home Defense Box) */}
-        <rect x="4%" y="24%" width="15%" height="52%" />
-        <rect x="4%" y="36%" width="5.5%" height="28%" />
-        <path d="M 19% 40% A 10% 10% 0 0 1 19% 60%" />
-        <circle cx="15%" cy="50%" r="1%" fill="#00F5A0" fillOpacity="0.6" />
+        <rect x="40" y="144" width="150" height="312" />
+        <rect x="40" y="216" width="55" height="168" />
+        <path d="M 190 240 A 60 60 0 0 1 190 360" />
+        <circle cx="150" cy="300" r="6" fill="#00F5A0" fillOpacity="0.6" />
 
         {/* Right Goal Area (Away Defense Box) */}
-        <rect x="81%" y="24%" width="15%" height="52%" />
-        <rect x="90.5%" y="36%" width="5.5%" height="28%" />
-        <path d="M 81% 40% A 10% 10% 0 0 0 81% 60%" />
-        <circle cx="85%" cy="50%" r="1%" fill="#00F5A0" fillOpacity="0.6" />
+        <rect x="810" y="144" width="150" height="312" />
+        <rect x="905" y="216" width="55" height="168" />
+        <path d="M 810 240 A 60 60 0 0 0 810 360" />
+        <circle cx="850" cy="300" r="6" fill="#00F5A0" fillOpacity="0.6" />
 
         {/* Corner Arcs */}
-        <path d="M 4% 8% A 2.5% 2.5% 0 0 1 6.5% 6%" />
-        <path d="M 4% 92% A 2.5% 2.5% 0 0 0 6.5% 94%" />
-        <path d="M 96% 8% A 2.5% 2.5% 0 0 0 93.5% 6%" />
-        <path d="M 96% 92% A 2.5% 2.5% 0 0 1 93.5% 94%" />
+        <path d="M 40 51 A 15 15 0 0 1 55 36" />
+        <path d="M 40 549 A 15 15 0 0 0 55 564" />
+        <path d="M 960 51 A 15 15 0 0 0 945 36" />
+        <path d="M 960 549 A 15 15 0 0 1 945 564" />
       </svg>
 
       {/* 2. Attacking Direction Indicator Pill */}

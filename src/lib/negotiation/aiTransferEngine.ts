@@ -1,5 +1,5 @@
 import { Player, Club, FinanceSummary, PositionCategory } from '@/types/game';
-import { TransferOfferPackage, ContractOfferPackage, SquadRole } from './types';
+import { TransferOfferPackage, ContractOfferPackage, SquadRole, TransferHistoryRecord } from './types';
 import { getTransferWindowStatus } from '../career/calendar';
 import { calculatePlayerValuation } from './transferValuation';
 import { calculatePlayerContractDemands } from './contractValuation';
@@ -10,6 +10,7 @@ export interface AiTransferDailyResult {
   updatedPlayers: Player[];
   updatedClubs: Club[];
   completedNews: NewsItem[];
+  completedTransfers?: TransferHistoryRecord[];
 }
 
 function getPlayerCategory(pos: string): PositionCategory {
@@ -175,5 +176,6 @@ export function processAiClubMarketActivity(
     updatedPlayers,
     updatedClubs,
     completedNews,
+    completedTransfers: [transferResult.historyRecord],
   };
 }

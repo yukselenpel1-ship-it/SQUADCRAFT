@@ -120,7 +120,7 @@ export default function MatchCenterPage() {
 
   // Initialize engine on load
   useEffect(() => {
-    if (!fixture) return;
+    if (!fixture || homePlayers.length === 0 || awayPlayers.length === 0) return;
 
     const isUserHome = homeClub.id === userClub.id;
     const userTacticsSettings = tactics.settings;
@@ -141,7 +141,9 @@ export default function MatchCenterPage() {
 
     let startingHomeIds: string[] = [];
     if (isUserHome) {
-      const userIds = tactics.lineup.map((s) => s.playerId).filter(Boolean) as string[];
+      const userIds = ((tactics?.lineup || (tactics as any)?.startingLineup || []) as any[])
+        .map((s) => s?.playerId)
+        .filter(Boolean) as string[];
       if (new Set(userIds).size === 11) {
         startingHomeIds = userIds;
       } else {
@@ -153,7 +155,9 @@ export default function MatchCenterPage() {
 
     let startingAwayIds: string[] = [];
     if (!isUserHome) {
-      const userIds = tactics.lineup.map((s) => s.playerId).filter(Boolean) as string[];
+      const userIds = ((tactics?.lineup || (tactics as any)?.startingLineup || []) as any[])
+        .map((s) => s?.playerId)
+        .filter(Boolean) as string[];
       if (new Set(userIds).size === 11) {
         startingAwayIds = userIds;
       } else {
@@ -185,7 +189,7 @@ export default function MatchCenterPage() {
 
     engineRef.current = engine;
     setEngineState(engine.getState());
-  }, [matchId]);
+  }, [matchId, fixture?.id, allPlayers.length, allClubs.length]);
 
   // Simulation timer loop
   useEffect(() => {

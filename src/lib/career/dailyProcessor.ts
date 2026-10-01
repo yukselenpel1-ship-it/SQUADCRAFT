@@ -337,6 +337,10 @@ export function processSingleDay(state: DailyProcessorState): {
     finances: finRes.updatedFinances,
     futureCommitments: finRes.updatedCommitments || state.futureCommitments,
     transferOffers: [...transferRes.newOffers, ...state.transferOffers],
+    transferHistory: [
+      ...(aiMarketRes.completedTransfers || []),
+      ...(state.transferHistory || []),
+    ],
     inboxMessages: [...newInboxMessages, ...state.inboxMessages],
     newsFeed: [...combinedNews, ...state.newsFeed].slice(0, 40),
     scouts: updatedScouts,

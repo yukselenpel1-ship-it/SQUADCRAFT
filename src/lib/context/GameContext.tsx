@@ -574,6 +574,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (res.updatedState.activeLoans) setActiveLoans(res.updatedState.activeLoans);
     if (res.updatedState.academyFacilities) setAcademyFacilities(res.updatedState.academyFacilities);
     if (res.updatedState.youthPlayers) setYouthPlayers(res.updatedState.youthPlayers);
+    if (res.updatedState.transferHistory) setTransferHistory(res.updatedState.transferHistory);
 
     persist(
       res.updatedState.currentDate,
@@ -591,7 +592,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       res.updatedState.newsFeed,
       careerHistory,
       activeNegotiations,
-      transferHistory,
+      res.updatedState.transferHistory || transferHistory,
       res.updatedState.futureCommitments || futureCommitments,
       res.updatedState.scouts || scouts,
       res.updatedState.scoutingAssignments || scoutingAssignments,
@@ -682,6 +683,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     if (finalState.activeLoans) setActiveLoans(finalState.activeLoans);
     if (finalState.academyFacilities) setAcademyFacilities(finalState.academyFacilities);
     if (finalState.youthPlayers) setYouthPlayers(finalState.youthPlayers);
+    if (finalState.transferHistory) setTransferHistory(finalState.transferHistory);
 
     persist(
       finalState.currentDate,
@@ -699,7 +701,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       finalState.newsFeed,
       careerHistory,
       activeNegotiations,
-      transferHistory,
+      finalState.transferHistory || transferHistory,
       finalState.futureCommitments || futureCommitments,
       finalState.scouts || scouts,
       finalState.scoutingAssignments || scoutingAssignments,
