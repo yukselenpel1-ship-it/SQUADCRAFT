@@ -517,7 +517,7 @@ export function DraftLiveMatchModal({
           {/* TAB 1: 2D RADAR PITCH */}
           {activeTab === 'RADAR' && engineState && (
             <div className="space-y-3 sm:space-y-4 max-w-4xl mx-auto w-full">
-              <div className="h-64 sm:h-96 w-full relative border-2 border-emerald-500/40 shadow-2xl overflow-hidden bg-[#071d13] rounded-sm">
+              <div className="w-full relative shadow-2xl overflow-hidden rounded-sm">
                 <TacticalRadarPitch
                   state={engineState}
                   speed={speed}

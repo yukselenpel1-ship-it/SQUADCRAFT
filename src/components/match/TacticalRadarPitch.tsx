@@ -1,15 +1,29 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef, useState } from 'react';
 import { MatchEngineState, MatchEngineEvent } from '@/lib/match-engine/types';
-import { FORMATION_COORDINATES } from '@/lib/data/mockData';
-import { Zap, Trophy, Shield, Activity, Flame } from 'lucide-react';
+import {
+  computeTacticalTargets,
+  PossessionPhase,
+  getBaseFormationCoordinates,
+  applyTacticalModifiers,
+} from './radar/tacticalMovementEngine';
+import { Zap, Trophy, Shield, Activity, Flame, Clock, Radio, Users } from 'lucide-react';
 
 interface TacticalRadarPitchProps {
   state: MatchEngineState;
   speed?: number;
   isPlaying?: boolean;
   onPlayerClick?: (playerId: string) => void;
+}
+
+interface RenderPosition {
+  x: number;
+  y: number;
+  targetX: number;
+  targetY: number;
+  isBallCarrier: boolean;
+  isPressing: boolean;
 }
 
 export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
@@ -23,27 +37,139 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
   const minute = state.minute;
 
   // Home & Away Active Players
-  const homeActivePlayers = state.home.activePitchPlayerIds
-    .map((id) => state.home.players[id])
-    .filter(Boolean);
-  const awayActivePlayers = state.away.activePitchPlayerIds
-    .map((id) => state.away.players[id])
-    .filter(Boolean);
+  const homeActivePlayers = useMemo(
+    () =>
+      state.home.activePitchPlayerIds
+        .map((id) => state.home.players[id])
+        .filter(Boolean),
+    [state.home.activePitchPlayerIds, state.home.players]
+  );
 
-  // Formations
-  const homeFormation = state.home.formation || '4-2-3-1';
-  const awayFormation = state.away.formation || '4-2-3-1';
+  const awayActivePlayers = useMemo(
+    () =>
+      state.away.activePitchPlayerIds
+        .map((id) => state.away.players[id])
+        .filter(Boolean),
+    [state.away.activePitchPlayerIds, state.away.players]
+  );
 
-  const homeSlots = FORMATION_COORDINATES[homeFormation] || FORMATION_COORDINATES['4-2-3-1'];
-  const awaySlots = FORMATION_COORDINATES[awayFormation] || FORMATION_COORDINATES['4-2-3-1'];
+  // Animation Refs & State for 60 FPS Interpolation
+  const animationFrameRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number>(performance.now());
+  const phaseProgressRef = useRef<number>(0);
 
-  // Transition duration in milliseconds based on simulation speed
-  const animDuration = speed === 4 ? 90 : speed === 3 ? 180 : speed === 2 ? 300 : 500;
+  // Position storage refs for continuous interpolation
+  const playerPositionsRef = useRef<Record<string, RenderPosition>>({});
+  const ballPosRef = useRef<{
+    x: number;
+    y: number;
+    targetX: number;
+    targetY: number;
+    isGoal: boolean;
+    isShot: boolean;
+  }>({
+    x: 50,
+    y: 50,
+    targetX: 50,
+    targetY: 50,
+    isGoal: false,
+    isShot: false,
+  });
 
-  // Attacking phase
-  const attackingPhase = lastAction?.direction; // 'HOME_ATTACK' | 'AWAY_ATTACK' | undefined
+  // State to trigger DOM re-positioning at optimal frame rate
+  const [, setFrameTick] = useState<number>(0);
+  const [activePhase, setActivePhase] = useState<PossessionPhase>('KICKOFF');
 
-  // Goal Detection: check if current minute or latest event is a GOAL
+  // Compute tactical targets whenever state changes
+  useEffect(() => {
+    const targets = computeTacticalTargets(state, phaseProgressRef.current);
+    setActivePhase(targets.activePhase);
+
+    // Initialize or update target coordinates in refs
+    Object.entries(targets.players).forEach(([pId, target]) => {
+      if (!playerPositionsRef.current[pId]) {
+        playerPositionsRef.current[pId] = {
+          x: target.x,
+          y: target.y,
+          targetX: target.x,
+          targetY: target.y,
+          isBallCarrier: target.isBallCarrier,
+          isPressing: target.isPressing,
+        };
+      } else {
+        playerPositionsRef.current[pId].targetX = target.x;
+        playerPositionsRef.current[pId].targetY = target.y;
+        playerPositionsRef.current[pId].isBallCarrier = target.isBallCarrier;
+        playerPositionsRef.current[pId].isPressing = target.isPressing;
+      }
+    });
+
+    ballPosRef.current.targetX = targets.ball.x;
+    ballPosRef.current.targetY = targets.ball.y;
+    ballPosRef.current.isGoal = targets.ball.isGoal;
+    ballPosRef.current.isShot = targets.ball.isShot;
+  }, [state]);
+
+  // High-performance requestAnimationFrame loop for continuous live motion
+  useEffect(() => {
+    const speedMultiplier = speed === 4 ? 2.8 : speed === 3 ? 1.8 : speed === 2 ? 1.3 : 1.0;
+    const lerpFactor = Math.min(0.25, 0.08 * speedMultiplier);
+    const ballLerpFactor = Math.min(0.40, 0.14 * speedMultiplier);
+
+    let isSubscribed = true;
+
+    const animate = (time: number) => {
+      if (!isSubscribed) return;
+
+      const dt = Math.min(100, time - lastTimeRef.current);
+      lastTimeRef.current = time;
+
+      // Cycle phase progress from 0 to 1
+      phaseProgressRef.current = (phaseProgressRef.current + (dt / 1000) * (0.6 * speedMultiplier)) % 1;
+
+      // 1. Interpolate players towards target positions + organic micro-breathing
+      const tSec = time / 1000;
+      Object.keys(playerPositionsRef.current).forEach((pId, idx) => {
+        const p = playerPositionsRef.current[pId];
+        if (!p) return;
+
+        // Organic micro-breathing when idle so players feel alive
+        const idleX = Math.sin(tSec * 2.2 + idx * 0.7) * 0.35;
+        const idleY = Math.cos(tSec * 1.8 + idx * 0.9) * 0.30;
+
+        p.x += (p.targetX + idleX - p.x) * lerpFactor;
+        p.y += (p.targetY + idleY - p.y) * lerpFactor;
+      });
+
+      // 2. Interpolate ball position towards target
+      const ball = ballPosRef.current;
+      ball.x += (ball.targetX - ball.x) * ballLerpFactor;
+      ball.y += (ball.targetY - ball.y) * ballLerpFactor;
+
+      // Trigger frame update (batched by React 19 / modern browser RAF)
+      setFrameTick((prev) => (prev + 1) % 1000000);
+
+      if (isPlaying) {
+        animationFrameRef.current = requestAnimationFrame(animate);
+      }
+    };
+
+    if (isPlaying) {
+      animationFrameRef.current = requestAnimationFrame(animate);
+    } else {
+      // Single frame update to settle positions
+      setFrameTick((prev) => prev + 1);
+    }
+
+    return () => {
+      isSubscribed = false;
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [isPlaying, speed]);
+
+  // Goal celebration check
   const isRecentGoal = useMemo(() => {
     if (lastAction?.type === 'GOAL') return true;
     if (latestEvent?.type === 'GOAL' && minute - latestEvent.minute <= 2) return true;
@@ -57,191 +183,18 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
     return null;
   }, [latestEvent]);
 
-  const isHomeGoal = useMemo(() => {
-    if (latestEvent?.type === 'GOAL') {
-      return latestEvent.teamId === state.home.club.id;
-    }
-    return attackingPhase === 'HOME_ATTACK';
-  }, [latestEvent, attackingPhase, state.home.club.id]);
+  // Timeline events for bottom match timeline bar
+  const timelineEvents = useMemo(() => {
+    return state.events
+      .filter((ev) => ['GOAL', 'YELLOW_CARD', 'RED_CARD', 'SUBSTITUTION'].includes(ev.type))
+      .slice(-12);
+  }, [state.events]);
 
-  /**
-   * Calculates pitch coordinates for any player node.
-   * Home defends LEFT (x: 8% to 48%), attacks RIGHT.
-   * Away defends RIGHT (x: 92% to 52%), attacks LEFT.
-   */
-  const getCoordinates = (
-    isHome: boolean,
-    playerList: typeof homeActivePlayers,
-    playerIdx: number
-  ) => {
-    const pim = playerList[playerIdx];
-    if (!pim) return { x: isHome ? 25 : 75, y: 50 };
-
-    const slots = isHome ? homeSlots : awaySlots;
-
-    // Determine slot index (0 to 10)
-    let slotIdx = pim.slotIndex !== undefined && pim.slotIndex >= 0 && pim.slotIndex < slots.length
-      ? pim.slotIndex
-      : playerIdx % slots.length;
-
-    const slot = slots[slotIdx] || slots[0];
-    const role = pim.currentPosition || slot.role;
-
-    // Base coordinate math
-    // slot.x: tactics board width (10 to 90), slot.y: length (88 is GK, 15 is ST)
-    let baseX = 50;
-    let baseY = 50;
-
-    if (isHome) {
-      baseX = 8 + ((88 - slot.y) / 73) * 40;
-      baseY = 12 + (slot.x / 100) * 76;
-    } else {
-      baseX = 92 - ((88 - slot.y) / 73) * 40;
-      baseY = 12 + ((100 - slot.x) / 100) * 76;
-    }
-
-    // Dynamic tactical shifting (NO CIRCULAR SPINNING!)
-    let shiftX = 0;
-    let shiftY = 0;
-
-    if (isPlaying && minute > 0) {
-      if (isRecentGoal) {
-        // Goal celebration movement
-        if (pim.player.id === goalScorerId) {
-          // Scorer runs towards corner flag
-          shiftX = isHome ? (90 - baseX) * 0.8 : (10 - baseX) * 0.8;
-          shiftY = (20 - baseY) * 0.7;
-        } else if ((isHome && isHomeGoal) || (!isHome && !isHomeGoal)) {
-          // Teammates converge towards scorer/corner
-          shiftX = isHome ? 15 : -15;
-        } else {
-          // Conceding team drops back dejectedly towards center
-          shiftX = isHome ? 5 : -5;
-        }
-      } else if (attackingPhase === 'HOME_ATTACK') {
-        if (isHome) {
-          // Home team attacks forward to the right
-          if (['ST', 'AML', 'AMR', 'AMC'].includes(role)) {
-            shiftX = 18;
-          } else if (['MC', 'MR', 'ML', 'DMC'].includes(role)) {
-            shiftX = 12;
-          } else if (['DL', 'DR'].includes(role)) {
-            shiftX = 10;
-          } else if (role === 'DC') {
-            shiftX = 6;
-          } else if (role === 'GK') {
-            shiftX = 3;
-          }
-        } else {
-          // Away team drops deep to defend their goal on the right
-          if (['DC', 'DL', 'DR'].includes(role)) {
-            shiftX = 6;
-          } else if (['DMC', 'MC', 'MR', 'ML'].includes(role)) {
-            shiftX = 8;
-          } else if (['ST'].includes(role)) {
-            shiftX = -3;
-          }
-        }
-      } else if (attackingPhase === 'AWAY_ATTACK') {
-        if (!isHome) {
-          // Away team attacks forward to the left
-          if (['ST', 'AML', 'AMR', 'AMC'].includes(role)) {
-            shiftX = -18;
-          } else if (['MC', 'MR', 'ML', 'DMC'].includes(role)) {
-            shiftX = -12;
-          } else if (['DL', 'DR'].includes(role)) {
-            shiftX = -10;
-          } else if (role === 'DC') {
-            shiftX = -6;
-          } else if (role === 'GK') {
-            shiftX = -3;
-          }
-        } else {
-          // Home team drops deep to defend their goal on the left
-          if (['DC', 'DL', 'DR'].includes(role)) {
-            shiftX = -6;
-          } else if (['DMC', 'MC', 'MR', 'ML'].includes(role)) {
-            shiftX = -8;
-          } else if (['ST'].includes(role)) {
-            shiftX = 3;
-          }
-        }
-      } else {
-        // Neutral / Midfield linear tactical stepping (NO CIRCLES!)
-        const linearOffset = Math.sin(minute * 0.4 + playerIdx * 0.8) * 1.6;
-        shiftX = linearOffset;
-      }
-    }
-
-    // Hard clamp to ensure players stay inside field boundaries
-    const finalX = Math.max(isHome ? 6 : 48, Math.min(isHome ? 52 : 94, baseX + shiftX));
-    const finalY = Math.max(12, Math.min(88, baseY + shiftY));
-
-    return { x: finalX, y: finalY };
-  };
-
-  // Ball coordinate calculation (passing & circulating between players)
-  const ballCoords = useMemo(() => {
-    if (isRecentGoal) {
-      // Ball is in the net
-      return isHomeGoal ? { x: 95.5, y: 50 } : { x: 4.5, y: 50 };
-    }
-
-    if (lastAction?.coords) {
-      return { x: lastAction.coords.x, y: lastAction.coords.y };
-    }
-
-    if (!isPlaying || minute === 0) {
-      return { x: 50, y: 50 };
-    }
-
-    // Dynamic passing sequence:
-    // Determine which team currently has possession in this minute
-    const isHomePossession = attackingPhase === 'HOME_ATTACK'
-      ? true
-      : attackingPhase === 'AWAY_ATTACK'
-      ? false
-      : (minute % 2 === 0 ? state.homePossessionPercent >= 50 : state.homePossessionPercent >= 60);
-
-    const activeList = isHomePossession ? homeActivePlayers : awayActivePlayers;
-    if (activeList.length === 0) return { x: 50, y: 50 };
-
-    // Select passing candidates based on attack phase
-    let candidateIndices: number[] = [];
-    if (attackingPhase === 'HOME_ATTACK' || attackingPhase === 'AWAY_ATTACK') {
-      // Pass among midfielders and forwards
-      candidateIndices = activeList
-        .map((p, idx) => ({ p, idx }))
-        .filter(({ p }) => ['ST', 'AML', 'AMR', 'AMC', 'MC', 'MR', 'ML'].includes(p.currentPosition))
-        .map(({ idx }) => idx);
-    }
-
-    if (candidateIndices.length === 0) {
-      // Build-up phase: defenders and midfielders
-      candidateIndices = activeList
-        .map((p, idx) => ({ p, idx }))
-        .filter(({ p }) => ['MC', 'DMC', 'DL', 'DR', 'DC'].includes(p.currentPosition))
-        .map(({ idx }) => idx);
-    }
-
-    if (candidateIndices.length === 0) {
-      candidateIndices = activeList.map((_, idx) => idx);
-    }
-
-    // Select player holding the ball
-    const carrierIdx = candidateIndices[minute % candidateIndices.length];
-    const carrierCoords = getCoordinates(isHomePossession, activeList, carrierIdx);
-
-    // Ball placed right near the carrier player's feet
-    const ballOffset = isHomePossession ? 1.8 : -1.8;
-    return {
-      x: Math.max(6, Math.min(94, carrierCoords.x + ballOffset)),
-      y: Math.max(12, Math.min(88, carrierCoords.y + (Math.sin(minute * 1.2) * 0.7))),
-    };
-  }, [isRecentGoal, isHomeGoal, lastAction, attackingPhase, isPlaying, minute, state.homePossessionPercent, homeActivePlayers, awayActivePlayers]);
+  const totalMatchMinutes = 90 + (state.addedTimeSecondHalf || 3);
+  const timelineProgressPercent = Math.min(100, Math.max(0, (minute / totalMatchMinutes) * 100));
 
   return (
-    <div className="relative w-full aspect-[16/9] sm:aspect-[21/10] overflow-hidden shadow-2xl border-2 border-zinc-800 bg-[#06180C] select-none">
+    <div className="relative w-full aspect-[16/9] sm:aspect-[21/10] overflow-hidden shadow-2xl border-2 border-zinc-800 bg-[#06180C] select-none flex flex-col justify-between">
       {/* 1. Field Grass & Subtle Stripes */}
       <div className="absolute inset-0 bg-[#071F10]">
         <div className="w-full h-full flex opacity-15">
@@ -254,7 +207,7 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
         </div>
       </div>
 
-      {/* SVG Tactical Pitch Markings (Crisp, High Contrast, SquadCraft Tactical Style) */}
+      {/* 2. SVG Tactical Pitch Markings (Crisp, High Contrast, SquadCraft Tactical Style) */}
       <svg
         className="absolute inset-0 w-full h-full pointer-events-none stroke-emerald-400/35"
         strokeWidth="1.75"
@@ -291,41 +244,68 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
         <path d="M 960 549 A 15 15 0 0 1 945 564" />
       </svg>
 
-      {/* 2. Attacking Direction Indicator Pill */}
-      {lastAction && (
-        <div
-          className={`absolute top-3 px-3 py-1 font-mono text-[10px] font-black tracking-wider uppercase border z-30 flex items-center gap-1.5 transition-all duration-200 ${
-            lastAction.direction === 'HOME_ATTACK'
-              ? 'left-6 bg-black text-[#00F5A0] border-[#00F5A0]'
-              : 'right-6 bg-black text-[#00D4FF] border-[#00D4FF]'
-          }`}
-        >
-          <Zap className="w-3 h-3" />
+      {/* 3. Top HUD: Live Direction & Tactical Phase Pill */}
+      <div className="absolute top-2.5 inset-x-4 z-30 flex items-center justify-between pointer-events-none text-[10px] sm:text-xs">
+        {/* Left: Home Team State */}
+        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/85 backdrop-blur border border-zinc-700/80 rounded-md">
+          <span
+            className="w-2.5 h-2.5 rounded-full inline-block border border-white/60"
+            style={{ backgroundColor: state.home.club.primaryColor || '#00F5A0' }}
+          />
+          <span className="font-mono font-black text-white">{state.home.club.code}</span>
+          <span className="font-mono font-bold text-zinc-400">({state.home.formation})</span>
+        </div>
+
+        {/* Center: Live Action / Possession Phase Pill */}
+        <div className="flex items-center gap-1.5 px-3 py-1 bg-black/90 backdrop-blur border border-[#00F5A0]/60 rounded-full text-[#00F5A0] font-mono font-black tracking-wider uppercase shadow-[0_0_12px_rgba(0,245,160,0.25)]">
+          <Radio className="w-3 h-3 animate-pulse text-[#00F5A0]" />
           <span>
-            {lastAction.direction === 'HOME_ATTACK'
+            {activePhase === 'GOAL_CELEBRATION'
+              ? '⚽ GOL KUTLAMASI'
+              : activePhase === 'HOME_SHOT'
+              ? `${state.home.club.code} ŞUT ÇEKİYOR! ⚡`
+              : activePhase === 'AWAY_SHOT'
+              ? `⚡ ${state.away.club.code} ŞUT ÇEKİYOR!`
+              : activePhase === 'HOME_ATTACK' || activePhase === 'HOME_PROGRESSION'
               ? `${state.home.club.code} HÜCUM EDİYOR ➔`
-              : `⬅ ${state.away.club.code} HÜCUM EDİYOR`}
+              : activePhase === 'AWAY_ATTACK' || activePhase === 'AWAY_PROGRESSION'
+              ? `⬅ ${state.away.club.code} HÜCUM EDİYOR`
+              : activePhase === 'CORNER_HOME'
+              ? `${state.home.club.code} KÖŞE VURUŞU`
+              : activePhase === 'CORNER_AWAY'
+              ? `${state.away.club.code} KÖŞE VURUŞU`
+              : 'ORTA ALAN MÜCADELESİ'}
           </span>
         </div>
-      )}
 
-      {/* 3. Match Ball (⚽) with High Visibility Glow */}
+        {/* Right: Away Team State */}
+        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/85 backdrop-blur border border-zinc-700/80 rounded-md">
+          <span className="font-mono font-bold text-zinc-400">({state.away.formation})</span>
+          <span className="font-mono font-black text-white">{state.away.club.code}</span>
+          <span
+            className="w-2.5 h-2.5 rounded-full inline-block border border-white/60"
+            style={{ backgroundColor: state.away.club.primaryColor || '#3B82F6' }}
+          />
+        </div>
+      </div>
+
+      {/* 4. Live Match Ball (⚽) with Dynamic Glow & Shadow */}
       <div
         style={{
-          left: `${ballCoords.x}%`,
-          top: `${ballCoords.y}%`,
+          left: `${ballPosRef.current.x}%`,
+          top: `${ballPosRef.current.y}%`,
           transform: 'translate(-50%, -50%)',
-          transition: `left ${animDuration}ms cubic-bezier(0.2, 0.8, 0.2, 1), top ${animDuration}ms cubic-bezier(0.2, 0.8, 0.2, 1)`,
+          willChange: 'left, top',
         }}
-        className="absolute z-25 pointer-events-none"
+        className="absolute z-25 pointer-events-none transition-[left,top] duration-75 ease-out"
       >
-        <span className="absolute -inset-2 rounded-full bg-[#00F5A0]/40 animate-ping" />
-        <div className="relative flex items-center justify-center w-6 h-6 rounded-full bg-white border-2 border-black shadow-[0_0_16px_#00F5A0] text-[12px]">
+        <span className="absolute -inset-2 rounded-full bg-[#00F5A0]/40 animate-ping pointer-events-none" />
+        <div className="relative flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white border border-black shadow-[0_0_16px_#00F5A0] text-[11px] sm:text-[12px] font-bold">
           ⚽
         </div>
       </div>
 
-      {/* 4. Action Target Marker (Goals, Shots, Saves, Corners) */}
+      {/* 5. Action Target Marker (Shots, Saves, Corners) */}
       {lastAction && lastAction.coords && (
         <div
           style={{
@@ -336,26 +316,26 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
           className="absolute z-30 pointer-events-none"
         >
           <span className="absolute -inset-3 rounded-full bg-[#00F5A0]/30 animate-ping" />
-          <div className="relative flex items-center justify-center w-8 h-8 rounded-full bg-black border-2 border-[#00F5A0] shadow-[0_0_20px_#00F5A0] text-sm font-black">
+          <div className="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black border-2 border-[#00F5A0] shadow-[0_0_20px_#00F5A0] text-xs sm:text-sm font-black text-[#00F5A0]">
             {lastAction.type === 'GOAL' ? '⚽' : lastAction.type === 'SAVE' ? '🧤' : lastAction.type === 'POST' ? '🥅' : '⚡'}
           </div>
         </div>
       )}
 
-      {/* 5. Goal Celebration Broadcast Banner Overlay */}
+      {/* 6. Goal Celebration Broadcast Banner Overlay */}
       {isRecentGoal && latestEvent && (
         <div className="absolute inset-x-0 top-1/3 z-40 flex flex-col items-center justify-center pointer-events-none animate-in zoom-in-90 duration-300">
-          <div className="px-6 py-3 bg-black/95 border-2 border-[#00F5A0] shadow-[0_0_30px_#00F5A0] rounded-xl flex flex-col items-center gap-1 text-center">
-            <div className="flex items-center gap-2 text-[#00F5A0] font-black text-lg tracking-widest uppercase animate-bounce">
-              <Flame className="w-5 h-5 text-amber-400" />
+          <div className="px-6 py-2.5 sm:py-3 bg-black/95 border-2 border-[#00F5A0] shadow-[0_0_30px_#00F5A0] rounded-xl flex flex-col items-center gap-1 text-center">
+            <div className="flex items-center gap-2 text-[#00F5A0] font-black text-base sm:text-lg tracking-widest uppercase animate-bounce">
+              <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
               <span>⚽ GOOOOOOOL!</span>
-              <Flame className="w-5 h-5 text-amber-400" />
+              <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
             </div>
-            <div className="text-white font-black text-sm uppercase">
+            <div className="text-white font-black text-xs sm:text-sm uppercase">
               {latestEvent.playerName || 'Oyuncu'} ({latestEvent.minute}&apos;)
             </div>
             {latestEvent.secondaryPlayerName && (
-              <div className="text-zinc-400 font-mono text-[10px]">
+              <div className="text-zinc-400 font-mono text-[9px] sm:text-[10px]">
                 Asist: {latestEvent.secondaryPlayerName}
               </div>
             )}
@@ -366,9 +346,14 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
         </div>
       )}
 
-      {/* 6. Home Players Nodes on Pitch (All 11 in Formation) */}
-      {homeActivePlayers.map((pim, idx) => {
-        const coords = getCoordinates(true, homeActivePlayers, idx);
+      {/* 7. 11 Home Players on Pitch */}
+      {homeActivePlayers.map((pim) => {
+        const pos = playerPositionsRef.current[pim.player.id] || {
+          x: 25,
+          y: 50,
+          isBallCarrier: false,
+          isPressing: false,
+        };
         const isScorer = pim.player.id === goalScorerId;
 
         return (
@@ -376,41 +361,41 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
             key={pim.player.id}
             onClick={() => onPlayerClick && onPlayerClick(pim.player.id)}
             style={{
-              left: `${coords.x}%`,
-              top: `${coords.y}%`,
+              left: `${pos.x}%`,
+              top: `${pos.y}%`,
               transform: 'translate(-50%, -50%)',
-              transition: `left ${animDuration}ms cubic-bezier(0.2, 0.8, 0.2, 1), top ${animDuration}ms cubic-bezier(0.2, 0.8, 0.2, 1)`,
+              willChange: 'left, top',
             }}
             className="absolute z-20 cursor-pointer group flex flex-col items-center hover:scale-125 transition-transform"
           >
             {/* Player Crest Dot */}
             <div
-              className={`relative w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-black text-black border-2 border-white shadow-lg ${
+              className={`relative w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[8px] sm:text-[9px] font-black text-black border-2 border-white shadow-lg ${
                 isScorer ? 'ring-4 ring-amber-400 animate-pulse' : ''
-              }`}
+              } ${pos.isBallCarrier ? 'ring-2 ring-[#00F5A0] shadow-[0_0_12px_#00F5A0]' : ''}`}
               style={{ backgroundColor: state.home.club.primaryColor || '#00F5A0' }}
             >
               <span>{pim.currentPosition}</span>
 
               {/* Match Rating Badge */}
-              <span className="absolute -top-1.5 -right-1.5 px-1 py-0.2 rounded text-[8px] font-black bg-black border border-zinc-700 text-[#00F5A0]">
+              <span className="absolute -top-1.5 -right-1.5 px-0.5 py-0.2 rounded text-[7px] font-black bg-black border border-zinc-700 text-[#00F5A0]">
                 {pim.matchRating.toFixed(1)}
               </span>
 
               {/* Scorer Star */}
               {pim.goals > 0 && (
-                <span className="absolute -bottom-1 -left-1 text-[9px]">⚽</span>
+                <span className="absolute -bottom-1 -left-1 text-[8px]">⚽</span>
               )}
             </div>
 
             {/* Name Tag */}
-            <span className="mt-0.5 px-1 py-0.2 rounded text-[8px] sm:text-[9px] font-bold bg-black/95 text-white border border-zinc-700 truncate max-w-[62px] text-center">
+            <span className="mt-0.5 px-1 py-0.2 rounded text-[7px] sm:text-[8px] font-bold bg-black/95 text-white border border-zinc-700 truncate max-w-[55px] text-center">
               {pim.player.lastName}
             </span>
 
-            {/* Mini Condition / Fitness Bar & Badges */}
+            {/* Mini Condition Bar & Badges */}
             <div className="mt-0.5 flex items-center gap-0.5">
-              <div className="w-5 sm:w-6 h-1 bg-zinc-900/90 rounded-full overflow-hidden border border-zinc-700/80">
+              <div className="w-4 sm:w-5 h-0.5 bg-zinc-900 rounded-full overflow-hidden border border-zinc-700/80">
                 <div
                   className={`h-full rounded-full ${
                     pim.currentFitness >= 75
@@ -423,22 +408,27 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
                 />
               </div>
               {pim.player.isInjured && (
-                <span className="text-[8px] leading-none" title="Sakat">🩹</span>
+                <span className="text-[7px] leading-none" title="Sakat">🩹</span>
               )}
               {pim.yellowCards > 0 && pim.redCards === 0 && (
-                <span className="text-[8px] leading-none" title="Sarı Kart">🟨</span>
+                <span className="text-[7px] leading-none" title="Sarı Kart">🟨</span>
               )}
               {pim.redCards > 0 && (
-                <span className="text-[8px] leading-none" title="Kırmızı Kart">🟥</span>
+                <span className="text-[7px] leading-none" title="Kırmızı Kart">🟥</span>
               )}
             </div>
           </div>
         );
       })}
 
-      {/* 7. Away Players Nodes on Pitch (All 11 in Formation) */}
-      {awayActivePlayers.map((pim, idx) => {
-        const coords = getCoordinates(false, awayActivePlayers, idx);
+      {/* 8. 11 Away Players on Pitch */}
+      {awayActivePlayers.map((pim) => {
+        const pos = playerPositionsRef.current[pim.player.id] || {
+          x: 75,
+          y: 50,
+          isBallCarrier: false,
+          isPressing: false,
+        };
         const isScorer = pim.player.id === goalScorerId;
 
         return (
@@ -446,41 +436,41 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
             key={pim.player.id}
             onClick={() => onPlayerClick && onPlayerClick(pim.player.id)}
             style={{
-              left: `${coords.x}%`,
-              top: `${coords.y}%`,
+              left: `${pos.x}%`,
+              top: `${pos.y}%`,
               transform: 'translate(-50%, -50%)',
-              transition: `left ${animDuration}ms cubic-bezier(0.2, 0.8, 0.2, 1), top ${animDuration}ms cubic-bezier(0.2, 0.8, 0.2, 1)`,
+              willChange: 'left, top',
             }}
             className="absolute z-20 cursor-pointer group flex flex-col items-center hover:scale-125 transition-transform"
           >
             {/* Player Crest Dot */}
             <div
-              className={`relative w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[9px] sm:text-[10px] font-black text-white border-2 border-zinc-300 shadow-lg ${
+              className={`relative w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[8px] sm:text-[9px] font-black text-white border-2 border-zinc-300 shadow-lg ${
                 isScorer ? 'ring-4 ring-amber-400 animate-pulse' : ''
-              }`}
+              } ${pos.isBallCarrier ? 'ring-2 ring-cyan-400 shadow-[0_0_12px_#38BDF8]' : ''}`}
               style={{ backgroundColor: state.away.club.primaryColor || '#3B82F6' }}
             >
               <span>{pim.currentPosition}</span>
 
               {/* Match Rating Badge */}
-              <span className="absolute -top-1.5 -right-1.5 px-1 py-0.2 rounded text-[8px] font-black bg-black border border-zinc-700 text-cyan-300">
+              <span className="absolute -top-1.5 -right-1.5 px-0.5 py-0.2 rounded text-[7px] font-black bg-black border border-zinc-700 text-cyan-300">
                 {pim.matchRating.toFixed(1)}
               </span>
 
               {/* Scorer Star */}
               {pim.goals > 0 && (
-                <span className="absolute -bottom-1 -left-1 text-[9px]">⚽</span>
+                <span className="absolute -bottom-1 -left-1 text-[8px]">⚽</span>
               )}
             </div>
 
             {/* Name Tag */}
-            <span className="mt-0.5 px-1 py-0.2 rounded text-[8px] sm:text-[9px] font-bold bg-black/95 text-zinc-200 border border-zinc-700 truncate max-w-[62px] text-center">
+            <span className="mt-0.5 px-1 py-0.2 rounded text-[7px] sm:text-[8px] font-bold bg-black/95 text-zinc-200 border border-zinc-700 truncate max-w-[55px] text-center">
               {pim.player.lastName}
             </span>
 
-            {/* Mini Condition / Fitness Bar & Badges */}
+            {/* Mini Condition Bar & Badges */}
             <div className="mt-0.5 flex items-center gap-0.5">
-              <div className="w-5 sm:w-6 h-1 bg-zinc-900/90 rounded-full overflow-hidden border border-zinc-700/80">
+              <div className="w-4 sm:w-5 h-0.5 bg-zinc-900 rounded-full overflow-hidden border border-zinc-700/80">
                 <div
                   className={`h-full rounded-full ${
                     pim.currentFitness >= 75
@@ -493,18 +483,71 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
                 />
               </div>
               {pim.player.isInjured && (
-                <span className="text-[8px] leading-none" title="Sakat">🩹</span>
+                <span className="text-[7px] leading-none" title="Sakat">🩹</span>
               )}
               {pim.yellowCards > 0 && pim.redCards === 0 && (
-                <span className="text-[8px] leading-none" title="Sarı Kart">🟨</span>
+                <span className="text-[7px] leading-none" title="Sarı Kart">🟨</span>
               )}
               {pim.redCards > 0 && (
-                <span className="text-[8px] leading-none" title="Kırmızı Kart">🟥</span>
+                <span className="text-[7px] leading-none" title="Kırmızı Kart">🟥</span>
               )}
             </div>
           </div>
         );
       })}
+
+      {/* 9. Bottom Match Timeline Progress Bar with Event Icons */}
+      <div className="relative z-30 w-full px-4 pb-2.5 pt-1.5 bg-black/85 backdrop-blur border-t border-zinc-800">
+        <div className="flex items-center justify-between text-[9px] font-mono font-bold text-zinc-400 mb-1">
+          <span className="flex items-center gap-1">
+            <Clock className="w-3 h-3 text-[#00F5A0]" />
+            <span>0&apos;</span>
+          </span>
+          <span className="text-white font-black bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
+            {minute}&apos;
+          </span>
+          <span>90&apos;+</span>
+        </div>
+
+        {/* Timeline Track */}
+        <div className="relative w-full h-1.5 bg-zinc-900 rounded-full overflow-visible border border-zinc-800">
+          {/* Progress fill */}
+          <div
+            className="h-full bg-gradient-to-r from-emerald-500 to-[#00F5A0] rounded-full transition-all duration-300"
+            style={{ width: `${timelineProgressPercent}%` }}
+          />
+
+          {/* Current minute thumb */}
+          <div
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white border-2 border-[#00F5A0] rounded-full shadow-[0_0_8px_#00F5A0]"
+            style={{ left: `${timelineProgressPercent}%` }}
+          />
+
+          {/* Event markers on timeline */}
+          {timelineEvents.map((ev) => {
+            const evPercent = Math.min(100, Math.max(0, (ev.minute / totalMatchMinutes) * 100));
+            const icon =
+              ev.type === 'GOAL'
+                ? '⚽'
+                : ev.type === 'RED_CARD'
+                ? '🟥'
+                : ev.type === 'YELLOW_CARD'
+                ? '🟨'
+                : '🔄';
+
+            return (
+              <div
+                key={ev.id}
+                title={`${ev.minute}' ${ev.playerName || ''} - ${ev.description}`}
+                style={{ left: `${evPercent}%` }}
+                className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 cursor-pointer hover:scale-150 transition-transform text-[9px] select-none"
+              >
+                <span>{icon}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };
