@@ -558,24 +558,6 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
   const minRequiredForRest = (remainingPicks - 1) * MIN_PLAYER_DRAFT_PRICE;
   const avgBudgetPerPick = currentBudget / remainingPicks;
 
-  useEffect(() => {
-    if (currentClub && roomCode) {
-      console.log('[BUDGET_AUDIT]', {
-        event: 'PAGE_RENDER',
-        roomCode,
-        clubId: currentClub.id,
-        source: 'LiveDraftContent',
-        initialBudget,
-        confirmedSpend: spentBudget,
-        previousRemaining: currentClub.budget ?? initialBudget,
-        calculatedRemaining,
-        newRemaining: currentBudget,
-        pickCount: mySquadLength,
-        timestamp: new Date().toISOString(),
-      });
-    }
-  }, [roomCode, currentClub?.id, currentBudget, spentBudget, mySquadLength, initialBudget, calculatedRemaining]);
-
   // Player pool filtering
   const pickedIds = new Set((draftState.picks || []).map((p) => p.playerId));
   const availablePlayers = (playerPool || []).filter((p) => !pickedIds.has(p.id));
@@ -806,18 +788,18 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         <div className="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
           {/* Left: Branding & Round Indicator */}
           <div className="flex items-center gap-3 sm:gap-4">
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="relative h-8 sm:h-9 w-11 sm:w-13 flex items-center justify-center">
+            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+              <div className="relative h-8 sm:h-9 w-10 sm:w-12 flex items-center justify-center shrink-0">
                 <Image
                   src="/images/sc-emblem-official-hd.png"
                   alt="SquadCraft SC"
-                  width={52}
+                  width={48}
                   height={36}
                   className="object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform"
                   priority
                 />
               </div>
-              <div className="hidden sm:flex flex-col justify-center">
+              <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-sm sm:text-base leading-none">
                   <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
                   <span className="text-[#00F5A0]">26</span>
