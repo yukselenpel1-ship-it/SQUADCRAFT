@@ -168,7 +168,7 @@ export function FifaMatchReportModal({
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
 
         {/* Top Control Bar */}
-        <div className="flex items-center justify-between px-5 py-3 bg-[#090E1D] border-b border-zinc-800">
+        <div className="shrink-0 flex items-center justify-between px-4 sm:px-5 py-2.5 bg-[#090E1D] border-b border-zinc-800">
           <div className="flex items-center gap-2.5">
             <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-black bg-[#00F5A0]/15 text-[#00F5A0] border border-[#00F5A0]/30 tracking-widest uppercase">
               MAÇ RAPORU // 90' TAM SÜRE
@@ -191,49 +191,47 @@ export function FifaMatchReportModal({
         {/* =================================================================== */}
         {/* BROADCAST SCOREBOARD SHOWCASE (EA FC STYLE)                         */}
         {/* =================================================================== */}
-        <div className="relative p-5 sm:p-6 bg-gradient-to-b from-[#0C1222] via-[#090E1B] to-[#070B14] border-b border-zinc-800 overflow-hidden">
+        <div className="shrink-0 relative py-3.5 px-4 sm:px-6 bg-gradient-to-b from-[#0C1222] via-[#090E1B] to-[#070B14] border-b border-zinc-800">
           {/* Subtle Stadium Bokeh Glow */}
           <div className="absolute top-0 left-1/4 w-64 h-64 bg-[#00F5A0]/5 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute top-0 right-1/4 w-64 h-64 bg-[#00D4FF]/5 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 flex items-center justify-between gap-4 max-w-3xl mx-auto">
+          <div className="relative z-10 flex items-center justify-between gap-3 sm:gap-4 max-w-2xl mx-auto">
             {/* Home Club */}
             <div className="flex-1 flex flex-col items-center text-center min-w-0">
-              <div className="relative group mb-2">
+              <div className="relative group mb-1.5">
                 <div
                   className={`absolute -inset-2 rounded-full blur-md opacity-40 transition-opacity ${
                     isHomeWinner ? 'bg-[#00F5A0]' : 'bg-transparent'
                   }`}
                 />
-                <div className="relative p-2 bg-black/40 rounded-full border border-white/10 shadow-lg">
-                  <RenderClubBadge club={homeClub} size="lg" />
+                <div className="relative p-1.5 bg-black/40 rounded-full border border-white/10 shadow-lg">
+                  <RenderClubBadge club={homeClub} size="md" />
                 </div>
               </div>
-              <h3 className="text-xs sm:text-base md:text-lg font-black uppercase italic tracking-tight text-white line-clamp-1 w-full text-center">
+              <h3 className="text-[11px] sm:text-sm font-black uppercase italic tracking-tight text-white line-clamp-2 w-full text-center leading-tight mt-1">
                 {homeClub.name}
               </h3>
               {/* Home Goal Scorers */}
-              <div className="mt-1.5 flex flex-wrap justify-center gap-1.5 min-h-[22px]">
-                {homeGoals.length > 0 ? (
-                  homeGoals.map((g, idx) => (
+              {homeGoals.length > 0 && (
+                <div className="mt-1 flex flex-wrap justify-center gap-1">
+                  {homeGoals.map((g, idx) => (
                     <span
                       key={idx}
-                      className="text-[10px] font-mono text-zinc-300 bg-zinc-900/80 px-2 py-0.5 rounded border border-zinc-800 flex items-center gap-1"
+                      className="text-[10px] font-mono text-zinc-300 bg-zinc-900/90 px-1.5 py-0.5 rounded border border-zinc-800 flex items-center gap-1"
                     >
                       <span className="text-[#00F5A0]">⚽</span>
-                      <span className="font-bold truncate max-w-[90px]">{g.playerName || 'Gol'}</span>
+                      <span className="font-bold truncate max-w-[80px]">{g.playerName || 'Gol'}</span>
                       <span className="text-zinc-500">{g.minute}'</span>
                     </span>
-                  ))
-                ) : (
-                  <span className="text-[10px] font-mono text-zinc-600">-</span>
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Score & Match Status Banner */}
-            <div className="flex flex-col items-center justify-center shrink-0 px-2 sm:px-6">
-              <div className="flex items-center gap-3 sm:gap-4 font-mono font-black text-4xl sm:text-6xl tracking-tight leading-none">
+            <div className="flex flex-col items-center justify-center shrink-0 px-2 sm:px-5">
+              <div className="flex items-center gap-2 sm:gap-3 font-mono font-black text-3xl sm:text-5xl tracking-tight leading-none">
                 <span
                   className={`${
                     isHomeWinner
@@ -243,7 +241,7 @@ export function FifaMatchReportModal({
                 >
                   {homeScore}
                 </span>
-                <span className="text-zinc-600 text-2xl sm:text-4xl">-</span>
+                <span className="text-zinc-600 text-xl sm:text-3xl">-</span>
                 <span
                   className={`${
                     isAwayWinner
@@ -254,92 +252,104 @@ export function FifaMatchReportModal({
                   {awayScore}
                 </span>
               </div>
-              <div className="mt-2 px-3 py-0.5 rounded-full bg-zinc-900/90 border border-zinc-700/60 text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-300">
+              <div className="mt-1.5 px-2.5 py-0.5 rounded-full bg-zinc-900/90 border border-zinc-700/60 text-[9px] sm:text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-300">
                 {isDraw ? 'BERABERLİK' : 'MAÇ SONU'}
               </div>
             </div>
 
             {/* Away Club */}
             <div className="flex-1 flex flex-col items-center text-center min-w-0">
-              <div className="relative group mb-2">
+              <div className="relative group mb-1.5">
                 <div
                   className={`absolute -inset-2 rounded-full blur-md opacity-40 transition-opacity ${
                     isAwayWinner ? 'bg-[#00D4FF]' : 'bg-transparent'
                   }`}
                 />
-                <div className="relative p-2 bg-black/40 rounded-full border border-white/10 shadow-lg">
-                  <RenderClubBadge club={awayClub} size="lg" />
+                <div className="relative p-1.5 bg-black/40 rounded-full border border-white/10 shadow-lg">
+                  <RenderClubBadge club={awayClub} size="md" />
                 </div>
               </div>
-              <h3 className="text-xs sm:text-base md:text-lg font-black uppercase italic tracking-tight text-white line-clamp-1 w-full text-center">
+              <h3 className="text-[11px] sm:text-sm font-black uppercase italic tracking-tight text-white line-clamp-2 w-full text-center leading-tight mt-1">
                 {awayClub.name}
               </h3>
               {/* Away Goal Scorers */}
-              <div className="mt-1.5 flex flex-wrap justify-center gap-1.5 min-h-[22px]">
-                {awayGoals.length > 0 ? (
-                  awayGoals.map((g, idx) => (
+              {awayGoals.length > 0 && (
+                <div className="mt-1 flex flex-wrap justify-center gap-1">
+                  {awayGoals.map((g, idx) => (
                     <span
                       key={idx}
-                      className="text-[10px] font-mono text-zinc-300 bg-zinc-900/80 px-2 py-0.5 rounded border border-zinc-800 flex items-center gap-1"
+                      className="text-[10px] font-mono text-zinc-300 bg-zinc-900/90 px-1.5 py-0.5 rounded border border-zinc-800 flex items-center gap-1"
                     >
                       <span className="text-[#00D4FF]">⚽</span>
-                      <span className="font-bold truncate max-w-[90px]">{g.playerName || 'Gol'}</span>
+                      <span className="font-bold truncate max-w-[80px]">{g.playerName || 'Gol'}</span>
                       <span className="text-zinc-500">{g.minute}'</span>
                     </span>
-                  ))
-                ) : (
-                  <span className="text-[10px] font-mono text-zinc-600">-</span>
-                )}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* =================================================================== */}
-        {/* SEGMENTED EA FC TAB BAR                                             */}
+        {/* SEGMENTED EA FC TAB BAR (CAPSULE PILL STYLE)                        */}
         {/* =================================================================== */}
-        <div className="flex items-center gap-1 px-4 sm:px-6 bg-[#080D1A] border-b border-zinc-800 overflow-x-auto no-scrollbar">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-[11px] sm:text-xs font-mono font-black uppercase tracking-wider border-b-2 transition-all shrink-0 ${
-              activeTab === 'overview'
-                ? 'border-[#00F5A0] text-[#00F5A0] bg-[#00F5A0]/5'
-                : 'border-transparent text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <Activity className="w-3.5 h-3.5" />
-            <span>GENEL BAKIŞ <span className="hidden sm:inline">& İSTATİSTİKLER</span></span>
-          </button>
+        <div className="shrink-0 px-3 sm:px-6 py-2.5 bg-[#080D1A] border-b border-zinc-800">
+          <div className="grid grid-cols-3 gap-1 sm:gap-2 max-w-2xl mx-auto p-1 bg-black/60 rounded-xl border border-zinc-800/80">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-1.5 sm:px-3 rounded-lg text-xs font-mono font-black uppercase tracking-wider transition-all ${
+                activeTab === 'overview'
+                  ? 'bg-gradient-to-r from-[#00F5A0]/20 to-[#00D4FF]/20 text-[#00F5A0] border border-[#00F5A0]/40 shadow-[0_0_15px_rgba(0,245,160,0.15)]'
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border border-transparent'
+              }`}
+            >
+              <Activity className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">
+                <span className="sm:hidden">ÖZET</span>
+                <span className="hidden sm:inline">GENEL BAKIŞ</span>
+              </span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('lineups')}
-            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-[11px] sm:text-xs font-mono font-black uppercase tracking-wider border-b-2 transition-all shrink-0 ${
-              activeTab === 'lineups'
-                ? 'border-[#00F5A0] text-[#00F5A0] bg-[#00F5A0]/5'
-                : 'border-transparent text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5" />
-            <span>OYUNCU PUANLARI <span className="hidden sm:inline">(11v11)</span></span>
-          </button>
+            <button
+              onClick={() => setActiveTab('lineups')}
+              className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-1.5 sm:px-3 rounded-lg text-xs font-mono font-black uppercase tracking-wider transition-all ${
+                activeTab === 'lineups'
+                  ? 'bg-gradient-to-r from-[#00F5A0]/20 to-[#00D4FF]/20 text-[#00F5A0] border border-[#00F5A0]/40 shadow-[0_0_15px_rgba(0,245,160,0.15)]'
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border border-transparent'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">
+                <span className="sm:hidden">PUANLAR</span>
+                <span className="hidden sm:inline">OYUNCU PUANLARI</span>
+              </span>
+            </button>
 
-          <button
-            onClick={() => setActiveTab('timeline')}
-            className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 sm:py-3 text-[11px] sm:text-xs font-mono font-black uppercase tracking-wider border-b-2 transition-all shrink-0 ${
-              activeTab === 'timeline'
-                ? 'border-[#00F5A0] text-[#00F5A0] bg-[#00F5A0]/5'
-                : 'border-transparent text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <Clock className="w-3.5 h-3.5" />
-            <span>OLAYLAR ({events.length})</span>
-          </button>
+            <button
+              onClick={() => setActiveTab('timeline')}
+              className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-1.5 sm:px-3 rounded-lg text-xs font-mono font-black uppercase tracking-wider transition-all ${
+                activeTab === 'timeline'
+                  ? 'bg-gradient-to-r from-[#00F5A0]/20 to-[#00D4FF]/20 text-[#00F5A0] border border-[#00F5A0]/40 shadow-[0_0_15px_rgba(0,245,160,0.15)]'
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border border-transparent'
+              }`}
+            >
+              <Clock className="w-3.5 h-3.5 shrink-0" />
+              <span className="flex items-center gap-1 truncate">
+                <span className="sm:hidden">OLAYLAR</span>
+                <span className="hidden sm:inline">MAÇ OLAYLARI</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-zinc-800/80 border border-zinc-700/60 font-mono ml-0.5">
+                  {events.length}
+                </span>
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* =================================================================== */}
         {/* TAB BODY (SCROLLABLE)                                               */}
         {/* =================================================================== */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 pb-10 space-y-6">
           {/* TAB 1: GENEL BAKIŞ & STATS */}
           {activeTab === 'overview' && (
             <div className="space-y-6 animate-in fade-in duration-200">
@@ -618,6 +628,10 @@ export function FifaMatchReportModal({
                   const isCard = evt.type === 'YELLOW_CARD' || evt.type === 'RED_CARD';
                   const isSub = evt.type === 'SUBSTITUTION';
 
+                  const desc = evt.description || '';
+                  const playerName = evt.playerName || (isHome ? homeClub.name : awayClub.name);
+                  const nameAlreadyInDesc = playerName && desc.toLowerCase().includes(playerName.toLowerCase());
+
                   return (
                     <div
                       key={evt.id || idx}
@@ -637,10 +651,10 @@ export function FifaMatchReportModal({
                           {isGoal ? '⚽' : evt.type === 'RED_CARD' ? '🟥' : evt.type === 'YELLOW_CARD' ? '🟨' : isSub ? '🔄' : '📌'}
                         </span>
                         <div className="truncate">
-                          <span className="font-bold text-white mr-2">
-                            {evt.playerName || (isHome ? homeClub.name : awayClub.name)}
-                          </span>
-                          <span className="text-zinc-400 text-[11px]">{evt.description}</span>
+                          {!nameAlreadyInDesc && (
+                            <span className="font-bold text-white mr-1.5">{playerName}</span>
+                          )}
+                          <span className="text-zinc-300 text-xs">{desc}</span>
                         </div>
                       </div>
 
@@ -658,7 +672,7 @@ export function FifaMatchReportModal({
         {/* =================================================================== */}
         {/* BOTTOM ACTION FOOTER (EA FC STYLE)                                  */}
         {/* =================================================================== */}
-        <div className="p-3 sm:p-4 bg-[#080D1A] border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div className="shrink-0 p-3 sm:p-4 bg-[#080D1A] border-t border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
           <button
             onClick={onClose}
             className="w-full sm:w-auto justify-center flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-xs font-bold text-zinc-300 hover:text-white transition-colors"
