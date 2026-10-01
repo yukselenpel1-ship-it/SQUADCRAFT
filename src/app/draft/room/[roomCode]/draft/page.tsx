@@ -14,8 +14,7 @@ import { Player, PlayerPosition } from '@/types/game';
 import { BadgePreview } from '@/components/draft/BadgePreview';
 import { countSquadPositions, getSnakeTurnMemberId } from '@/lib/draft/draftEngine';
 import { FeedbackModal } from '@/components/draft/FeedbackModal';
-import { APP_VERSION } from '@/lib/version';
-import { DEFAULT_DRAFT_BUDGET, MIN_PLAYER_DRAFT_PRICE } from '@/lib/draft/types';
+import { DEFAULT_DRAFT_BUDGET, MIN_PLAYER_DRAFT_PRICE, DraftPick } from '@/lib/draft/types';
 import { calculatePlayerDraftValue } from '@/lib/draft/playerPool';
 import {
   Trophy,
@@ -193,6 +192,30 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
 
   const botProcessingRef = useRef(false);
   const lastStateVersionRef = useRef<number>(0);
+
+  // Local persistent pick tracking to guarantee budget never reverts to €250M
+  const localPicksStorageKey = `squadcraft_confirmed_picks_${roomCode}`;
+  const localSpentStorageKey = `squadcraft_confirmed_spent_${roomCode}`;
+
+  const [localConfirmedPicks, setLocalConfirmedPicks] = useState<DraftPick[]>(() => {
+    if (typeof window === 'undefined') return [];
+    try {
+      const saved = localStorage.getItem(localPicksStorageKey);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [localConfirmedSpent, setLocalConfirmedSpent] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0;
+    try {
+      const saved = localStorage.getItem(localSpentStorageKey);
+      return saved ? Number(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
 
   // Reset pagination slice when any filter changes
   useEffect(() => {
@@ -433,8 +456,14 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
   }
 
   const { room, members, clubs, draftState, playerPool } = roomState;
-  const currentMember = hydrationResult.currentMember;
-  const currentClub = clubs.find((c) => c.memberId === currentMember?.id);
+  const currentMember =
+    hydrationResult.currentMember ||
+    members.find((m) => m.sessionId === sessionId) ||
+    (room.hostMemberId ? members.find((m) => m.id === room.hostMemberId) : undefined) ||
+    members.find((m) => !m.isBot && !m.isSpectator);
+  const currentClub = clubs.find(
+    (c) => c.memberId === currentMember?.id || (currentMember?.clubId && c.id === currentMember.clubId)
+  );
   const isMyTurn = Boolean(
     currentMember &&
     draftState.currentTurnMemberId === currentMember.id &&
@@ -472,7 +501,17 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
   const targetSquadSize = room.rules.squadSize || 18;
   const initialBudget = room.rules.draftBudget || DEFAULT_DRAFT_BUDGET;
 
-  const myPicks = (draftState.picks || []).filter((p) => {
+  // Combine all canonical and locally confirmed picks to prevent any background drop
+  const allKnownPicks = Array.from(
+    new Map(
+      [...(draftState.picks || []), ...localConfirmedPicks].map((p) => [
+        p.id || `${p.playerId}-${p.clubId || p.memberId}`,
+        p,
+      ])
+    ).values()
+  );
+
+  const myPicks = allKnownPicks.filter((p) => {
     const pClubId = p.clubId || (p as any).club_id;
     const pMemberId = p.memberId || (p as any).member_id;
     return (
@@ -500,16 +539,22 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
       canonicalSpent += pl?.draftValue ?? (pl ? calculatePlayerDraftValue(pl) : MIN_PLAYER_DRAFT_PRICE);
     }
   }
-  if (currentClub?.spentBudget && Number(currentClub.spentBudget) > canonicalSpent) {
-    canonicalSpent = Number(currentClub.spentBudget);
-  }
 
-  const spentBudget = canonicalSpent;
+  // Canonical spend can NEVER decrease once registered
+  const spentBudget = Math.max(
+    canonicalSpent,
+    localConfirmedSpent,
+    currentClub?.spentBudget ? Number(currentClub.spentBudget) : 0
+  );
 
   // CANONICAL RULE: remainingBudget = roomConfiguredInitialBudget - SUM(confirmed draft pick prices for this club)
   // NEVER fall back to DEFAULT_DRAFT_BUDGET (€250M) once drafting has begun or if spend exists
   const calculatedRemaining = Math.max(0, initialBudget - spentBudget);
-  const currentBudget = mySquadLength > 0 ? calculatedRemaining : Math.min(calculatedRemaining, currentClub?.budget ?? calculatedRemaining);
+  const currentBudget = spentBudget > 0
+    ? calculatedRemaining
+    : mySquadLength > 0
+    ? calculatedRemaining
+    : Math.min(calculatedRemaining, currentClub?.budget ?? calculatedRemaining);
   const minRequiredForRest = (remainingPicks - 1) * MIN_PLAYER_DRAFT_PRICE;
   const avgBudgetPerPick = currentBudget / remainingPicks;
 
@@ -648,6 +693,39 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
       }
 
       setSelectedPlayer(null);
+
+      // Immediately track pick in local store to prevent any race condition budget revert
+      const newConfirmedPick: DraftPick = {
+        id: `pick-${room.id}-${Date.now()}`,
+        roomId: room.id,
+        round: draftState.currentRound,
+        pickIndexInRound: draftState.currentPickIndex,
+        globalPickNumber: (draftState.picks?.length || 0) + 1,
+        memberId: currentMember.id,
+        clubId: currentClub?.id || '',
+        playerId: player.id,
+        selectedAt: new Date().toISOString(),
+        isAutoPick: false,
+        timeTakenSeconds: 1,
+        draftPrice: pVal,
+      };
+
+      setLocalConfirmedPicks((prev) => {
+        const next = [...prev, newConfirmedPick];
+        try {
+          localStorage.setItem(localPicksStorageKey, JSON.stringify(next));
+        } catch {}
+        return next;
+      });
+
+      setLocalConfirmedSpent((prev) => {
+        const next = prev + pVal;
+        try {
+          localStorage.setItem(localSpentStorageKey, String(next));
+        } catch {}
+        return next;
+      });
+
       if (res.state) {
         setHydrationResult((prev) => ({
           ...prev,
@@ -728,22 +806,24 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         <div className="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
           {/* Left: Branding & Round Indicator */}
           <div className="flex items-center gap-3 sm:gap-4">
-            <Link href="/draft" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-700 flex items-center justify-center p-1 group-hover:border-[#00F5A0] transition-colors">
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="relative h-8 sm:h-9 w-11 sm:w-13 flex items-center justify-center">
                 <Image
-                  src="/brand/squadcraft-logo.png"
-                  alt="SquadCraft"
-                  width={28}
-                  height={28}
-                  className="object-contain"
+                  src="/images/sc-emblem-official-hd.png"
+                  alt="SquadCraft SC"
+                  width={52}
+                  height={36}
+                  className="object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform"
+                  priority
                 />
               </div>
-              <div className="hidden sm:flex flex-col">
-                <span className="font-black italic tracking-tighter text-sm uppercase leading-none text-white">
-                  SQUADCRAFT <span className="text-[#00F5A0]">26</span>
-                </span>
-                <span className="text-[8px] font-mono tracking-widest text-zinc-400 uppercase">
-                  DRAFT COMMAND CENTER 2.0
+              <div className="hidden sm:flex flex-col justify-center">
+                <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-sm sm:text-base leading-none">
+                  <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
+                  <span className="text-[#00F5A0]">26</span>
+                </div>
+                <span className="text-[8px] font-mono font-bold tracking-widest text-[#00D4FF] uppercase mt-0.5">
+                  DRAFT MERKEZİ 2.0
                 </span>
               </div>
             </Link>

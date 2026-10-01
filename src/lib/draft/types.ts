@@ -46,6 +46,8 @@ export interface DraftRules {
   standings?: DraftStanding[];
   awards?: LeagueAwards;
   liveMatchweek?: LiveMatchweekState;
+  confirmedPicks?: DraftPick[];
+  clubBudgets?: { id: string; memberId: string; code?: string; budget?: number; spentBudget?: number; squadPlayerIds?: string[] }[];
 }
 
 export interface LiveMatchweekState {

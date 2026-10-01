@@ -137,20 +137,32 @@ export function reconstructDraftState(
     return initial;
   }
 
-  const picks: DraftPick[] = rawPicks.map((p) => ({
-    id: p.id,
-    roomId: p.room_id || p.roomId || roomId,
-    round: p.round,
-    pickIndexInRound: p.pick_index_in_round ?? p.pickIndexInRound ?? 0,
-    globalPickNumber: p.global_pick_number ?? p.globalPickNumber ?? 0,
-    memberId: p.member_id || p.memberId,
-    clubId: p.club_id || p.clubId,
-    playerId: p.player_id || p.playerId,
-    selectedAt: p.selected_at || p.selectedAt || new Date().toISOString(),
-    isAutoPick: Boolean(p.is_auto_pick ?? p.isAutoPick),
-    timeTakenSeconds: p.time_taken_seconds ?? p.timeTakenSeconds ?? 0,
-    draftPrice: p.draft_price !== undefined ? Number(p.draft_price) : (p.draftPrice !== undefined ? Number(p.draftPrice) : undefined),
-  }));
+  const picks: DraftPick[] = rawPicks.map((p) => {
+    const rawPrice = p.draftPrice ?? p.draft_price ?? p.purchase_price ?? p.price;
+    const priceNum = rawPrice !== undefined && rawPrice !== null ? Number(rawPrice) : undefined;
+    const memberId = p.memberId || p.member_id || '';
+    const clubId = p.clubId || p.club_id || '';
+    const playerId = p.playerId || p.player_id || '';
+    const pickId = p.id || `pick-${roomId}-${p.global_pick_number || p.pick_index || Math.random().toString(36).substring(2, 7)}`;
+    return {
+      id: pickId,
+      roomId: p.room_id || p.roomId || roomId,
+      round: p.round ?? p.round_number ?? 1,
+      pickIndexInRound: p.pick_index_in_round ?? p.pickIndexInRound ?? p.pick_index ?? 0,
+      globalPickNumber: p.global_pick_number ?? p.globalPickNumber ?? p.pick_index ?? 0,
+      memberId,
+      member_id: memberId,
+      clubId,
+      club_id: clubId,
+      playerId,
+      player_id: playerId,
+      selectedAt: p.selected_at || p.selectedAt || new Date().toISOString(),
+      isAutoPick: Boolean(p.is_auto_pick ?? p.isAutoPick),
+      timeTakenSeconds: p.time_taken_seconds ?? p.timeTakenSeconds ?? 0,
+      draftPrice: priceNum,
+      purchase_price: priceNum,
+    };
+  });
 
   const totalManagers = draftOrder.length;
   const totalPicksRequired = (rules.squadSize || 18) * totalManagers;
@@ -286,6 +298,10 @@ export function reconcileClubsBudget(
     // Never decrease recorded spend if squad or club already registered spend
     if (c.spentBudget && Number(c.spentBudget) > spent) {
       spent = Number(c.spentBudget);
+    }
+    // If club had already spent budget registered via previous remaining budget, guarantee it never resets to initialBudget
+    if (spent === 0 && c.budget !== undefined && c.budget < initialBudget) {
+      spent = initialBudget - c.budget;
     }
 
     // Canonical calculation: strictly initialBudget - confirmedSpend
@@ -990,51 +1006,102 @@ export class DraftMultiplayerStore {
             room.status === 'LEAGUE_COMPLETED' ||
             fixtures.length > 0
           ) {
-            const { data: dbPicks } = await supabase
-              .from('draft_picks')
-              .select('*')
-              .eq('room_id', room.id)
-              .order('global_pick_number', { ascending: true });
+            let dbPicks: any[] = [];
+            try {
+              const { data, error: picksErr } = await supabase
+                .from('draft_picks')
+                .select('*')
+                .eq('room_id', room.id);
+              if (!picksErr && Array.isArray(data)) {
+                dbPicks = data;
+              }
+            } catch (picksCatch) {
+              console.warn('DB picks query non-fatal:', picksCatch);
+            }
 
+            const rulesPicks = Array.isArray(room.rules?.confirmedPicks) ? room.rules.confirmedPicks : [];
             const localRoom = loadRoomLocal(room.id) || loadRoomLocal(room.roomCode);
             const memPicks = memoryRooms[room.id]?.draftState?.picks || [];
             const localPicks = localRoom?.draftState?.picks || [];
 
             const mergedPickMap = new Map<string, any>();
-            (dbPicks || []).forEach((p: any) => mergedPickMap.set(p.id, p));
-            memPicks.forEach((p) => {
-              if (!mergedPickMap.has(p.id)) {
-                mergedPickMap.set(p.id, p);
-              } else {
-                const existing = mergedPickMap.get(p.id);
-                if (p.draftPrice !== undefined && existing.draftPrice === undefined) {
-                  existing.draftPrice = p.draftPrice;
+            (dbPicks || []).forEach((p: any) => {
+              if (p && p.id) mergedPickMap.set(p.id, p);
+            });
+            rulesPicks.forEach((p: any) => {
+              if (p && p.id) {
+                if (!mergedPickMap.has(p.id)) {
+                  mergedPickMap.set(p.id, p);
+                } else {
+                  const existing = mergedPickMap.get(p.id);
+                  const price = p.draftPrice ?? p.purchase_price ?? p.draft_price;
+                  if (price !== undefined && existing.draftPrice === undefined) {
+                    existing.draftPrice = price;
+                    existing.purchase_price = price;
+                  }
                 }
               }
             });
-            localPicks.forEach((p) => {
-              if (!mergedPickMap.has(p.id)) {
-                mergedPickMap.set(p.id, p);
-              } else {
-                const existing = mergedPickMap.get(p.id);
-                if (p.draftPrice !== undefined && existing.draftPrice === undefined) {
-                  existing.draftPrice = p.draftPrice;
+            memPicks.forEach((p: any) => {
+              if (p && p.id) {
+                if (!mergedPickMap.has(p.id)) {
+                  mergedPickMap.set(p.id, p);
+                } else {
+                  const existing = mergedPickMap.get(p.id);
+                  const price = p.draftPrice ?? p.purchase_price ?? p.draft_price;
+                  if (price !== undefined && existing.draftPrice === undefined) {
+                    existing.draftPrice = price;
+                    existing.purchase_price = price;
+                  }
                 }
               }
             });
-            const allPicks = Array.from(mergedPickMap.values());
+            localPicks.forEach((p: any) => {
+              if (p && p.id) {
+                if (!mergedPickMap.has(p.id)) {
+                  mergedPickMap.set(p.id, p);
+                } else {
+                  const existing = mergedPickMap.get(p.id);
+                  const price = p.draftPrice ?? p.purchase_price ?? p.draft_price;
+                  if (price !== undefined && existing.draftPrice === undefined) {
+                    existing.draftPrice = price;
+                    existing.purchase_price = price;
+                  }
+                }
+              }
+            });
+            const allPicks = Array.from(mergedPickMap.values()).sort(
+              (a, b) =>
+                (a.global_pick_number ?? a.globalPickNumber ?? a.pick_index ?? 0) -
+                (b.global_pick_number ?? b.globalPickNumber ?? b.pick_index ?? 0)
+            );
 
             draftState = reconstructDraftState(room.id, members, room.rules, allPicks);
 
-            // Merge any squads that already exist in memory / local storage
+            // Merge any squads and budgets that already exist in memory / local storage / rules
             const memClubs = memoryRooms[room.id]?.clubs || localRoom?.clubs || [];
-            if (memClubs.length > 0) {
+            const ruleClubs = Array.isArray(room.rules?.clubBudgets) ? room.rules.clubBudgets : [];
+            if (memClubs.length > 0 || ruleClubs.length > 0) {
               clubs = clubs.map((c) => {
-                const mc = memClubs.find((m) => m.id === c.id || m.memberId === c.memberId);
+                const mc = memClubs.find((m: any) => m.id === c.id || m.memberId === c.memberId || (m.code && m.code === c.code));
+                const rc = ruleClubs.find((r: any) => r.id === c.id || r.memberId === c.memberId || (r.code && r.code === c.code));
+                const mergedSquad = Array.from(new Set([
+                  ...(c.squadPlayerIds || []),
+                  ...(mc?.squadPlayerIds || []),
+                  ...(rc?.squadPlayerIds || []),
+                ])).filter(Boolean);
+                const maxSpent = Math.max(c.spentBudget || 0, mc?.spentBudget || 0, rc?.spentBudget || 0);
+                const clubBudget = c.budget ?? initialRoomBudget;
+                const preservedBudget = mc?.budget !== undefined && mc.budget < clubBudget
+                  ? mc.budget
+                  : rc?.budget !== undefined && rc.budget < clubBudget
+                  ? rc.budget
+                  : clubBudget;
                 return {
                   ...c,
-                  squadPlayerIds: Array.from(new Set([...(c.squadPlayerIds || []), ...(mc?.squadPlayerIds || [])])),
-                  spentBudget: Math.max(c.spentBudget || 0, mc?.spentBudget || 0),
+                  squadPlayerIds: mergedSquad,
+                  spentBudget: maxSpent,
+                  budget: preservedBudget,
                 };
               });
             }
@@ -2377,20 +2444,47 @@ export class DraftMultiplayerStore {
           const lastPick = res.state.draftState?.picks[res.state.draftState.picks.length - 1];
           if (club && lastPick) {
             try {
+              const playerPrice = lastPick.draftPrice || 0;
+              const upsertPick = async () => {
+                try {
+                  await supabase.from('draft_picks').upsert({
+                    id: lastPick.id,
+                    room_id: roomId,
+                    round: lastPick.round,
+                    pick_index_in_round: lastPick.pickIndexInRound,
+                    global_pick_number: lastPick.globalPickNumber,
+                    member_id: lastPick.memberId,
+                    club_id: lastPick.clubId,
+                    player_id: lastPick.playerId,
+                    selected_at: lastPick.selectedAt,
+                    is_auto_pick: lastPick.isAutoPick,
+                    time_taken_seconds: lastPick.timeTakenSeconds,
+                    draft_price: playerPrice,
+                    purchase_price: playerPrice,
+                    pick_index: lastPick.globalPickNumber,
+                  });
+                } catch {
+                  try {
+                    await supabase.from('draft_picks').insert({
+                      room_id: roomId,
+                      club_id: lastPick.clubId,
+                      player_id: lastPick.playerId,
+                      purchase_price: playerPrice,
+                      pick_index: lastPick.globalPickNumber,
+                    });
+                  } catch (e2) {
+                    console.warn('draft_picks fallback insert warning:', e2);
+                  }
+                }
+              };
+
               await Promise.all([
-                supabase.from('draft_picks').upsert({
-                  id: lastPick.id,
-                  room_id: roomId,
-                  round: lastPick.round,
-                  pick_index_in_round: lastPick.pickIndexInRound,
-                  global_pick_number: lastPick.globalPickNumber,
-                  member_id: lastPick.memberId,
-                  club_id: lastPick.clubId,
-                  player_id: lastPick.playerId,
-                  selected_at: lastPick.selectedAt,
-                  is_auto_pick: lastPick.isAutoPick,
-                  time_taken_seconds: lastPick.timeTakenSeconds,
-                }),
+                supabase.from('multiplayer_rooms').update({
+                  rules: res.state.room.rules,
+                  state_version: res.state.room.stateVersion,
+                  updated_at: new Date().toISOString(),
+                }).eq('id', roomId),
+                upsertPick(),
                 supabase.from('draft_clubs').update({
                   squad_player_ids: club.squadPlayerIds,
                 }).eq('id', club.id),
@@ -2483,7 +2577,26 @@ export class DraftMultiplayerStore {
     );
 
     const resultingVersion = prevVersion + 1;
-    let updatedRoom = { ...state.room, stateVersion: resultingVersion, updatedAt: new Date().toISOString() };
+    const updatedRules: DraftRules = {
+      ...state.room.rules,
+      stateVersion: resultingVersion,
+      confirmedPicks: nextState.picks,
+      clubBudgets: reconciledClubs.map((c) => ({
+        id: c.id,
+        memberId: c.memberId,
+        code: c.code,
+        budget: c.budget,
+        spentBudget: c.spentBudget,
+        squadPlayerIds: c.squadPlayerIds,
+      })),
+    };
+
+    let updatedRoom = {
+      ...state.room,
+      rules: updatedRules,
+      stateVersion: resultingVersion,
+      updatedAt: new Date().toISOString(),
+    };
 
     const intermediateState: RoomFullState = {
       ...state,
@@ -2498,20 +2611,49 @@ export class DraftMultiplayerStore {
     const supabase = getSupabaseClient();
     if (supabase) {
       safeDbRun(async () => {
-        await supabase.from('draft_picks').insert({
-          id: newPick.id,
-          room_id: state.room.id,
-          round: newPick.round,
-          pick_index_in_round: newPick.pickIndexInRound,
-          global_pick_number: newPick.globalPickNumber,
-          member_id: newPick.memberId,
-          club_id: newPick.clubId,
-          player_id: newPick.playerId,
-          selected_at: newPick.selectedAt,
-          is_auto_pick: newPick.isAutoPick,
-          time_taken_seconds: newPick.timeTakenSeconds,
-        });
+        // 1. Authoritatively update multiplayer_rooms with rules containing confirmedPicks and clubBudgets
+        await supabase
+          .from('multiplayer_rooms')
+          .update({
+            rules: updatedRules,
+            state_version: resultingVersion,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', state.room.id);
 
+        // 2. Resilient upsert into draft_picks (supporting both standard and minimal schema)
+        try {
+          await supabase.from('draft_picks').upsert({
+            id: newPick.id,
+            room_id: state.room.id,
+            round: newPick.round,
+            pick_index_in_round: newPick.pickIndexInRound,
+            global_pick_number: newPick.globalPickNumber,
+            member_id: newPick.memberId,
+            club_id: newPick.clubId,
+            player_id: newPick.playerId,
+            selected_at: newPick.selectedAt,
+            is_auto_pick: newPick.isAutoPick,
+            time_taken_seconds: newPick.timeTakenSeconds,
+            draft_price: playerPrice,
+            purchase_price: playerPrice,
+            pick_index: newPick.globalPickNumber,
+          });
+        } catch {
+          try {
+            await supabase.from('draft_picks').insert({
+              room_id: state.room.id,
+              club_id: newPick.clubId,
+              player_id: newPick.playerId,
+              purchase_price: playerPrice,
+              pick_index: newPick.globalPickNumber,
+            });
+          } catch (e2) {
+            console.warn('draft_picks fallback insert notice:', e2);
+          }
+        }
+
+        // 3. Update squad_player_ids on draft_clubs
         const updatedClubItem = reconciledClubs.find((c) => c.id === club.id);
         if (updatedClubItem) {
           await supabase
