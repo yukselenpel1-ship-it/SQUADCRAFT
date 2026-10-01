@@ -10,6 +10,8 @@ interface TacticsPitchProps {
   allPlayers: Player[];
   substitutes: string[];
   reserves: string[];
+  selectedSlotId?: number | null;
+  onSelectSlot?: (slotId: number | null) => void;
   onSwapPlayer: (slotId: number, newPlayerId: string) => void;
   onSwapSlots: (fromSlotId: number, toSlotId: number) => void;
   onPlayerClick?: (player: Player) => void;
@@ -21,11 +23,18 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
   allPlayers,
   substitutes,
   reserves,
+  selectedSlotId: controlledSelectedSlotId,
+  onSelectSlot,
   onSwapPlayer,
   onSwapSlots,
   onPlayerClick,
 }) => {
-  const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
+  const [internalSelectedSlotId, setInternalSelectedSlotId] = useState<number | null>(null);
+  const selectedSlotId = controlledSelectedSlotId !== undefined ? controlledSelectedSlotId : internalSelectedSlotId;
+  const setSelectedSlotId = (slotId: number | null) => {
+    if (onSelectSlot) onSelectSlot(slotId);
+    setInternalSelectedSlotId(slotId);
+  };
   const [benchSwapModalOpen, setBenchSwapModalOpen] = useState(false);
 
   const getPlayer = (id: string | null) => {

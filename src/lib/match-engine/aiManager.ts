@@ -2,6 +2,7 @@ import { MatchTeamRuntime, MatchEngineEvent } from './types';
 import { performSubstitution } from './substitutions';
 import { computeTacticalModifiers } from './tacticalEffects';
 import { calculateTeamRatings } from './teamStrength';
+import { matchRandom } from './random';
 
 export function runAIManagerDecisions(
   minute: number,
@@ -64,7 +65,7 @@ export function runAIManagerDecisions(
   }
 
   // 3. Fitness-based tactical substitutions (between 62 and 78 min)
-  if (minute >= 62 && minute <= 78 && aiTeam.substitutionsUsed < aiTeam.maxSubstitutions && Math.random() < 0.15) {
+  if (minute >= 62 && minute <= 78 && aiTeam.substitutionsUsed < aiTeam.maxSubstitutions && matchRandom() < 0.15) {
     const tiredPlayer = Object.values(aiTeam.players).find(
       (p) => p.isOnPitch && p.currentFitness < 68 && p.currentPosition !== 'GK'
     );

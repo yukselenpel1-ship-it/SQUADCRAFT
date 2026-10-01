@@ -1,4 +1,5 @@
 import { PlayerInMatch, MatchEngineEvent } from './types';
+import { matchRandom } from './random';
 
 export interface InjuryCheckResult {
   hasInjury: boolean;
@@ -37,8 +38,8 @@ export function evaluateInjuries(
       prob *= 1.3;
     }
 
-    if (Math.random() < prob) {
-      const isSevere = Math.random() < 0.45;
+    if (matchRandom() < prob) {
+      const isSevere = matchRandom() < 0.45;
       pim.isInjured = true;
       pim.injurySeverity = isSevere ? 'SEVERE' : 'LIGHT';
 
@@ -47,9 +48,9 @@ export function evaluateInjuries(
       }
 
       const event: MatchEngineEvent = {
-        id: `inj-${Date.now()}-${pim.player.id}`,
+        id: `inj-${minute}-${pim.player.id}`,
         minute,
-        second: Math.floor(Math.random() * 59),
+        second: Math.floor(matchRandom() * 59),
         type: 'INJURY',
         teamId,
         playerId: pim.player.id,

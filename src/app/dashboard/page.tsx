@@ -49,6 +49,9 @@ export default function DashboardPage() {
     daysUntilNextMatch,
     seasonEndSummary,
     startNextSeasonRoll,
+    managerContract,
+    respondToManagerContractOffer,
+    seasonNumber,
   } = useGame();
 
   // Guard: If initialized and no active career and no save exists, redirect to main menu
@@ -134,6 +137,38 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Manager Contract Offer Banner */}
+      {managerContract.status === 'OFFERED' && (
+        <div className="bg-[#110D05] border-2 border-amber-400 p-5 shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <span className="px-2 py-0.5 bg-amber-400 text-black text-[10px] font-black uppercase tracking-widest font-mono">
+              // YÖNETİM KURULU SÖZLEŞME TEKLİFİ
+            </span>
+            <h3 className="text-lg font-black text-white uppercase">
+              2 Yıllık Sözleşme Uzatma Teklifi
+            </h3>
+            <p className="text-xs text-zinc-300">
+              Yönetim, sözleşmenizi 2 yıl uzatmayı ve haftalık maaşınızı{' '}
+              <strong className="text-amber-400">€{(managerContract.offerSalary || 50000).toLocaleString('tr-TR')}</strong> seviyesine çıkarmayı teklif ediyor.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => respondToManagerContractOffer(true)}
+              className="px-5 py-2.5 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase tracking-wider transition-all shadow-md"
+            >
+              Kabul Et
+            </button>
+            <button
+              onClick={() => respondToManagerContractOffer(false)}
+              className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 text-xs font-bold uppercase tracking-wider border border-zinc-700 transition-all"
+            >
+              Reddet
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* 2. GRAND HERO: Club Identity & Command Hub (SquadCraft Club Header, ZERO BLUR) */}
       <div className="bg-[#070B12] border-2 border-[#00F5A0] p-6 shadow-2xl">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
@@ -150,7 +185,10 @@ export default function DashboardPage() {
                   ALVERIA ELİT LİGİ
                 </span>
                 <span className="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 text-[9px] font-mono font-bold uppercase">
-                  {seasonYear} SEZONU
+                  {seasonYear} SEZONU (SEZON #{seasonNumber})
+                </span>
+                <span className="px-2 py-0.5 bg-emerald-950 border border-emerald-500/40 text-[#00F5A0] text-[9px] font-mono font-bold uppercase">
+                  TD SÖZLEŞMESİ: {managerContract.yearsLeft} YIL (€{(managerContract.weeklySalary).toLocaleString('tr-TR')}/HF)
                 </span>
                 <span className="px-2 py-0.5 bg-zinc-950 border border-zinc-800 text-zinc-400 text-[9px] font-mono">
                   {userClub.city}

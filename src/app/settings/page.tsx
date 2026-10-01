@@ -17,6 +17,8 @@ export default function SettingsPage() {
   const {
     currentDate,
     seasonYear,
+    seasonNumber,
+    managerContract,
     resetEntireCareer,
     userClub,
   } = useGame();
@@ -67,6 +69,43 @@ export default function SettingsPage() {
 
       {/* Settings Grid */}
       <div className="space-y-5">
+        {/* Manager Contract & Career Status Card */}
+        <div className="p-6 bg-[#070B12] border border-[#00F5A0]/40 shadow-xl space-y-4">
+          <div className="flex items-center justify-between pb-2.5 border-b border-zinc-800">
+            <h2 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
+              <Shield className="w-4 h-4 text-[#00F5A0]" />
+              Teknik Direktör Sözleşmesi & Kariyer Özeti
+            </h2>
+            <span className="px-2 py-0.5 bg-[#00F5A0]/10 border border-[#00F5A0]/30 text-[#00F5A0] text-[10px] font-mono font-bold uppercase">
+              SEZON #{seasonNumber} • {seasonYear}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="p-3 bg-zinc-950 border border-zinc-850">
+              <span className="text-[10px] font-mono uppercase text-zinc-400 block font-bold">Kalan Sözleşme Süresi</span>
+              <span className="text-lg font-black text-white">{managerContract.yearsLeft} Yıl</span>
+              <span className="text-[10px] font-mono text-[#00F5A0] block mt-0.5">
+                {managerContract.status === 'OFFERED' ? 'Yeni Teklif Bekliyor' : 'Aktif Sözleşme'}
+              </span>
+            </div>
+            <div className="p-3 bg-zinc-950 border border-zinc-850">
+              <span className="text-[10px] font-mono uppercase text-zinc-400 block font-bold">Haftalık Menajer Maaşı</span>
+              <span className="text-lg font-black text-[#00F5A0]">€{(managerContract.weeklySalary).toLocaleString('tr-TR')}</span>
+              <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
+                Yıllık: €{(managerContract.weeklySalary * 52).toLocaleString('tr-TR')}
+              </span>
+            </div>
+            <div className="p-3 bg-zinc-950 border border-zinc-850">
+              <span className="text-[10px] font-mono uppercase text-zinc-400 block font-bold">Ekonomi Standartı</span>
+              <span className="text-lg font-black text-white">v2 (+100% Bütçe)</span>
+              <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
+                Modern Transfer Piyasası
+              </span>
+            </div>
+          </div>
+        </div>
+
         {/* 1. General Preferences Card */}
         <div className="p-6 bg-[#070B12] border border-zinc-800 shadow-xl space-y-5">
           <h2 className="text-sm font-black uppercase tracking-wider text-zinc-200 flex items-center gap-2 pb-2.5 border-b border-zinc-800">

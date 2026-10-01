@@ -8,7 +8,7 @@ import { ClubBadge } from '@/components/ui/ClubBadge';
 import { Calendar, Filter, ChevronRight, CheckCircle2, Clock } from 'lucide-react';
 
 export default function FixturesPage() {
-  const { fixtures, allClubs, userClub } = useGame();
+  const { fixtures, allClubs, userClub, seasonEndSummary, startNextSeasonRoll, seasonYear } = useGame();
   const [selectedFilter, setSelectedFilter] = useState<'ALL' | 'MY_CLUB' | 'PLAYED' | 'UPCOMING'>('ALL');
 
   const getClub = (id: string) => allClubs.find((c) => c.id === id);
@@ -31,6 +31,29 @@ export default function FixturesPage() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
+      {/* Season End Summary Banner */}
+      {seasonEndSummary && (
+        <div className="bg-[#141005] border-2 border-amber-500 p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-1">
+            <span className="px-2.5 py-0.5 bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest font-mono">
+              SEZON TAMAMLANDI
+            </span>
+            <h2 className="text-xl sm:text-2xl font-black italic uppercase text-white">
+              Şampiyon: <span className="text-amber-400">{seasonEndSummary.championClubName}</span> 🏆
+            </h2>
+            <p className="text-xs text-zinc-300 font-medium">
+              Kulübünüz sezonu <strong className="text-[#00F5A0]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) bitirdi.
+            </p>
+          </div>
+          <button
+            onClick={startNextSeasonRoll}
+            className="px-6 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0"
+          >
+            YENİ SEZONA BAŞLA
+          </button>
+        </div>
+      )}
+
       {/* Broadcast Header Banner */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>

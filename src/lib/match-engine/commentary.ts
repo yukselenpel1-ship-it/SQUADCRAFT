@@ -1,4 +1,5 @@
 import { MatchEngineEvent } from './types';
+import { matchRandom } from './random';
 
 export interface CommentaryTemplateParams {
   player?: string;
@@ -88,7 +89,7 @@ export function generateCommentary(
   params: CommentaryTemplateParams
 ): string {
   const list = TEMPLATES[type] || TEMPLATES.SHOT;
-  const template = list[Math.floor(Math.random() * list.length)];
+  const template = list[Math.floor(matchRandom() * list.length)];
 
   return template
     .replace('{player}', params.player || 'Oyuncu')

@@ -23,11 +23,13 @@ import { performSubstitution, SubstitutionResult } from './substitutions';
 import { createEmptyTeamStats, updatePlayerMatchRatings } from './matchStats';
 import { generateCommentary } from './commentary';
 import { FORMATION_COORDINATES } from '@/lib/data/mockData';
+import { createSeededRandom, setActiveRng, matchRandom } from './random';
 
 export class MatchEngine {
   private state: MatchEngineState;
   private momentum: MomentumState;
   private config: MatchSimulationConfig;
+  private rng: () => number;
 
   constructor(
     homeClub: Club,
@@ -48,13 +50,15 @@ export class MatchEngine {
     }
   ) {
     this.config = config;
+    this.rng = createSeededRandom(fixtureId);
+    setActiveRng(this.rng);
     this.momentum = createInitialMomentum(config.enableHomeAdvantage);
 
     const calcConsistencyVariance = (p: Player) => {
       const consistency = p.hiddenAttributes?.consistency ?? 70;
       // spread: consistency 100 -> 0%, consistency 70 -> ±3.3%, consistency 50 -> ±5.5%
       const spread = (100 - consistency) * 0.0011;
-      return (Math.random() - 0.5) * 2 * spread;
+      return (matchRandom() - 0.5) * 2 * spread;
     };
 
     // Initialize Home Team Runtime
@@ -174,8 +178,8 @@ export class MatchEngine {
       consecutiveAttacks: 0,
     };
 
-    const addedTime1 = Math.floor(1 + Math.random() * 3); // 1-3 min
-    const addedTime2 = Math.floor(2 + Math.random() * 4); // 2-5 min
+    const addedTime1 = Math.floor(1 + matchRandom() * 3); // 1-3 min
+    const addedTime2 = Math.floor(2 + matchRandom() * 4); // 2-5 min
 
     const initialKickoffEvent: MatchEngineEvent = {
       id: `kickoff-0`,
@@ -244,6 +248,7 @@ export class MatchEngine {
   }
 
   public simulateMinute(): { events: MatchEngineEvent[]; isFinished: boolean } {
+    setActiveRng(this.rng);
     if (this.state.isFinished) {
       return { events: [], isFinished: true };
     }
@@ -335,8 +340,8 @@ export class MatchEngine {
     const minuteHomePossRatio = homePossAbility / Math.max(1, totalPossAbility);
 
     // Accumulate passes
-    const passCount = Math.floor(7 + Math.random() * 5);
-    if (Math.random() < minuteHomePossRatio) {
+    const passCount = Math.floor(7 + matchRandom() * 5);
+    if (matchRandom() < minuteHomePossRatio) {
       this.state.home.stats.passes += passCount;
       this.state.home.stats.completedPasses += Math.floor(passCount * (this.state.home.ratings.possessionAbility / 100));
     } else {

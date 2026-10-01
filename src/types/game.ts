@@ -83,6 +83,14 @@ export interface HiddenPlayerAttributes {
   developmentCurve: DevelopmentCurve; // Gelişim Eğrisi
 }
 
+export interface ManagerContract {
+  yearsLeft: number;
+  weeklySalary: number;
+  status: 'ACTIVE' | 'OFFERED' | 'EXPIRED';
+  offerYears?: number;
+  offerSalary?: number;
+}
+
 export interface ScoutingReport {
   isFullyScouted: boolean;
   scoutedLevel: number; // 0-100

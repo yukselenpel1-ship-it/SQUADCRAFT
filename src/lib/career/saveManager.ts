@@ -33,6 +33,13 @@ export function migrateV2toV3(v2: CareerSaveDataV2): CareerSaveDataV3 {
     academyFacilities: (v2 as any).academyFacilities || academy,
     youthPlayers: (v2 as any).youthPlayers || [],
     playerHiddenProfiles: (v2 as any).playerHiddenProfiles || hiddenProfiles,
+    careerEconomyVersion: 2,
+    managerContract: (v2 as any).managerContract || {
+      yearsLeft: 2,
+      weeklySalary: 45000,
+      status: 'ACTIVE',
+    },
+    seasonNumber: (v2 as any).seasonNumber || 1,
   };
 }
 
@@ -71,6 +78,50 @@ export function saveCareerState(data: any): boolean {
   }
 }
 
+export function applyEconomyAndContractMigrations(data: CareerSaveDataV3): CareerSaveDataV3 {
+  let needsSave = false;
+
+  // 1. One-time versioned budget migration (+100% / x2 across user and AI clubs)
+  if (!data.careerEconomyVersion || data.careerEconomyVersion < 2) {
+    if (data.clubs) {
+      data.clubs = data.clubs.map((c: any) => ({
+        ...c,
+        transferBudget: Math.round(c.transferBudget * 2),
+      }));
+    }
+    if (data.finances) {
+      data.finances = {
+        ...data.finances,
+        transferBudget: Math.round(data.finances.transferBudget * 2),
+      };
+    }
+    data.careerEconomyVersion = 2;
+    needsSave = true;
+  }
+
+  // 2. Manager contract migration
+  if (!data.managerContract) {
+    data.managerContract = {
+      yearsLeft: 2,
+      weeklySalary: 45000,
+      status: 'ACTIVE',
+    };
+    needsSave = true;
+  }
+
+  // 3. Season number migration
+  if (!data.seasonNumber) {
+    data.seasonNumber = 1;
+    needsSave = true;
+  }
+
+  if (needsSave) {
+    saveCareerState(data);
+  }
+
+  return data;
+}
+
 export function loadCareerState(): CareerSaveDataV3 | null {
   try {
     if (typeof window === 'undefined') return null;
@@ -80,10 +131,11 @@ export function loadCareerState(): CareerSaveDataV3 | null {
     if (itemV3) {
       const parsed = JSON.parse(itemV3);
       if (parsed && parsed.saveVersion === 3 && parsed.currentDate && parsed.clubs) {
-        return parsed as CareerSaveDataV3;
+        return applyEconomyAndContractMigrations(parsed as CareerSaveDataV3);
       }
       if (parsed && parsed.saveVersion === 2 && parsed.currentDate && parsed.clubs) {
-        return migrateV2toV3(parsed as CareerSaveDataV2);
+        const migrated = migrateV2toV3(parsed as CareerSaveDataV2);
+        return applyEconomyAndContractMigrations(migrated);
       }
     }
 
@@ -94,7 +146,7 @@ export function loadCareerState(): CareerSaveDataV3 | null {
       if (parsedV2 && parsedV2.saveVersion === 2 && parsedV2.currentDate && parsedV2.clubs) {
         const migrated = migrateV2toV3(parsedV2 as CareerSaveDataV2);
         saveCareerState(migrated);
-        return migrated;
+        return applyEconomyAndContractMigrations(migrated);
       }
     }
 
@@ -105,7 +157,7 @@ export function loadCareerState(): CareerSaveDataV3 | null {
       if (parsedV1 && (parsedV1.saveVersion === 1 || !parsedV1.saveVersion) && parsedV1.currentDate && parsedV1.clubs) {
         const migrated = migrateV1toV3(parsedV1 as CareerSaveDataV1);
         saveCareerState(migrated);
-        return migrated;
+        return applyEconomyAndContractMigrations(migrated);
       }
     }
 

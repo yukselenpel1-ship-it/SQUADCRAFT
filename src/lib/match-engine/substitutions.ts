@@ -1,6 +1,7 @@
 import { MatchTeamRuntime, MatchEngineEvent } from './types';
 import { calculateTeamRatings } from './teamStrength';
 import { generateCommentary } from './commentary';
+import { matchRandom } from './random';
 
 export interface SubstitutionResult {
   success: boolean;
@@ -71,9 +72,9 @@ export function performSubstitution(
   team.ratings = calculateTeamRatings(activePlayers);
 
   const event: MatchEngineEvent = {
-    id: `sub-${Date.now()}-${playerInId}`,
+    id: `sub-${minute}-${playerInId}`,
     minute,
-    second: Math.floor(Math.random() * 59),
+    second: Math.floor(matchRandom() * 59),
     type: 'SUBSTITUTION',
     teamId: team.club.id,
     playerId: playerIn.player.id,

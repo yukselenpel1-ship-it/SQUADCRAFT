@@ -8,6 +8,7 @@ import {
   TransferOffer,
   FinanceSummary,
   Formation,
+  ManagerContract,
 } from '@/types/game';
 
 export type TrainingIntensity = 'Hafif' | 'Normal' | 'Yoğun';
@@ -151,6 +152,9 @@ export interface CareerSaveDataV3 {
   playerHiddenProfiles?: Record<string, any>; // Record<string, PlayerHiddenProfile>
   leagueSize?: 10 | 14 | 18;
   difficulty?: CareerDifficulty;
+  careerEconomyVersion?: number;
+  managerContract?: ManagerContract;
+  seasonNumber?: number;
   settings: {
     autoSave: boolean;
     defaultMatchSpeed: number;

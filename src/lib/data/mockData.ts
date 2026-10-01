@@ -10,6 +10,7 @@ import {
   PlayerPosition,
   Formation,
   PlayerAttributes,
+  PitchPositionSlot,
 } from '@/types/game';
 
 // ============================================================================
@@ -26,7 +27,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 38500,
     reputation: 82,
     balance: 28450000,
-    transferBudget: 12500000,
+    transferBudget: 25000000,
     wageBudget: 380000,
     weeklyWageExpense: 315000,
     primaryColor: '#00F5A0',
@@ -45,7 +46,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 42000,
     reputation: 85,
     balance: 34200000,
-    transferBudget: 15800000,
+    transferBudget: 31600000,
     wageBudget: 420000,
     weeklyWageExpense: 395000,
     primaryColor: '#3B82F6',
@@ -64,7 +65,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 50500,
     reputation: 88,
     balance: 41000000,
-    transferBudget: 18500000,
+    transferBudget: 37000000,
     wageBudget: 480000,
     weeklyWageExpense: 445000,
     primaryColor: '#EF4444',
@@ -83,7 +84,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 35200,
     reputation: 79,
     balance: 22800000,
-    transferBudget: 9200000,
+    transferBudget: 18400000,
     wageBudget: 320000,
     weeklyWageExpense: 285000,
     primaryColor: '#8B5CF6',
@@ -102,7 +103,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 28400,
     reputation: 76,
     balance: 18600000,
-    transferBudget: 7400000,
+    transferBudget: 14800000,
     wageBudget: 275000,
     weeklyWageExpense: 245000,
     primaryColor: '#06B6D4',
@@ -121,7 +122,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 31000,
     reputation: 78,
     balance: 21500000,
-    transferBudget: 8600000,
+    transferBudget: 17200000,
     wageBudget: 310000,
     weeklyWageExpense: 270000,
     primaryColor: '#EAB308',
@@ -140,7 +141,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 26200,
     reputation: 74,
     balance: 16200000,
-    transferBudget: 6100000,
+    transferBudget: 12200000,
     wageBudget: 240000,
     weeklyWageExpense: 215000,
     primaryColor: '#F97316',
@@ -159,7 +160,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 24800,
     reputation: 72,
     balance: 14800000,
-    transferBudget: 5300000,
+    transferBudget: 10600000,
     wageBudget: 220000,
     weeklyWageExpense: 195000,
     primaryColor: '#10B981',
@@ -178,7 +179,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 22000,
     reputation: 70,
     balance: 13200000,
-    transferBudget: 4800000,
+    transferBudget: 9600000,
     wageBudget: 200000,
     weeklyWageExpense: 178000,
     primaryColor: '#EC4899',
@@ -197,7 +198,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 19500,
     reputation: 68,
     balance: 11500000,
-    transferBudget: 4100000,
+    transferBudget: 8200000,
     wageBudget: 180000,
     weeklyWageExpense: 160000,
     primaryColor: '#6366F1',
@@ -216,7 +217,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 36000,
     reputation: 81,
     balance: 26500000,
-    transferBudget: 11200000,
+    transferBudget: 22400000,
     wageBudget: 350000,
     weeklyWageExpense: 305000,
     primaryColor: '#0284C7',
@@ -235,7 +236,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 33500,
     reputation: 77,
     balance: 20400000,
-    transferBudget: 8100000,
+    transferBudget: 16200000,
     wageBudget: 295000,
     weeklyWageExpense: 260000,
     primaryColor: '#15803D',
@@ -254,7 +255,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 29000,
     reputation: 75,
     balance: 17800000,
-    transferBudget: 6900000,
+    transferBudget: 13800000,
     wageBudget: 260000,
     weeklyWageExpense: 230000,
     primaryColor: '#B45309',
@@ -273,7 +274,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 25500,
     reputation: 73,
     balance: 15400000,
-    transferBudget: 5800000,
+    transferBudget: 11600000,
     wageBudget: 230000,
     weeklyWageExpense: 205000,
     primaryColor: '#0D9488',
@@ -292,7 +293,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 23000,
     reputation: 71,
     balance: 14100000,
-    transferBudget: 5100000,
+    transferBudget: 10200000,
     wageBudget: 210000,
     weeklyWageExpense: 185000,
     primaryColor: '#4338CA',
@@ -311,7 +312,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 21000,
     reputation: 69,
     balance: 12400000,
-    transferBudget: 4400000,
+    transferBudget: 8800000,
     wageBudget: 190000,
     weeklyWageExpense: 170000,
     primaryColor: '#0EA5E9',
@@ -330,7 +331,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 20000,
     reputation: 67,
     balance: 11000000,
-    transferBudget: 3900000,
+    transferBudget: 7800000,
     wageBudget: 175000,
     weeklyWageExpense: 155000,
     primaryColor: '#DC2626',
@@ -349,7 +350,7 @@ export const MOCK_CLUBS: Club[] = [
     stadiumCapacity: 18500,
     reputation: 66,
     balance: 10200000,
-    transferBudget: 3500000,
+    transferBudget: 7000000,
     wageBudget: 165000,
     weeklyWageExpense: 145000,
     primaryColor: '#64748B',
@@ -536,87 +537,8 @@ export function generateAllPlayers(): Player[] {
 export const MOCK_PLAYERS: Player[] = generateAllPlayers();
 
 // ============================================================================
-// 3. INITIAL CLUB TACTICS & FORMATION (Kalyon Doruk SK default 4-2-3-1)
+// 3. FORMATION PRESETS & TACTICAL COORDINATES
 // ============================================================================
-export function getInitialTactics(clubId: string = 'kalyon-doruk'): ClubTactics {
-  const clubPlayers = MOCK_PLAYERS.filter(p => p.clubId === clubId);
-
-  // Formation 4-2-3-1 pitch slots (x, y coordinates in percentage)
-  const defaultSlots: { role: PlayerPosition; x: number; y: number }[] = [
-    { role: 'GK', x: 50, y: 88 },
-    { role: 'DR', x: 84, y: 70 },
-    { role: 'DC', x: 62, y: 72 },
-    { role: 'DC', x: 38, y: 72 },
-    { role: 'DL', x: 16, y: 70 },
-    { role: 'DMC', x: 60, y: 53 },
-    { role: 'DMC', x: 40, y: 53 },
-    { role: 'AMR', x: 80, y: 32 },
-    { role: 'AMC', x: 50, y: 34 },
-    { role: 'AML', x: 20, y: 32 },
-    { role: 'ST', x: 50, y: 15 },
-  ];
-
-  const assignedIds: string[] = [];
-  const startingLineup = defaultSlots.map((slot, index) => {
-    let candidate = clubPlayers.find(
-      (p) => !assignedIds.includes(p.id) && p.position === slot.role && !p.isInjured && !p.isSuspended
-    );
-    if (!candidate) {
-      candidate = clubPlayers.find(
-        (p) => !assignedIds.includes(p.id) && p.secondaryPositions?.includes(slot.role) && !p.isInjured && !p.isSuspended
-      );
-    }
-    if (!candidate) {
-      const isDef = ['DR', 'DC', 'DL'].includes(slot.role);
-      const isMid = ['DMC', 'MC', 'MR', 'ML', 'AMC'].includes(slot.role);
-      const isAtt = ['ST', 'AML', 'AMR'].includes(slot.role);
-      const isGK = slot.role === 'GK';
-
-      candidate = clubPlayers
-        .filter((p) => !assignedIds.includes(p.id) && !p.isInjured && !p.isSuspended)
-        .sort((a, b) => b.overall - a.overall)
-        .find((p) => {
-          if (isGK) return p.position === 'GK';
-          if (isDef) return ['DR', 'DC', 'DL', 'DMC'].includes(p.position);
-          if (isMid) return ['DMC', 'MC', 'MR', 'ML', 'AMC'].includes(p.position);
-          if (isAtt) return ['ST', 'AML', 'AMR', 'AMC'].includes(p.position);
-          return true;
-        });
-    }
-    if (!candidate) {
-      candidate = clubPlayers.find((p) => !assignedIds.includes(p.id)) || clubPlayers[index];
-    }
-    if (candidate) {
-      assignedIds.push(candidate.id);
-    }
-    return {
-      slotId: index,
-      role: slot.role,
-      x: slot.x,
-      y: slot.y,
-      playerId: candidate ? candidate.id : null,
-    };
-  });
-
-  const startingPlayerIds = startingLineup.map(s => s.playerId).filter(Boolean) as string[];
-  const remaining = clubPlayers.filter(p => !startingPlayerIds.includes(p.id));
-
-  return {
-    clubId,
-    formation: '4-2-3-1',
-    settings: {
-      mentality: 'Dengeli',
-      tempo: 'Standart',
-      pressing: 'Yoğun',
-      passingStyle: 'Kısa',
-      defensiveLine: 'Standart',
-      width: 'Dengeli',
-    },
-    lineup: startingLineup,
-    substitutes: remaining.slice(0, 7).map(p => p.id),
-    reserves: remaining.slice(7).map(p => p.id),
-  };
-}
 
 // Formation pitch coordinates presets
 export const FORMATION_COORDINATES: Record<Formation, { role: PlayerPosition; x: number; y: number }[]> = {
@@ -818,7 +740,107 @@ export const FORMATION_COORDINATES: Record<Formation, { role: PlayerPosition; x:
 };
 
 // ============================================================================
-// 4. LEAGUE STANDINGS (Alveria Süper Ligi - Current Round 5 Finished)
+// 4. CAREER SQUAD TACTICS GENERATOR (Deterministic Lineup & Subs Allocation)
+// ============================================================================
+export function generateCareerTactics(
+  clubId: string = 'kalyon-doruk',
+  squad?: Player[],
+  formation: Formation = '4-2-3-1'
+): ClubTactics {
+  let clubPlayers = squad && squad.length > 0
+    ? squad.filter((p) => p.clubId === clubId || !p.clubId)
+    : [];
+
+  if (clubPlayers.length === 0) {
+    clubPlayers = MOCK_PLAYERS.filter((p) => p.clubId === clubId);
+  }
+
+  if (clubPlayers.length === 0) {
+    clubPlayers = squad && squad.length > 0 ? squad : MOCK_PLAYERS.slice(0, 25);
+  }
+
+  const defaultSlots = FORMATION_COORDINATES[formation] || FORMATION_COORDINATES['4-2-3-1'];
+
+  const assignedIds: string[] = [];
+  const startingLineup: PitchPositionSlot[] = defaultSlots.map((slot, index) => {
+    // 1. Exact role match & healthy
+    let candidate = clubPlayers.find(
+      (p) => !assignedIds.includes(p.id) && p.position === slot.role && !p.isInjured && !p.isSuspended
+    );
+    // 2. Secondary role match & healthy
+    if (!candidate) {
+      candidate = clubPlayers.find(
+        (p) => !assignedIds.includes(p.id) && p.secondaryPositions?.includes(slot.role) && !p.isInjured && !p.isSuspended
+      );
+    }
+    // 3. Category match & healthy, sorted by overall
+    if (!candidate) {
+      const isDef = ['DR', 'DC', 'DL'].includes(slot.role);
+      const isMid = ['DMC', 'MC', 'MR', 'ML', 'AMC'].includes(slot.role);
+      const isAtt = ['ST', 'AML', 'AMR'].includes(slot.role);
+      const isGK = slot.role === 'GK';
+
+      candidate = clubPlayers
+        .filter((p) => !assignedIds.includes(p.id) && !p.isInjured && !p.isSuspended)
+        .sort((a, b) => b.overall - a.overall)
+        .find((p) => {
+          if (isGK) return p.position === 'GK';
+          if (isDef) return ['DR', 'DC', 'DL', 'DMC'].includes(p.position);
+          if (isMid) return ['DMC', 'MC', 'MR', 'ML', 'AMC'].includes(p.position);
+          if (isAtt) return ['ST', 'AML', 'AMR', 'AMC'].includes(p.position);
+          return true;
+        });
+    }
+    // 4. Any healthy player sorted by overall
+    if (!candidate) {
+      candidate = clubPlayers
+        .filter((p) => !assignedIds.includes(p.id) && !p.isInjured && !p.isSuspended)
+        .sort((a, b) => b.overall - a.overall)[0];
+    }
+    // 5. Any remaining player
+    if (!candidate) {
+      candidate = clubPlayers.find((p) => !assignedIds.includes(p.id)) || clubPlayers[index % clubPlayers.length];
+    }
+    if (candidate) {
+      assignedIds.push(candidate.id);
+    }
+    return {
+      slotId: index,
+      role: slot.role,
+      x: slot.x,
+      y: slot.y,
+      playerId: candidate ? candidate.id : null,
+    };
+  });
+
+  const startingPlayerIds = startingLineup.map((s) => s.playerId).filter(Boolean) as string[];
+  const remaining = clubPlayers
+    .filter((p) => !startingPlayerIds.includes(p.id))
+    .sort((a, b) => b.overall - a.overall);
+
+  return {
+    clubId,
+    formation,
+    settings: {
+      mentality: 'Dengeli',
+      tempo: 'Standart',
+      pressing: 'Yoğun',
+      passingStyle: 'Kısa',
+      defensiveLine: 'Standart',
+      width: 'Dengeli',
+    },
+    lineup: startingLineup,
+    substitutes: remaining.slice(0, 7).map((p) => p.id),
+    reserves: remaining.slice(7).map((p) => p.id),
+  };
+}
+
+export function getInitialTactics(clubId: string = 'kalyon-doruk', squad?: Player[]): ClubTactics {
+  return generateCareerTactics(clubId, squad, '4-2-3-1');
+}
+
+// ============================================================================
+// 5. LEAGUE STANDINGS (Alveria Süper Ligi - Current Round 5 Finished)
 // ============================================================================
 export const MOCK_STANDINGS: LeagueStanding[] = [
   {

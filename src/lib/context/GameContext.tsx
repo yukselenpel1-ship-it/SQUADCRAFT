@@ -12,6 +12,7 @@ import {
   FinanceSummary,
   Formation,
   TacticalSettings,
+  ManagerContract,
 } from '@/types/game';
 import {
   MOCK_CLUBS,
@@ -22,6 +23,7 @@ import {
   MOCK_SHORTLIST_IDS,
   MOCK_FINANCES,
   getInitialTactics,
+  generateCareerTactics,
   FORMATION_COORDINATES,
 } from '@/lib/data/mockData';
 import {
@@ -207,6 +209,10 @@ interface GameContextType {
   upgradeAcademy: (facilityType: 'academyLevel' | 'youthCoachingQuality' | 'youthRecruitmentNetwork') => { success: boolean; message: string };
   getMaskedPlayer: (player: Player) => MaskedPlayerView;
   getPlayerKnowledge: (playerId: string) => { level: KnowledgeLevel; percentage: number };
+  seasonNumber: number;
+  managerContract: ManagerContract;
+  autoAssignTactics: () => void;
+  respondToManagerContractOffer: (accept: boolean) => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -222,9 +228,20 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const [seasonYear, setSeasonYear] = useState<string>('2026/27');
   const [seasonStage, setSeasonStage] = useState<SeasonStage>('PRE_SEASON');
   const [trainingIntensity, setTrainingIntensityState] = useState<TrainingIntensity>('Normal');
+  const [seasonNumber, setSeasonNumber] = useState<number>(1);
+  const [careerEconomyVersion, setCareerEconomyVersion] = useState<number>(2);
+  const [managerContract, setManagerContract] = useState<ManagerContract>({
+    yearsLeft: 2,
+    weeklySalary: 45000,
+    status: 'ACTIVE',
+  });
   const [allClubs, setAllClubs] = useState<Club[]>(MOCK_CLUBS);
   const [allPlayers, setAllPlayers] = useState<Player[]>(() => generateCareerPlayerUniverse(MOCK_CLUBS));
-  const [tactics, setTactics] = useState<ClubTactics>(() => getInitialTactics('kalyon-doruk'));
+  const [tactics, setTactics] = useState<ClubTactics>(() => {
+    const initPool = generateCareerPlayerUniverse(MOCK_CLUBS);
+    const userSquad = initPool.filter((p) => p.clubId === 'kalyon-doruk');
+    return generateCareerTactics('kalyon-doruk', userSquad, '4-2-3-1');
+  });
   const [standings, setStandings] = useState<LeagueStanding[]>(() =>
     MOCK_CLUBS.map((c, i) => ({
       rank: i + 1,
@@ -308,6 +325,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
         if (saved.activeLoans) setActiveLoans(saved.activeLoans);
         if (saved.academyFacilities) setAcademyFacilities(saved.academyFacilities);
         if (saved.youthPlayers) setYouthPlayers(saved.youthPlayers);
+        if (saved.managerContract) setManagerContract(saved.managerContract);
+        if (saved.seasonNumber) setSeasonNumber(saved.seasonNumber);
+        if (saved.careerEconomyVersion) setCareerEconomyVersion(saved.careerEconomyVersion);
 
         // If navigated directly to an active career route and save exists, mark active
         if (typeof window !== 'undefined') {
@@ -403,6 +423,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
       activeLoans: loans,
       academyFacilities: fac,
       youthPlayers: youths,
+      managerContract,
+      seasonNumber,
+      careerEconomyVersion: 2,
       settings: {
         autoSave: true,
         defaultMatchSpeed: 1,
@@ -413,6 +436,27 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   const userClub = allClubs.find((c) => c.id === userClubId) || allClubs[0];
   const userPlayers = allPlayers.filter((p) => p.clubId === userClubId);
+
+  // Auto-reconciliation to prevent tactics displaying "Boş" or mismatched squad IDs
+  useEffect(() => {
+    if (userPlayers.length >= 11) {
+      const userPlayerIds = new Set(userPlayers.map((p) => p.id));
+      const validAssigned = tactics.lineup.filter((s) => s.playerId && userPlayerIds.has(s.playerId));
+
+      const needsHealing =
+        validAssigned.length < 11 ||
+        tactics.lineup.some((s) => !s.playerId) ||
+        tactics.substitutes.length === 0 ||
+        tactics.substitutes.some((id) => !userPlayerIds.has(id));
+
+      if (needsHealing) {
+        const healed = generateCareerTactics(userClubId, userPlayers, tactics.formation || '4-2-3-1');
+        healed.settings = tactics.settings;
+        setTactics(healed);
+      }
+    }
+  }, [allPlayers, userClubId, userPlayers.length]);
+
   const unreadMessageCount = inboxMessages.filter((m) => !m.isRead).length;
 
   const nextMatch = fixtures.find(
@@ -837,7 +881,45 @@ export function GameProvider({ children }: { children: ReactNode }) {
   // 4. Start Next Season
   const startNextSeasonRoll = () => {
     const rolled = startNewSeason(seasonYear, allClubs, allPlayers, standings, userClubId, finances);
+    const nextSeasonNum = seasonNumber + 1;
+    setSeasonNumber(nextSeasonNum);
 
+    const nextContractYears = Math.max(0, managerContract.yearsLeft - 1);
+    let updatedContract: ManagerContract = {
+      ...managerContract,
+      yearsLeft: nextContractYears,
+    };
+
+    let nextInbox = [rolled.boardMessage, ...inboxMessages];
+
+    // If manager contract has 1 year or less left, board makes an extension offer
+    if (nextContractYears <= 1) {
+      const offerSalary = Math.round(managerContract.weeklySalary * 1.15);
+      updatedContract = {
+        ...updatedContract,
+        status: 'OFFERED',
+        offerYears: 2,
+        offerSalary,
+      };
+
+      const offerMsg: InboxMessage = {
+        id: `msg-manager-contract-${Date.now()}`,
+        clubId: userClubId,
+        senderName: `${userClub.name} Yönetim Kurulu`,
+        senderRole: 'Kulüp Başkanı',
+        subject: 'Sözleşme Uzatma Teklifi (2 Yıllık)',
+        preview: `Yönetim kurulumuz sözleşmenizi 2 yıl uzatmayı teklif ediyor (€${offerSalary.toLocaleString('tr-TR')}/hf).`,
+        body: `Sayın Menajer,\n\nKulübümüzle olan sözleşmenizin son yılına girmiş bulunmaktasınız. Takımımızın gelişimi ve hedeflerimiz doğrultusunda, sözleşmenizi 2 yıl daha uzatmayı ve haftalık maaşınızı €${offerSalary.toLocaleString('tr-TR')} olarak belirlemeyi teklif ediyoruz.\n\nDashboard veya Gelen Kutusu üzerinden teklifimizi kabul edebilir veya reddedebilirsiniz.`,
+        date: rolled.newCurrentDate,
+        category: 'BOARD',
+        priority: 'HIGH',
+        isRead: false,
+        actionable: true,
+      };
+      nextInbox = [offerMsg, ...nextInbox];
+    }
+
+    setManagerContract(updatedContract);
     setSeasonYear(rolled.newSeasonYear);
     setCurrentDate(rolled.newCurrentDate);
     setSeasonStage('PRE_SEASON');
@@ -847,7 +929,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setAllClubs(rolled.updatedClubs);
     setFinances(rolled.newFinances);
     setCareerHistory([...rolled.archivedHistory, ...careerHistory]);
-    setInboxMessages([rolled.boardMessage, ...inboxMessages]);
+    setInboxMessages(nextInbox);
 
     persist(
       rolled.newCurrentDate,
@@ -858,7 +940,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       tactics,
       rolled.newStandings,
       rolled.newFixtures,
-      [rolled.boardMessage, ...inboxMessages],
+      nextInbox,
       [],
       shortlistIds,
       rolled.newFinances,
@@ -885,6 +967,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
   const resetEntireCareer = () => {
     clearCareerSave();
     const initialUniverse = generateCareerPlayerUniverse(MOCK_CLUBS);
+    const kalyonPlayers = initialUniverse.filter((p) => p.clubId === 'kalyon-doruk');
     const initialScouts = generateClubScouts('kalyon-doruk', 80);
     const initialFreeScouts = generateFreeAgentScouts();
     const initialProfiles: Record<string, PlayerHiddenProfile> = {};
@@ -896,10 +979,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     setCurrentDate('2026-08-01');
     setSeasonYear('2026/27');
     setSeasonStage('PRE_SEASON');
+    setSeasonNumber(1);
+    setCareerEconomyVersion(2);
+    setManagerContract({ yearsLeft: 2, weeklySalary: 45000, status: 'ACTIVE' });
     setTrainingIntensityState('Normal');
     setAllClubs(MOCK_CLUBS);
     setAllPlayers(initialUniverse);
-    setTactics(getInitialTactics('kalyon-doruk'));
+    setTactics(generateCareerTactics('kalyon-doruk', kalyonPlayers, '4-2-3-1'));
     setStandings(
       MOCK_CLUBS.map((c, i) => ({
         rank: i + 1,
@@ -967,7 +1053,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
     });
 
     const targetClub = baseClubs.find((c) => c.id === chosenClubId) || baseClubs[0];
-    const initialTacts = getInitialTactics(chosenClubId);
+    const initialUniverse = generateCareerPlayerUniverse(baseClubs);
+    const userSquad = initialUniverse.filter((p) => p.clubId === chosenClubId);
+    const initialTacts = generateCareerTactics(chosenClubId, userSquad, '4-2-3-1');
     const initialStandings: LeagueStanding[] = baseClubs.map((c, i) => ({
       rank: i + 1,
       clubId: c.id,
@@ -1028,7 +1116,6 @@ export function GameProvider({ children }: { children: ReactNode }) {
       ],
     };
 
-    const initialUniverse = generateCareerPlayerUniverse(baseClubs);
     const initialScouts = generateClubScouts(chosenClubId, targetClub.reputation);
     const initialFreeScouts = generateFreeAgentScouts();
     const initialProfiles: Record<string, PlayerHiddenProfile> = {};
@@ -1037,10 +1124,19 @@ export function GameProvider({ children }: { children: ReactNode }) {
     }
     const initialAcademy = initializeClubAcademy(targetClub, '2026/27');
 
+    const initialContract: ManagerContract = {
+      yearsLeft: 2,
+      weeklySalary: 45000,
+      status: 'ACTIVE',
+    };
+
     setUserClubId(chosenClubId);
     setCurrentDate(startDate);
     setSeasonYear('2026/27');
     setSeasonStage('PRE_SEASON');
+    setSeasonNumber(1);
+    setCareerEconomyVersion(2);
+    setManagerContract(initialContract);
     setTrainingIntensityState('Normal');
     setAllClubs(baseClubs);
     setAllPlayers(initialUniverse);
@@ -1111,6 +1207,9 @@ export function GameProvider({ children }: { children: ReactNode }) {
       activeLoans: [],
       academyFacilities: initialAcademy,
       youthPlayers: [],
+      managerContract: initialContract,
+      seasonNumber: 1,
+      careerEconomyVersion: 2,
       settings: {
         autoSave: true,
         defaultMatchSpeed: 1,
@@ -1847,28 +1946,76 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   // Tactics & Lineup Actions
   const setFormation = (formation: Formation) => {
-    const coords = FORMATION_COORDINATES[formation];
-    if (!coords) return;
-
-    const currentStartingIds = tactics.lineup.map((s) => s.playerId).filter(Boolean) as string[];
-    const newLineup = coords.map((posInfo, idx) => {
-      const assignedPlayerId = currentStartingIds[idx] || null;
-      return {
-        slotId: idx,
-        role: posInfo.role,
-        x: posInfo.x,
-        y: posInfo.y,
-        playerId: assignedPlayerId,
-      };
-    });
-
-    const updated: ClubTactics = {
-      ...tactics,
-      formation,
-      lineup: newLineup,
-    };
+    const userSquad = allPlayers.filter((p) => p.clubId === userClubId);
+    const updated = generateCareerTactics(userClubId, userSquad, formation);
+    updated.settings = tactics.settings;
     setTactics(updated);
     persist(currentDate, seasonYear, seasonStage, trainingIntensity, allPlayers, updated);
+  };
+
+  const autoAssignTactics = () => {
+    const userSquad = allPlayers.filter((p) => p.clubId === userClubId);
+    const updated = generateCareerTactics(userClubId, userSquad, tactics.formation || '4-2-3-1');
+    updated.settings = tactics.settings;
+    setTactics(updated);
+    persist(currentDate, seasonYear, seasonStage, trainingIntensity, allPlayers, updated);
+  };
+
+  const respondToManagerContractOffer = (accept: boolean) => {
+    if (managerContract.status !== 'OFFERED') return;
+
+    if (accept) {
+      const addedYears = managerContract.offerYears || 2;
+      const newSalary = managerContract.offerSalary || managerContract.weeklySalary;
+      const updatedContract: ManagerContract = {
+        yearsLeft: managerContract.yearsLeft + addedYears,
+        weeklySalary: newSalary,
+        status: 'ACTIVE',
+      };
+      setManagerContract(updatedContract);
+
+      const acceptanceMsg: InboxMessage = {
+        id: `msg-contract-accepted-${Date.now()}`,
+        clubId: userClubId,
+        senderName: `${userClub.name} Yönetim Kurulu`,
+        senderRole: 'Kulüp Başkanı',
+        subject: 'Sözleşme Uzatması İmzalandı!',
+        preview: `Teknik direktörlük sözleşmeniz ${addedYears} yıl uzatıldı.`,
+        body: `Sayın Menajer,\n\nKulübümüzle olan sözleşmenizi ${addedYears} yıl daha uzattığınız için büyük mutluluk duyuyoruz. Yeni haftalık maaşınız: €${newSalary.toLocaleString('tr-TR')}.\n\nBirlikte nice başarılara ve zaferlere!`,
+        date: currentDate,
+        category: 'BOARD',
+        priority: 'HIGH',
+        isRead: false,
+      };
+      const nextInbox = [acceptanceMsg, ...inboxMessages];
+      setInboxMessages(nextInbox);
+      persist(currentDate, seasonYear, seasonStage, trainingIntensity, allPlayers, tactics, standings, fixtures, nextInbox);
+    } else {
+      const updatedContract: ManagerContract = {
+        ...managerContract,
+        status: 'ACTIVE',
+        offerYears: undefined,
+        offerSalary: undefined,
+      };
+      setManagerContract(updatedContract);
+
+      const declineMsg: InboxMessage = {
+        id: `msg-contract-declined-${Date.now()}`,
+        clubId: userClubId,
+        senderName: `${userClub.name} Yönetim Kurulu`,
+        senderRole: 'Kulüp Başkanı',
+        subject: 'Sözleşme Teklifi Reddedildi',
+        preview: 'Sözleşme uzatma teklifini geri çevirdiniz.',
+        body: `Sayın Menajer,\n\nSözleşme uzatma teklifimizi geri çevirdiğinizi üzüntüyle öğrendik. Mevcut sözleşmeniz devam etmektedir. Sezon sonunda tekrar değerlendireceğiz.`,
+        date: currentDate,
+        category: 'BOARD',
+        priority: 'NORMAL',
+        isRead: false,
+      };
+      const nextInbox = [declineMsg, ...inboxMessages];
+      setInboxMessages(nextInbox);
+      persist(currentDate, seasonYear, seasonStage, trainingIntensity, allPlayers, tactics, standings, fixtures, nextInbox);
+    }
   };
 
   const updateTacticalSettings = (settings: Partial<TacticalSettings>) => {
@@ -2103,6 +2250,10 @@ export function GameProvider({ children }: { children: ReactNode }) {
         upgradeAcademy,
         getMaskedPlayer,
         getPlayerKnowledge,
+        seasonNumber,
+        managerContract,
+        autoAssignTactics,
+        respondToManagerContractOffer,
       }}
     >
       {children}

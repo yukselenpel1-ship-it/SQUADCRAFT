@@ -96,7 +96,7 @@ export function calculateSeasonBudgets(
   else if (rank <= 6) transferRatio = 0.40;
   else transferRatio = 0.30;
 
-  const newTransferBudget = Math.round((newBalance * transferRatio) / 250_000) * 250_000;
+  const newTransferBudget = Math.round((newBalance * transferRatio * 2) / 250_000) * 250_000;
 
   // 8. Weekly Wage Budget
   const totalRevenue = sponsorshipIncome + ticketProjection + broadcastingIncome + merchandisingIncome;

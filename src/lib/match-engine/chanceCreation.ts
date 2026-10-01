@@ -10,6 +10,7 @@ import { selectShooter, selectAssister, getGoalkeeper } from './playerSelection'
 import { resolveShot, ChanceType } from './shotResolver';
 import { generateCommentary } from './commentary';
 import { addMomentumBoost, MomentumState } from './momentum';
+import { matchRandom } from './random';
 
 export interface AttackSequenceResult {
   hasAttack: boolean;
@@ -74,7 +75,7 @@ export function simulateMinuteAttack(
   const homeProb = baseChanceProb * homePossessionRatio * homeAttackStrength * homePlayerCountMult;
   const awayProb = baseChanceProb * (1 - homePossessionRatio) * awayAttackStrength * awayPlayerCountMult;
 
-  const roll = Math.random();
+  const roll = matchRandom();
   let attackingTeam: 'HOME' | 'AWAY' | 'NONE' = 'NONE';
 
   if (roll < homeProb) {
@@ -112,10 +113,10 @@ export function simulateMinuteAttack(
 
   // Chance Type determination
   let chanceType: ChanceType = 'CENTRAL_BOX';
-  let coords: PitchCoordinates = isHome ? { x: 75 + Math.random() * 18, y: 35 + Math.random() * 30 } : { x: 7 + Math.random() * 18, y: 35 + Math.random() * 30 };
+  let coords: PitchCoordinates = isHome ? { x: 75 + matchRandom() * 18, y: 35 + matchRandom() * 30 } : { x: 7 + matchRandom() * 18, y: 35 + matchRandom() * 30 };
   let isCross = false;
 
-  const chanceRoll = Math.random();
+  const chanceRoll = matchRandom();
 
   // Penalty check (~3.5% of attacking chances)
   if (chanceRoll < 0.035) {
@@ -125,28 +126,28 @@ export function simulateMinuteAttack(
   // Breakaway check (boosted by fast wingers, opponent high line, low block counter attacks, suppressed by sweeper keeper)
   else if (chanceRoll < 0.035 + 0.15 * (1 + (defMods.breakawayThreatBonus || 0) + (attMods.breakawayThreatBonus || 0)) * (hasFastWinger ? 1.25 : 1.0) * (hasSweeperKeeper ? 0.80 : 1.0)) {
     chanceType = 'ONE_ON_ONE';
-    coords = isHome ? { x: 84 + Math.random() * 8, y: 45 + Math.random() * 10 } : { x: 8 + Math.random() * 8, y: 45 + Math.random() * 10 };
+    coords = isHome ? { x: 84 + matchRandom() * 8, y: 45 + matchRandom() * 10 } : { x: 8 + matchRandom() * 8, y: 45 + matchRandom() * 10 };
   }
   // Wide cross check (boosted by wide play and target forwards)
   else if (chanceRoll < 0.42 * attMods.crossingFrequencyMult * (hasTargetForward ? 1.25 : 1.0)) {
-    chanceType = Math.random() < 0.65 ? 'WIDE_CROSS_HEADER' : 'WIDE_CROSS_VOLLEY';
+    chanceType = matchRandom() < 0.65 ? 'WIDE_CROSS_HEADER' : 'WIDE_CROSS_VOLLEY';
     isCross = true;
-    coords = isHome ? { x: 82 + Math.random() * 10, y: 30 + Math.random() * 40 } : { x: 10 + Math.random() * 10, y: 30 + Math.random() * 40 };
+    coords = isHome ? { x: 82 + matchRandom() * 10, y: 30 + matchRandom() * 40 } : { x: 10 + matchRandom() * 10, y: 30 + matchRandom() * 40 };
   }
   // Corner check (~16% of chances)
   else if (chanceRoll < 0.58) {
     chanceType = 'CORNER_HEADER';
-    coords = isHome ? { x: 86 + Math.random() * 8, y: 40 + Math.random() * 20 } : { x: 6 + Math.random() * 8, y: 40 + Math.random() * 20 };
+    coords = isHome ? { x: 86 + matchRandom() * 8, y: 40 + matchRandom() * 20 } : { x: 6 + matchRandom() * 8, y: 40 + matchRandom() * 20 };
   }
   // Long shot check (reduced if playmakers seek incisive box through balls)
   else if (chanceRoll < (hasPlaymaker ? 0.70 : 0.76)) {
     chanceType = 'LONG_SHOT';
-    coords = isHome ? { x: 72 + Math.random() * 6, y: 35 + Math.random() * 30 } : { x: 22 + Math.random() * 6, y: 35 + Math.random() * 30 };
+    coords = isHome ? { x: 72 + matchRandom() * 6, y: 35 + matchRandom() * 30 } : { x: 22 + matchRandom() * 6, y: 35 + matchRandom() * 30 };
   }
   // Central box play (dominant when playmakers unlock defense)
   else {
     chanceType = 'CENTRAL_BOX';
-    coords = isHome ? { x: 84 + Math.random() * 8, y: 40 + Math.random() * 20 } : { x: 8 + Math.random() * 8, y: 40 + Math.random() * 20 };
+    coords = isHome ? { x: 84 + matchRandom() * 8, y: 40 + matchRandom() * 20 } : { x: 8 + matchRandom() * 8, y: 40 + matchRandom() * 20 };
   }
 
   result.pitchCoords = coords;
@@ -224,9 +225,9 @@ export function simulateMinuteAttack(
   });
 
   const event: MatchEngineEvent = {
-    id: `ev-${Date.now()}-${minute}-${shooter.player.id}`,
+    id: `ev-${minute}-${shooter.player.id}`,
     minute,
-    second: Math.floor(Math.random() * 59),
+    second: Math.floor(matchRandom() * 59),
     type: shotRes.outcome,
     teamId: attTeam.club.id,
     playerId: shooter.player.id,

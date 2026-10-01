@@ -1,6 +1,7 @@
 import { PlayerInMatch } from './types';
 import { getEffectiveAttribute } from './teamStrength';
 import { ChanceType } from './shotResolver';
+import { matchRandom } from './random';
 
 export function selectShooter(
   attackingPlayers: PlayerInMatch[],
@@ -95,7 +96,7 @@ export function selectShooter(
   });
 
   const totalWeight = weights.reduce((a, b) => a + b, 0);
-  let r = Math.random() * totalWeight;
+  let r = matchRandom() * totalWeight;
 
   for (let i = 0; i < weights.length; i++) {
     r -= weights[i];
@@ -155,7 +156,7 @@ export function selectAssister(
   });
 
   const totalWeight = weights.reduce((a, b) => a + b, 0);
-  let r = Math.random() * totalWeight;
+  let r = matchRandom() * totalWeight;
 
   for (let i = 0; i < weights.length; i++) {
     r -= weights[i];

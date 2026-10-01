@@ -29,6 +29,8 @@ export default function InboxPage() {
     markMessageAsRead,
     deleteMessage,
     userClub,
+    managerContract,
+    respondToManagerContractOffer,
   } = useGame();
 
   const [selectedMessageId, setSelectedMessageId] = useState<string | null>(
@@ -291,6 +293,23 @@ export default function InboxPage() {
                       <FileText className="w-4 h-4" />
                       Sözleşme Görüşmesi Başlat
                     </Link>
+                  )}
+
+                  {selectedMessage.category === 'BOARD' && managerContract.status === 'OFFERED' && (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => respondToManagerContractOffer(true)}
+                        className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors border border-white"
+                      >
+                        Sözleşmeyi Kabul Et
+                      </button>
+                      <button
+                        onClick={() => respondToManagerContractOffer(false)}
+                        className="px-3.5 py-1.5 bg-zinc-900 text-zinc-300 font-bold text-xs uppercase hover:bg-zinc-800 transition-colors border border-zinc-750"
+                      >
+                        Teklifi Reddet
+                      </button>
+                    </div>
                   )}
                 </div>
 
