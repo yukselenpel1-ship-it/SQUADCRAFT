@@ -553,9 +553,164 @@ export function getRecentRoomCodes(): string[] {
   }
 }
 
+/**
+ * Classifies whether an error is a transient network/connection failure that should be retried,
+ * vs a permanent database error (e.g. RLS denied, schema/column error, constraint violation) that should not be retried.
+ */
+export function isTransientNetworkError(err: any): boolean {
+  if (!err) return false;
+  if (err.name === 'AbortError' || err.name === 'TimeoutError') return true;
+
+  const msg = (err.message || err.details || err.error_description || String(err)).toLowerCase();
+  const code = String(err.code || '');
+
+  // Permanent database errors (NEVER retry these)
+  if (
+    code === '42501' || // RLS / permission denied
+    code === '23505' || // Unique violation
+    code === '23503' || // Foreign key violation
+    code === '23502' || // Not null violation
+    code === '22P02' || // Invalid text representation
+    code === '42703' || // Undefined column
+    code === '42P01' || // Undefined table
+    msg.includes('row-level security') ||
+    msg.includes('permission denied') ||
+    msg.includes('violates foreign key') ||
+    msg.includes('duplicate key value') ||
+    msg.includes('violates not-null') ||
+    msg.includes('violates check constraint')
+  ) {
+    return false;
+  }
+
+  // Network / fetch / connectivity errors (safe to retry)
+  if (
+    err instanceof TypeError ||
+    msg.includes('failed to fetch') ||
+    msg.includes('network error') ||
+    msg.includes('networkrequestfailed') ||
+    msg.includes('timeout') ||
+    msg.includes('aborted') ||
+    msg.includes('net::err_') ||
+    msg.includes('econnreset') ||
+    msg.includes('econnrefused') ||
+    msg.includes('etimedout') ||
+    msg.includes('socket hang up') ||
+    msg.includes('bad gateway') ||
+    msg.includes('service unavailable') ||
+    msg.includes('gateway timeout') ||
+    err.status === 502 ||
+    err.status === 503 ||
+    err.status === 504 ||
+    err.status === 408
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Wraps an async operation with a strict timeout to prevent indefinite network hanging.
+ */
+export async function withTimeout<T = any>(
+  promiseFactory: () => PromiseLike<T> | Promise<T>,
+  timeoutMs: number = 8500,
+  operationName: string = 'İşlem'
+): Promise<T> {
+  let timer: NodeJS.Timeout;
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => {
+      const err = new Error(`${operationName} zaman aşımına uğradı (${timeoutMs}ms)`);
+      err.name = 'TimeoutError';
+      reject(err);
+    }, timeoutMs);
+  });
+
+  try {
+    const result = await Promise.race([Promise.resolve(promiseFactory()), timeoutPromise]);
+    return result as T;
+  } finally {
+    clearTimeout(timer!);
+  }
+}
+
+let isConnectionWarmingUp = false;
+let isConnectionWarmedUp = false;
+
+/**
+ * Performs a lightweight connectivity check / ping to Supabase to warm up DNS,
+ * TLS handshake, and keep-alive HTTP socket before critical room operations.
+ */
+export async function warmupSupabaseConnection(): Promise<boolean> {
+  if (isConnectionWarmedUp) return true;
+  if (isConnectionWarmingUp) return false;
+  const supabase = getSupabaseClient();
+  if (!supabase) return false;
+
+  isConnectionWarmingUp = true;
+  try {
+    const warmupPromise = supabase.from('multiplayer_rooms').select('id').limit(1);
+    const timeoutPromise = new Promise<any>((resolve) => setTimeout(() => resolve(null), 3000));
+    await Promise.race([warmupPromise, timeoutPromise]);
+    isConnectionWarmedUp = true;
+    return true;
+  } catch {
+    return false;
+  } finally {
+    isConnectionWarmingUp = false;
+  }
+}
+
 export class DraftMultiplayerStore {
   private static finalizingRooms = new Map<string, Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode }>>();
   private static repairingRooms = new Map<string, Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode }>>();
+  private static isCreatingRoomInProgress = false;
+
+  /**
+   * Warm up connection static helper
+   */
+  public static async warmupConnection(): Promise<boolean> {
+    return warmupSupabaseConnection();
+  }
+
+  /**
+   * Safely checks and cleans up stale orphan rooms (older than 15 mins with 0 members and 0 clubs in LOBBY status)
+   */
+  public static async cleanupStaleOrphanRooms(): Promise<{ cleanedCount: number; orphanIds: string[] }> {
+    const supabase = getSupabaseClient();
+    if (!supabase) return { cleanedCount: 0, orphanIds: [] };
+
+    try {
+      const fifteenMinsAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+      const { data: staleRooms, error } = await supabase
+        .from('multiplayer_rooms')
+        .select('id, status, created_at, multiplayer_members(id), draft_clubs(id)')
+        .eq('status', 'LOBBY')
+        .lt('created_at', fifteenMinsAgo)
+        .limit(20);
+
+      if (error || !staleRooms) return { cleanedCount: 0, orphanIds: [] };
+
+      const orphanIds: string[] = [];
+      for (const r of staleRooms) {
+        const memCount = (r as any).multiplayer_members?.length || 0;
+        const clubCount = (r as any).draft_clubs?.length || 0;
+        if (memCount === 0 && clubCount === 0) {
+          orphanIds.push(r.id);
+        }
+      }
+
+      for (const id of orphanIds) {
+        await supabase.from('multiplayer_rooms').delete().eq('id', id);
+      }
+
+      return { cleanedCount: orphanIds.length, orphanIds };
+    } catch (err) {
+      console.error('[DraftMultiplayerStore] Orphan cleanup error:', err);
+      return { cleanedCount: 0, orphanIds: [] };
+    }
+  }
 
   /**
    * Checks whether the Supabase multiplayer backend is configured and responsive.
@@ -815,14 +970,28 @@ export class DraftMultiplayerStore {
   }
 
   /**
-   * Creates a new multiplayer Draft League room asynchronously with Supabase persistence.
+   * Creates a new multiplayer Draft League room asynchronously with Supabase persistence,
+   * single-ID idempotency, existence verification, transient network retries (max 3),
+   * timeout guards, and partial state rollback fallback.
    */
   public static async createRoomAsync(
     hostUsername: string,
     sessionId: string,
     rules: DraftRules = PRESET_CLOSED_ALPHA_4,
-    roomName?: string
+    roomName?: string,
+    onProgress?: (attempt: number, maxAttempts: number, statusText: string) => void
   ): Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode; details?: string }> {
+    // 1. In-flight creation lock (Hard single-flight guard)
+    if (DraftMultiplayerStore.isCreatingRoomInProgress) {
+      return {
+        success: false,
+        error: 'Şu anda bir oda oluşturma işlemi devam ediyor. Lütfen bekleyin.',
+        errorCode: 'SC-MP-011',
+      };
+    }
+    DraftMultiplayerStore.isCreatingRoomInProgress = true;
+
+    // 2. Generate IDs ONCE before retry loop (Guarantees idempotency across retries)
     const roomId = `room-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     let roomCode = generateRoomCode();
 
@@ -883,87 +1052,210 @@ export class DraftMultiplayerStore {
 
     const supabase = getSupabaseClient();
     if (supabase) {
+      const MAX_ATTEMPTS = 3;
+      let lastError: any = null;
+      let roomCreatedOnServer = false;
+      let memberCreatedOnServer = false;
+      let clubCreatedOnServer = false;
+
       try {
-        // 1. Insert room
-        const { error: roomErr } = await supabase.from('multiplayer_rooms').insert({
-          id: roomId,
-          room_code: roomCode,
-          name: room.name,
-          host_member_id: memberId,
-          status: 'LOBBY',
-          rules: rules,
-          created_at: room.createdAt,
-          updated_at: room.updatedAt,
-        });
+        for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+          try {
+            if (attempt > 1 && onProgress) {
+              onProgress(attempt, MAX_ATTEMPTS, `Sunucuya bağlanılıyor... (${attempt}/${MAX_ATTEMPTS})`);
+            }
 
-        if (roomErr) {
-          console.error('Supabase room insert failure:', roomErr);
-          return {
-            success: false,
-            error: 'Oda oluşturulamadı.',
-            errorCode: 'SC-MP-011',
-            details: roomErr.message,
-          };
+            // --- STEP A: Verify / Insert Room ---
+            if (!roomCreatedOnServer) {
+              const { data: existingRoom, error: checkRoomErr } = await withTimeout(
+                () => supabase.from('multiplayer_rooms').select('id, room_code').eq('id', roomId).maybeSingle(),
+                6000,
+                'Oda kontrolü'
+              );
+
+              if (existingRoom && existingRoom.id) {
+                roomCreatedOnServer = true;
+              } else {
+                if (checkRoomErr && isTransientNetworkError(checkRoomErr)) {
+                  throw checkRoomErr;
+                }
+
+                const { error: roomErr } = await withTimeout(
+                  () => supabase.from('multiplayer_rooms').insert({
+                    id: roomId,
+                    room_code: roomCode,
+                    name: room.name,
+                    host_member_id: memberId,
+                    status: 'LOBBY',
+                    rules: rules,
+                    created_at: room.createdAt,
+                    updated_at: room.updatedAt,
+                  }),
+                  8500,
+                  'Oda kaydı'
+                );
+
+                if (roomErr) {
+                  if (isTransientNetworkError(roomErr)) {
+                    throw roomErr;
+                  }
+                  console.error('Permanent room insert error:', roomErr);
+                  lastError = roomErr;
+                  break;
+                }
+                roomCreatedOnServer = true;
+              }
+            }
+
+            // --- STEP B: Verify / Insert Host Member ---
+            if (!memberCreatedOnServer) {
+              const { data: existingMember, error: checkMemErr } = await withTimeout(
+                () => supabase.from('multiplayer_members').select('id').eq('id', memberId).maybeSingle(),
+                6000,
+                'Üye kontrolü'
+              );
+
+              if (existingMember && existingMember.id) {
+                memberCreatedOnServer = true;
+              } else {
+                if (checkMemErr && isTransientNetworkError(checkMemErr)) {
+                  throw checkMemErr;
+                }
+
+                const { error: memErr } = await withTimeout(
+                  () => supabase.from('multiplayer_members').insert({
+                    id: memberId,
+                    room_id: roomId,
+                    session_id: sessionId,
+                    username: hostMember.username,
+                    is_host: true,
+                    is_spectator: false,
+                    is_ready: true,
+                    club_id: clubId,
+                    is_connected: true,
+                    last_seen_at: hostMember.lastSeenAt,
+                    joined_at: hostMember.joinedAt,
+                  }),
+                  8500,
+                  'Üye kaydı'
+                );
+
+                if (memErr) {
+                  if (isTransientNetworkError(memErr)) {
+                    throw memErr;
+                  }
+                  console.error('Permanent member insert error:', memErr);
+                  lastError = memErr;
+                  break;
+                }
+                memberCreatedOnServer = true;
+              }
+            }
+
+            // --- STEP C: Verify / Insert Host Club ---
+            if (!clubCreatedOnServer) {
+              const { data: existingClub, error: checkClubErr } = await withTimeout(
+                () => supabase.from('draft_clubs').select('id').eq('id', clubId).maybeSingle(),
+                6000,
+                'Kulüp kontrolü'
+              );
+
+              if (existingClub && existingClub.id) {
+                clubCreatedOnServer = true;
+              } else {
+                if (checkClubErr && isTransientNetworkError(checkClubErr)) {
+                  throw checkClubErr;
+                }
+
+                const { error: clubErr } = await withTimeout(
+                  () => supabase.from('draft_clubs').insert({
+                    id: clubId,
+                    room_id: roomId,
+                    member_id: memberId,
+                    name: hostClub.name,
+                    code: hostClub.code,
+                    manager_name: hostClub.managerName,
+                    primary_color: hostClub.primaryColor,
+                    secondary_color: hostClub.secondaryColor,
+                    badge: hostClub.badge,
+                    squad_player_ids: [],
+                  }),
+                  8500,
+                  'Kulüp kaydı'
+                );
+
+                if (clubErr) {
+                  if (isTransientNetworkError(clubErr)) {
+                    throw clubErr;
+                  }
+                  console.error('Permanent club insert error:', clubErr);
+                  lastError = clubErr;
+                  break;
+                }
+                clubCreatedOnServer = true;
+              }
+            }
+
+            // If all 3 steps succeeded on server, exit retry loop
+            if (roomCreatedOnServer && memberCreatedOnServer && clubCreatedOnServer) {
+              lastError = null;
+              break;
+            }
+          } catch (attemptErr: any) {
+            lastError = attemptErr;
+            console.warn(`[DraftMultiplayerStore] Room create attempt ${attempt}/${MAX_ATTEMPTS} transient failure:`, attemptErr?.message || attemptErr);
+
+            if (attempt < MAX_ATTEMPTS) {
+              const backoffMs = attempt === 1 ? 300 : 700;
+              await new Promise((resolve) => setTimeout(resolve, backoffMs));
+            }
+          }
         }
 
-        // 2. Insert host member
-        const { error: memErr } = await supabase.from('multiplayer_members').insert({
-          id: memberId,
-          room_id: roomId,
-          session_id: sessionId,
-          username: hostMember.username,
-          is_host: true,
-          is_spectator: false,
-          is_ready: true,
-          club_id: clubId,
-          is_connected: true,
-          last_seen_at: hostMember.lastSeenAt,
-          joined_at: hostMember.joinedAt,
-        });
+        // If incomplete after all attempts or permanent error: execute client-side rollback
+        if (!roomCreatedOnServer || !memberCreatedOnServer || !clubCreatedOnServer) {
+          console.warn(`[DraftMultiplayerStore] Room creation failed or incomplete. Rolling back partial state for roomId: ${roomId}...`);
+          try {
+            if (clubCreatedOnServer) {
+              await supabase.from('draft_clubs').delete().eq('id', clubId).eq('room_id', roomId);
+            }
+            if (memberCreatedOnServer) {
+              await supabase.from('multiplayer_members').delete().eq('id', memberId).eq('room_id', roomId);
+            }
+            if (roomCreatedOnServer) {
+              await supabase.from('multiplayer_rooms').delete().eq('id', roomId);
+            }
+          } catch (rollbackErr) {
+            console.error('[DraftMultiplayerStore] Rollback error:', rollbackErr);
+          }
 
-        if (memErr) {
-          console.error('Supabase member insert failure:', memErr);
+          DraftMultiplayerStore.isCreatingRoomInProgress = false;
+
+          const isNetworkFailure = isTransientNetworkError(lastError);
           return {
             success: false,
-            error: 'Oda kurucusu eklenemedi.',
+            error: isNetworkFailure
+              ? 'Oda oluşturulamadı. Bağlantı kısa süreli kesildi. Tekrar deneyin.'
+              : 'Oda oluşturulurken veritabanı hatası oluştu.',
             errorCode: 'SC-MP-011',
-            details: memErr.message,
-          };
-        }
-
-        // 3. Insert host club
-        const { error: clubErr } = await supabase.from('draft_clubs').insert({
-          id: clubId,
-          room_id: roomId,
-          member_id: memberId,
-          name: hostClub.name,
-          code: hostClub.code,
-          manager_name: hostClub.managerName,
-          primary_color: hostClub.primaryColor,
-          secondary_color: hostClub.secondaryColor,
-          badge: hostClub.badge,
-          squad_player_ids: [],
-        });
-
-        if (clubErr) {
-          console.error('Supabase club insert failure:', clubErr);
-          return {
-            success: false,
-            error: 'Oda kulübü oluşturulamadı.',
-            errorCode: 'SC-MP-011',
-            details: clubErr.message,
+            details: lastError?.message || lastError?.details || 'Bağlantı hatası',
           };
         }
       } catch (err: any) {
-        console.error('Database transaction error during room creation:', err);
+        DraftMultiplayerStore.isCreatingRoomInProgress = false;
+        console.error('Unexpected error during room creation:', err);
         return {
           success: false,
-          error: 'Veritabanı bağlantı hatası.',
+          error: isTransientNetworkError(err)
+            ? 'Oda oluşturulamadı. Bağlantı kısa süreli kesildi. Tekrar deneyin.'
+            : 'Veritabanı bağlantı hatası.',
           errorCode: 'SC-MP-011',
-          details: err?.message || 'Bilinmeyen veritabanı hatası',
+          details: err?.message || 'Bilinmeyen hata',
         };
       }
     }
+
+    DraftMultiplayerStore.isCreatingRoomInProgress = false;
 
     // Cache in memory and local storage
     memoryRooms[roomId] = state;

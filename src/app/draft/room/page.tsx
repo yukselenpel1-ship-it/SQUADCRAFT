@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -50,22 +50,29 @@ export default function DraftRoomHubPage() {
   const [createError, setCreateError] = useState<string | null>(null);
   const [joinError, setJoinError] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [createProgressText, setCreateProgressText] = useState<string | null>(null);
   const [isJoining, setIsJoining] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const createInFlightRef = useRef(false);
 
   useEffect(() => {
     setUsername(getStoredMultiplayerUsername());
     setRecentRooms(getRecentRoomCodes());
+    DraftMultiplayerStore.warmupConnection();
   }, []);
 
   const handleCreateRoom = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (createInFlightRef.current || isCreating) return;
+
     if (!username.trim()) {
       setCreateError('Lütfen bir menajer ismi girin.');
       return;
     }
 
+    createInFlightRef.current = true;
     setCreateError(null);
+    setCreateProgressText(null);
     setIsCreating(true);
 
     try {
@@ -82,7 +89,10 @@ export default function DraftRoomHubPage() {
         username.trim(),
         sessionId,
         selectedPreset,
-        roomName.trim() || undefined
+        roomName.trim() || undefined,
+        (_attempt, _max, statusText) => {
+          setCreateProgressText(statusText);
+        }
       );
 
       if (!res.success || !res.state) {
@@ -91,7 +101,6 @@ export default function DraftRoomHubPage() {
             res.details ? ` (${res.details})` : ''
           }`
         );
-        setIsCreating(false);
         return;
       }
 
@@ -99,7 +108,10 @@ export default function DraftRoomHubPage() {
     } catch (err: any) {
       console.error('Create room error:', err);
       setCreateError(`[SC-MP-011] Oda oluşturulurken beklenmeyen bir hata oluştu: ${err?.message || ''}`);
+    } finally {
+      createInFlightRef.current = false;
       setIsCreating(false);
+      setCreateProgressText(null);
     }
   };
 
@@ -403,7 +415,7 @@ export default function DraftRoomHubPage() {
                   {isCreating ? (
                     <div className="flex items-center gap-2">
                       <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                      <span>ODA KURULUYOR...</span>
+                      <span>{createProgressText || 'ODA KURULUYOR...'}</span>
                     </div>
                   ) : (
                     <>
