@@ -676,6 +676,10 @@ export async function warmupSupabaseConnection(): Promise<boolean> {
 export class DraftMultiplayerStore {
   private static finalizingRooms = new Map<string, Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode }>>();
   private static repairingRooms = new Map<string, Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode }>>();
+  // A room can be requested by polling, focus, and Realtime at the same time.  Keep
+  // one authoritative read in flight per room so an older response cannot overwrite
+  // a newer hydration result and so Realtime does not amplify into request storms.
+  private static roomFetchesInFlight = new Map<string, Promise<RoomFullState | null>>();
   private static isCreatingRoomInProgress = false;
 
   /**
@@ -1370,6 +1374,23 @@ export class DraftMultiplayerStore {
    * Fetches room state from Supabase or local cache.
    */
   public static async fetchRoom(roomIdOrCode: string): Promise<RoomFullState | null> {
+    const key = roomIdOrCode.trim().toUpperCase();
+    const inFlight = this.roomFetchesInFlight.get(key);
+    if (inFlight) return inFlight;
+
+    const request = this.fetchRoomUncoalesced(roomIdOrCode);
+    this.roomFetchesInFlight.set(key, request);
+    try {
+      return await request;
+    } finally {
+      // Only clear our own request. A later request must never be deleted here.
+      if (this.roomFetchesInFlight.get(key) === request) {
+        this.roomFetchesInFlight.delete(key);
+      }
+    }
+  }
+
+  private static async fetchRoomUncoalesced(roomIdOrCode: string): Promise<RoomFullState | null> {
     const raw = roomIdOrCode.trim();
     const upper = raw.toUpperCase();
 
@@ -1687,6 +1708,11 @@ export class DraftMultiplayerStore {
       return { success: false, error: err.message, errorCode: 'SC-MP-001' };
     }
 
+    // Keep a recovery point until the server has accepted the complete join.
+    // A local-only member is especially harmful: the UI enters the room but a
+    // refresh makes that same player disappear again.
+    const stateBeforeJoin = state;
+
     const prevVersion = state.room.stateVersion || 1;
 
     // Check maximum players
@@ -1753,7 +1779,8 @@ export class DraftMultiplayerStore {
     const supabase = getSupabaseClient();
     if (supabase) {
       try {
-        await supabase.from('multiplayer_members').upsert({
+        const { error: memberError } = await withTimeout(
+          () => supabase.from('multiplayer_members').upsert({
           id: currentMember.id,
           room_id: state.room.id,
           session_id: currentMember.sessionId,
@@ -1765,10 +1792,15 @@ export class DraftMultiplayerStore {
           is_connected: currentMember.isConnected,
           last_seen_at: currentMember.lastSeenAt,
           joined_at: currentMember.joinedAt,
-        });
+          }),
+          8500,
+          'Oda üyeliği'
+        );
+        if (memberError) throw memberError;
 
         if (newClubToInsert) {
-          await supabase.from('draft_clubs').upsert({
+          const { error: clubError } = await withTimeout(
+            () => supabase.from('draft_clubs').upsert({
             id: newClubToInsert.id,
             room_id: state.room.id,
             member_id: newClubToInsert.memberId,
@@ -1779,12 +1811,29 @@ export class DraftMultiplayerStore {
             secondary_color: newClubToInsert.secondaryColor,
             badge: newClubToInsert.badge,
             squad_player_ids: [],
-          });
+            }),
+            8500,
+            'Kulüp kaydı'
+          );
+          if (clubError) {
+            // The member was created in this request, so remove only that
+            // partial row. Existing reconnecting members are never deleted.
+            if (!isExisting) {
+              await supabase.from('multiplayer_members').delete().eq('id', currentMember.id).eq('room_id', state.room.id);
+            }
+            throw clubError;
+          }
         }
 
         broadcastRealtimeUpdate(cleanCode, 'JOIN_ROOM', resultingVersion);
-      } catch (e) {
+      } catch (e: any) {
+        memoryRooms[stateBeforeJoin.room.id] = stateBeforeJoin;
+        persistRoomLocal(stateBeforeJoin);
+        const error = isTransientNetworkError(e)
+          ? 'Odaya bağlanılamadı. Bağlantıyı kontrol edip tekrar deneyin.'
+          : 'Oda üyeliği kaydedilemedi. Lütfen tekrar deneyin.';
         console.warn('Supabase joinRoomAsync write error:', e);
+        return { success: false, error, errorCode: 'SC-MP-010' };
       }
     }
 

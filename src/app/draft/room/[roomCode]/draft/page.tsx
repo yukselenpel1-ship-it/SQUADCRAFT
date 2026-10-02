@@ -347,8 +347,9 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         hydrate(true);
       }
     };
+    const handleFocus = () => hydrate(true);
     window.addEventListener('visibilitychange', handleVisibility);
-    window.addEventListener('focus', () => hydrate(true));
+    window.addEventListener('focus', handleFocus);
 
     // 3. Fallback polling loop (every 3 seconds)
     const pollTimer = setInterval(() => {
@@ -368,6 +369,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
     return () => {
       unsubscribe();
       window.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('focus', handleFocus);
       clearInterval(pollTimer);
       clearInterval(clockTimer);
       clearInterval(initialElapsedTimer);
