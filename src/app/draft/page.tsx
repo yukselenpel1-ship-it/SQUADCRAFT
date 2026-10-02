@@ -30,12 +30,46 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 
+const PRESET_CONFIGS = {
+  4: {
+    label: '4 Menajer',
+    badge: '4 KİŞİLİK ALFA LİGİ',
+    cardDesc: 'Özel bir canlı draft odası kur, arkadaşlarına oda kodunu ilet ve 4 kişilik rekabetçi ligi başlat.',
+    summaryTitle: 'LİG AYARLARI // 4 KİŞİLİK ALFA',
+    summaryManagers: '4 Menajer (İnsan/Bot)',
+    format: '6 Hafta (Çift Devre)',
+    tickerText: '4 KİŞİLİK REKABETÇİ KAPALI ALFA LİGİ',
+    preset: PRESET_4_MANAGERS,
+  },
+  6: {
+    label: '6 Menajer',
+    badge: '6 KİŞİLİK ALFA LİGİ',
+    cardDesc: 'Özel bir canlı draft odası kur, arkadaşlarına oda kodunu ilet ve 6 kişilik rekabetçi ligi başlat.',
+    summaryTitle: 'LİG AYARLARI // 6 KİŞİLİK ALFA',
+    summaryManagers: '6 Menajer (İnsan/Bot)',
+    format: '10 Hafta (Çift Devre)',
+    tickerText: '6 KİŞİLİK REKABETÇİ KAPALI ALFA LİGİ',
+    preset: PRESET_6_MANAGERS,
+  },
+  8: {
+    label: '8 Menajer',
+    badge: '8 KİŞİLİK ALFA LİGİ',
+    cardDesc: 'Özel bir canlı draft odası kur, arkadaşlarına oda kodunu ilet ve 8 kişilik rekabetçi ligi başlat.',
+    summaryTitle: 'LİG AYARLARI // 8 KİŞİLİK ALFA',
+    summaryManagers: '8 Menajer (İnsan/Bot)',
+    format: '7 Hafta (Tek Devre)',
+    tickerText: '8 KİŞİLİK REKABETÇİ KAPALI ALFA LİGİ',
+    preset: PRESET_8_MANAGERS,
+  },
+} as const;
+
 export default function DraftHomePage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [joinCode, setJoinCode] = useState('');
   const [roomName, setRoomName] = useState('');
-  const [managerCount, setManagerCount] = useState<4 | 6 | 8>(6);
+  const [managerCount, setManagerCount] = useState<4 | 6 | 8>(4);
+  const currentPreset = PRESET_CONFIGS[managerCount];
   const [isSpectator, setIsSpectator] = useState(false);
   const [recentRooms, setRecentRooms] = useState<string[]>([]);
   const [createError, setCreateError] = useState<string | null>(null);
@@ -72,12 +106,7 @@ export default function DraftHomePage() {
     try {
       setStoredMultiplayerUsername(username.trim());
       const sessionId = getMultiplayerSessionId();
-      const selectedPreset =
-        managerCount === 8
-          ? PRESET_8_MANAGERS
-          : managerCount === 6
-          ? PRESET_6_MANAGERS
-          : PRESET_4_MANAGERS;
+      const selectedPreset = currentPreset.preset;
 
       const res = await DraftMultiplayerStore.createRoomAsync(
         username.trim(),
@@ -280,7 +309,7 @@ export default function DraftHomePage() {
               {APP_VERSION}
             </span>
             <span className="px-2.5 py-0.5 bg-emerald-950 text-[#00F5A0] border border-emerald-800 text-[10px] font-black uppercase tracking-wider">
-              4 KİŞİLİK ALFA LİGİ
+              {currentPreset.badge}
             </span>
           </div>
 
@@ -324,7 +353,7 @@ export default function DraftHomePage() {
                 YENİ LİG OLUŞTUR
               </h2>
               <p className="text-xs sm:text-sm text-zinc-400 font-medium mb-5">
-                Özel bir canlı draft odası kur, arkadaşlarına oda kodunu ilet ve 4 kişilik rekabetçi ligi başlat.
+                {currentPreset.cardDesc}
               </p>
 
               <form onSubmit={handleCreateRoom} className="space-y-4">
@@ -376,7 +405,7 @@ export default function DraftHomePage() {
                         }`}
                       >
                         <Users className="w-3.5 h-3.5" />
-                        <span>{count} Menajer</span>
+                        <span>{PRESET_CONFIGS[count].label}</span>
                       </button>
                     ))}
                   </div>
@@ -386,11 +415,11 @@ export default function DraftHomePage() {
                 <div className="p-3.5 bg-[#040A10] border border-zinc-800 space-y-2">
                   <div className="text-[11px] font-mono font-bold text-[#00D4FF] uppercase flex items-center gap-1.5">
                     <Zap className="w-3.5 h-3.5 text-[#00D4FF]" />
-                    <span>LİG AYARLARI // {managerCount} KİŞİLİK ALFA</span>
+                    <span>{currentPreset.summaryTitle}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-300">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">👥</span> {managerCount} Menajer (İnsan/Bot)
+                      <span className="text-[#00D4FF]">👥</span> {currentPreset.summaryManagers}
                     </div>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[#00D4FF]">⚡</span> 18 Oyuncu Kadro
@@ -399,7 +428,7 @@ export default function DraftHomePage() {
                       <span className="text-[#00D4FF]">⏱️</span> 60sn Snake Draft
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">🏆</span> {managerCount === 8 ? '7 Hafta (Tek Devre)' : managerCount === 6 ? '10 Hafta (Çift Devre)' : '6 Hafta (Çift Devre)'}
+                      <span className="text-[#00D4FF]">🏆</span> {currentPreset.format}
                     </div>
                   </div>
                 </div>
@@ -573,7 +602,7 @@ export default function DraftHomePage() {
           <div className="overflow-hidden whitespace-nowrap text-[11px] font-mono text-zinc-400 pl-4">
             <span className="text-zinc-200 font-bold">// DRAFT ODASI SUNUCUSU AKTİF</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span>4 KİŞİLİK REKABETÇİ KAPALI ALFA LİGİ</span>
+            <span>{currentPreset.tickerText}</span>
             <span className="mx-3 text-zinc-600">•</span>
             <span className="text-[#00F5A0]">18 TURLUK CANLI SNAKE DRAFT MOTORU</span>
             <span className="mx-3 text-zinc-600">•</span>
