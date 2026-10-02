@@ -232,7 +232,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
       {/* Bench Substitution Modal */}
       {benchSwapModalOpen && selectedSlot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 animate-in fade-in">
+        <div role="dialog" aria-modal="true" className="arena-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 animate-in fade-in">
           <div className="relative w-full max-w-xl bg-[#070B14] border-2 border-zinc-700 p-6 shadow-2xl">
             <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
               <div>

@@ -327,7 +327,7 @@ export function DraftLiveMatchModal({
   const awayPlayersList = engineState?.away?.players ? Object.values(engineState.away.players) : [];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-3 md:p-4 bg-[#070A0F]/95 backdrop-blur-md animate-in fade-in duration-200 select-none font-sans overflow-x-hidden">
+    <div role="dialog" aria-modal="true" className="arena-modal fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-3 md:p-4 bg-[#070A0F]/95 backdrop-blur-md animate-in fade-in duration-200 select-none font-sans overflow-x-hidden">
       <div className="bg-[#070D14] border-0 sm:border-2 border-zinc-800 max-w-5xl w-full h-full sm:h-[94vh] flex flex-col shadow-2xl relative overflow-hidden">
         {/* Top Glow Light */}
         <div

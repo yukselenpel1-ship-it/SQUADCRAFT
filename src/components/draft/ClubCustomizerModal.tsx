@@ -73,7 +73,7 @@ export const ClubCustomizerModal: React.FC<ClubCustomizerModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 overflow-y-auto">
+    <div role="dialog" aria-modal="true" className="arena-modal fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-4 overflow-y-auto">
       <div className="relative bg-[#0B0F19] border border-white/10 rounded-3xl w-full max-w-2xl shadow-2xl p-6 sm:p-8 text-white my-8 overflow-hidden">
         {/* Decorative ambient lighting */}
         <div

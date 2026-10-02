@@ -26,7 +26,7 @@ export const AdvanceProgressModal: React.FC<AdvanceProgressModalProps> = ({ resu
   const isMatchDay = result.hasUserMatch || result.stoppedReason === 'MATCH_DAY';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 animate-in fade-in">
+    <div role="dialog" aria-modal="true" className="arena-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 animate-in fade-in">
       <div className="relative w-full max-w-lg bg-[#080D1A] border-2 border-zinc-700 p-6 sm:p-7 shadow-2xl space-y-5 text-zinc-200">
         {/* Close Button */}
         <button

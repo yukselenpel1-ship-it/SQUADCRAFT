@@ -193,7 +193,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
   const remainingBudgetAfterOffer = finances.transferBudget - totalTransferCommitment;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-5 bg-black/95 select-none animate-in fade-in">
+    <div role="dialog" aria-modal="true" className="arena-modal fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-5 bg-black/95 select-none animate-in fade-in">
       <div className="relative w-full max-w-4xl h-[100dvh] sm:h-auto sm:max-h-[92vh] flex flex-col bg-[#070A12] border-0 sm:border-2 border-zinc-700 shadow-2xl text-zinc-200 overflow-hidden">
         
         {/* 1. Modal Top Bar */}

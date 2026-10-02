@@ -519,7 +519,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
   return createPortal(
     <>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
+      <div role="dialog" aria-modal="true" className="arena-modal fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
         {/* Modal Shell with EA FC / FIFA Ultimate Team Stadium Aesthetic */}
         <div className="relative w-full max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[92vh] flex flex-col bg-[#070B14] sm:border sm:border-zinc-800 sm:rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden text-zinc-200">
           {/* Subtle top neon accent line */}

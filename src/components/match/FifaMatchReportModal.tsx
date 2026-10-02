@@ -161,7 +161,7 @@ export function FifaMatchReportModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 select-none">
+    <div role="dialog" aria-modal="true" className="arena-modal fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 select-none">
       {/* Modal Shell with EA FC / FIFA Stadium Aesthetic */}
       <div className="relative w-full max-w-4xl max-h-[94vh] flex flex-col bg-[#070B14] border border-zinc-800 rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden text-zinc-200">
         {/* Subtle Top Neon Accent Line */}
