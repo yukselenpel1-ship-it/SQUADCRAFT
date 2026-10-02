@@ -131,7 +131,7 @@ export default function MainMenuPage() {
   }, [isFeedbackOpen, isNewCareerConfirmOpen, savedData, router, handleContinueCareer, handleNewCareerRequest]);
 
   return (
-    <div className="relative min-h-screen w-full bg-[#070A0F] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="arena-landing relative min-h-screen w-full bg-[#070A0F] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. SHARP STADIUM ARENA BACKGROUND (NO BLUR, CRISP GRAPHITE & LIGHTS) */}
       {/* ==================================================================== */}
@@ -239,7 +239,7 @@ export default function MainMenuPage() {
       {/* ==================================================================== */}
       <main className="relative z-20 max-w-[1600px] w-full mx-auto px-4 sm:px-8 py-3 sm:py-5 my-auto flex flex-col items-center">
         {/* Spacious Official Center Logo (Refined, Not Too Big, User Provided PNG) */}
-        <div className="w-full flex flex-col items-center text-center mb-3 sm:mb-4">
+        <div className="w-full flex flex-col items-center text-center mb-3 sm:mb-4 lg:items-start lg:text-left">
           <div className="relative w-44 h-28 sm:w-48 sm:h-32 flex items-center justify-center my-1">
             <Image
               src="/images/squadcraft-logo-official-hd.png"
@@ -251,15 +251,15 @@ export default function MainMenuPage() {
             />
           </div>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[42px] font-black italic tracking-tight uppercase text-white mt-1">
-            KADRO KUR. TAKTİK YAP.{' '}
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[48px] font-black italic tracking-tight uppercase text-white mt-1">
+            SENİN KULÜBÜN.{' '}
             <span className="text-[#C7FF38]">
-              KULÜBÜNÜ ZİRVEYE TAŞI.
+              SENİN HİKAYEN.
             </span>
           </h1>
 
           <p className="text-xs sm:text-sm font-semibold tracking-wide uppercase text-zinc-400 mt-2 max-w-2xl">
-            Alveria Futbol Evreninde Kendi Menajerlik Efsaneni Yaz // Gerçek Zamanlı Çok Oyunculu Rekabet
+            KULÜBÜNÜ YÖNET, YILDIZLARI KEŞFET VE KENDİ FUTBOL EFSANENİ YAZ.
           </p>
         </div>
 
@@ -270,15 +270,15 @@ export default function MainMenuPage() {
           {/* ------------------------------------------------------------------ */}
           {/* TILE 1: DRAFT LEAGUE (FEATURED MULTIPLAYER MODE - 6 COLS)          */}
           {/* ------------------------------------------------------------------ */}
-          <div className="lg:col-span-6 relative overflow-hidden bg-[#07111A] border-2 border-[#4FE4FF] flex flex-col justify-between p-6 sm:p-7 group transition-all">
+          <div className="lg:col-span-6 lg:order-2 relative overflow-hidden bg-[#120B1D] border-2 border-[#A783FF] flex flex-col justify-between p-6 sm:p-7 group transition-all">
             {/* Background Cutout Image with Sharp High-Contrast Linear Mask */}
             <div
               className="absolute right-0 top-0 bottom-0 w-[55%] bg-cover bg-center pointer-events-none transition-transform duration-300 group-hover:scale-105"
               style={{ backgroundImage: "url('/images/card-draft-room.jpg')" }}
             >
               {/* Sharp linear gradient: NO BLUR */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#07111A] via-[#07111A]/85 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07111A] via-transparent to-[#07111A]/50" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#120B1D] via-[#120B1D]/85 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#120B1D] via-transparent to-[#120B1D]/50" />
             </div>
 
             {/* Corner Decorative Tech Markers */}
@@ -345,7 +345,7 @@ export default function MainMenuPage() {
           {/* ------------------------------------------------------------------ */}
           {/* TILE 2: KARİYER MODU (CAREER MODE - 6 COLS)                         */}
           {/* ------------------------------------------------------------------ */}
-          <div className="lg:col-span-6 relative overflow-hidden bg-[#06140D] border-2 border-[#C7FF38] flex flex-col justify-between p-5 sm:p-7 group transition-all">
+          <div className="lg:col-span-6 lg:order-1 relative overflow-hidden bg-[#06140D] border-2 border-[#C7FF38] flex flex-col justify-between p-5 sm:p-7 group transition-all">
             {/* Background Cutout Image with Sharp High-Contrast Linear Mask */}
             <div
               className="absolute right-0 top-0 bottom-0 w-[55%] bg-cover bg-center pointer-events-none transition-transform duration-300 group-hover:scale-105 opacity-40 sm:opacity-100"

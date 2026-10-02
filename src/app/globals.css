@@ -55,6 +55,17 @@ body {
   background: var(--accent-primary);
 }
 
+.arena-landing::after {
+  content: '';
+  position: fixed;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  opacity: .6;
+  background: linear-gradient(116deg, transparent 0 48%, rgba(79,228,255,.13) 48.1%, transparent 48.3% 67%, rgba(199,255,56,.1) 67.1%, transparent 67.3%);
+  clip-path: polygon(0 0, 100% 0, 100% 80%, 68% 100%, 0 100%);
+}
+
 .arena-kicker {
   color: var(--accent-primary);
   font-size: 10px;
