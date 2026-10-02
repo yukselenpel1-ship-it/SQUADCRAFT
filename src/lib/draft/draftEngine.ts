@@ -209,16 +209,19 @@ export function validateDraftPick(
     }
 
     const currentSquadCount = club.squadPlayerIds?.length || 0;
-    const remainingPicks = rules.squadSize - currentSquadCount;
+    const remainingPicks = Math.max(1, rules.squadSize - currentSquadCount);
     if (remainingPicks > 1) {
       const remainingAfterPick = currentBudget - playerPrice;
       const minRequiredForRest = (remainingPicks - 1) * MIN_PLAYER_DRAFT_PRICE;
       if (remainingAfterPick < minRequiredForRest) {
-        const err = formatMultiplayerError(
-          'SC-MP-013',
-          `Bu seçim sonrası kalan ${remainingPicks - 1} transferi tamamlamak için gereken asgari bütçe (€150K/seçim) tehlikeye giriyor.`
-        );
-        return { isValid: false, error: err.message, errorCode: 'SC-MP-013' };
+        // If price is at or below minimum player price (€150K), allow it to prevent unrecoverable draft stall
+        if (playerPrice > MIN_PLAYER_DRAFT_PRICE) {
+          const err = formatMultiplayerError(
+            'SC-MP-013',
+            `Bu seçim sonrası kalan ${remainingPicks - 1} transferi tamamlamak için gereken asgari bütçe (€150K/seçim) tehlikeye giriyor.`
+          );
+          return { isValid: false, error: err.message, errorCode: 'SC-MP-013' };
+        }
       }
     }
   }
@@ -241,7 +244,8 @@ export function determineAutoPick(
 ): Player | null {
   const currentBudget = club?.budget ?? (rules.draftBudget || DEFAULT_DRAFT_BUDGET);
   const counts = countSquadPositions(playerPool, clubPlayerIds);
-  const remainingRounds = rules.squadSize - counts.total;
+  const squadCount = Math.max(counts.total, clubPlayerIds?.length || 0);
+  const remainingRounds = Math.max(1, rules.squadSize - squadCount);
   const minRequiredForRest = Math.max(0, remainingRounds - 1) * MIN_PLAYER_DRAFT_PRICE;
 
   let availablePlayers = playerPool.filter((p) => {
@@ -251,7 +255,13 @@ export function determineAutoPick(
   });
 
   if (availablePlayers.length === 0) {
-    // Edge case safety fallback to cheapest unpicked players
+    // Edge case safety fallback to cheapest unpicked players that fit within currentBudget
+    availablePlayers = playerPool
+      .filter((p) => !pickedPlayerIds.has(p.id) && (p.draftValue ?? calculatePlayerDraftValue(p)) <= currentBudget)
+      .sort((a, b) => (a.draftValue ?? 0) - (b.draftValue ?? 0));
+  }
+  if (availablePlayers.length === 0) {
+    // Ultimate fallback: cheapest unpicked player in pool
     availablePlayers = playerPool
       .filter((p) => !pickedPlayerIds.has(p.id))
       .sort((a, b) => (a.draftValue ?? 0) - (b.draftValue ?? 0));

@@ -223,6 +223,58 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
     setVisibleCount(50);
   }, [posFilter, smartPreset, priceRange, ageRange, onlyAffordable, searchQuery, sortBy]);
 
+  // Helper to trigger and chain bot draft turns snappily without waiting for 3s poll intervals
+  const triggerBotTurnIfNeeded = (state: RoomFullState, myMemberId?: string) => {
+    if (!state.draftState || state.draftState.isCompleted || botProcessingRef.current) {
+      if (
+        state.draftState?.isCompleted ||
+        state.room.status === 'LEAGUE_ACTIVE' ||
+        state.room.status === 'LEAGUE_COMPLETED'
+      ) {
+        router.push(`/draft/room/${roomCode}/league`);
+      }
+      return;
+    }
+
+    const turnMemberId = state.draftState.currentTurnMemberId;
+    const turnMember = state.members.find((m) => m.id === turnMemberId);
+    if (turnMember && turnMember.isBot) {
+      botProcessingRef.current = true;
+      setTimeout(() => {
+        try {
+          const pickRes = DraftMultiplayerStore.processBotDraftTurn(state.room.id);
+          botProcessingRef.current = false;
+          if (pickRes.didPick && pickRes.state) {
+            const nextState = pickRes.state;
+            setHydrationResult((prev) => ({
+              ...prev,
+              state: nextState,
+              isMyTurn: nextState.draftState?.currentTurnMemberId === (myMemberId || prev.currentMember?.id),
+            }));
+
+            if (
+              nextState.draftState?.isCompleted ||
+              nextState.room.status === 'LEAGUE_ACTIVE' ||
+              nextState.room.status === 'LEAGUE_COMPLETED'
+            ) {
+              router.push(`/draft/room/${roomCode}/league`);
+              return;
+            }
+
+            // Chain to next bot if consecutive bot turns
+            triggerBotTurnIfNeeded(nextState, myMemberId);
+          } else {
+            console.warn('[DraftPage] Bot pick returned false, error:', pickRes.error);
+          }
+        } catch (botErr) {
+          console.error('[DraftPage] Bot pick processing error:', botErr);
+        } finally {
+          botProcessingRef.current = false;
+        }
+      }, 250);
+    }
+  };
+
   // Canonical hydration loop
   const hydrate = async (isBackground = false) => {
     if (isBackground && hasLoadedOnce) {
@@ -257,24 +309,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         }
 
         // Auto-Trigger Bot Pick if it's Bot turn
-        if (res.state.draftState && !res.state.draftState.isCompleted && !botProcessingRef.current) {
-          const turnMemberId = res.state.draftState.currentTurnMemberId;
-          const turnMember = res.state.members.find((m) => m.id === turnMemberId);
-          if (turnMember && turnMember.isBot) {
-            botProcessingRef.current = true;
-            setTimeout(async () => {
-              const pickRes = DraftMultiplayerStore.processBotDraftTurn(res.state!.room.id);
-              botProcessingRef.current = false;
-              if (pickRes.didPick && pickRes.state) {
-                setHydrationResult((prev) => ({
-                  ...prev,
-                  state: pickRes.state,
-                  isMyTurn: pickRes.state?.draftState?.currentTurnMemberId === res.currentMember?.id,
-                }));
-              }
-            }, 800);
-          }
-        }
+        triggerBotTurnIfNeeded(res.state, res.currentMember?.id);
 
         // Update timer
         if (res.state.draftState && res.state.room.rules.pickTimerSeconds > 0) {
@@ -668,7 +703,17 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
     setPickError(null);
 
     try {
-      const res = await DraftMultiplayerStore.makePickAsync(room.id, currentMember.id, player.id, false);
+      let res = await DraftMultiplayerStore.makePickAsync(room.id, currentMember.id, player.id, false);
+
+      // If pick failed with SC-MP-007 (Draft aktif değil), perform emergency room hydration and retry once
+      if (!res.success && (res.errorCode === 'SC-MP-007' || res.error?.includes('Draft aktif değil'))) {
+        console.warn('[DraftPage] SC-MP-007 encountered during pick. Emergency re-hydrating room and retrying...');
+        const rehydrateRes = await DraftMultiplayerStore.hydrateDraftRoom(roomCode, sessionId);
+        if (rehydrateRes.state?.draftState) {
+          res = await DraftMultiplayerStore.makePickAsync(room.id, currentMember.id, player.id, false);
+        }
+      }
+
       if (!res.success) {
         setPickError(res.error || '[SC-MP-004] Seçim gerçekleştirilemedi.');
         setIsSubmittingPick(false);
@@ -715,6 +760,18 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
           state: res.state,
           isMyTurn: res.state?.draftState?.currentTurnMemberId === currentMember.id,
         }));
+
+        if (
+          res.state.draftState?.isCompleted ||
+          res.state.room.status === 'LEAGUE_ACTIVE' ||
+          res.state.room.status === 'LEAGUE_COMPLETED'
+        ) {
+          router.push(`/draft/room/${roomCode}/league`);
+          return;
+        }
+
+        // Trigger consecutive bot pick chaining if next turn is bot
+        triggerBotTurnIfNeeded(res.state, currentMember.id);
       }
     } catch (err: any) {
       console.error('Pick execution error:', err);

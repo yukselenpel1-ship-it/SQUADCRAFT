@@ -103,6 +103,7 @@ export interface HydratedRoomResult {
 // In-memory room store (mirrored to localStorage when in browser)
 const memoryRooms: Record<string, RoomFullState> = {};
 const roomCodeMap: Record<string, string> = {}; // code -> roomId
+let isDraftPicksTableAvailable = true;
 
 const DRAFT_LOCAL_STORAGE_PREFIX = 'squadcraft_draft_room_';
 const RECENT_ROOMS_KEY = 'squadcraft_recent_draft_rooms';
@@ -908,9 +909,12 @@ export class DraftMultiplayerStore {
       const currentClub = currentMember ? state.clubs.find((c) => c.memberId === currentMember.id) : undefined;
       const isHost = currentMember?.isHost || false;
 
-      // If drafting, ensure draftState is guaranteed non-null
-      if (state.room.status === 'DRAFTING' && !state.draftState) {
-        state.draftState = reconstructDraftState(state.room.id, state.members, state.room.rules, []);
+      // If drafting, ensure draftState is guaranteed non-null with all known picks
+      if ((state.room.status === 'DRAFTING' || Boolean(state.room.rules?.confirmedPicks?.length)) && !state.draftState) {
+        const local = loadRoomLocal(state.room.id) || loadRoomLocal(state.room.roomCode);
+        const memPicks = memoryRooms[state.room.id]?.draftState?.picks;
+        const confirmedPicks = memPicks || local?.draftState?.picks || (Array.isArray(state.room.rules?.confirmedPicks) ? state.room.rules.confirmedPicks : []);
+        state.draftState = reconstructDraftState(state.room.id, state.members, state.room.rules, confirmedPicks);
       }
 
       const isMyTurn = Boolean(
@@ -1453,32 +1457,48 @@ export class DraftMultiplayerStore {
           }
 
           let draftState: DraftState | undefined = undefined;
+          const existingMemState = memoryRooms[room.id] || memoryRooms[room.roomCode?.toUpperCase()];
+          const existingLocalState = loadRoomLocal(room.id) || loadRoomLocal(room.roomCode);
 
-          // If drafting or league active/completed, fetch picks and reconstruct draftState
-          if (
+          // If drafting or league active/completed, or if memory/rules/storage already has picks/draftState
+          const isDraftActive =
             room.status === 'DRAFTING' ||
             room.status === 'DRAFT_FINALIZING' ||
             room.status === 'LEAGUE_READY' ||
             room.status === 'LEAGUE_ACTIVE' ||
             room.status === 'LEAGUE_COMPLETED' ||
-            fixtures.length > 0
-          ) {
+            fixtures.length > 0 ||
+            Boolean(existingMemState?.draftState) ||
+            Boolean(existingLocalState?.draftState) ||
+            (Array.isArray(room.rules?.confirmedPicks) && room.rules.confirmedPicks.length > 0);
+
+          if (isDraftActive) {
             let dbPicks: any[] = [];
-            try {
-              const { data, error: picksErr } = await supabase
-                .from('draft_picks')
-                .select('*')
-                .eq('room_id', room.id);
-              if (!picksErr && Array.isArray(data)) {
-                dbPicks = data;
+            if (isDraftPicksTableAvailable) {
+              try {
+                const { data, error: picksErr } = await supabase
+                  .from('draft_picks')
+                  .select('*')
+                  .eq('room_id', room.id);
+                if (picksErr) {
+                  const code = String((picksErr as any).code || '');
+                  const msg = String(picksErr.message || '').toLowerCase();
+                  if (code === '42501' || msg.includes('permission denied') || msg.includes('unauthorized') || (picksErr as any).status === 401) {
+                    isDraftPicksTableAvailable = false;
+                  }
+                } else if (Array.isArray(data)) {
+                  dbPicks = data;
+                }
+              } catch (picksCatch: any) {
+                if (picksCatch?.status === 401 || String(picksCatch?.message).includes('401')) {
+                  isDraftPicksTableAvailable = false;
+                }
               }
-            } catch (picksCatch) {
-              console.warn('DB picks query non-fatal:', picksCatch);
             }
 
             const rulesPicks = Array.isArray(room.rules?.confirmedPicks) ? room.rules.confirmedPicks : [];
-            const localRoom = loadRoomLocal(room.id) || loadRoomLocal(room.roomCode);
-            const memPicks = memoryRooms[room.id]?.draftState?.picks || [];
+            const localRoom = existingLocalState;
+            const memPicks = existingMemState?.draftState?.picks || [];
             const localPicks = localRoom?.draftState?.picks || [];
 
             const mergedPickMap = new Map<string, any>();
@@ -1551,8 +1571,15 @@ export class DraftMultiplayerStore {
 
             draftState = reconstructDraftState(room.id, members, room.rules, allPicks);
 
+            // Defensive safety: Never drop an existing valid active memory draftState if reconstructed is somehow undefined or older
+            if (!draftState && existingMemState?.draftState) {
+              draftState = existingMemState.draftState;
+            } else if (draftState && existingMemState?.draftState && (existingMemState.draftState.picks.length > draftState.picks.length)) {
+              draftState = existingMemState.draftState;
+            }
+
             // Merge any squads and budgets that already exist in memory / local storage / rules
-            const memClubs = memoryRooms[room.id]?.clubs || localRoom?.clubs || [];
+            const memClubs = existingMemState?.clubs || localRoom?.clubs || [];
             const ruleClubs = Array.isArray(room.rules?.clubBudgets) ? room.rules.clubBudgets : [];
             if (memClubs.length > 0 || ruleClubs.length > 0) {
               clubs = clubs.map((c) => {
@@ -1583,8 +1610,11 @@ export class DraftMultiplayerStore {
             clubs = reconcileClubsBudget(clubs, room.rules, draftState?.picks || [], getCachedDraftPlayerPool(), room.roomCode, 'FETCH_ROOM');
           } else {
             // Check if draft already has picks in memory or local storage
-            const localRoom = loadRoomLocal(room.id) || loadRoomLocal(room.roomCode);
-            const memPicks = memoryRooms[room.id]?.draftState?.picks || localRoom?.draftState?.picks || [];
+            const localRoom = existingLocalState;
+            const memPicks = existingMemState?.draftState?.picks || localRoom?.draftState?.picks || [];
+            if (existingMemState?.draftState) {
+              draftState = existingMemState.draftState;
+            }
             if (memPicks.length > 0) {
               clubs = reconcileClubsBudget(clubs, room.rules, memPicks, getCachedDraftPlayerPool(), room.roomCode, 'FETCH_ROOM_LOBBY_RECOVER');
             } else {
@@ -2947,7 +2977,17 @@ export class DraftMultiplayerStore {
     this.pickLockMap[lockKey] = true;
 
     try {
-      const res = this.makePick(roomId, memberId, playerId, isAutoPick);
+      let res = this.makePick(roomId, memberId, playerId, isAutoPick);
+
+      // If makePick failed with SC-MP-007 or SC-MP-002, try recovering fresh state from DB and retry once
+      if (!res.success && (res.errorCode === 'SC-MP-007' || res.errorCode === 'SC-MP-002')) {
+        console.warn(`[makePickAsync] Attempting state recovery after ${res.errorCode} for room: ${roomId}`);
+        const freshState = await this.fetchRoom(roomId);
+        if (freshState?.draftState) {
+          res = this.makePick(roomId, memberId, playerId, isAutoPick);
+        }
+      }
+
       if (res.success && res.state) {
         const supabase = getSupabaseClient();
         if (supabase) {
@@ -3010,10 +3050,32 @@ export class DraftMultiplayerStore {
     playerId: string,
     isAutoPick: boolean = false
   ): { success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode } {
-    const state = this.getRoom(roomId);
+    let state = this.getRoom(roomId);
+
+    // Auto-recovery if draftState is missing in memory
+    if (!state || !state.draftState) {
+      const local = loadRoomLocal(roomId) || (state ? loadRoomLocal(state.room.roomCode) : null);
+      if (local?.draftState) {
+        state = local;
+        memoryRooms[state.room.id] = state;
+      } else if (state?.room) {
+        const confirmedPicks = Array.isArray(state.room.rules?.confirmedPicks) ? state.room.rules.confirmedPicks : [];
+        const reconstructed = reconstructDraftState(state.room.id, state.members, state.room.rules, confirmedPicks);
+        if (reconstructed) {
+          state.draftState = reconstructed;
+          memoryRooms[state.room.id] = state;
+        }
+      }
+    }
+
     if (!state || !state.draftState) {
       const err = formatMultiplayerError('SC-MP-007', 'Draft aktif değil');
       return { success: false, error: err.message, errorCode: 'SC-MP-007' };
+    }
+
+    // Idempotency: If this member already picked this player, return success immediately
+    if (state.draftState.picks.some((p) => p.playerId === playerId && p.memberId === memberId)) {
+      return { success: true, state };
     }
 
     const member = state.members.find((m) => m.id === memberId);
@@ -3123,26 +3185,34 @@ export class DraftMultiplayerStore {
           console.warn('multiplayer_rooms update error in makePick:', roomUpdateErr.message || roomUpdateErr);
         }
 
-        // 2. Resilient upsert into draft_picks (using only valid schema columns)
-        try {
-          const { error: pickErr } = await supabase.from('draft_picks').upsert({
-            id: newPick.id,
-            room_id: state.room.id,
-            round: newPick.round,
-            pick_index_in_round: newPick.pickIndexInRound,
-            global_pick_number: newPick.globalPickNumber,
-            member_id: newPick.memberId,
-            club_id: newPick.clubId,
-            player_id: newPick.playerId,
-            selected_at: newPick.selectedAt,
-            is_auto_pick: newPick.isAutoPick,
-            time_taken_seconds: newPick.timeTakenSeconds,
-          });
-          if (pickErr) {
-            console.warn('draft_picks upsert error in makePick:', pickErr.message || pickErr);
+        // 2. Resilient upsert into draft_picks (only if table is available and not unauthorized)
+        if (isDraftPicksTableAvailable) {
+          try {
+            const { error: pickErr } = await supabase.from('draft_picks').upsert({
+              id: newPick.id,
+              room_id: state.room.id,
+              round: newPick.round,
+              pick_index_in_round: newPick.pickIndexInRound,
+              global_pick_number: newPick.globalPickNumber,
+              member_id: newPick.memberId,
+              club_id: newPick.clubId,
+              player_id: newPick.playerId,
+              selected_at: newPick.selectedAt,
+              is_auto_pick: newPick.isAutoPick,
+              time_taken_seconds: newPick.timeTakenSeconds,
+            });
+            if (pickErr) {
+              const code = String((pickErr as any).code || '');
+              const msg = String(pickErr.message || '').toLowerCase();
+              if (code === '42501' || msg.includes('permission denied') || (pickErr as any).status === 401) {
+                isDraftPicksTableAvailable = false;
+              }
+            }
+          } catch (e1: any) {
+            if (e1?.status === 401 || String(e1?.message).includes('401')) {
+              isDraftPicksTableAvailable = false;
+            }
           }
-        } catch (e1) {
-          console.warn('draft_picks upsert exception in makePick:', e1);
         }
 
         // 3. Update squad_player_ids on draft_clubs
@@ -3206,7 +3276,14 @@ export class DraftMultiplayerStore {
   public static processBotDraftTurn(
     roomId: string
   ): { didPick: boolean; state?: RoomFullState; error?: string } {
-    const state = this.getRoom(roomId);
+    let state = this.getRoom(roomId);
+    if (!state || !state.draftState) {
+      const local = loadRoomLocal(roomId);
+      if (local?.draftState) {
+        state = local;
+        memoryRooms[state.room.id] = state;
+      }
+    }
     if (!state || !state.draftState || state.draftState.isCompleted || state.draftState.isPaused) {
       return { didPick: false };
     }
@@ -3220,9 +3297,12 @@ export class DraftMultiplayerStore {
     const club = state.clubs.find((c) => c.memberId === currentMember.id);
     if (!club) return { didPick: false };
 
+    const pool = (state.playerPool && state.playerPool.length > 0) ? state.playerPool : getCachedDraftPlayerPool();
+    state.playerPool = pool;
+
     const pickedPlayerIds = new Set(state.draftState.picks.map((p) => p.playerId));
-    const chosenPlayer = chooseBotDraftPick(
-      state.playerPool,
+    let chosenPlayer = chooseBotDraftPick(
+      pool,
       pickedPlayerIds,
       club.squadPlayerIds,
       state.room.rules,
@@ -3233,10 +3313,24 @@ export class DraftMultiplayerStore {
     );
 
     if (!chosenPlayer) {
+      chosenPlayer = pool.find((p) => !pickedPlayerIds.has(p.id)) || null;
+    }
+
+    if (!chosenPlayer) {
       return { didPick: false };
     }
 
-    const res = this.makePick(roomId, currentMember.id, chosenPlayer.id, false);
+    let res = this.makePick(state.room.id, currentMember.id, chosenPlayer.id, false);
+    if (!res.success) {
+      console.warn(`[processBotDraftTurn] Primary bot pick failed for ${currentMember.username} (${res.error}), trying cheapest fallback player`);
+      const cheapest = pool
+        .filter((p) => !pickedPlayerIds.has(p.id))
+        .sort((a, b) => (a.draftValue ?? calculatePlayerDraftValue(a)) - (b.draftValue ?? calculatePlayerDraftValue(b)))[0];
+      if (cheapest && cheapest.id !== chosenPlayer.id) {
+        res = this.makePick(state.room.id, currentMember.id, cheapest.id, true);
+      }
+    }
+
     return { didPick: res.success, state: res.state, error: res.error };
   }
 

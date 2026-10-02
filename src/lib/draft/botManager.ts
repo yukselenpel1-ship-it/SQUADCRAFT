@@ -404,19 +404,19 @@ export function chooseBotDraftPick(
   if (difficulty === 'KOLAY') {
     // Pick among top 4 with slight randomness
     const topN = finalCandidates.slice(0, Math.min(4, finalCandidates.length));
-    const chosen = topN[Math.floor(Math.random() * topN.length)];
-    return chosen.player;
+    const chosen = topN.length > 0 ? topN[Math.floor(Math.random() * topN.length)] : undefined;
+    return chosen?.player || allAvailable[0] || null;
   }
 
   if (difficulty === 'ORTA') {
     // Pick among top 2
     const topN = finalCandidates.slice(0, Math.min(2, finalCandidates.length));
-    const chosen = topN[Math.floor(Math.random() * topN.length)];
-    return chosen.player;
+    const chosen = topN.length > 0 ? topN[Math.floor(Math.random() * topN.length)] : undefined;
+    return chosen?.player || allAvailable[0] || null;
   }
 
   // ZOR always picks the highest scored player
-  return finalCandidates[0]?.player || availablePlayers[0];
+  return finalCandidates[0]?.player || allAvailable[0] || null;
 }
 
 // ============================================================================

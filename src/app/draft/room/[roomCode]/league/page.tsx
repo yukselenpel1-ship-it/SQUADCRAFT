@@ -395,8 +395,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
-  // Loading state (max 8s)
-  if (hydrationResult.status === 'LOADING' && elapsedSeconds < 8) {
+  // Loading state (while hydration status is LOADING, up to 15s network timeout)
+  if (hydrationResult.status === 'LOADING' && elapsedSeconds < 15) {
     return (
       <div className="relative min-h-screen bg-[#04060A] text-white flex flex-col items-center justify-center p-4 overflow-hidden select-none font-sans">
         <div
