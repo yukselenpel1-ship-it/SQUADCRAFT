@@ -618,7 +618,7 @@ export async function withTimeout<T = any>(
   timeoutMs: number = 8500,
   operationName: string = 'İşlem'
 ): Promise<T> {
-  let timer: NodeJS.Timeout;
+  let timer: NodeJS.Timeout | undefined;
   const timeoutPromise = new Promise<never>((_, reject) => {
     timer = setTimeout(() => {
       const err = new Error(`${operationName} zaman aşımına uğradı (${timeoutMs}ms)`);
@@ -628,10 +628,12 @@ export async function withTimeout<T = any>(
   });
 
   try {
-    const result = await Promise.race([Promise.resolve(promiseFactory()), timeoutPromise]);
+    const mainPromise = Promise.resolve(promiseFactory());
+    mainPromise.catch(() => {});
+    const result = await Promise.race([mainPromise, timeoutPromise]);
     return result as T;
   } finally {
-    clearTimeout(timer!);
+    if (timer) clearTimeout(timer);
   }
 }
 
@@ -649,15 +651,23 @@ export async function warmupSupabaseConnection(): Promise<boolean> {
   if (!supabase) return false;
 
   isConnectionWarmingUp = true;
+  let timer: NodeJS.Timeout | undefined;
   try {
-    const warmupPromise = supabase.from('multiplayer_rooms').select('id').limit(1);
-    const timeoutPromise = new Promise<any>((resolve) => setTimeout(() => resolve(null), 3000));
-    await Promise.race([warmupPromise, timeoutPromise]);
-    isConnectionWarmedUp = true;
-    return true;
+    const warmupPromise = Promise.resolve(supabase.from('multiplayer_rooms').select('id').limit(1))
+      .then(() => true)
+      .catch(() => false);
+    const timeoutPromise = new Promise<boolean>((resolve) => {
+      timer = setTimeout(() => resolve(false), 3000);
+    });
+    const result = await Promise.race([warmupPromise, timeoutPromise]);
+    if (result) {
+      isConnectionWarmedUp = true;
+    }
+    return result;
   } catch {
     return false;
   } finally {
+    if (timer) clearTimeout(timer);
     isConnectionWarmingUp = false;
   }
 }
@@ -979,7 +989,8 @@ export class DraftMultiplayerStore {
     sessionId: string,
     rules: DraftRules = PRESET_CLOSED_ALPHA_4,
     roomName?: string,
-    onProgress?: (attempt: number, maxAttempts: number, statusText: string) => void
+    onProgress?: (attempt: number, maxAttempts: number, statusText: string) => void,
+    existingState?: RoomFullState
   ): Promise<{ success: boolean; state?: RoomFullState; error?: string; errorCode?: MultiplayerErrorCode; details?: string }> {
     // 1. In-flight creation lock (Hard single-flight guard)
     if (DraftMultiplayerStore.isCreatingRoomInProgress) {
@@ -991,64 +1002,65 @@ export class DraftMultiplayerStore {
     }
     DraftMultiplayerStore.isCreatingRoomInProgress = true;
 
-    // 2. Generate IDs ONCE before retry loop (Guarantees idempotency across retries)
-    const roomId = `room-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-    let roomCode = generateRoomCode();
+    try {
+      // 2. Generate IDs ONCE before retry loop (Guarantees idempotency across retries)
+      const roomId = existingState?.room.id || `room-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+      let roomCode = existingState?.room.roomCode || generateRoomCode();
 
-    const memberId = `mem-${roomId}-host`;
-    const clubId = `club-${roomId}-host`;
+      const memberId = existingState?.members[0]?.id || `mem-${roomId}-host`;
+      const clubId = existingState?.clubs[0]?.id || `club-${roomId}-host`;
 
-    const randomPreset = FICTIONAL_CLUB_PRESETS[Math.floor(Math.random() * FICTIONAL_CLUB_PRESETS.length)];
+      const randomPreset = FICTIONAL_CLUB_PRESETS[Math.floor(Math.random() * FICTIONAL_CLUB_PRESETS.length)];
 
-    const hostClub: DraftClub = {
-      id: clubId,
-      roomId,
-      memberId,
-      name: `${hostUsername || 'Doruk'} SK`,
-      code: (hostUsername || 'DSK').slice(0, 3).toUpperCase(),
-      managerName: hostUsername || 'Menajer',
-      primaryColor: randomPreset.primaryColor,
-      secondaryColor: randomPreset.secondaryColor,
-      badge: createDefaultBadgeConfig(randomPreset.primaryColor, randomPreset.secondaryColor),
-      squadPlayerIds: [],
-      budget: rules.draftBudget || DEFAULT_DRAFT_BUDGET,
-      spentBudget: 0,
-    };
+      const hostClub: DraftClub = existingState?.clubs[0] || {
+        id: clubId,
+        roomId,
+        memberId,
+        name: `${hostUsername || 'Doruk'} SK`,
+        code: (hostUsername || 'DSK').slice(0, 3).toUpperCase(),
+        managerName: hostUsername || 'Menajer',
+        primaryColor: randomPreset.primaryColor,
+        secondaryColor: randomPreset.secondaryColor,
+        badge: createDefaultBadgeConfig(randomPreset.primaryColor, randomPreset.secondaryColor),
+        squadPlayerIds: [],
+        budget: rules.draftBudget || DEFAULT_DRAFT_BUDGET,
+        spentBudget: 0,
+      };
 
-    const hostMember: RoomMember = {
-      id: memberId,
-      roomId,
-      sessionId,
-      username: hostUsername || 'Oda Kurucusu',
-      isHost: true,
-      isSpectator: false,
-      isReady: true,
-      clubId,
-      isConnected: true,
-      lastSeenAt: new Date().toISOString(),
-      joinedAt: new Date().toISOString(),
-    };
+      const hostMember: RoomMember = existingState?.members[0] || {
+        id: memberId,
+        roomId,
+        sessionId,
+        username: hostUsername || 'Oda Kurucusu',
+        isHost: true,
+        isSpectator: false,
+        isReady: true,
+        clubId,
+        isConnected: true,
+        lastSeenAt: new Date().toISOString(),
+        joinedAt: new Date().toISOString(),
+      };
 
-    const room: MultiplayerRoom = {
-      id: roomId,
-      roomCode,
-      name: roomName || `${hostUsername} Draft Ligi`,
-      hostMemberId: memberId,
-      status: 'LOBBY',
-      rules,
-      stateVersion: 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+      const room: MultiplayerRoom = existingState?.room || {
+        id: roomId,
+        roomCode,
+        name: roomName || `${hostUsername} Draft Ligi`,
+        hostMemberId: memberId,
+        status: 'LOBBY',
+        rules,
+        stateVersion: 1,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
-    const state: RoomFullState = {
-      room,
-      members: [hostMember],
-      clubs: [hostClub],
-      fixtures: [],
-      standings: [],
-      playerPool: getCachedDraftPlayerPool(),
-    };
+      const state: RoomFullState = existingState || {
+        room,
+        members: [hostMember],
+        clubs: [hostClub],
+        fixtures: [],
+        standings: [],
+        playerPool: getCachedDraftPlayerPool(),
+      };
 
     const supabase = getSupabaseClient();
     if (supabase) {
@@ -1242,7 +1254,6 @@ export class DraftMultiplayerStore {
           };
         }
       } catch (err: any) {
-        DraftMultiplayerStore.isCreatingRoomInProgress = false;
         console.error('Unexpected error during room creation:', err);
         return {
           success: false,
@@ -1254,8 +1265,6 @@ export class DraftMultiplayerStore {
         };
       }
     }
-
-    DraftMultiplayerStore.isCreatingRoomInProgress = false;
 
     // Cache in memory and local storage
     memoryRooms[roomId] = state;
@@ -1269,7 +1278,10 @@ export class DraftMultiplayerStore {
     });
 
     return { success: true, state };
+  } finally {
+    DraftMultiplayerStore.isCreatingRoomInProgress = false;
   }
+}
 
   /**
    * Synchronous createRoom wrapper for compatibility.
@@ -1344,7 +1356,7 @@ export class DraftMultiplayerStore {
 
     const supabase = getSupabaseClient();
     if (supabase) {
-      safeDbRun(() => DraftMultiplayerStore.createRoomAsync(hostUsername, sessionId, rules, roomName));
+      safeDbRun(() => DraftMultiplayerStore.createRoomAsync(hostUsername, sessionId, rules, roomName, undefined, state));
     }
 
     return state;

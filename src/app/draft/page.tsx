@@ -50,6 +50,9 @@ export default function DraftHomePage() {
     setUsername(getStoredMultiplayerUsername());
     setRecentRooms(getRecentRoomCodes());
     DraftMultiplayerStore.warmupConnection();
+    return () => {
+      createInFlightRef.current = false;
+    };
   }, []);
 
   const handleCreateRoom = async (e: React.FormEvent) => {
@@ -92,14 +95,17 @@ export default function DraftHomePage() {
             res.details ? ` (${res.details})` : ''
           }`
         );
+        createInFlightRef.current = false;
+        setIsCreating(false);
+        setCreateProgressText(null);
         return;
       }
 
+      setCreateProgressText('Odaya yönlendiriliyor...');
       router.push(`/draft/room/${res.state.room.roomCode}`);
     } catch (err: any) {
       console.error('Create room error:', err);
       setCreateError(`[SC-MP-011] Oda oluşturulurken beklenmeyen bir hata oluştu: ${err?.message || ''}`);
-    } finally {
       createInFlightRef.current = false;
       setIsCreating(false);
       setCreateProgressText(null);
