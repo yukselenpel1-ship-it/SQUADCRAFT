@@ -65,7 +65,7 @@ export const PlayerPortrait: React.FC<PlayerPortraitProps> = ({
       return 'bg-blue-500/20 text-blue-300 border-blue-500/40';
     }
     if (['DMC', 'MC', 'MR', 'ML', 'AMC', 'DM', 'CM', 'CAM'].includes(pos || '')) {
-      return 'bg-[#00F5A0]/20 text-[#00F5A0] border-[#00F5A0]/40';
+      return 'bg-[#C7FF38]/20 text-[#C7FF38] border-[#C7FF38]/40';
     }
     return 'bg-rose-500/20 text-rose-300 border-rose-500/40';
   };

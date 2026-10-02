@@ -199,9 +199,9 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
         {/* 1. Modal Top Bar */}
         <div className="p-4 sm:p-5 bg-[#0B101D] border-b border-zinc-800 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <span className="w-2.5 h-6 bg-[#00F5A0]" />
+            <span className="w-2.5 h-6 bg-[#C7FF38]" />
             <div>
-              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#00F5A0]">
+              <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#C7FF38]">
                 {isContractRenewal ? '// SÖZLEŞME YENİLEME MASASI' : '// RESMİ TRANSFER & PAZARLIK MASASI'}
               </div>
               <h2 className="text-lg sm:text-xl font-black text-white uppercase tracking-tight">
@@ -231,7 +231,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                 <span className="px-1.5 py-0.5 bg-zinc-800 text-white font-black text-[10px]">
                   {player.position}
                 </span>
-                <span className="px-1.5 py-0.5 bg-[#00F5A0] text-black font-black text-[10px]">
+                <span className="px-1.5 py-0.5 bg-[#C7FF38] text-black font-black text-[10px]">
                   {player.overall} GEN
                 </span>
                 <span className="text-zinc-400 font-bold">{player.age} Yaş</span>
@@ -264,7 +264,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
             </div>
             <div className="border-l border-zinc-800 pl-4">
               <span className="text-zinc-500 uppercase text-[9px] block">Oyuncu İlgisi</span>
-              <span className="font-black text-[#00F5A0]">{valuation.interest.level}</span>
+              <span className="font-black text-[#C7FF38]">{valuation.interest.level}</span>
             </div>
           </div>
         </div>
@@ -274,7 +274,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
           <div
             className={`py-2.5 px-4 flex items-center justify-center gap-2 border-r border-zinc-800 uppercase ${
               activeNeg.stage === 'CLUB_NEGOTIATION'
-                ? 'bg-[#00F5A0] text-black font-black'
+                ? 'bg-[#C7FF38] text-black font-black'
                 : 'text-zinc-400'
             }`}
           >
@@ -285,7 +285,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
           <div
             className={`py-2.5 px-4 flex items-center justify-center gap-2 uppercase ${
               activeNeg.stage === 'PLAYER_NEGOTIATION'
-                ? 'bg-[#00F5A0] text-black font-black'
+                ? 'bg-[#C7FF38] text-black font-black'
                 : activeNeg.stage === 'COMPLETED'
                 ? 'bg-emerald-950 text-emerald-300'
                 : 'text-zinc-500'
@@ -341,7 +341,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                         className={`h-2 flex-1 rounded-none ${
                           dot <= activeNeg.clubPatience
                             ? activeNeg.clubPatience > 1
-                              ? 'bg-[#00F5A0]'
+                              ? 'bg-[#C7FF38]'
                               : 'bg-rose-500 animate-pulse'
                             : 'bg-zinc-800'
                         }`}
@@ -354,7 +354,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
 
                 <div className="p-3.5 bg-[#0B101D] border border-zinc-800 flex flex-col justify-between">
                   <span className="text-[10px] text-zinc-400 uppercase font-bold">Transfer Bütçesi</span>
-                  <span className="text-sm font-black text-[#00F5A0] mt-1">
+                  <span className="text-sm font-black text-[#C7FF38] mt-1">
                     €{(finances.transferBudget / 1000000).toFixed(2)}M
                   </span>
                   <span className="text-[10px] text-zinc-500 mt-1">
@@ -382,7 +382,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                       step="250000"
                       value={upfrontFee}
                       onChange={(e) => setUpfrontFee(Math.max(0, Number(e.target.value)))}
-                      className="w-full pl-8 pr-16 py-2 bg-zinc-950 border border-zinc-700 text-white font-black text-base focus:border-[#00F5A0] focus:outline-none"
+                      className="w-full pl-8 pr-16 py-2 bg-zinc-950 border border-zinc-700 text-white font-black text-base focus:border-[#C7FF38] focus:outline-none"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 font-bold text-xs">
                       €{(upfrontFee / 1000000).toFixed(2)}M
@@ -429,7 +429,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                       step="250000"
                       value={installmentsFee}
                       onChange={(e) => setInstallmentsFee(Math.max(0, Number(e.target.value)))}
-                      className="w-full pl-8 pr-16 py-2 bg-zinc-950 border border-zinc-700 text-white font-black text-base focus:border-[#00F5A0] focus:outline-none"
+                      className="w-full pl-8 pr-16 py-2 bg-zinc-950 border border-zinc-700 text-white font-black text-base focus:border-[#C7FF38] focus:outline-none"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 font-bold text-xs">
                       €{(installmentsFee / 1000000).toFixed(2)}M
@@ -471,7 +471,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                         onClick={() => setSellOnPercent(pct)}
                         className={`py-2 text-xs font-black uppercase border transition-all ${
                           sellOnPercent === pct
-                            ? 'bg-[#00F5A0] text-black border-white'
+                            ? 'bg-[#C7FF38] text-black border-white'
                             : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
                         }`}
                       >
@@ -496,7 +496,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                         type="checkbox"
                         checked={hasAppearanceBonus}
                         onChange={(e) => setHasAppearanceBonus(e.target.checked)}
-                        className="rounded-none bg-zinc-900 border-zinc-700 text-[#00F5A0] focus:ring-0"
+                        className="rounded-none bg-zinc-900 border-zinc-700 text-[#C7FF38] focus:ring-0"
                       />
                       <span className="text-zinc-300 font-bold">20 Maç Oynama Primi (+%15)</span>
                     </label>
@@ -506,7 +506,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                         type="checkbox"
                         checked={hasGoalBonus}
                         onChange={(e) => setHasGoalBonus(e.target.checked)}
-                        className="rounded-none bg-zinc-900 border-zinc-700 text-[#00F5A0] focus:ring-0"
+                        className="rounded-none bg-zinc-900 border-zinc-700 text-[#C7FF38] focus:ring-0"
                       />
                       <span className="text-zinc-300 font-bold">15 Gol / Asist Primi (+%15)</span>
                     </label>
@@ -516,7 +516,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                         type="checkbox"
                         checked={hasChampBonus}
                         onChange={(e) => setHasChampBonus(e.target.checked)}
-                        className="rounded-none bg-zinc-900 border-zinc-700 text-[#00F5A0] focus:ring-0"
+                        className="rounded-none bg-zinc-900 border-zinc-700 text-[#C7FF38] focus:ring-0"
                       />
                       <span className="text-zinc-300 font-bold">Lig Şampiyonluğu Primi (+%20)</span>
                     </label>
@@ -536,7 +536,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                   </div>
                   <div className="border-l border-zinc-800 pl-4">
                     <span className="text-zinc-500 text-[10px] block uppercase font-bold">Kalan Bütçe Durumu</span>
-                    <span className={`text-base font-black ${isOverTransferBudget ? 'text-rose-400' : 'text-[#00F5A0]'}`}>
+                    <span className={`text-base font-black ${isOverTransferBudget ? 'text-rose-400' : 'text-[#C7FF38]'}`}>
                       €{(remainingBudgetAfterOffer / 1000000).toFixed(2)}M
                     </span>
                   </div>
@@ -547,7 +547,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                     className={`px-3 py-1 font-black uppercase text-[10px] border ${
                       isOverTransferBudget
                         ? 'bg-rose-950 text-rose-300 border-rose-600'
-                        : 'bg-emerald-950 text-[#00F5A0] border-[#00F5A0]'
+                        : 'bg-emerald-950 text-[#C7FF38] border-[#C7FF38]'
                     }`}
                   >
                     {isOverTransferBudget ? 'BÜTÇE AŞILDI' : 'BÜTÇE UYUMLU'}
@@ -578,7 +578,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                         className={`h-2 flex-1 rounded-none ${
                           dot <= activeNeg.playerPatience
                             ? activeNeg.playerPatience > 1
-                              ? 'bg-[#00F5A0]'
+                              ? 'bg-[#C7FF38]'
                               : 'bg-rose-500 animate-pulse'
                             : 'bg-zinc-800'
                         }`}
@@ -591,7 +591,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
 
                 <div className="p-3.5 bg-[#0B101D] border border-zinc-800 flex flex-col justify-between">
                   <span className="text-[10px] text-zinc-400 uppercase font-bold">Maaş Bütçesi Durumu</span>
-                  <span className="text-sm font-black text-[#00D4FF] mt-1">
+                  <span className="text-sm font-black text-[#4FE4FF] mt-1">
                     €{((finances.wageBudget - finances.weeklyWages) / 1000).toFixed(0)}K/hf
                   </span>
                   <span className="text-[10px] text-zinc-500 mt-1">
@@ -619,7 +619,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                       step="2500"
                       value={wage}
                       onChange={(e) => setWage(Math.max(1000, Number(e.target.value)))}
-                      className="w-full pl-8 pr-20 py-2 bg-zinc-950 border border-zinc-700 text-emerald-400 font-black text-base focus:border-[#00F5A0] focus:outline-none"
+                      className="w-full pl-8 pr-20 py-2 bg-zinc-950 border border-zinc-700 text-emerald-400 font-black text-base focus:border-[#C7FF38] focus:outline-none"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 font-bold text-xs">
                       /hafta
@@ -655,7 +655,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                         onClick={() => setDurationYears(yr)}
                         className={`py-2 text-xs font-black uppercase border transition-all ${
                           durationYears === yr
-                            ? 'bg-[#00F5A0] text-black border-white'
+                            ? 'bg-[#C7FF38] text-black border-white'
                             : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
                         }`}
                       >
@@ -688,7 +688,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                           onClick={() => setSquadRole(role)}
                           className={`p-2.5 text-left border transition-all ${
                             isSelected
-                              ? 'bg-[#00F5A0] text-black border-white shadow-md'
+                              ? 'bg-[#C7FF38] text-black border-white shadow-md'
                               : 'bg-zinc-950 text-zinc-300 border-zinc-800 hover:border-zinc-700'
                           }`}
                         >
@@ -718,7 +718,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                       step="50000"
                       value={signingBonus}
                       onChange={(e) => setSigningBonus(Math.max(0, Number(e.target.value)))}
-                      className="w-full pl-8 pr-16 py-2 bg-zinc-950 border border-zinc-700 text-white font-black text-sm focus:border-[#00F5A0] focus:outline-none"
+                      className="w-full pl-8 pr-16 py-2 bg-zinc-950 border border-zinc-700 text-white font-black text-sm focus:border-[#C7FF38] focus:outline-none"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 font-bold text-xs">
                       €{(signingBonus / 1000).toFixed(0)}K
@@ -754,7 +754,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                       step="1000000"
                       value={releaseClause}
                       onChange={(e) => setReleaseClause(Math.max(0, Number(e.target.value)))}
-                      className="w-full pl-8 pr-16 py-2 bg-zinc-950 border border-zinc-700 text-white font-black text-sm focus:border-[#00F5A0] focus:outline-none"
+                      className="w-full pl-8 pr-16 py-2 bg-zinc-950 border border-zinc-700 text-white font-black text-sm focus:border-[#C7FF38] focus:outline-none"
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 font-bold text-xs">
                       {releaseClause > 0 ? `€${(releaseClause / 1000000).toFixed(1)}M` : 'Madde Yok'}
@@ -787,14 +787,14 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
           {/* STAGE 3: COMPLETED SUCCESS */}
           {activeNeg.stage === 'COMPLETED' && (
             <div className="p-8 bg-[#0B101D] border-2 border-emerald-500 text-center space-y-4">
-              <CheckCircle2 className="w-12 h-12 text-[#00F5A0] mx-auto" />
+              <CheckCircle2 className="w-12 h-12 text-[#C7FF38] mx-auto" />
               <h3 className="text-2xl font-black text-white uppercase">ANLAŞMA SAĞLANDI!</h3>
               <p className="text-xs text-zinc-300 max-w-md mx-auto leading-relaxed">
                 {player.firstName} {player.lastName} kulübümüzle resmi sözleşme imzalayarak A Takım kadromuza resmen katılmıştır.
               </p>
               <button
                 onClick={onClose}
-                className="px-6 py-2.5 bg-[#00F5A0] text-black font-black text-xs uppercase hover:bg-[#00D68B] border border-white"
+                className="px-6 py-2.5 bg-[#C7FF38] text-black font-black text-xs uppercase hover:bg-[#D9FF73] border border-white"
               >
                 Kadroya Git & Tamamla
               </button>
@@ -813,7 +813,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                   key={log.id}
                   className="p-2 bg-zinc-950 border border-zinc-850 text-[10px] text-zinc-300 flex items-start gap-2"
                 >
-                  <span className="font-bold text-[#00F5A0] shrink-0">[{log.date}] {log.senderName}:</span>
+                  <span className="font-bold text-[#C7FF38] shrink-0">[{log.date}] {log.senderName}:</span>
                   <span className="leading-relaxed">{log.text}</span>
                 </div>
               ))}
@@ -851,7 +851,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                 <button
                   onClick={handleSendClubOffer}
                   disabled={isOverTransferBudget}
-                  className="px-4 sm:px-6 py-2 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase border border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+                  className="px-4 sm:px-6 py-2 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs uppercase border border-white disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
                 >
                   Kulübe Teklifi İlet
                 </button>
@@ -876,7 +876,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
                 )}
                 <button
                   onClick={handleSendContractOffer}
-                  className="px-4 sm:px-6 py-2 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase border border-white shadow-md"
+                  className="px-4 sm:px-6 py-2 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs uppercase border border-white shadow-md"
                 >
                   Sözleşme Teklifini Sun
                 </button>

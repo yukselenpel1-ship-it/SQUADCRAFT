@@ -20,7 +20,7 @@ export const StatBadge: React.FC<StatBadgeProps> = ({
       const parts = val.split(/[–-]/).map((p) => parseInt(p.trim(), 10)).filter((n) => !isNaN(n));
       if (parts.length > 0) {
         const avg = parts.reduce((a, b) => a + b, 0) / parts.length;
-        if (avg >= 85) return 'text-[#00F5A0] bg-[#00F5A0]/15 border-[#00F5A0]/40';
+        if (avg >= 85) return 'text-[#C7FF38] bg-[#C7FF38]/15 border-[#C7FF38]/40';
         if (avg >= 78) return 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30';
         if (avg >= 70) return 'text-sky-400 bg-sky-500/15 border-sky-500/30';
         if (avg >= 60) return 'text-amber-400 bg-amber-500/15 border-amber-500/30';
@@ -29,7 +29,7 @@ export const StatBadge: React.FC<StatBadgeProps> = ({
       return 'text-zinc-300 bg-zinc-800 border-zinc-700';
     }
 
-    if (val >= 85) return 'text-[#00F5A0] bg-[#00F5A0]/15 border-[#00F5A0]/40';
+    if (val >= 85) return 'text-[#C7FF38] bg-[#C7FF38]/15 border-[#C7FF38]/40';
     if (val >= 78) return 'text-emerald-400 bg-emerald-500/15 border-emerald-500/30';
     if (val >= 70) return 'text-sky-400 bg-sky-500/15 border-sky-500/30';
     if (val >= 60) return 'text-amber-400 bg-amber-500/15 border-amber-500/30';

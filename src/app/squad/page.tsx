@@ -113,8 +113,8 @@ export default function SquadPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -126,13 +126,13 @@ export default function SquadPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 bg-[#00F5A0] text-black text-[10px] font-black uppercase tracking-widest">
+            <span className="px-2.5 py-0.5 bg-[#C7FF38] text-black text-[10px] font-black uppercase tracking-widest">
               {userClub.name}
             </span>
             <span className="text-xs text-zinc-400 font-mono">2026/27 A TAKIM KADRO LİSTESİ</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tight text-white mt-1 flex items-center gap-2.5">
-            <Users className="w-7 h-7 text-[#00F5A0]" />
+            <Users className="w-7 h-7 text-[#C7FF38]" />
             KADRO YÖNETİMİ
           </h1>
         </div>
@@ -151,13 +151,13 @@ export default function SquadPage() {
           </div>
           <div className="px-3 text-center border-l border-zinc-800">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Genel Güç</span>
-            <span className="text-base font-black italic text-[#00F5A0]">
+            <span className="text-base font-black italic text-[#C7FF38]">
               {(userPlayers.reduce((acc, p) => acc + p.overall, 0) / (userPlayers.length || 1)).toFixed(1)}
             </span>
           </div>
           <div className="px-3 text-center border-l border-zinc-800">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Haftalık Maaş</span>
-            <span className="text-base font-black italic text-[#00D4FF]">
+            <span className="text-base font-black italic text-[#4FE4FF]">
               €{(userPlayers.reduce((acc, p) => acc + p.wage, 0) / 1000).toFixed(0)}K
             </span>
           </div>
@@ -170,7 +170,7 @@ export default function SquadPage() {
           onClick={() => setActiveSquadTab('OVERVIEW')}
           className={`px-4 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeSquadTab === 'OVERVIEW'
-              ? 'bg-[#00F5A0] text-black border border-white'
+              ? 'bg-[#C7FF38] text-black border border-white'
               : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
           }`}
         >
@@ -182,7 +182,7 @@ export default function SquadPage() {
           onClick={() => setActiveSquadTab('CONTRACTS')}
           className={`px-4 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
             activeSquadTab === 'CONTRACTS'
-              ? 'bg-[#00F5A0] text-black border border-white'
+              ? 'bg-[#C7FF38] text-black border border-white'
               : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
           }`}
         >
@@ -199,7 +199,7 @@ export default function SquadPage() {
           onClick={() => setActiveSquadTab('TRAINING')}
           className={`px-4 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeSquadTab === 'TRAINING'
-              ? 'bg-[#00F5A0] text-black border border-white'
+              ? 'bg-[#C7FF38] text-black border border-white'
               : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
           }`}
         >
@@ -211,7 +211,7 @@ export default function SquadPage() {
           onClick={() => setActiveSquadTab('INJURIES')}
           className={`px-4 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
             activeSquadTab === 'INJURIES'
-              ? 'bg-[#00F5A0] text-black border border-white'
+              ? 'bg-[#C7FF38] text-black border border-white'
               : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
           }`}
         >
@@ -238,13 +238,13 @@ export default function SquadPage() {
                   onClick={() => setSelectedCategory(cat.id as any)}
                   className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all flex items-center gap-1.5 ${
                     selectedCategory === cat.id
-                      ? 'bg-[#00F5A0] text-black'
+                      ? 'bg-[#C7FF38] text-black'
                       : 'text-zinc-400 hover:text-white hover:bg-zinc-850'
                   }`}
                 >
                   <span>{cat.label}</span>
                   <span className={`text-[10px] px-1.5 py-0.2 font-mono ${
-                    selectedCategory === cat.id ? 'bg-black text-[#00F5A0]' : 'bg-zinc-800 text-zinc-400'
+                    selectedCategory === cat.id ? 'bg-black text-[#C7FF38]' : 'bg-zinc-800 text-zinc-400'
                   }`}>
                     {cat.count}
                   </span>
@@ -260,7 +260,7 @@ export default function SquadPage() {
                 placeholder="Oyuncu ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-1.5 bg-[#070B12] border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#00F5A0] transition-colors"
+                className="w-full pl-9 pr-4 py-1.5 bg-[#070B12] border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#C7FF38] transition-colors"
               />
             </div>
           </div>
@@ -342,7 +342,7 @@ export default function SquadPage() {
                           size="sm"
                         />
                         <div>
-                          <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#00F5A0] transition-colors flex items-center gap-1.5">
+                          <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#C7FF38] transition-colors flex items-center gap-1.5">
                             <span>{player.firstName} {player.lastName}</span>
                             {player.isInjured && (
                               <span className="px-1.5 py-0.2 bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[9px] font-mono">
@@ -363,7 +363,7 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-2.5 px-3 text-center">
-                      <span className="px-2 py-0.5 font-mono text-[10px] font-black uppercase bg-zinc-900 border border-zinc-700 text-[#00F5A0]">
+                      <span className="px-2 py-0.5 font-mono text-[10px] font-black uppercase bg-zinc-900 border border-zinc-700 text-[#C7FF38]">
                         {player.position}
                       </span>
                     </td>
@@ -381,7 +381,7 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-2.5 px-3 text-center font-mono">
-                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#00F5A0]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
+                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#C7FF38]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
                         {player.form.toFixed(1)}
                       </span>
                     </td>
@@ -405,7 +405,7 @@ export default function SquadPage() {
                     <td className="py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => setSelectedPlayer(player)}
-                        className="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-[#00F5A0] text-white hover:text-[#00F5A0] font-mono text-[10px] uppercase font-bold transition-all"
+                        className="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-[#C7FF38] text-white hover:text-[#C7FF38] font-mono text-[10px] uppercase font-bold transition-all"
                       >
                         İncele
                       </button>
@@ -470,7 +470,7 @@ export default function SquadPage() {
                       </td>
 
                       <td className="py-3 px-3 text-center">
-                        <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-zinc-900 border border-zinc-700 text-[#00F5A0]">
+                        <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-zinc-900 border border-zinc-700 text-[#C7FF38]">
                           {player.position}
                         </span>
                       </td>
@@ -483,7 +483,7 @@ export default function SquadPage() {
                         <StatBadge value={player.overall} size="sm" />
                       </td>
 
-                      <td className="py-3 px-3 text-right font-mono text-[#00F5A0] font-bold">
+                      <td className="py-3 px-3 text-right font-mono text-[#C7FF38] font-bold">
                         €{player.wage.toLocaleString('tr-TR')}/hf
                       </td>
 
@@ -499,7 +499,7 @@ export default function SquadPage() {
                         <span className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase border ${
                           isExpiringSoon
                             ? 'bg-rose-950/60 text-rose-300 border-rose-700/60'
-                            : 'bg-emerald-950/40 text-[#00F5A0] border-emerald-800/40'
+                            : 'bg-emerald-950/40 text-[#C7FF38] border-emerald-800/40'
                         }`}>
                           {isExpiringSoon ? 'Sözleşme Bitiyor' : 'Güvenli'}
                         </span>
@@ -511,7 +511,7 @@ export default function SquadPage() {
                           className={`px-3 py-1.5 font-mono font-bold text-xs uppercase border transition-all ${
                             isExpiringSoon
                               ? 'bg-amber-500 text-black hover:bg-amber-400 border-amber-300'
-                              : 'bg-[#00F5A0] text-black hover:bg-[#00D68B] border-white'
+                              : 'bg-[#C7FF38] text-black hover:bg-[#D9FF73] border-white'
                           }`}
                         >
                           Sözleşme Yenile
@@ -545,7 +545,7 @@ export default function SquadPage() {
                   onClick={() => setTrainingIntensity(intensity)}
                   className={`px-4 py-2 font-mono text-xs font-bold uppercase border transition-all ${
                     trainingIntensity === intensity
-                      ? 'bg-[#00F5A0] text-black border-white'
+                      ? 'bg-[#C7FF38] text-black border-white'
                       : 'bg-[#040810] text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
                   }`}
                 >
@@ -578,7 +578,7 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-3 px-3 text-center">
-                      <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-zinc-900 border border-zinc-700 text-[#00F5A0]">
+                      <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-zinc-900 border border-zinc-700 text-[#C7FF38]">
                         {player.position}
                       </span>
                     </td>
@@ -588,11 +588,11 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-3 px-3 text-center font-mono">
-                      <span className="font-bold text-[#00D4FF]">%{player.matchSharpness ?? 85}</span>
+                      <span className="font-bold text-[#4FE4FF]">%{player.matchSharpness ?? 85}</span>
                     </td>
 
                     <td className="py-3 px-3 text-center font-mono">
-                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#00F5A0]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
+                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#C7FF38]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
                         {player.form.toFixed(1)} / 10
                       </span>
                     </td>
@@ -615,7 +615,7 @@ export default function SquadPage() {
                       ) : player.fitness < 70 ? (
                         <span className="text-amber-400">Yorgun</span>
                       ) : (
-                        <span className="text-[#00F5A0]">Tam Hazır</span>
+                        <span className="text-[#C7FF38]">Tam Hazır</span>
                       )}
                     </td>
                   </tr>

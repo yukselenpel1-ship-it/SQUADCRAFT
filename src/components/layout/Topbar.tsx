@@ -76,7 +76,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
 
           {/* Current Date Display */}
           <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-950 border border-zinc-800 text-xs">
-            <Calendar className="w-3.5 h-3.5 text-[#00F5A0]" />
+            <Calendar className="w-3.5 h-3.5 text-[#C7FF38]" />
             <span className="font-black italic uppercase text-white tracking-wide">
               {formatDateTurkish(currentDate)}
             </span>
@@ -101,10 +101,10 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Club Balance */}
           <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-950 border border-zinc-800 text-xs">
-            <Wallet className="w-3.5 h-3.5 text-[#00F5A0]" />
+            <Wallet className="w-3.5 h-3.5 text-[#C7FF38]" />
             <div className="flex items-center gap-1 font-mono">
               <span className="text-zinc-400 text-[11px] font-bold">BÜTÇE:</span>
-              <span className="font-black text-[#00F5A0]">
+              <span className="font-black text-[#C7FF38]">
                 €{(userClub.transferBudget / 1000000).toFixed(1)}M
               </span>
             </div>
@@ -139,7 +139,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
             className={`group relative flex items-center gap-1.5 px-4 sm:px-6 py-2 font-black text-xs sm:text-sm uppercase tracking-wider shadow-md active:scale-95 transition-all ${
               isMatchDay
                 ? 'bg-red-600 hover:bg-red-500 text-white shadow-red-950/40 animate-pulse'
-                : 'bg-[#00F5A0] hover:bg-[#00D68B] text-black shadow-emerald-950/40'
+                : 'bg-[#C7FF38] hover:bg-[#D9FF73] text-black shadow-emerald-950/40'
             }`}
           >
             {isMatchDay ? (

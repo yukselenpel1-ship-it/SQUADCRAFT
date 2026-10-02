@@ -318,7 +318,7 @@ export default function MatchCenterPage() {
   if (!isCareerHydrated || !isInitialized || !engineState) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer ve maç motoru yükleniyor...</span>
       </div>
     );
@@ -344,7 +344,7 @@ export default function MatchCenterPage() {
         </button>
 
         <div className="flex items-center gap-2 text-xs text-zinc-400">
-          <span className="px-2.5 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-[#00F5A0] border border-emerald-500/30">
+          <span className="px-2.5 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-[#C7FF38] border border-emerald-500/30">
             Alveria Elit Ligi • Hafta {fixture?.round}
           </span>
           <span className="hidden md:inline">{fixture?.date}</span>
@@ -358,7 +358,7 @@ export default function MatchCenterPage() {
         {/* Match Clock & Venue Pill */}
         <div className="relative z-10 flex flex-col items-center justify-center mb-5">
           <div className="flex items-center gap-2 px-4 py-1 rounded-full bg-zinc-900/90 border border-zinc-700 text-xs font-black shadow-lg">
-            <Clock className={`w-3.5 h-3.5 ${isPlaying ? 'text-[#00F5A0] animate-spin' : 'text-zinc-400'}`} />
+            <Clock className={`w-3.5 h-3.5 ${isPlaying ? 'text-[#C7FF38] animate-spin' : 'text-zinc-400'}`} />
             <span className="text-white tracking-wider">
               {engineState.minute === 0
                 ? 'MAÇ BAŞLAMADI'
@@ -434,7 +434,7 @@ export default function MatchCenterPage() {
                 ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
                 : isPlaying
                 ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20'
-                : 'bg-[#00F5A0] text-black shadow-lg shadow-emerald-500/20 hover:bg-[#00D68B]'
+                : 'bg-[#C7FF38] text-black shadow-lg shadow-emerald-500/20 hover:bg-[#D9FF73]'
             }`}
           >
             {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -457,7 +457,7 @@ export default function MatchCenterPage() {
                 }}
                 className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
                   speed === s.val && isPlaying
-                    ? 'bg-[#00F5A0] text-black'
+                    ? 'bg-[#C7FF38] text-black'
                     : 'text-zinc-400 hover:text-white'
                 }`}
               >
@@ -473,7 +473,7 @@ export default function MatchCenterPage() {
             className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black bg-zinc-800 hover:bg-zinc-700 text-zinc-200 transition-colors disabled:opacity-50"
             title="Aynı simülasyon motorunu 90. dakikaya kadar tek seferde çalıştırır."
           >
-            <FastForward className="w-3.5 h-3.5 text-[#00F5A0]" />
+            <FastForward className="w-3.5 h-3.5 text-[#C7FF38]" />
             <span>Hızlı Sonuç</span>
           </button>
 
@@ -496,7 +496,7 @@ export default function MatchCenterPage() {
           onClick={() => setActiveCenterTab('RADAR')}
           className={`px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCenterTab === 'RADAR'
-              ? 'bg-[#00F5A0] text-black shadow'
+              ? 'bg-[#C7FF38] text-black shadow'
               : 'text-zinc-400 hover:text-white'
           }`}
         >
@@ -508,7 +508,7 @@ export default function MatchCenterPage() {
           onClick={() => setActiveCenterTab('TIMELINE')}
           className={`px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCenterTab === 'TIMELINE'
-              ? 'bg-[#00F5A0] text-black shadow'
+              ? 'bg-[#C7FF38] text-black shadow'
               : 'text-zinc-400 hover:text-white'
           }`}
         >
@@ -520,7 +520,7 @@ export default function MatchCenterPage() {
           onClick={() => setActiveCenterTab('COMMENTARY')}
           className={`px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCenterTab === 'COMMENTARY'
-              ? 'bg-[#00F5A0] text-black shadow'
+              ? 'bg-[#C7FF38] text-black shadow'
               : 'text-zinc-400 hover:text-white'
           }`}
         >
@@ -532,7 +532,7 @@ export default function MatchCenterPage() {
           onClick={() => setActiveCenterTab('TACTICS')}
           className={`px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCenterTab === 'TACTICS'
-              ? 'bg-[#00F5A0] text-black shadow'
+              ? 'bg-[#C7FF38] text-black shadow'
               : 'text-zinc-400 hover:text-white'
           }`}
         >
@@ -544,7 +544,7 @@ export default function MatchCenterPage() {
           onClick={() => setActiveCenterTab('SUBS')}
           className={`px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCenterTab === 'SUBS'
-              ? 'bg-[#00F5A0] text-black shadow'
+              ? 'bg-[#C7FF38] text-black shadow'
               : 'text-zinc-400 hover:text-white'
           }`}
         >
@@ -573,7 +573,7 @@ export default function MatchCenterPage() {
               {/* Latest commentary snippet banner */}
               {engineState.latestEvent && (
                 <div className="p-3.5 rounded-2xl bg-[#121622] border border-[#1E273A] flex items-center gap-3 text-xs">
-                  <span className="px-2 py-0.5 rounded font-black bg-[#00F5A0] text-black">
+                  <span className="px-2 py-0.5 rounded font-black bg-[#C7FF38] text-black">
                     {engineState.latestEvent.minute}&apos;
                   </span>
                   <p className="text-zinc-200 font-semibold truncate">
@@ -601,7 +601,7 @@ export default function MatchCenterPage() {
                       : 'bg-zinc-900/60 border-zinc-800 text-zinc-200'
                   }`}
                 >
-                  <span className="w-8 h-6 rounded bg-zinc-950 font-black text-xs text-[#00F5A0] flex items-center justify-center shrink-0">
+                  <span className="w-8 h-6 rounded bg-zinc-950 font-black text-xs text-[#C7FF38] flex items-center justify-center shrink-0">
                     {ev.minute}&apos;
                   </span>
                   <div className="flex-1">
@@ -628,7 +628,7 @@ export default function MatchCenterPage() {
               </h3>
               {[...engineState.commentaryLog].reverse().map((line, idx) => (
                 <div key={idx} className="py-2 border-b border-zinc-800/40 text-zinc-300">
-                  <span className="text-[#00F5A0] font-bold mr-2">›</span>
+                  <span className="text-[#C7FF38] font-bold mr-2">›</span>
                   {line}
                 </div>
               ))}
@@ -669,7 +669,7 @@ export default function MatchCenterPage() {
                       key={t}
                       onClick={() => handleLiveTacticsChange({ tempo: t })}
                       className={`py-1.5 px-1 rounded-lg text-[11px] font-bold ${
-                        userTeamState.tactics.tempo === t ? 'bg-[#00F5A0] text-black' : 'bg-zinc-900 text-zinc-400'
+                        userTeamState.tactics.tempo === t ? 'bg-[#C7FF38] text-black' : 'bg-zinc-900 text-zinc-400'
                       }`}
                     >
                       {t}
@@ -706,7 +706,7 @@ export default function MatchCenterPage() {
                   Oyuncu Değişikliği Masası ({userTeamState.substitutionsUsed}/5 Kullanıldı)
                 </h3>
                 {subMessage && (
-                  <span className="text-xs font-bold text-[#00F5A0]">{subMessage}</span>
+                  <span className="text-xs font-bold text-[#C7FF38]">{subMessage}</span>
                 )}
               </div>
 
@@ -776,7 +776,7 @@ export default function MatchCenterPage() {
                 <button
                   onClick={handleConfirmSubstitution}
                   disabled={!selectedSubOutId || !selectedSubInId || userTeamState.substitutionsUsed >= 5}
-                  className="px-5 py-2 rounded-xl bg-[#00F5A0] text-black font-black text-xs hover:bg-[#00D68B] disabled:opacity-40 transition-all"
+                  className="px-5 py-2 rounded-xl bg-[#C7FF38] text-black font-black text-xs hover:bg-[#D9FF73] disabled:opacity-40 transition-all"
                 >
                   Değişikliği Onayla
                 </button>

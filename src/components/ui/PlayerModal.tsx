@@ -54,7 +54,7 @@ interface PlayerModalProps {
 type ModalTab = 'bio' | 'attributes' | 'playstyles' | 'stats' | 'contract';
 
 // FIFA / EA FC Color Tier System
-// 90+: Emerald Neon (#00F5A0)
+// 90+: Emerald Neon (#C7FF38)
 // 80-89: Vivid Green (#22C55E)
 // 70-79: Gold/Amber (#FBBF24)
 // 60-69: Orange (#F97316)
@@ -81,10 +81,10 @@ export const getFifaColorTier = (val: number | string) => {
 
   if (num >= 90) {
     return {
-      text: 'text-[#00F5A0]',
-      bg: 'bg-[#00F5A0]/15',
-      border: 'border-[#00F5A0]/50',
-      bar: '#00F5A0',
+      text: 'text-[#C7FF38]',
+      bg: 'bg-[#C7FF38]/15',
+      border: 'border-[#C7FF38]/50',
+      bar: '#C7FF38',
       glow: 'shadow-[0_0_12px_rgba(0,245,160,0.4)]',
     };
   }
@@ -523,12 +523,12 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
         {/* Modal Shell with EA FC / FIFA Ultimate Team Stadium Aesthetic */}
         <div className="relative w-full max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[92vh] flex flex-col bg-[#070B14] sm:border sm:border-zinc-800 sm:rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden text-zinc-200">
           {/* Subtle top neon accent line */}
-          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#C7FF38] to-[#4FE4FF]" />
 
           {/* Top Bar for Mobile Close / Back */}
           <div className="flex sm:hidden items-center justify-between p-3.5 bg-[#090E1D] border-b border-zinc-800">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-black bg-[#00F5A0]/20 text-[#00F5A0] border border-[#00F5A0]/40">
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-black bg-[#C7FF38]/20 text-[#C7FF38] border border-[#C7FF38]/40">
                 {player.position}
               </span>
               <span className="text-sm font-black text-white uppercase italic">
@@ -554,7 +554,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               <div
                 className={`relative w-[250px] sm:w-[270px] rounded-2xl overflow-hidden p-3.5 transition-transform duration-300 hover:scale-[1.02] ${
                   isEliteCard
-                    ? 'bg-gradient-to-b from-[#08281E] via-[#051812] to-[#030A08] border-2 border-[#00F5A0]/60 shadow-[0_0_35px_rgba(0,245,160,0.25)]'
+                    ? 'bg-gradient-to-b from-[#08281E] via-[#051812] to-[#030A08] border-2 border-[#C7FF38]/60 shadow-[0_0_35px_rgba(0,245,160,0.25)]'
                     : 'bg-gradient-to-b from-[#221808] via-[#140F04] to-[#080A12] border-2 border-amber-400/50 shadow-[0_0_30px_rgba(245,158,11,0.2)]'
                 }`}
               >
@@ -566,7 +566,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   <div className="flex flex-col items-center leading-none">
                     <span
                       className={`text-4xl sm:text-5xl font-black font-mono tracking-tighter drop-shadow-lg ${
-                        isEliteCard ? 'text-[#00F5A0]' : 'text-amber-300'
+                        isEliteCard ? 'text-[#C7FF38]' : 'text-amber-300'
                       }`}
                     >
                       {masked.overallDisplay}
@@ -594,7 +594,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   <div className="relative w-36 h-36 flex items-center justify-center">
                     <div
                       className={`absolute inset-2 rounded-full blur-xl opacity-40 ${
-                        isEliteCard ? 'bg-[#00F5A0]' : 'bg-amber-400'
+                        isEliteCard ? 'bg-[#C7FF38]' : 'bg-amber-400'
                       }`}
                     />
                     <div className="relative z-10 w-28 h-28 rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
@@ -643,7 +643,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               <div className="w-full max-w-[270px] mt-4 pt-3 border-t border-zinc-800 text-xs font-mono">
                 <div className="flex justify-between items-center text-[11px] mb-1">
                   <span className="text-zinc-400 flex items-center gap-1">
-                    <Eye className="w-3.5 h-3.5 text-[#00D4FF]" />
+                    <Eye className="w-3.5 h-3.5 text-[#4FE4FF]" />
                     Gözlem
                   </span>
                   <span className="font-bold text-white">
@@ -652,7 +652,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                 </div>
                 <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden border border-zinc-800">
                   <div
-                    className="h-full bg-gradient-to-r from-[#00D4FF] to-[#00F5A0] rounded-full transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-[#4FE4FF] to-[#C7FF38] rounded-full transition-all duration-300"
                     style={{ width: `${isOwnPlayer ? 100 : masked.knowledgePercentage}%` }}
                   />
                 </div>
@@ -667,7 +667,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               <div className="hidden sm:flex items-center justify-between p-5 border-b border-zinc-800/80 bg-gradient-to-r from-[#090E1D] to-[#070B14]">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="px-2 py-0.5 rounded text-xs font-mono font-black uppercase tracking-wider bg-[#00F5A0]/20 text-[#00F5A0] border border-[#00F5A0]/40">
+                    <span className="px-2 py-0.5 rounded text-xs font-mono font-black uppercase tracking-wider bg-[#C7FF38]/20 text-[#C7FF38] border border-[#C7FF38]/40">
                       {player.position}
                     </span>
                     {player.secondaryPositions?.map((sec) => (
@@ -725,7 +725,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   onClick={() => setActiveTab('bio')}
                   className={`flex items-center gap-2 px-3.5 py-3 text-xs font-mono font-black uppercase tracking-wider border-b-2 transition-all shrink-0 ${
                     activeTab === 'bio'
-                      ? 'border-[#00F5A0] text-[#00F5A0] bg-[#00F5A0]/5'
+                      ? 'border-[#C7FF38] text-[#C7FF38] bg-[#C7FF38]/5'
                       : 'border-transparent text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
@@ -737,7 +737,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   onClick={() => setActiveTab('attributes')}
                   className={`flex items-center gap-2 px-3.5 py-3 text-xs font-mono font-black uppercase tracking-wider border-b-2 transition-all shrink-0 ${
                     activeTab === 'attributes'
-                  ? 'border-[#00F5A0] text-[#00F5A0] bg-[#00F5A0]/5'
+                  ? 'border-[#C7FF38] text-[#C7FF38] bg-[#C7FF38]/5'
                   : 'border-transparent text-zinc-400 hover:text-zinc-200'
               }`}
                 >
@@ -749,7 +749,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   onClick={() => setActiveTab('playstyles')}
                   className={`flex items-center gap-2 px-3.5 py-3 text-xs font-mono font-black uppercase tracking-wider border-b-2 transition-all shrink-0 ${
                     activeTab === 'playstyles'
-                      ? 'border-[#00F5A0] text-[#00F5A0] bg-[#00F5A0]/5'
+                      ? 'border-[#C7FF38] text-[#C7FF38] bg-[#C7FF38]/5'
                       : 'border-transparent text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
@@ -761,7 +761,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   onClick={() => setActiveTab('stats')}
                   className={`flex items-center gap-2 px-3.5 py-3 text-xs font-mono font-black uppercase tracking-wider border-b-2 transition-all shrink-0 ${
                     activeTab === 'stats'
-                      ? 'border-[#00F5A0] text-[#00F5A0] bg-[#00F5A0]/5'
+                      ? 'border-[#C7FF38] text-[#C7FF38] bg-[#C7FF38]/5'
                       : 'border-transparent text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
@@ -773,7 +773,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   onClick={() => setActiveTab('contract')}
                   className={`flex items-center gap-2 px-3.5 py-3 text-xs font-mono font-black uppercase tracking-wider border-b-2 transition-all shrink-0 ${
                     activeTab === 'contract'
-                      ? 'border-[#00F5A0] text-[#00F5A0] bg-[#00F5A0]/5'
+                      ? 'border-[#C7FF38] text-[#C7FF38] bg-[#C7FF38]/5'
                       : 'border-transparent text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
@@ -814,7 +814,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                       </div>
                       <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 min-w-0 flex flex-col justify-between">
                         <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1 truncate">Haftalık Maaş</span>
-                        <span className="text-sm font-black text-[#00F5A0] truncate">{masked.wageDisplay}</span>
+                        <span className="text-sm font-black text-[#C7FF38] truncate">{masked.wageDisplay}</span>
                       </div>
                       <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 min-w-0 flex flex-col justify-between">
                         <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1 truncate">Sözleşme Bitiş</span>
@@ -833,7 +833,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                             <div className="flex-1 bg-zinc-800/90 h-2 rounded-full overflow-hidden border border-zinc-700/60 min-w-[32px]">
                               <div
                                 className={`h-full rounded-full transition-all duration-300 ${
-                                  player.fitness >= 85 ? 'bg-[#00F5A0]' : player.fitness >= 70 ? 'bg-amber-400' : 'bg-rose-500'
+                                  player.fitness >= 85 ? 'bg-[#C7FF38]' : player.fitness >= 70 ? 'bg-amber-400' : 'bg-rose-500'
                                 }`}
                                 style={{ width: `${Math.min(100, Math.max(5, player.fitness))}%` }}
                               />
@@ -847,11 +847,11 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                         <div className="flex items-center justify-between gap-1.5 min-w-0">
                           <div className="flex-1 bg-zinc-800/90 h-2 rounded-full overflow-hidden border border-zinc-700/60 min-w-[32px]">
                             <div
-                              className="h-full rounded-full bg-[#00D4FF] transition-all duration-300"
+                              className="h-full rounded-full bg-[#4FE4FF] transition-all duration-300"
                               style={{ width: `${Math.min(100, Math.max(5, player.matchSharpness ?? 85))}%` }}
                             />
                           </div>
-                          <span className="text-xs font-black text-[#00D4FF] shrink-0">%{player.matchSharpness ?? 85}</span>
+                          <span className="text-xs font-black text-[#4FE4FF] shrink-0">%{player.matchSharpness ?? 85}</span>
                         </div>
                       </div>
                       <div className="p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 min-w-0 flex flex-col justify-between">
@@ -864,7 +864,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
                     {/* FIFA Player Biological & Technical Specs */}
                     <div className="p-4 rounded-xl bg-[#0C1222] border border-zinc-800 space-y-3 font-mono text-xs">
-                      <span className="text-[10px] font-black uppercase tracking-widest text-[#00D4FF]">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-[#4FE4FF]">
                         // TEKNİK & FİZİKSEL BİYOGRAFİ
                       </span>
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
@@ -886,7 +886,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                         </div>
                         <div className="p-2.5 bg-zinc-950/70 border border-zinc-800 rounded-lg">
                           <span className="text-zinc-500 text-[10px] block uppercase">Çalışma Oranı (Hüc/Sav)</span>
-                          <span className="text-sm font-bold text-[#00F5A0]">{workRates}</span>
+                          <span className="text-sm font-bold text-[#C7FF38]">{workRates}</span>
                         </div>
                         <div className="p-2.5 bg-zinc-950/70 border border-zinc-800 rounded-lg">
                           <span className="text-zinc-500 text-[10px] block uppercase">Yaş & Doğum</span>
@@ -898,28 +898,28 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                         </div>
                         <div className="p-2.5 bg-zinc-950/70 border border-zinc-800 rounded-lg">
                           <span className="text-zinc-500 text-[10px] block uppercase">Kadro Rolü</span>
-                          <span className="text-sm font-bold text-[#00D4FF]">{player.squadRole || 'İlk 11 Oyuncusu'}</span>
+                          <span className="text-sm font-bold text-[#4FE4FF]">{player.squadRole || 'İlk 11 Oyuncusu'}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Scouting Intelligence / Fog of War */}
                     {masked.latestReport ? (
-                      <div className="p-4 rounded-xl bg-[#091526] border border-[#00D4FF]/30 space-y-3 font-mono text-xs shadow-lg">
+                      <div className="p-4 rounded-xl bg-[#091526] border border-[#4FE4FF]/30 space-y-3 font-mono text-xs shadow-lg">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
-                            <Compass className="w-4 h-4 text-[#00D4FF]" />
-                            <h4 className="text-xs font-black text-[#00D4FF] uppercase tracking-wider">
+                            <Compass className="w-4 h-4 text-[#4FE4FF]" />
+                            <h4 className="text-xs font-black text-[#4FE4FF] uppercase tracking-wider">
                               Gözlemci Raporu ({masked.latestReport.scoutName} • {masked.latestReport.date})
                             </h4>
                           </div>
-                          <span className="text-xs font-bold px-2.5 py-0.5 rounded bg-[#00D4FF]/20 text-cyan-200 border border-[#00D4FF]/40 w-fit">
+                          <span className="text-xs font-bold px-2.5 py-0.5 rounded bg-[#4FE4FF]/20 text-cyan-200 border border-[#4FE4FF]/40 w-fit">
                             Öneri: {masked.latestReport.recommendation} (Güven: %{masked.latestReport.confidence})
                           </span>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
                           <div className="p-3 rounded-lg bg-zinc-950/70 border border-zinc-800">
-                            <strong className="text-[#00F5A0] block mb-1 uppercase">Güçlü Yönler:</strong>
+                            <strong className="text-[#C7FF38] block mb-1 uppercase">Güçlü Yönler:</strong>
                             <ul className="list-disc list-inside space-y-1 text-zinc-300">
                               {masked.latestReport.strengths.map((s, idx) => (
                                 <li key={idx}>{s}</li>
@@ -950,7 +950,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                           </div>
                           <button
                             onClick={() => setShowScoutModal(true)}
-                            className="px-4 py-2 rounded-xl text-xs font-black bg-[#00D4FF] text-black hover:bg-[#00D4FF]/90 transition-all uppercase shrink-0"
+                            className="px-4 py-2 rounded-xl text-xs font-black bg-[#4FE4FF] text-black hover:bg-[#4FE4FF]/90 transition-all uppercase shrink-0"
                           >
                             Gözlemci Gönder
                           </button>
@@ -965,14 +965,14 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   <div className="space-y-5 animate-in fade-in duration-200">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-zinc-800">
                       <div className="flex items-center gap-2">
-                        <Activity className="w-4 h-4 text-[#00F5A0]" />
+                        <Activity className="w-4 h-4 text-[#C7FF38]" />
                         <span className="text-xs font-black uppercase tracking-wider text-zinc-300 font-mono">
                           FIFA OYUN İÇİ AYRINTILI NİTELİKLER
                         </span>
                       </div>
                       <div className="flex items-center gap-3 text-[10px] font-mono text-zinc-400">
                         <span className="flex items-center gap-1">
-                          <span className="w-2 h-2 rounded-full bg-[#00F5A0]" /> 90+ Elit
+                          <span className="w-2 h-2 rounded-full bg-[#C7FF38]" /> 90+ Elit
                         </span>
                         <span className="flex items-center gap-1">
                           <span className="w-2 h-2 rounded-full bg-emerald-500" /> 80-89 Çok İyi
@@ -992,7 +992,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {/* 1. HIZ (PAC) */}
                       <div className="p-4 rounded-xl bg-[#0D1220] border border-zinc-800 space-y-1">
-                        <h4 className="text-xs font-black uppercase tracking-wider text-[#00D4FF] pb-2 border-b border-zinc-800 flex items-center justify-between font-mono">
+                        <h4 className="text-xs font-black uppercase tracking-wider text-[#4FE4FF] pb-2 border-b border-zinc-800 flex items-center justify-between font-mono">
                           <span>HIZ (PAC)</span>
                           <Wind className="w-3.5 h-3.5" />
                         </h4>
@@ -1013,7 +1013,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
                       {/* 3. PAS (PAS) */}
                       <div className="p-4 rounded-xl bg-[#0D1220] border border-zinc-800 space-y-1">
-                        <h4 className="text-xs font-black uppercase tracking-wider text-[#00F5A0] pb-2 border-b border-zinc-800 flex items-center justify-between font-mono">
+                        <h4 className="text-xs font-black uppercase tracking-wider text-[#C7FF38] pb-2 border-b border-zinc-800 flex items-center justify-between font-mono">
                           <span>PAS (PAS)</span>
                           <Crosshair className="w-3.5 h-3.5" />
                         </h4>
@@ -1105,7 +1105,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                                   className={`w-9 h-9 rounded-lg flex items-center justify-center font-black ${
                                     ps.isPlus
                                       ? 'bg-amber-400 text-black shadow-md shadow-amber-500/30'
-                                      : 'bg-zinc-800 text-[#00D4FF] border border-zinc-700'
+                                      : 'bg-zinc-800 text-[#4FE4FF] border border-zinc-700'
                                   }`}
                                 >
                                   {ps.isPlus ? <Star className="w-5 h-5 fill-current" /> : <Sparkles className="w-4 h-4" />}
@@ -1144,7 +1144,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   <div className="space-y-4 animate-in fade-in duration-200">
                     <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
                       <div className="flex items-center gap-2">
-                        <BarChart2 className="w-4 h-4 text-[#00F5A0]" />
+                        <BarChart2 className="w-4 h-4 text-[#C7FF38]" />
                         <span className="text-xs font-black uppercase tracking-wider text-zinc-300 font-mono">
                           2026/27 RESMİ SEZON PERFORMANSI
                         </span>
@@ -1160,13 +1160,13 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                       </div>
                       <div className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800">
                         <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Goller</span>
-                        <span className="text-2xl font-black text-[#00F5A0]">
+                        <span className="text-2xl font-black text-[#C7FF38]">
                           {player.seasonStats?.goals ?? 0}
                         </span>
                       </div>
                       <div className="p-3.5 rounded-xl bg-zinc-900/80 border border-zinc-800">
                         <span className="text-[10px] text-zinc-500 uppercase font-bold block mb-1">Asistler</span>
-                        <span className="text-2xl font-black text-[#00D4FF]">
+                        <span className="text-2xl font-black text-[#4FE4FF]">
                           {player.seasonStats?.assists ?? 0}
                         </span>
                       </div>
@@ -1209,7 +1209,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   <div className="space-y-4 animate-in fade-in duration-200">
                     <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
                       <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-[#00F5A0]" />
+                        <FileText className="w-4 h-4 text-[#C7FF38]" />
                         <span className="text-xs font-black uppercase tracking-wider text-zinc-300 font-mono">
                           KULÜP SÖZLEŞMESİ VE GİZLİ KARAKTER ANALİZİ
                         </span>
@@ -1219,7 +1219,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
                       {/* Sol: Sözleşme Şartları */}
                       <div className="p-4 rounded-xl bg-[#0D1220] border border-zinc-800 space-y-3">
-                        <h4 className="text-xs font-black uppercase tracking-wider text-[#00F5A0] pb-2 border-b border-zinc-800">
+                        <h4 className="text-xs font-black uppercase tracking-wider text-[#C7FF38] pb-2 border-b border-zinc-800">
                           Finansal Sözleşme Detayları
                         </h4>
                         <div className="flex justify-between items-center py-1 border-b border-zinc-800/60">
@@ -1228,7 +1228,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                         </div>
                         <div className="flex justify-between items-center py-1 border-b border-zinc-800/60">
                           <span className="text-zinc-400">Haftalık Maaş:</span>
-                          <span className="font-bold text-[#00F5A0]">{masked.wageDisplay}</span>
+                          <span className="font-bold text-[#C7FF38]">{masked.wageDisplay}</span>
                         </div>
                         <div className="flex justify-between items-center py-1 border-b border-zinc-800/60">
                           <span className="text-zinc-400">Yıllık Maliyet:</span>
@@ -1252,7 +1252,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
                       {/* Sağ: Transfer & Karakter Durumu */}
                       <div className="p-4 rounded-xl bg-[#0D1220] border border-zinc-800 space-y-3">
-                        <h4 className="text-xs font-black uppercase tracking-wider text-[#00D4FF] pb-2 border-b border-zinc-800">
+                        <h4 className="text-xs font-black uppercase tracking-wider text-[#4FE4FF] pb-2 border-b border-zinc-800">
                           Transfer ve Karakter Analizi
                         </h4>
                         <div className="flex justify-between items-center py-1 border-b border-zinc-800/60">
@@ -1323,7 +1323,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   {!isOwnPlayer && player.clubId !== 'FREE_AGENT' && (
                     <button
                       onClick={() => setShowLoanModal(true)}
-                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold font-mono text-xs bg-[#00D4FF]/20 text-[#00D4FF] border border-[#00D4FF]/40 hover:bg-[#00D4FF]/30 transition-all"
+                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold font-mono text-xs bg-[#4FE4FF]/20 text-[#4FE4FF] border border-[#4FE4FF]/40 hover:bg-[#4FE4FF]/30 transition-all"
                     >
                       <Handshake className="w-3.5 h-3.5" />
                       Kirala
@@ -1345,7 +1345,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   {onMakeBid && !isOwnPlayer && (
                     <button
                       onClick={() => onMakeBid(player.id)}
-                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-black font-mono text-xs bg-[#00F5A0] text-black hover:bg-[#00D68B] transition-all shadow-lg shadow-emerald-500/20"
+                      className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-black font-mono text-xs bg-[#C7FF38] text-black hover:bg-[#D9FF73] transition-all shadow-lg shadow-emerald-500/20"
                     >
                       <DollarSign className="w-3.5 h-3.5" />
                       Bonservis Pazarlığı

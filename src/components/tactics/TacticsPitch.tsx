@@ -96,7 +96,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
           {/* Center Circle */}
           <circle cx="500" cy="650" r="140" />
-          <circle cx="500" cy="650" r="15" fill="#00F5A0" fillOpacity="0.4" />
+          <circle cx="500" cy="650" r="15" fill="#C7FF38" fillOpacity="0.4" />
 
           {/* Top Penalty Box (Opponent Side) */}
           <rect x="250" y="52" width="500" height="234" />
@@ -135,14 +135,14 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
             >
               {/* Pulse ring when selected */}
               {isSelected && (
-                <span className="absolute -inset-2 rounded-full border-2 border-[#00F5A0] animate-ping opacity-75" />
+                <span className="absolute -inset-2 rounded-full border-2 border-[#C7FF38] animate-ping opacity-75" />
               )}
 
               {/* Player Jersey / Crest Node */}
               <div
                 className={`relative flex items-center justify-center w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 shadow-2xl transition-all ${
                   isSelected
-                    ? 'bg-[#00F5A0] border-white text-black shadow-[0_0_18px_#00F5A0]'
+                    ? 'bg-[#C7FF38] border-white text-black shadow-[0_0_18px_#C7FF38]'
                     : player?.isInjured
                     ? 'bg-rose-950 border-rose-500 text-white'
                     : 'bg-[#050811] hover:bg-zinc-900 border-emerald-500/70 text-white'
@@ -176,7 +176,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
                 <button
                   onClick={(e) => handleOpenBenchSwap(slot.slotId, e)}
                   title="Yedeklerle Değiştir"
-                  className="absolute -bottom-1 -left-1 p-1 rounded-full bg-zinc-900 border border-zinc-700 hover:border-[#00F5A0] text-zinc-400 hover:text-[#00F5A0] transition-colors"
+                  className="absolute -bottom-1 -left-1 p-1 rounded-full bg-zinc-900 border border-zinc-700 hover:border-[#C7FF38] text-zinc-400 hover:text-[#C7FF38] transition-colors"
                 >
                   <RefreshCw className="w-2.5 h-2.5" />
                 </button>
@@ -186,7 +186,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
               <div
                 className={`mt-1 px-2 py-0.5 rounded-md text-[10px] sm:text-[11px] font-bold tracking-tight shadow-md border truncate max-w-[110px] text-center transition-all ${
                   isSelected
-                    ? 'bg-[#00F5A0] text-black border-white'
+                    ? 'bg-[#C7FF38] text-black border-white'
                     : 'bg-zinc-950/95 text-zinc-100 border-zinc-700/80 group-hover:border-emerald-500/60'
                 }`}
               >
@@ -200,7 +200,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
                     <div
                       className={`h-full rounded-full ${
                         player.fitness >= 85
-                          ? 'bg-[#00F5A0]'
+                          ? 'bg-[#C7FF38]'
                           : player.fitness >= 65
                           ? 'bg-amber-400'
                           : 'bg-rose-500'
@@ -226,7 +226,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
       {/* Helper Prompt Bar */}
       <div className="mt-3 text-xs text-zinc-400 flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse" />
+        <span className="w-2 h-2 rounded-full bg-[#C7FF38] animate-pulse" />
         <span>Oyuncuları sahada yer değiştirmek için iki mevkiye sırayla tıklayın veya <RefreshCw className="inline w-3 h-3 text-zinc-300 mx-0.5" /> simgesine basıp yedek oyuncu seçin.</span>
       </div>
 
@@ -238,7 +238,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
               <div>
                 <h3 className="text-lg font-black text-white">Oyuncu Değişikliği</h3>
                 <p className="text-xs text-zinc-400">
-                  <span className="text-[#00F5A0] font-bold">{selectedSlot.role}</span> mevkisi için yedek veya rezerv oyuncu seçin.
+                  <span className="text-[#C7FF38] font-bold">{selectedSlot.role}</span> mevkisi için yedek veya rezerv oyuncu seçin.
                 </p>
               </div>
               <button
@@ -293,7 +293,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
                     <div className="flex items-center gap-3">
                       <StatBadge value={p.overall} size="md" />
-                      <button className="px-3 py-1.5 rounded-lg bg-[#00F5A0] text-black text-xs font-bold hover:bg-[#00D68B]">
+                      <button className="px-3 py-1.5 rounded-lg bg-[#C7FF38] text-black text-xs font-bold hover:bg-[#D9FF73]">
                         Sahaya Al
                       </button>
                     </div>

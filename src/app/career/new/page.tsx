@@ -197,7 +197,7 @@ export default function NewCareerPage() {
   ];
 
   return (
-    <div className="relative min-h-screen w-full bg-[#04060A] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="relative min-h-screen w-full bg-[#070A0F] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. SHARP STADIUM ARENA BACKGROUND (NO BLUR, CRISP GRAPHITE & LIGHTS) */}
       {/* ==================================================================== */}
@@ -206,8 +206,8 @@ export default function NewCareerPage() {
         style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
       >
         {/* High-contrast crisp sports vignette: zero blur */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#070A0F]/85 via-transparent to-[#070A0F]/95" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#070A0F]/40 to-[#070A0F]/90" />
       </div>
 
       {/* ==================================================================== */}
@@ -241,7 +241,7 @@ export default function NewCareerPage() {
               <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-lg sm:text-xl leading-none">
                   <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
-                  <span className="text-[#00F5A0]">26</span>
+                  <span className="text-[#C7FF38]">26</span>
                 </div>
                 <span className="text-[9px] font-mono font-bold tracking-widest text-zinc-400 uppercase mt-0.5">
                   CAREER CREATOR
@@ -259,13 +259,13 @@ export default function NewCareerPage() {
               [ ANA MERKEZ ]
             </Link>
             <button
-              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-[#00F5A0] text-black border border-[#00F5A0]"
+              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-[#C7FF38] text-black border border-[#C7FF38]"
             >
               [ KARİYER MODU ]
             </button>
             <Link
               href="/draft"
-              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-zinc-900/90 text-zinc-300 border border-zinc-800 hover:border-[#00D4FF] hover:text-[#00D4FF] transition-all"
+              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-zinc-900/90 text-zinc-300 border border-zinc-800 hover:border-[#4FE4FF] hover:text-[#4FE4FF] transition-all"
             >
               [ DRAFT LEAGUE ]
             </Link>
@@ -280,7 +280,7 @@ export default function NewCareerPage() {
           {/* Right: Telemetry & Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-zinc-950 border border-zinc-800 text-[10px] font-mono font-bold text-zinc-300">
-              <span className="w-2 h-2 rounded-full bg-[#00F5A0]" />
+              <span className="w-2 h-2 rounded-full bg-[#C7FF38]" />
               <span>SİSTEM: ÇEVRİMİÇİ</span>
             </div>
 
@@ -288,7 +288,7 @@ export default function NewCareerPage() {
               onClick={() => setIsFeedbackOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-zinc-700 hover:border-zinc-500 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <MessageSquare className="w-3.5 h-3.5 text-[#C7FF38]" />
               <span className="hidden sm:inline">Geri Bildirim</span>
             </button>
 
@@ -318,9 +318,9 @@ export default function NewCareerPage() {
                   onClick={() => setCurrentStep(s.num as any)}
                   className={`flex items-center gap-2 px-3 py-1.5 text-xs font-mono font-bold uppercase tracking-wider transition-all ${
                     isActive
-                      ? 'bg-[#00F5A0] text-black border border-[#00F5A0]'
+                      ? 'bg-[#C7FF38] text-black border border-[#C7FF38]'
                       : isPassed
-                      ? 'bg-zinc-900 text-[#00F5A0] border border-zinc-700 hover:border-zinc-500'
+                      ? 'bg-zinc-900 text-[#C7FF38] border border-zinc-700 hover:border-zinc-500'
                       : 'bg-zinc-950/80 text-zinc-500 border border-zinc-800'
                   }`}
                 >
@@ -334,7 +334,7 @@ export default function NewCareerPage() {
 
           <div className="hidden md:flex items-center gap-2 text-[11px] font-mono text-zinc-400">
             <span>SEZON:</span>
-            <span className="text-[#00F5A0] font-bold">2026/27</span>
+            <span className="text-[#C7FF38] font-bold">2026/27</span>
             <span className="text-zinc-600">•</span>
             <span>MOD:</span>
             <span className="text-white font-bold">TEK OYUNCULU</span>
@@ -352,7 +352,7 @@ export default function NewCareerPage() {
         {currentStep === 1 && (
           <div className="w-full max-w-4xl space-y-6">
             <div className="text-center space-y-1.5">
-              <span className="px-2.5 py-0.5 bg-[#00F5A0] text-black text-[10px] font-black uppercase tracking-widest">
+              <span className="px-2.5 py-0.5 bg-[#C7FF38] text-black text-[10px] font-black uppercase tracking-widest">
                 STEP 01 // MANAGER CREATION
               </span>
               <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tight text-white">
@@ -363,11 +363,11 @@ export default function NewCareerPage() {
               </p>
             </div>
 
-            <div className="bg-[#07110C] border-2 border-[#00F5A0] p-6 sm:p-8 space-y-6 shadow-2xl">
+            <div className="bg-[#07110C] border-2 border-[#C7FF38] p-6 sm:p-8 space-y-6 shadow-2xl">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer Adı & Soyadı <span className="text-[#00F5A0]">*</span>
+                    Menajer Adı & Soyadı <span className="text-[#C7FF38]">*</span>
                   </label>
                   <input
                     type="text"
@@ -375,18 +375,18 @@ export default function NewCareerPage() {
                     onChange={(e) => setManagerName(e.target.value)}
                     placeholder="Örn: Oğuzhan Kaya"
                     maxLength={30}
-                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#00F5A0] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors"
+                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#C7FF38] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Milliyet <span className="text-[#00F5A0]">*</span>
+                    Milliyet <span className="text-[#C7FF38]">*</span>
                   </label>
                   <select
                     value={nationality}
                     onChange={(e) => setNationality(e.target.value)}
-                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#00F5A0] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors cursor-pointer"
+                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#C7FF38] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors cursor-pointer"
                   >
                     {FICTIONAL_NATIONALITIES.map((n) => (
                       <option key={n} value={n}>
@@ -398,7 +398,7 @@ export default function NewCareerPage() {
 
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer Yaşı <span className="text-[#00F5A0]">*</span>
+                    Menajer Yaşı <span className="text-[#C7FF38]">*</span>
                   </label>
                   <input
                     type="number"
@@ -413,18 +413,18 @@ export default function NewCareerPage() {
                     min={21}
                     max={75}
                     placeholder="34"
-                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#00F5A0] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors"
+                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#C7FF38] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Taktiksel Felsefe <span className="text-[#00F5A0]">*</span>
+                    Taktiksel Felsefe <span className="text-[#C7FF38]">*</span>
                   </label>
                   <select
                     value={tacticalStyle}
                     onChange={(e) => setTacticalStyle(e.target.value)}
-                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#00F5A0] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors cursor-pointer"
+                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#C7FF38] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors cursor-pointer"
                   >
                     {TACTICAL_STYLES.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -446,13 +446,13 @@ export default function NewCareerPage() {
                       id: 'Rahat',
                       title: 'RAHAT',
                       desc: '+%25 Transfer bütçesi, hoşgörülü yönetim ve hızlı gözlemleme.',
-                      badge: 'bg-cyan-950 text-[#00D4FF] border border-cyan-700',
+                      badge: 'bg-cyan-950 text-[#4FE4FF] border border-cyan-700',
                     },
                     {
                       id: 'Standart',
                       title: 'STANDART',
                       desc: 'Dengeli gerçekçi simülasyon deneyimi ve standart bütçe dengesi.',
-                      badge: 'bg-emerald-950 text-[#00F5A0] border border-emerald-700',
+                      badge: 'bg-emerald-950 text-[#C7FF38] border border-emerald-700',
                     },
                     {
                       id: 'Zorlu',
@@ -468,7 +468,7 @@ export default function NewCareerPage() {
                         onClick={() => setDifficulty(diff.id as CareerDifficulty)}
                         className={`p-4 border cursor-pointer transition-all ${
                           isSelected
-                            ? 'bg-[#041208] border-2 border-[#00F5A0]'
+                            ? 'bg-[#041208] border-2 border-[#C7FF38]'
                             : 'bg-[#05090F] border-zinc-800 hover:border-zinc-700 opacity-70 hover:opacity-100'
                         }`}
                       >
@@ -495,7 +495,7 @@ export default function NewCareerPage() {
 
                 <button
                   onClick={() => setCurrentStep(2)}
-                  className="inline-flex items-center gap-2 px-7 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg"
+                  className="inline-flex items-center gap-2 px-7 py-3 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg"
                 >
                   <span>LİG SEÇİMİNE GEÇ</span>
                   <ArrowRight className="w-4 h-4 stroke-[3]" />
@@ -511,7 +511,7 @@ export default function NewCareerPage() {
         {currentStep === 2 && (
           <div className="w-full max-w-4xl space-y-6">
             <div className="text-center space-y-1.5">
-              <span className="px-2.5 py-0.5 bg-[#00F5A0] text-black text-[10px] font-black uppercase tracking-widest">
+              <span className="px-2.5 py-0.5 bg-[#C7FF38] text-black text-[10px] font-black uppercase tracking-widest">
                 STEP 02 // LEAGUE SELECTION
               </span>
               <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tight text-white">
@@ -562,7 +562,7 @@ export default function NewCareerPage() {
                     onClick={() => setLeagueSize(league.size)}
                     className={`p-5 border-2 cursor-pointer transition-all ${
                       isSelected
-                        ? 'bg-[#07110C] border-[#00F5A0] shadow-2xl'
+                        ? 'bg-[#07110C] border-[#C7FF38] shadow-2xl'
                         : 'bg-[#05090F] border-zinc-800 hover:border-zinc-700 opacity-80 hover:opacity-100'
                     }`}
                   >
@@ -571,7 +571,7 @@ export default function NewCareerPage() {
                         <div
                           className={`w-12 h-12 flex items-center justify-center border font-black text-sm ${
                             isSelected
-                              ? 'bg-[#032416] border-[#00F5A0] text-[#00F5A0]'
+                              ? 'bg-[#032416] border-[#C7FF38] text-[#C7FF38]'
                               : 'bg-zinc-900 border-zinc-700 text-zinc-400'
                           }`}
                         >
@@ -582,13 +582,13 @@ export default function NewCareerPage() {
                             <h3 className="text-xl font-black italic uppercase text-white">{league.name}</h3>
                             <span
                               className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase ${
-                                isSelected ? 'bg-[#00F5A0] text-black font-black' : 'bg-zinc-800 text-zinc-300'
+                                isSelected ? 'bg-[#C7FF38] text-black font-black' : 'bg-zinc-800 text-zinc-300'
                               }`}
                             >
                               {league.size} KULÜP
                             </span>
                             {league.recommended && (
-                              <span className="px-2 py-0.5 bg-[#00D4FF] text-black text-[9px] font-black uppercase">
+                              <span className="px-2 py-0.5 bg-[#4FE4FF] text-black text-[9px] font-black uppercase">
                                 POPÜLER
                               </span>
                             )}
@@ -605,7 +605,7 @@ export default function NewCareerPage() {
                           </div>
                           <div className="p-2 bg-[#040C08] border border-zinc-800">
                             <span className="block text-[9px] font-mono text-zinc-500 uppercase">Kıtasal</span>
-                            <span className="font-bold text-[#00F5A0]">{league.continental}</span>
+                            <span className="font-bold text-[#C7FF38]">{league.continental}</span>
                           </div>
                           <div className="p-2 bg-[#040C08] border border-zinc-800">
                             <span className="block text-[9px] font-mono text-zinc-500 uppercase">Kulüpler</span>
@@ -615,7 +615,7 @@ export default function NewCareerPage() {
 
                         <span
                           className={`px-3 py-2 text-xs font-black uppercase tracking-wider ${
-                            isSelected ? 'bg-[#00F5A0] text-black' : 'bg-zinc-900 text-zinc-400 border border-zinc-700'
+                            isSelected ? 'bg-[#C7FF38] text-black' : 'bg-zinc-900 text-zinc-400 border border-zinc-700'
                           }`}
                         >
                           {isSelected ? '✓ SEÇİLDİ' : 'SEÇ'}
@@ -636,7 +636,7 @@ export default function NewCareerPage() {
 
                 <button
                   onClick={() => setCurrentStep(3)}
-                  className="inline-flex items-center gap-2 px-7 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg"
+                  className="inline-flex items-center gap-2 px-7 py-3 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg"
                 >
                   <span>KULÜP SEÇİMİNE GEÇ ({leagueSize} KULÜP)</span>
                   <ArrowRight className="w-4 h-4 stroke-[3]" />
@@ -652,7 +652,7 @@ export default function NewCareerPage() {
         {currentStep === 3 && (
           <div className="w-full max-w-6xl space-y-5">
             <div className="text-center space-y-1.5">
-              <span className="px-2.5 py-0.5 bg-[#00F5A0] text-black text-[10px] font-black uppercase tracking-widest">
+              <span className="px-2.5 py-0.5 bg-[#C7FF38] text-black text-[10px] font-black uppercase tracking-widest">
                 STEP 03 // CLUB SELECTION ({leagueSize} KULÜP)
               </span>
               <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tight text-white">
@@ -677,7 +677,7 @@ export default function NewCareerPage() {
                       onClick={() => setSelectedClubId(club.id)}
                       className={`p-4 border cursor-pointer transition-all flex flex-col justify-between ${
                         isSelected
-                          ? 'bg-[#06140D] border-2 border-[#00F5A0] shadow-xl'
+                          ? 'bg-[#06140D] border-2 border-[#C7FF38] shadow-xl'
                           : 'bg-[#080C14] border-zinc-800 hover:border-zinc-700 hover:bg-[#0B101A]'
                       }`}
                     >
@@ -704,7 +704,7 @@ export default function NewCareerPage() {
                           </div>
                           <div>
                             <span className="block text-[10px] font-mono text-zinc-500 uppercase">Bütçe</span>
-                            <span className="font-black text-[#00F5A0]">€{(club.transferBudget / 1000000).toFixed(1)}M</span>
+                            <span className="font-black text-[#C7FF38]">€{(club.transferBudget / 1000000).toFixed(1)}M</span>
                           </div>
                           <div>
                             <span className="block text-[10px] font-mono text-zinc-500 uppercase">İtibar</span>
@@ -717,7 +717,7 @@ export default function NewCareerPage() {
                         <span className="text-zinc-400 truncate">Hedef: <strong className="text-zinc-200">{exp.target}</strong></span>
                         <span
                           className={`px-2.5 py-0.5 text-[9px] font-black uppercase ${
-                            isSelected ? 'bg-[#00F5A0] text-black' : 'bg-zinc-800 text-zinc-400'
+                            isSelected ? 'bg-[#C7FF38] text-black' : 'bg-zinc-800 text-zinc-400'
                           }`}
                         >
                           {isSelected ? 'SEÇİLDİ' : 'SEÇ'}
@@ -729,7 +729,7 @@ export default function NewCareerPage() {
               </div>
 
               {/* Large Featured SquadCraft Club Card (5 Cols, ZERO BLUR) */}
-              <div className="lg:col-span-5 bg-[#06140D] border-2 border-[#00F5A0] p-6 flex flex-col justify-between shadow-2xl">
+              <div className="lg:col-span-5 bg-[#06140D] border-2 border-[#C7FF38] p-6 flex flex-col justify-between shadow-2xl">
                 <div className="space-y-5">
                   <div className="flex items-center gap-4">
                     <ClubBadge
@@ -741,7 +741,7 @@ export default function NewCareerPage() {
                       size="xl"
                     />
                     <div>
-                      <span className="px-2 py-0.5 bg-[#00F5A0] text-black text-[9px] font-black uppercase">
+                      <span className="px-2 py-0.5 bg-[#C7FF38] text-black text-[9px] font-black uppercase">
                         {highlightedClub.foundedYear} KURULUŞ
                       </span>
                       <h3 className="text-2xl font-black italic uppercase text-white mt-1 leading-tight">
@@ -757,7 +757,7 @@ export default function NewCareerPage() {
                   <div className="grid grid-cols-2 gap-2.5 bg-[#040C08] p-3.5 border border-zinc-800">
                     <div>
                       <span className="text-[10px] uppercase font-mono font-bold text-zinc-400 block">Transfer Bütçesi</span>
-                      <span className="text-xl font-black italic text-[#00F5A0]">
+                      <span className="text-xl font-black italic text-[#C7FF38]">
                         €{(highlightedClub.transferBudget / 1000000).toFixed(1)}M
                       </span>
                     </div>
@@ -769,7 +769,7 @@ export default function NewCareerPage() {
                     </div>
                     <div>
                       <span className="text-[10px] uppercase font-mono font-bold text-zinc-400 block">Kadro Gücü</span>
-                      <span className="text-xl font-black italic text-[#00D4FF]">
+                      <span className="text-xl font-black italic text-[#4FE4FF]">
                         {highlightedStats.avgOverall} OVR
                       </span>
                     </div>
@@ -795,7 +795,7 @@ export default function NewCareerPage() {
                   {highlightedStats.starPlayer && (
                     <div className="p-3 bg-[#040C08] border border-zinc-800 flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 bg-[#032416] border border-[#00F5A0] flex items-center justify-center font-black text-xs text-[#00F5A0]">
+                        <div className="w-9 h-9 bg-[#032416] border border-[#C7FF38] flex items-center justify-center font-black text-xs text-[#C7FF38]">
                           {highlightedStats.starPlayer.position}
                         </div>
                         <div>
@@ -805,7 +805,7 @@ export default function NewCareerPage() {
                           </span>
                         </div>
                       </div>
-                      <span className="text-lg font-black italic text-[#00F5A0]">
+                      <span className="text-lg font-black italic text-[#C7FF38]">
                         {highlightedStats.starPlayer.overall} OVR
                       </span>
                     </div>
@@ -822,7 +822,7 @@ export default function NewCareerPage() {
 
                   <button
                     onClick={() => setCurrentStep(4)}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg"
                   >
                     <span>KULÜBÜ SEÇ & İLERLE</span>
                     <ArrowRight className="w-4 h-4 stroke-[3]" />
@@ -839,7 +839,7 @@ export default function NewCareerPage() {
         {currentStep === 4 && (
           <div className="w-full max-w-4xl space-y-6">
             <div className="text-center space-y-1.5">
-              <span className="px-2.5 py-0.5 bg-[#00F5A0] text-black text-[10px] font-black uppercase tracking-widest">
+              <span className="px-2.5 py-0.5 bg-[#C7FF38] text-black text-[10px] font-black uppercase tracking-widest">
                 STEP 04 // SEASON CONFIGURATION
               </span>
               <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tight text-white">
@@ -850,13 +850,13 @@ export default function NewCareerPage() {
               </p>
             </div>
 
-            <div className="bg-[#07110C] border-2 border-[#00F5A0] p-6 sm:p-8 space-y-4 shadow-2xl">
+            <div className="bg-[#07110C] border-2 border-[#C7FF38] p-6 sm:p-8 space-y-4 shadow-2xl">
               <div className="flex items-center justify-between p-4 bg-[#040C08] border border-zinc-800">
                 <div>
                   <h4 className="text-sm font-black italic uppercase text-white">Başlangıç Tarihi</h4>
                   <p className="text-xs text-zinc-400 font-mono">Sezon Öncesi Hazırlık Kampı (Transfer dönemi aktif)</p>
                 </div>
-                <span className="px-3 py-1 bg-zinc-900 border border-zinc-700 text-xs font-mono font-bold text-[#00F5A0]">
+                <span className="px-3 py-1 bg-zinc-900 border border-zinc-700 text-xs font-mono font-bold text-[#C7FF38]">
                   1 Ağustos 2026
                 </span>
               </div>
@@ -866,7 +866,7 @@ export default function NewCareerPage() {
                   <h4 className="text-sm font-black italic uppercase text-white">Yaz Transfer Dönemi</h4>
                   <p className="text-xs text-zinc-400 font-mono">1 Temmuz – 31 Ağustos arası serbest transfer ve kiralama açık</p>
                 </div>
-                <span className="px-3 py-1 bg-[#032416] border border-[#00F5A0]/60 text-xs font-mono font-bold text-[#00F5A0]">
+                <span className="px-3 py-1 bg-[#032416] border border-[#C7FF38]/60 text-xs font-mono font-bold text-[#C7FF38]">
                   AÇIK
                 </span>
               </div>
@@ -876,7 +876,7 @@ export default function NewCareerPage() {
                   <h4 className="text-sm font-black italic uppercase text-white">Otomatik Kayıt (Auto-Save)</h4>
                   <p className="text-xs text-zinc-400 font-mono">Her maç ve takvim günü ilerlemesinde tarayıcıya kaydedilir</p>
                 </div>
-                <span className="px-3 py-1 bg-[#032416] border border-[#00F5A0]/60 text-xs font-mono font-bold text-[#00F5A0]">
+                <span className="px-3 py-1 bg-[#032416] border border-[#C7FF38]/60 text-xs font-mono font-bold text-[#C7FF38]">
                   AKTİF
                 </span>
               </div>
@@ -891,7 +891,7 @@ export default function NewCareerPage() {
 
                 <button
                   onClick={() => setCurrentStep(5)}
-                  className="inline-flex items-center gap-2 px-7 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg"
+                  className="inline-flex items-center gap-2 px-7 py-3 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg"
                 >
                   <span>ÖZET & ONAY AŞAMASINA GEÇ</span>
                   <ArrowRight className="w-4 h-4 stroke-[3]" />
@@ -907,7 +907,7 @@ export default function NewCareerPage() {
         {currentStep === 5 && (
           <div className="w-full max-w-4xl space-y-6">
             <div className="text-center space-y-1.5">
-              <span className="px-2.5 py-0.5 bg-[#00F5A0] text-black text-[10px] font-black uppercase tracking-widest">
+              <span className="px-2.5 py-0.5 bg-[#C7FF38] text-black text-[10px] font-black uppercase tracking-widest">
                 STEP 05 // OFFICIAL CONFIRMATION
               </span>
               <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tight text-white">
@@ -918,7 +918,7 @@ export default function NewCareerPage() {
               </p>
             </div>
 
-            <div className="bg-[#07110C] border-2 border-[#00F5A0] p-6 sm:p-8 space-y-6 shadow-2xl">
+            <div className="bg-[#07110C] border-2 border-[#C7FF38] p-6 sm:p-8 space-y-6 shadow-2xl">
               {/* Selected Club & Manager Card */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 bg-[#040C08] border border-zinc-800">
                 <div className="flex items-center gap-4">
@@ -939,7 +939,7 @@ export default function NewCareerPage() {
 
                 <div className="text-right sm:border-l sm:border-zinc-800 sm:pl-6 w-full sm:w-auto">
                   <span className="text-[10px] font-mono uppercase font-bold text-zinc-400 block">Teknik Direktör</span>
-                  <div className="text-lg font-black italic text-[#00F5A0]">{managerName}</div>
+                  <div className="text-lg font-black italic text-[#C7FF38]">{managerName}</div>
                   <div className="text-xs text-zinc-400 font-mono">{nationality} • {age} Yaşında</div>
                 </div>
               </div>
@@ -952,11 +952,11 @@ export default function NewCareerPage() {
                 </div>
                 <div className="p-3.5 bg-[#040C08] border border-zinc-800">
                   <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">Taktik</span>
-                  <span className="text-base font-black italic text-[#00D4FF]">{tacticalStyle}</span>
+                  <span className="text-base font-black italic text-[#4FE4FF]">{tacticalStyle}</span>
                 </div>
                 <div className="p-3.5 bg-[#040C08] border border-zinc-800">
                   <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">Transfer Bütçesi</span>
-                  <span className="text-base font-black italic text-[#00F5A0]">
+                  <span className="text-base font-black italic text-[#C7FF38]">
                     €{(highlightedClub.transferBudget / 1000000).toFixed(1)}M
                   </span>
                 </div>
@@ -977,7 +977,7 @@ export default function NewCareerPage() {
                 <button
                   onClick={handleStartCareer}
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#00F5A0] hover:bg-[#00D68B] disabled:opacity-50 disabled:cursor-not-allowed text-black font-black text-sm uppercase tracking-wider transition-all active:scale-95 shadow-xl shadow-emerald-500/20"
+                  className="inline-flex items-center gap-2.5 px-8 py-3.5 bg-[#C7FF38] hover:bg-[#D9FF73] disabled:opacity-50 disabled:cursor-not-allowed text-black font-black text-sm uppercase tracking-wider transition-all active:scale-95 shadow-xl shadow-emerald-500/20"
                 >
                   {isSubmitting ? (
                     <>
@@ -1003,8 +1003,8 @@ export default function NewCareerPage() {
       <footer className="relative z-20 w-full border-t border-zinc-800 bg-[#05070B] text-xs">
         {/* Broadcast Live News Ticker Strip */}
         <div className="w-full bg-[#080C14] border-b border-zinc-800/80 px-4 py-1.5 flex items-center overflow-hidden">
-          <div className="flex items-center gap-2 shrink-0 pr-4 border-r border-zinc-800 text-[10px] font-black uppercase text-[#00F5A0]">
-            <Radio className="w-3 h-3 text-[#00F5A0] animate-pulse" />
+          <div className="flex items-center gap-2 shrink-0 pr-4 border-r border-zinc-800 text-[10px] font-black uppercase text-[#C7FF38]">
+            <Radio className="w-3 h-3 text-[#C7FF38] animate-pulse" />
             <span>CANLI BÜLTEN</span>
           </div>
           <div className="overflow-hidden whitespace-nowrap text-[11px] font-mono text-zinc-400 pl-4">
@@ -1012,11 +1012,11 @@ export default function NewCareerPage() {
             <span className="mx-3 text-zinc-600">•</span>
             <span>ALVERIA ELİT LİGİ 2026/27 SEZONU</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00F5A0]">10 ÖZGÜN KULÜP SEÇİMİ AÇIK</span>
+            <span className="text-[#C7FF38]">10 ÖZGÜN KULÜP SEÇİMİ AÇIK</span>
             <span className="mx-3 text-zinc-600">•</span>
             <span>RESMİ TAKTİK SİMÜLASYON MOTORU</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00D4FF]">{APP_VERSION}</span>
+            <span className="text-[#4FE4FF]">{APP_VERSION}</span>
           </div>
         </div>
 
@@ -1036,7 +1036,7 @@ export default function NewCareerPage() {
           <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
             <span className="text-zinc-300 font-bold">SQUADCRAFT CAREER ENGINE</span>
             <span className="text-zinc-600">•</span>
-            <span className="text-[#00F5A0] font-bold">{APP_VERSION}</span>
+            <span className="text-[#C7FF38] font-bold">{APP_VERSION}</span>
             <span className="text-zinc-600">•</span>
             <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

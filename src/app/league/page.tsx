@@ -26,8 +26,8 @@ export default function LeaguePage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -47,12 +47,12 @@ export default function LeaguePage() {
             </h2>
             <p className="text-xs text-zinc-300 font-medium">
               Kulübünüz <strong className="text-white">{userClub.name}</strong> sezonu{' '}
-              <strong className="text-[#00F5A0]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
+              <strong className="text-[#C7FF38]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
             </p>
           </div>
           <button
             onClick={startNextSeasonRoll}
-            className="px-6 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0"
+            className="px-6 py-3 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0"
           >
             YENİ SEZONA BAŞLA
           </button>
@@ -63,7 +63,7 @@ export default function LeaguePage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
+            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#C7FF38]/10 text-[#C7FF38] border border-[#C7FF38]/30">
               // OFFICIAL STANDINGS
             </span>
             <span className="text-[11px] font-mono text-zinc-400">
@@ -71,7 +71,7 @@ export default function LeaguePage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Trophy className="w-7 h-7 text-[#00F5A0]" />
+            <Trophy className="w-7 h-7 text-[#C7FF38]" />
             Alveria Elit Ligi Puan Durumu
           </h1>
         </div>
@@ -79,11 +79,11 @@ export default function LeaguePage() {
         {/* Legend */}
         <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
           <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#080D1A] border border-zinc-800">
-            <span className="w-2.5 h-2.5 bg-[#00F5A0]" />
+            <span className="w-2.5 h-2.5 bg-[#C7FF38]" />
             <span className="text-zinc-300 text-[11px] uppercase">Kıtasal Şampiyona (1.)</span>
           </div>
           <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#080D1A] border border-zinc-800">
-            <span className="w-2.5 h-2.5 bg-[#00D4FF]" />
+            <span className="w-2.5 h-2.5 bg-[#4FE4FF]" />
             <span className="text-zinc-300 text-[11px] uppercase">Kıtasal Eleme (2-3.)</span>
           </div>
           <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#080D1A] border border-zinc-800">

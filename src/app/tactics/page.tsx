@@ -108,8 +108,8 @@ export default function TacticsPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -121,16 +121,16 @@ export default function TacticsPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
+            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#C7FF38]/10 text-[#C7FF38] border border-[#C7FF38]/30">
               // TACTICAL HEADQUARTERS
             </span>
             <span className="text-[11px] font-mono text-zinc-400">
               FORMASYON: <strong className="text-white">{tactics.formation}</strong> • İLK 11:{' '}
-              <strong className="text-[#00F5A0]">{startingPlayers.filter((s) => s.player).length}/11</strong>
+              <strong className="text-[#C7FF38]">{startingPlayers.filter((s) => s.player).length}/11</strong>
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Swords className="w-7 h-7 text-[#00F5A0]" />
+            <Swords className="w-7 h-7 text-[#C7FF38]" />
             Taktik & Saha Dizilişi
           </h1>
         </div>
@@ -139,7 +139,7 @@ export default function TacticsPage() {
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleAutoAssign}
-            className="px-4 py-2 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs font-mono uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg shadow-[#00F5A0]/10"
+            className="px-4 py-2 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs font-mono uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg shadow-[#C7FF38]/10"
             title="En yüksek genel reyting ve formdaki oyuncuları mevkilerine göre otomatik dizer"
           >
             <Sparkles className="w-4 h-4" />
@@ -148,11 +148,11 @@ export default function TacticsPage() {
 
           <div className="px-3.5 py-1.5 bg-[#080D1A] border border-zinc-800 text-xs font-mono">
             <span className="text-zinc-500 uppercase text-[10px] block">Mentalite</span>
-            <span className="font-bold text-[#00D4FF]">{tactics.settings.mentality}</span>
+            <span className="font-bold text-[#4FE4FF]">{tactics.settings.mentality}</span>
           </div>
           <div className="px-3.5 py-1.5 bg-[#080D1A] border border-zinc-800 text-xs font-mono">
             <span className="text-zinc-500 uppercase text-[10px] block">Tempo</span>
-            <span className="font-bold text-[#00F5A0]">{tactics.settings.tempo}</span>
+            <span className="font-bold text-[#C7FF38]">{tactics.settings.tempo}</span>
           </div>
           <div className="px-3.5 py-1.5 bg-[#080D1A] border border-zinc-800 text-xs font-mono">
             <span className="text-zinc-500 uppercase text-[10px] block">Pres Şiddeti</span>
@@ -163,7 +163,7 @@ export default function TacticsPage() {
 
       {/* Action Notification Toast */}
       {actionNotice && (
-        <div className="p-3 bg-emerald-950/80 border border-[#00F5A0] text-[#00F5A0] text-xs font-mono font-bold flex items-center gap-2 animate-in fade-in">
+        <div className="p-3 bg-emerald-950/80 border border-[#C7FF38] text-[#C7FF38] text-xs font-mono font-bold flex items-center gap-2 animate-in fade-in">
           <CheckCircle2 className="w-4 h-4 shrink-0" />
           <span>{actionNotice}</span>
         </div>
@@ -199,11 +199,11 @@ export default function TacticsPage() {
 
           {/* Active Slot Selection Banner */}
           {selectedSlot && (
-            <div className="p-3.5 bg-[#00F5A0]/10 border border-[#00F5A0] text-xs font-mono flex items-center justify-between gap-3 animate-in fade-in">
+            <div className="p-3.5 bg-[#C7FF38]/10 border border-[#C7FF38] text-xs font-mono flex items-center justify-between gap-3 animate-in fade-in">
               <div>
                 <span className="text-zinc-400 text-[10px] block uppercase font-bold">// DEĞİŞİKLİK MODU</span>
                 <span className="font-bold text-white">
-                  Seçili: <span className="text-[#00F5A0] font-black">{selectedSlot.role}</span>{' '}
+                  Seçili: <span className="text-[#C7FF38] font-black">{selectedSlot.role}</span>{' '}
                   ({selectedStarterPlayer ? `${selectedStarterPlayer.firstName[0]}. ${selectedStarterPlayer.lastName}` : 'Boş'})
                 </span>
                 <p className="text-[11px] text-zinc-300 mt-0.5">
@@ -227,7 +227,7 @@ export default function TacticsPage() {
                   onClick={() => setActiveSquadTab('BENCH')}
                   className={`px-3 py-1 text-xs font-mono font-bold uppercase transition-all ${
                     activeSquadTab === 'BENCH'
-                      ? 'bg-[#00F5A0] text-black'
+                      ? 'bg-[#C7FF38] text-black'
                       : 'text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800'
                   }`}
                 >
@@ -237,7 +237,7 @@ export default function TacticsPage() {
                   onClick={() => setActiveSquadTab('RESERVES')}
                   className={`px-3 py-1 text-xs font-mono font-bold uppercase transition-all ${
                     activeSquadTab === 'RESERVES'
-                      ? 'bg-[#00F5A0] text-black'
+                      ? 'bg-[#C7FF38] text-black'
                       : 'text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800'
                   }`}
                 >
@@ -260,14 +260,14 @@ export default function TacticsPage() {
                   <div
                     key={player.id}
                     onClick={() => handleBenchPlayerClick(player)}
-                    className="flex items-center justify-between p-2.5 bg-[#040711] hover:bg-zinc-900 border border-zinc-850 hover:border-[#00F5A0]/60 cursor-pointer transition-all group"
+                    className="flex items-center justify-between p-2.5 bg-[#040711] hover:bg-zinc-900 border border-zinc-850 hover:border-[#C7FF38]/60 cursor-pointer transition-all group"
                   >
                     <div className="flex items-center gap-2.5">
                       <span className="w-7 h-6 flex items-center justify-center text-[10px] font-mono font-black bg-zinc-900 text-zinc-300 border border-zinc-700">
                         {player.position}
                       </span>
                       <div>
-                        <div className="text-xs font-bold text-white group-hover:text-[#00F5A0] transition-colors truncate max-w-[130px] sm:max-w-[150px]">
+                        <div className="text-xs font-bold text-white group-hover:text-[#C7FF38] transition-colors truncate max-w-[130px] sm:max-w-[150px]">
                           {player.firstName} {player.lastName}
                         </div>
                         <div className="text-[10px] font-mono text-zinc-500">
@@ -282,7 +282,7 @@ export default function TacticsPage() {
                       <button
                         onClick={(e) => handleDirectPutOnPitch(player, e)}
                         title="İlk 11'e yerleştir"
-                        className="px-2 py-1 text-[10px] font-mono font-bold uppercase bg-zinc-900 hover:bg-[#00F5A0] text-zinc-300 hover:text-black border border-zinc-700 hover:border-white transition-all flex items-center gap-1"
+                        className="px-2 py-1 text-[10px] font-mono font-bold uppercase bg-zinc-900 hover:bg-[#C7FF38] text-zinc-300 hover:text-black border border-zinc-700 hover:border-white transition-all flex items-center gap-1"
                       >
                         <ArrowRightLeft className="w-2.5 h-2.5" />
                         <span>Sahaya Al</span>

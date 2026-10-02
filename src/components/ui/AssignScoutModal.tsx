@@ -151,7 +151,7 @@ export const AssignScoutModal: React.FC<AssignScoutModalProps> = ({
                   onClick={() => setDuration(opt.days)}
                   className={`p-2.5 rounded-xl border text-left transition-all ${
                     duration === opt.days
-                      ? 'bg-[#00F5A0]/15 border-[#00F5A0]/50 text-white'
+                      ? 'bg-[#C7FF38]/15 border-[#C7FF38]/50 text-white'
                       : 'bg-[#141A28] border-[#20293D] hover:border-zinc-700 text-zinc-400'
                   }`}
                 >
@@ -174,7 +174,7 @@ export const AssignScoutModal: React.FC<AssignScoutModalProps> = ({
           <button
             onClick={handleAssign}
             disabled={!selectedScout || Boolean(selectedScout.activeAssignmentId)}
-            className="px-5 py-2 rounded-xl text-xs font-black bg-[#00F5A0] text-black hover:bg-[#00D68B] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-emerald-500/20"
+            className="px-5 py-2 rounded-xl text-xs font-black bg-[#C7FF38] text-black hover:bg-[#D9FF73] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-emerald-500/20"
           >
             Görevi Başlat
           </button>

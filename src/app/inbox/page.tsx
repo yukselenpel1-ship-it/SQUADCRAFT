@@ -42,8 +42,8 @@ export default function InboxPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -65,9 +65,9 @@ export default function InboxPage() {
       case 'INJURY':
         return <HeartPulse className="w-4 h-4 text-rose-400" />;
       case 'TRANSFER':
-        return <DollarSign className="w-4 h-4 text-[#00F5A0]" />;
+        return <DollarSign className="w-4 h-4 text-[#C7FF38]" />;
       case 'SCOUT':
-        return <Search className="w-4 h-4 text-[#00D4FF]" />;
+        return <Search className="w-4 h-4 text-[#4FE4FF]" />;
       case 'MATCH':
         return <Swords className="w-4 h-4 text-blue-400" />;
       case 'CONTRACT':
@@ -109,7 +109,7 @@ export default function InboxPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
+            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#C7FF38]/10 text-[#C7FF38] border border-[#C7FF38]/30">
               // INBOX & COMMUNICATIONS
             </span>
             <span className="text-[11px] font-mono text-zinc-400">
@@ -117,14 +117,14 @@ export default function InboxPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Inbox className="w-7 h-7 text-[#00F5A0]" />
+            <Inbox className="w-7 h-7 text-[#C7FF38]" />
             Gelen Kutusu
           </h1>
         </div>
 
         {/* Unread Counter HUD */}
         <div className="flex items-center gap-3 bg-[#080D1A] p-2.5 border border-zinc-800 text-xs font-mono">
-          <Mail className="w-4 h-4 text-[#00F5A0]" />
+          <Mail className="w-4 h-4 text-[#C7FF38]" />
           <div>
             <span className="text-[10px] text-zinc-500 uppercase block font-bold">Okunmamış Bildirim</span>
             <span className="text-base font-black text-white">
@@ -150,7 +150,7 @@ export default function InboxPage() {
             onClick={() => setSelectedCategory(cat.id)}
             className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all ${
               selectedCategory === cat.id
-                ? 'bg-[#00F5A0] text-black border border-white'
+                ? 'bg-[#C7FF38] text-black border border-white'
                 : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
             }`}
           >
@@ -177,7 +177,7 @@ export default function InboxPage() {
                   onClick={() => handleSelectMessage(msg)}
                   className={`p-3.5 border cursor-pointer transition-all ${
                     isSelected
-                      ? 'bg-[#0E1528] border-2 border-[#00F5A0] shadow-xl'
+                      ? 'bg-[#0E1528] border-2 border-[#C7FF38] shadow-xl'
                       : !msg.isRead
                       ? 'bg-[#080D1A] border-zinc-700 hover:border-zinc-600'
                       : 'bg-[#040711] border-zinc-850 hover:border-zinc-700 opacity-80'
@@ -195,7 +195,7 @@ export default function InboxPage() {
                     </span>
                   </div>
 
-                  <h3 className={`text-xs font-bold truncate ${!msg.isRead ? 'text-[#00F5A0]' : 'text-zinc-200'}`}>
+                  <h3 className={`text-xs font-bold truncate ${!msg.isRead ? 'text-[#C7FF38]' : 'text-zinc-200'}`}>
                     {msg.subject}
                   </h3>
 
@@ -209,8 +209,8 @@ export default function InboxPage() {
                     </span>
 
                     {!msg.isRead && (
-                      <span className="flex items-center gap-1 font-black text-[#00F5A0]">
-                        <span className="w-1.5 h-1.5 bg-[#00F5A0] animate-pulse" />
+                      <span className="flex items-center gap-1 font-black text-[#C7FF38]">
+                        <span className="w-1.5 h-1.5 bg-[#C7FF38] animate-pulse" />
                         YENİ
                       </span>
                     )}
@@ -230,7 +230,7 @@ export default function InboxPage() {
                 <div className="pb-4 border-b border-zinc-800 flex items-start justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase bg-[#040711] text-[#00F5A0] border border-zinc-800 flex items-center gap-1.5">
+                      <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase bg-[#040711] text-[#C7FF38] border border-zinc-800 flex items-center gap-1.5">
                         {getCategoryIcon(selectedMessage.category)}
                         {getCategoryLabel(selectedMessage.category)}
                       </span>
@@ -269,7 +269,7 @@ export default function InboxPage() {
                   {selectedMessage.actionType === 'REPLY_TRANSFER' && (
                     <Link
                       href="/transfers"
-                      className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors flex items-center gap-1.5 border border-white"
+                      className="px-3.5 py-1.5 bg-[#C7FF38] text-black font-bold text-xs uppercase hover:bg-[#D9FF73] transition-colors flex items-center gap-1.5 border border-white"
                     >
                       <DollarSign className="w-4 h-4" />
                       Teklife Git & Yanıtla
@@ -279,7 +279,7 @@ export default function InboxPage() {
                   {selectedMessage.actionType === 'VIEW_SQUAD' && (
                     <Link
                       href="/squad"
-                      className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors flex items-center gap-1.5 border border-white"
+                      className="px-3.5 py-1.5 bg-[#C7FF38] text-black font-bold text-xs uppercase hover:bg-[#D9FF73] transition-colors flex items-center gap-1.5 border border-white"
                     >
                       <HeartPulse className="w-4 h-4" />
                       Sağlık & Kadro Durumunu İncele
@@ -289,7 +289,7 @@ export default function InboxPage() {
                   {selectedMessage.actionType === 'VIEW_TACTICS' && (
                     <Link
                       href="/tactics"
-                      className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors flex items-center gap-1.5 border border-white"
+                      className="px-3.5 py-1.5 bg-[#C7FF38] text-black font-bold text-xs uppercase hover:bg-[#D9FF73] transition-colors flex items-center gap-1.5 border border-white"
                     >
                       <Swords className="w-4 h-4" />
                       Taktik Masasına Git
@@ -299,7 +299,7 @@ export default function InboxPage() {
                   {selectedMessage.actionType === 'RENEW_CONTRACT' && (
                     <Link
                       href="/squad"
-                      className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors flex items-center gap-1.5 border border-white"
+                      className="px-3.5 py-1.5 bg-[#C7FF38] text-black font-bold text-xs uppercase hover:bg-[#D9FF73] transition-colors flex items-center gap-1.5 border border-white"
                     >
                       <FileText className="w-4 h-4" />
                       Sözleşme Görüşmesi Başlat
@@ -310,7 +310,7 @@ export default function InboxPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => respondToManagerContractOffer(true)}
-                        className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors border border-white"
+                        className="px-3.5 py-1.5 bg-[#C7FF38] text-black font-bold text-xs uppercase hover:bg-[#D9FF73] transition-colors border border-white"
                       >
                         Sözleşmeyi Kabul Et
                       </button>
@@ -325,7 +325,7 @@ export default function InboxPage() {
                 </div>
 
                 <span className="text-[11px] text-zinc-500 font-bold flex items-center gap-1">
-                  <Shield className="w-3.5 h-3.5 text-[#00F5A0]" />
+                  <Shield className="w-3.5 h-3.5 text-[#C7FF38]" />
                   SquadCraft Kulüp İletişim Sistemi
                 </span>
               </div>

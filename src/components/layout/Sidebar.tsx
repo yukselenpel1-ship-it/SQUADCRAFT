@@ -126,7 +126,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
               </div>
             </div>
 
-            <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-[#032416] text-[#00F5A0] border border-[#00F5A0]/40">
+            <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-[#032416] text-[#C7FF38] border border-[#C7FF38]/40">
               PRO
             </span>
           </div>
@@ -149,7 +149,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
                       onClick={onClose}
                       className={`group flex items-center justify-between px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all ${
                         active
-                          ? 'bg-[#00F5A0] text-black font-black italic shadow-md'
+                          ? 'bg-[#C7FF38] text-black font-black italic shadow-md'
                           : 'text-zinc-400 hover:text-white hover:bg-zinc-900/90'
                       }`}
                     >
@@ -167,8 +167,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
                           <span
                             className={`px-1.5 py-0.2 text-[9px] font-mono font-bold uppercase ${
                               active
-                                ? 'bg-black text-[#00D4FF]'
-                                : 'bg-cyan-950 text-[#00D4FF] border border-cyan-800'
+                                ? 'bg-black text-[#4FE4FF]'
+                                : 'bg-cyan-950 text-[#4FE4FF] border border-cyan-800'
                             }`}
                           >
                             MP
@@ -194,10 +194,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
         <div className="p-3 border-t border-zinc-800 bg-[#05070B]">
           <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
             <span className="flex items-center gap-1.5 font-bold">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <ShieldCheck className="w-3.5 h-3.5 text-[#C7FF38]" />
               SQUADCRAFT {APP_VERSION}
             </span>
-            <span className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-800 text-[9px] font-black text-[#00F5A0]">
+            <span className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-800 text-[9px] font-black text-[#C7FF38]">
               CLOSED ALPHA
             </span>
           </div>

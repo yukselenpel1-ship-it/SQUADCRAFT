@@ -85,7 +85,7 @@ export function MatchweekReadyBanner({
             ? 'bg-gradient-to-r from-red-500 via-rose-500 to-amber-500 animate-pulse'
             : status === 'COUNTDOWN'
             ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 animate-ping'
-            : 'bg-gradient-to-r from-[#00F5A0] via-[#00D4FF] to-[#00F5A0]'
+            : 'bg-gradient-to-r from-[#C7FF38] via-[#4FE4FF] to-[#C7FF38]'
         }`}
       />
 
@@ -93,12 +93,12 @@ export function MatchweekReadyBanner({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800/80 pb-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="text-[11px] font-mono font-black px-2.5 py-0.5 bg-[#00F5A0]/10 border border-[#00F5A0]/40 text-[#00F5A0] uppercase tracking-wider">
+            <span className="text-[11px] font-mono font-black px-2.5 py-0.5 bg-[#C7FF38]/10 border border-[#C7FF38]/40 text-[#C7FF38] uppercase tracking-wider">
               HAFTA {matchweek} / {totalMatchweeks}
             </span>
             <span className="text-zinc-600 hidden sm:inline">|</span>
             <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-[#00D4FF]" />
+              <Zap className="w-3.5 h-3.5 text-[#4FE4FF]" />
               ÇOK OYUNCULU HAZIRLIK SİSTEMİ
             </span>
           </div>
@@ -126,7 +126,7 @@ export function MatchweekReadyBanner({
               className={`w-full sm:w-auto px-8 py-3.5 font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 shadow-xl active:scale-95 ${
                 isCurrentMemberReady
                   ? 'bg-zinc-900 hover:bg-zinc-800 text-amber-300 border-2 border-amber-500/50 shadow-amber-500/10'
-                  : 'bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black border-2 border-[#00F5A0] shadow-[0_0_20px_rgba(0,245,160,0.35)]'
+                  : 'bg-gradient-to-r from-[#C7FF38] to-[#00D485] hover:from-[#00E590] text-black border-2 border-[#C7FF38] shadow-[0_0_20px_rgba(0,245,160,0.35)]'
               }`}
             >
               {isCurrentMemberReady ? (
@@ -192,9 +192,9 @@ export function MatchweekReadyBanner({
                 key={member.id}
                 className={`p-2.5 border transition-all flex items-center justify-between gap-3 ${
                   isReady
-                    ? 'bg-[#00F5A0]/5 border-[#00F5A0]/40'
+                    ? 'bg-[#C7FF38]/5 border-[#C7FF38]/40'
                     : 'bg-zinc-950/70 border-zinc-800/80'
-                } ${isMe ? 'ring-1 ring-[#00F5A0]/30' : ''}`}
+                } ${isMe ? 'ring-1 ring-[#C7FF38]/30' : ''}`}
               >
                 {/* Member / Club Info */}
                 <div className="flex items-center gap-2.5 truncate flex-1">
@@ -203,7 +203,7 @@ export function MatchweekReadyBanner({
                     <div className="text-xs font-black text-white uppercase italic tracking-wide truncate flex items-center gap-1.5">
                       <span>{member.username}</span>
                       {isMe && (
-                        <span className="text-[9px] font-mono font-bold px-1 py-0.2 bg-[#00F5A0] text-black">
+                        <span className="text-[9px] font-mono font-bold px-1 py-0.2 bg-[#C7FF38] text-black">
                           SEN
                         </span>
                       )}
@@ -217,13 +217,13 @@ export function MatchweekReadyBanner({
                 {/* Status Badge */}
                 <div>
                   {isBot ? (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono font-bold bg-cyan-950/50 border border-[#00D4FF]/40 text-[#00D4FF]">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono font-bold bg-cyan-950/50 border border-[#4FE4FF]/40 text-[#4FE4FF]">
                       <span>🤖 Bot</span>
-                      <CheckCircle2 className="w-3 h-3 text-[#00F5A0]" />
+                      <CheckCircle2 className="w-3 h-3 text-[#C7FF38]" />
                     </span>
                   ) : isReady ? (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono font-black bg-emerald-950/50 border border-emerald-500/50 text-[#00F5A0]">
-                      <CheckCircle2 className="w-3 h-3 text-[#00F5A0]" />
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-mono font-black bg-emerald-950/50 border border-emerald-500/50 text-[#C7FF38]">
+                      <CheckCircle2 className="w-3 h-3 text-[#C7FF38]" />
                       <span>HAZIR</span>
                     </span>
                   ) : (

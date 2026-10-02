@@ -187,7 +187,7 @@ export default function DraftHomePage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#04060A] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="relative min-h-screen w-full bg-[#070A0F] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. SHARP STADIUM ARENA BACKGROUND (NO BLUR, CRISP GRAPHITE & LIGHTS) */}
       {/* ==================================================================== */}
@@ -196,8 +196,8 @@ export default function DraftHomePage() {
         style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
       >
         {/* High-contrast crisp sports vignette: zero blur */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#070A0F]/85 via-transparent to-[#070A0F]/95" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#070A0F]/40 to-[#070A0F]/90" />
       </div>
 
       {/* ==================================================================== */}
@@ -231,7 +231,7 @@ export default function DraftHomePage() {
               <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-lg sm:text-xl leading-none">
                   <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
-                  <span className="text-[#00F5A0]">26</span>
+                  <span className="text-[#C7FF38]">26</span>
                 </div>
                 <span className="text-[9px] font-mono font-bold tracking-widest text-zinc-400 uppercase mt-0.5">
                   DRAFT TOURNAMENT
@@ -250,12 +250,12 @@ export default function DraftHomePage() {
             </Link>
             <Link
               href="/career/new"
-              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-zinc-900/90 text-zinc-300 border border-zinc-800 hover:border-[#00F5A0] hover:text-[#00F5A0] transition-all"
+              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-zinc-900/90 text-zinc-300 border border-zinc-800 hover:border-[#C7FF38] hover:text-[#C7FF38] transition-all"
             >
               [ KARİYER MODU ]
             </Link>
             <button
-              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-[#00D4FF] text-black border border-[#00D4FF]"
+              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider bg-[#4FE4FF] text-black border border-[#4FE4FF]"
             >
               [ DRAFT LEAGUE ]
             </button>
@@ -270,17 +270,17 @@ export default function DraftHomePage() {
           {/* Right: Telemetry & Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
             <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-zinc-950 border border-zinc-800 text-[10px] font-mono font-bold text-zinc-300">
-              <span className="w-2 h-2 rounded-full bg-[#00F5A0]" />
+              <span className="w-2 h-2 rounded-full bg-[#C7FF38]" />
               <span>SUNUCU: ÇEVRİMİÇİ</span>
               <span className="text-zinc-600">•</span>
-              <span className="text-[#00D4FF]">14ms TR</span>
+              <span className="text-[#4FE4FF]">14ms TR</span>
             </div>
 
             <button
               onClick={() => setIsFeedbackOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-zinc-700 hover:border-zinc-500 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <MessageSquare className="w-3.5 h-3.5 text-[#C7FF38]" />
               <span className="hidden sm:inline">Geri Bildirim</span>
             </button>
 
@@ -302,20 +302,20 @@ export default function DraftHomePage() {
         {/* Header HUD Badges & Title */}
         <div className="w-full flex flex-col items-center text-center mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <span className="px-2.5 py-0.5 bg-[#00D4FF] text-black text-[10px] font-black uppercase tracking-widest">
+            <span className="px-2.5 py-0.5 bg-[#4FE4FF] text-black text-[10px] font-black uppercase tracking-widest">
               LIVE MULTIPLAYER
             </span>
             <span className="px-2.5 py-0.5 bg-zinc-900 text-zinc-300 border border-zinc-700 text-[10px] font-mono font-bold uppercase tracking-wider">
               {APP_VERSION}
             </span>
-            <span className="px-2.5 py-0.5 bg-emerald-950 text-[#00F5A0] border border-emerald-800 text-[10px] font-black uppercase tracking-wider">
+            <span className="px-2.5 py-0.5 bg-emerald-950 text-[#C7FF38] border border-emerald-800 text-[10px] font-black uppercase tracking-wider">
               {currentPreset.badge}
             </span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black italic tracking-tight uppercase text-white mt-1">
             DRAFT LEAGUE{' '}
-            <span className="text-[#00D4FF]">
+            <span className="text-[#4FE4FF]">
               LOBİ MERKEZİ
             </span>
           </h1>
@@ -332,19 +332,19 @@ export default function DraftHomePage() {
           {/* ------------------------------------------------------------------ */}
           {/* CARD 1: YENİ LİG OLUŞTUR (HOST)                                    */}
           {/* ------------------------------------------------------------------ */}
-          <div className="relative overflow-hidden bg-[#07111A] border-2 border-[#00D4FF] flex flex-col justify-between p-6 sm:p-7 shadow-2xl">
+          <div className="relative overflow-hidden bg-[#07111A] border-2 border-[#4FE4FF] flex flex-col justify-between p-6 sm:p-7 shadow-2xl">
             {/* Top Badge & Header */}
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 bg-[#00D4FF] text-black font-black text-[10px] uppercase tracking-wider">
+                  <span className="px-2.5 py-0.5 bg-[#4FE4FF] text-black font-black text-[10px] uppercase tracking-wider">
                     HOST // ODA KURUCUSU
                   </span>
                   <span className="text-zinc-400 font-mono text-[11px] font-bold">
                     MODE // 02-A
                   </span>
                 </div>
-                <div className="w-8 h-8 bg-[#021A26] border border-[#00D4FF]/40 text-[#00D4FF] flex items-center justify-center font-bold">
+                <div className="w-8 h-8 bg-[#021A26] border border-[#4FE4FF]/40 text-[#4FE4FF] flex items-center justify-center font-bold">
                   <Plus className="w-5 h-5 stroke-[3]" />
                 </div>
               </div>
@@ -359,7 +359,7 @@ export default function DraftHomePage() {
               <form onSubmit={handleCreateRoom} className="space-y-4">
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer İsminiz <span className="text-[#00D4FF]">*</span>
+                    Menajer İsminiz <span className="text-[#4FE4FF]">*</span>
                   </label>
                   <input
                     type="text"
@@ -369,7 +369,7 @@ export default function DraftHomePage() {
                     maxLength={20}
                     required
                     disabled={isCreating}
-                    className="w-full bg-[#05090F] border border-zinc-700 focus:border-[#00D4FF] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
+                    className="w-full bg-[#05090F] border border-zinc-700 focus:border-[#4FE4FF] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
                   />
                 </div>
 
@@ -384,7 +384,7 @@ export default function DraftHomePage() {
                     placeholder="Örn: Alveria Premier Ligi"
                     maxLength={30}
                     disabled={isCreating}
-                    className="w-full bg-[#05090F] border border-zinc-700 focus:border-[#00D4FF] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
+                    className="w-full bg-[#05090F] border border-zinc-700 focus:border-[#4FE4FF] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
                   />
                 </div>
 
@@ -400,7 +400,7 @@ export default function DraftHomePage() {
                         onClick={() => setManagerCount(count)}
                         className={`py-2 px-3 text-xs font-black uppercase tracking-wider border transition-all flex items-center justify-center gap-1.5 ${
                           managerCount === count
-                            ? 'bg-[#00D4FF] text-black border-[#00D4FF] shadow-md shadow-[#00D4FF]/20 font-black'
+                            ? 'bg-[#4FE4FF] text-black border-[#4FE4FF] shadow-md shadow-[#4FE4FF]/20 font-black'
                             : 'bg-[#05090F] text-zinc-400 border-zinc-800 hover:border-zinc-600 hover:text-white'
                         }`}
                       >
@@ -413,22 +413,22 @@ export default function DraftHomePage() {
 
                 {/* Preset Specs Box */}
                 <div className="p-3.5 bg-[#040A10] border border-zinc-800 space-y-2">
-                  <div className="text-[11px] font-mono font-bold text-[#00D4FF] uppercase flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-[#00D4FF]" />
+                  <div className="text-[11px] font-mono font-bold text-[#4FE4FF] uppercase flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-[#4FE4FF]" />
                     <span>{currentPreset.summaryTitle}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-300">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">👥</span> {currentPreset.summaryManagers}
+                      <span className="text-[#4FE4FF]">👥</span> {currentPreset.summaryManagers}
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">⚡</span> 18 Oyuncu Kadro
+                      <span className="text-[#4FE4FF]">⚡</span> 18 Oyuncu Kadro
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">⏱️</span> 60sn Snake Draft
+                      <span className="text-[#4FE4FF]">⏱️</span> 60sn Snake Draft
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">🏆</span> {currentPreset.format}
+                      <span className="text-[#4FE4FF]">🏆</span> {currentPreset.format}
                     </div>
                   </div>
                 </div>
@@ -443,7 +443,7 @@ export default function DraftHomePage() {
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="w-full py-3.5 bg-[#00D4FF] hover:bg-[#00B8E6] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full py-3.5 bg-[#4FE4FF] hover:bg-[#00B8E6] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {isCreating ? (
                     <div className="flex items-center gap-2">
@@ -464,19 +464,19 @@ export default function DraftHomePage() {
           {/* ------------------------------------------------------------------ */}
           {/* CARD 2: MEVCUT ODAYA KATIL (GUEST)                                  */}
           {/* ------------------------------------------------------------------ */}
-          <div className="relative overflow-hidden bg-[#06140D] border-2 border-[#00F5A0] flex flex-col justify-between p-6 sm:p-7 shadow-2xl">
+          <div className="relative overflow-hidden bg-[#06140D] border-2 border-[#C7FF38] flex flex-col justify-between p-6 sm:p-7 shadow-2xl">
             {/* Top Badge & Header */}
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 bg-[#00F5A0] text-black font-black text-[10px] uppercase tracking-wider">
+                  <span className="px-2.5 py-0.5 bg-[#C7FF38] text-black font-black text-[10px] uppercase tracking-wider">
                     GUEST // KATILIMCI
                   </span>
                   <span className="text-zinc-400 font-mono text-[11px] font-bold">
                     MODE // 02-B
                   </span>
                 </div>
-                <div className="w-8 h-8 bg-[#032416] border border-[#00F5A0]/40 text-[#00F5A0] flex items-center justify-center font-bold">
+                <div className="w-8 h-8 bg-[#032416] border border-[#C7FF38]/40 text-[#C7FF38] flex items-center justify-center font-bold">
                   <KeyRound className="w-4 h-4 stroke-[2.5]" />
                 </div>
               </div>
@@ -491,7 +491,7 @@ export default function DraftHomePage() {
               <form onSubmit={handleJoinRoom} className="space-y-4">
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer İsminiz <span className="text-[#00F5A0]">*</span>
+                    Menajer İsminiz <span className="text-[#C7FF38]">*</span>
                   </label>
                   <input
                     type="text"
@@ -501,13 +501,13 @@ export default function DraftHomePage() {
                     maxLength={20}
                     required
                     disabled={isJoining}
-                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#00F5A0] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
+                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#C7FF38] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Oda Kodu <span className="text-[#00F5A0]">*</span>
+                    Oda Kodu <span className="text-[#C7FF38]">*</span>
                   </label>
                   <input
                     type="text"
@@ -517,7 +517,7 @@ export default function DraftHomePage() {
                     maxLength={10}
                     required
                     disabled={isJoining}
-                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#00F5A0] px-3.5 py-2.5 text-base text-white font-mono uppercase tracking-widest focus:outline-none transition-colors disabled:opacity-50"
+                    className="w-full bg-[#040C08] border border-zinc-700 focus:border-[#C7FF38] px-3.5 py-2.5 text-base text-white font-mono uppercase tracking-widest focus:outline-none transition-colors disabled:opacity-50"
                   />
                 </div>
 
@@ -529,7 +529,7 @@ export default function DraftHomePage() {
                     checked={isSpectator}
                     onChange={(e) => setIsSpectator(e.target.checked)}
                     disabled={isJoining}
-                    className="w-4 h-4 rounded-none text-[#00F5A0] bg-[#040C08] border-zinc-700 focus:ring-0 cursor-pointer"
+                    className="w-4 h-4 rounded-none text-[#C7FF38] bg-[#040C08] border-zinc-700 focus:ring-0 cursor-pointer"
                   />
                   <label
                     htmlFor="spectator"
@@ -549,7 +549,7 @@ export default function DraftHomePage() {
                 <button
                   type="submit"
                   disabled={isJoining}
-                  className="w-full py-3.5 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full py-3.5 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {isJoining ? (
                     <div className="flex items-center gap-2">
@@ -577,7 +577,7 @@ export default function DraftHomePage() {
                     <button
                       key={code}
                       onClick={() => handleJoinRecent(code)}
-                      className="px-3 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-[#00F5A0] text-xs font-mono font-bold text-[#00F5A0] transition-colors"
+                      className="px-3 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-[#C7FF38] text-xs font-mono font-bold text-[#C7FF38] transition-colors"
                     >
                       {code}
                     </button>
@@ -595,8 +595,8 @@ export default function DraftHomePage() {
       <footer className="relative z-20 w-full border-t border-zinc-800 bg-[#05070B] text-xs">
         {/* Broadcast Live News Ticker Strip */}
         <div className="w-full bg-[#080C14] border-b border-zinc-800/80 px-4 py-1.5 flex items-center overflow-hidden">
-          <div className="flex items-center gap-2 shrink-0 pr-4 border-r border-zinc-800 text-[10px] font-black uppercase text-[#00D4FF]">
-            <Radio className="w-3 h-3 text-[#00D4FF] animate-pulse" />
+          <div className="flex items-center gap-2 shrink-0 pr-4 border-r border-zinc-800 text-[10px] font-black uppercase text-[#4FE4FF]">
+            <Radio className="w-3 h-3 text-[#4FE4FF] animate-pulse" />
             <span>CANLI LOBİ</span>
           </div>
           <div className="overflow-hidden whitespace-nowrap text-[11px] font-mono text-zinc-400 pl-4">
@@ -604,11 +604,11 @@ export default function DraftHomePage() {
             <span className="mx-3 text-zinc-600">•</span>
             <span>{currentPreset.tickerText}</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00F5A0]">18 TURLUK CANLI SNAKE DRAFT MOTORU</span>
+            <span className="text-[#C7FF38]">18 TURLUK CANLI SNAKE DRAFT MOTORU</span>
             <span className="mx-3 text-zinc-600">•</span>
             <span>GERÇEK ZAMANLI SUPABASE SENKRONİZASYONU</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00D4FF]">{APP_VERSION}</span>
+            <span className="text-[#4FE4FF]">{APP_VERSION}</span>
           </div>
         </div>
 
@@ -628,7 +628,7 @@ export default function DraftHomePage() {
           <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
             <span className="text-zinc-300 font-bold">SQUADCRAFT DRAFT ENGINE</span>
             <span className="text-zinc-600">•</span>
-            <span className="text-[#00F5A0] font-bold">{APP_VERSION}</span>
+            <span className="text-[#C7FF38] font-bold">{APP_VERSION}</span>
             <span className="text-zinc-600">•</span>
             <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

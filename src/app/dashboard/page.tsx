@@ -65,8 +65,8 @@ export default function DashboardPage() {
 
   if (!isInitialized || !isCareerHydrated) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -121,7 +121,7 @@ export default function DashboardPage() {
               </h2>
               <p className="text-xs sm:text-sm text-zinc-300 font-medium">
                 Kulübünüz <strong className="text-white">{userClub.name}</strong> sezonu{' '}
-                <strong className="text-[#00F5A0]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
+                <strong className="text-[#C7FF38]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
                 {seasonEndSummary.topScorerGoals > 0 && (
                   <span className="ml-2 text-zinc-400">
                     Gol Kralı: <strong className="text-white">{seasonEndSummary.topScorerName}</strong> ({seasonEndSummary.topScorerGoals} Gol)
@@ -131,7 +131,7 @@ export default function DashboardPage() {
             </div>
             <button
               onClick={startNextSeasonRoll}
-              className="px-6 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase tracking-wider transition-all shadow-lg flex items-center gap-2 shrink-0"
+              className="px-6 py-3 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs uppercase tracking-wider transition-all shadow-lg flex items-center gap-2 shrink-0"
             >
               <RefreshCw className="w-4 h-4" />
               <span>YENİ SEZONA BAŞLA</span>
@@ -158,7 +158,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => respondToManagerContractOffer(true)}
-              className="px-5 py-2.5 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase tracking-wider transition-all shadow-md"
+              className="px-5 py-2.5 bg-[#C7FF38] hover:bg-[#D9FF73] text-black font-black text-xs uppercase tracking-wider transition-all shadow-md"
             >
               Kabul Et
             </button>
@@ -173,7 +173,7 @@ export default function DashboardPage() {
       )}
 
       {/* 2. GRAND HERO: Club Identity & Command Hub (SquadCraft Club Header, ZERO BLUR) */}
-      <div className="bg-[#070B12] border-2 border-[#00F5A0] p-6 shadow-2xl">
+      <div className="bg-[#070B12] border-2 border-[#C7FF38] p-6 shadow-2xl">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="flex items-center gap-5">
             <ClubBadge
@@ -184,13 +184,13 @@ export default function DashboardPage() {
             />
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-1">
-                <span className="px-2 py-0.5 bg-[#00F5A0] text-black text-[9px] font-black uppercase tracking-wider">
+                <span className="px-2 py-0.5 bg-[#C7FF38] text-black text-[9px] font-black uppercase tracking-wider">
                   ALVERIA ELİT LİGİ
                 </span>
                 <span className="px-2 py-0.5 bg-zinc-900 border border-zinc-700 text-zinc-300 text-[9px] font-mono font-bold uppercase">
                   {seasonYear} SEZONU (SEZON #{seasonNumber})
                 </span>
-                <span className="px-2 py-0.5 bg-emerald-950 border border-emerald-500/40 text-[#00F5A0] text-[9px] font-mono font-bold uppercase">
+                <span className="px-2 py-0.5 bg-emerald-950 border border-emerald-500/40 text-[#C7FF38] text-[9px] font-mono font-bold uppercase">
                   TD SÖZLEŞMESİ: {managerContract.yearsLeft} YIL (€{(managerContract.weeklySalary).toLocaleString('tr-TR')}/HF)
                 </span>
                 <span className="px-2 py-0.5 bg-zinc-950 border border-zinc-800 text-zinc-400 text-[9px] font-mono">
@@ -205,7 +205,7 @@ export default function DashboardPage() {
                 <span>•</span>
                 <span>STADYUM: <strong className="text-zinc-200">{userClub.stadium}</strong></span>
                 <span>•</span>
-                <span>İTİBAR: <strong className="text-[#00F5A0]">%{userClub.reputation}</strong></span>
+                <span>İTİBAR: <strong className="text-[#C7FF38]">%{userClub.reputation}</strong></span>
               </p>
             </div>
           </div>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-[#040810] p-3 border border-zinc-800">
             <div className="text-center px-3 py-1">
               <span className="block text-[9px] font-mono uppercase font-bold text-zinc-400">Lig Sırası</span>
-              <span className="text-2xl font-black italic text-[#00F5A0]">{userStanding?.rank || 1}.</span>
+              <span className="text-2xl font-black italic text-[#C7FF38]">{userStanding?.rank || 1}.</span>
             </div>
             <div className="text-center px-3 py-1 border-l border-zinc-800">
               <span className="block text-[9px] font-mono uppercase font-bold text-zinc-400">Puan</span>
@@ -222,7 +222,7 @@ export default function DashboardPage() {
             </div>
             <div className="text-center px-3 py-1 border-l border-zinc-800">
               <span className="block text-[9px] font-mono uppercase font-bold text-zinc-400">Kadro</span>
-              <span className="text-2xl font-black italic text-[#00D4FF]">{userPlayers.length}</span>
+              <span className="text-2xl font-black italic text-[#4FE4FF]">{userPlayers.length}</span>
             </div>
             <div className="text-center px-3 py-1 border-l border-zinc-800">
               <span className="block text-[9px] font-mono uppercase font-bold text-zinc-400">Transfer Bütçesi</span>
@@ -238,7 +238,7 @@ export default function DashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-2.5">
           <div className="flex items-center gap-2">
-            <Swords className="w-4 h-4 text-[#00F5A0]" />
+            <Swords className="w-4 h-4 text-[#C7FF38]" />
             <h2 className="text-xs font-black uppercase tracking-wider text-zinc-300 font-mono">
               // SIRADAKİ MAÇ ODAĞI
             </h2>
@@ -246,7 +246,7 @@ export default function DashboardPage() {
           {nextMatch && (
             <Link
               href={`/match/${nextMatch.id}`}
-              className="text-xs font-black uppercase tracking-wider text-[#00F5A0] hover:text-[#00D68B] flex items-center gap-1 group font-mono"
+              className="text-xs font-black uppercase tracking-wider text-[#C7FF38] hover:text-[#D9FF73] flex items-center gap-1 group font-mono"
             >
               <span>MAÇ MERKEZİNE GİT</span>
               <ChevronRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
@@ -255,11 +255,11 @@ export default function DashboardPage() {
         </div>
 
         {nextMatch && nextOpponent ? (
-          <div className="bg-[#070B12] border-2 border-[#00D4FF] p-6 shadow-2xl">
+          <div className="bg-[#070B12] border-2 border-[#4FE4FF] p-6 shadow-2xl">
             {/* Top Match Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-zinc-800">
               <div className="flex items-center gap-2">
-                <span className="px-2 py-0.5 bg-[#00D4FF] text-black text-[9px] font-black uppercase">
+                <span className="px-2 py-0.5 bg-[#4FE4FF] text-black text-[9px] font-black uppercase">
                   {nextMatch.competition} • HAFTA {nextMatch.round}
                 </span>
                 <span className="text-xs text-zinc-400 font-mono font-medium">
@@ -301,11 +301,11 @@ export default function DashboardPage() {
 
               {/* VS Center Pillar */}
               <div className="flex flex-col items-center justify-center space-y-2">
-                <div className="w-12 h-12 bg-zinc-950 border border-zinc-700 flex items-center justify-center font-black italic text-lg text-[#00D4FF]">
+                <div className="w-12 h-12 bg-zinc-950 border border-zinc-700 flex items-center justify-center font-black italic text-lg text-[#4FE4FF]">
                   VS
                 </div>
                 <div className="flex items-center gap-1.5 text-xs text-zinc-400 font-mono">
-                  <MapPin className="w-3.5 h-3.5 text-[#00F5A0]" />
+                  <MapPin className="w-3.5 h-3.5 text-[#C7FF38]" />
                   <span>{nextMatch.stadium || (nextMatch.homeClubId === userClub.id ? userClub.stadium : nextOpponent.stadium)}</span>
                 </div>
                 {nextMatch.referee && (
@@ -336,7 +336,7 @@ export default function DashboardPage() {
                 <span>Rakip Menajeri: </span>
                 <strong className="text-white">{nextOpponent.managerName}</strong> •{' '}
                 <span>Rakip İtibarı: </span>
-                <strong className="text-[#00F5A0]">%{nextOpponent.reputation}</strong>
+                <strong className="text-[#C7FF38]">%{nextOpponent.reputation}</strong>
               </div>
 
               <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -352,7 +352,7 @@ export default function DashboardPage() {
                   className={`flex-1 sm:flex-initial px-7 py-2.5 font-black text-xs uppercase tracking-wider text-center transition-all flex items-center justify-center gap-2 ${
                     isMatchDay
                       ? 'bg-red-600 hover:bg-red-500 text-white shadow-lg'
-                      : 'bg-[#00D4FF] hover:bg-[#00B8E6] text-black shadow-lg'
+                      : 'bg-[#4FE4FF] hover:bg-[#00B8E6] text-black shadow-lg'
                   }`}
                 >
                   <Swords className="w-4 h-4" />
@@ -376,7 +376,7 @@ export default function DashboardPage() {
           <div className="p-5 bg-[#070B12] border border-zinc-800 shadow-xl space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-[#04140B] border border-[#00F5A0]/60 flex items-center justify-center text-[#00F5A0]">
+                <div className="w-8 h-8 bg-[#04140B] border border-[#C7FF38]/60 flex items-center justify-center text-[#C7FF38]">
                   <Dumbbell className="w-4 h-4" />
                 </div>
                 <div>
@@ -403,7 +403,7 @@ export default function DashboardPage() {
                             ? 'bg-red-600 text-white font-black'
                             : level === 'Hafif'
                             ? 'bg-cyan-500 text-black font-black'
-                            : 'bg-[#00F5A0] text-black font-black'
+                            : 'bg-[#C7FF38] text-black font-black'
                           : 'text-zinc-400 hover:text-white'
                       }`}
                     >
@@ -427,7 +427,7 @@ export default function DashboardPage() {
                 <div className="w-16 h-2 bg-zinc-800 overflow-hidden">
                   <div
                     className={`h-full ${
-                      avgFitness >= 85 ? 'bg-[#00F5A0]' : avgFitness >= 70 ? 'bg-amber-400' : 'bg-red-500'
+                      avgFitness >= 85 ? 'bg-[#C7FF38]' : avgFitness >= 70 ? 'bg-amber-400' : 'bg-red-500'
                     }`}
                     style={{ width: `${avgFitness}%` }}
                   />
@@ -437,13 +437,13 @@ export default function DashboardPage() {
               <div className="p-3.5 bg-[#040810] border border-zinc-800 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] font-mono uppercase font-bold text-zinc-400 block">Maç Keskinliği</span>
-                  <span className="text-2xl font-black italic text-[#00D4FF]">%{avgSharpness}</span>
+                  <span className="text-2xl font-black italic text-[#4FE4FF]">%{avgSharpness}</span>
                   <p className="text-[10px] font-mono text-zinc-500 mt-0.5">
                     {avgSharpness >= 75 ? 'Tempolu ve refleksler yerinde' : 'Maç eksiği bulunuyor'}
                   </p>
                 </div>
                 <div className="w-16 h-2 bg-zinc-800 overflow-hidden">
-                  <div className="h-full bg-[#00D4FF]" style={{ width: `${avgSharpness}%` }} />
+                  <div className="h-full bg-[#4FE4FF]" style={{ width: `${avgSharpness}%` }} />
                 </div>
               </div>
             </div>
@@ -453,14 +453,14 @@ export default function DashboardPage() {
           <div className="p-5 bg-[#070B12] border border-zinc-800 shadow-xl space-y-3">
             <div className="flex items-center justify-between pb-2.5 border-b border-zinc-800">
               <div className="flex items-center gap-2">
-                <Activity className="w-4 h-4 text-[#00D4FF]" />
+                <Activity className="w-4 h-4 text-[#4FE4FF]" />
                 <h3 className="text-xs font-black uppercase tracking-wider text-zinc-200 font-mono">
                   Son Karşılaşmalar
                 </h3>
               </div>
               <Link
                 href="/fixtures"
-                className="text-xs font-bold text-[#00D4FF] hover:underline flex items-center gap-1 font-mono"
+                className="text-xs font-bold text-[#4FE4FF] hover:underline flex items-center gap-1 font-mono"
               >
                 <span>TÜM FİKSTÜR</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -488,7 +488,7 @@ export default function DashboardPage() {
                         <span
                           className={`px-1.5 py-0.2 font-black uppercase text-[9px] ${
                             isWin
-                              ? 'bg-emerald-950 text-[#00F5A0] border border-emerald-700'
+                              ? 'bg-emerald-950 text-[#C7FF38] border border-emerald-700'
                               : isDraw
                               ? 'bg-amber-950 text-amber-300 border border-amber-700'
                               : 'bg-red-950 text-red-300 border border-red-700'
@@ -554,14 +554,14 @@ export default function DashboardPage() {
           <div className="p-5 bg-[#070B12] border border-zinc-800 shadow-xl space-y-3">
             <div className="flex items-center justify-between pb-2.5 border-b border-zinc-800">
               <div className="flex items-center gap-2">
-                <Inbox className="w-4 h-4 text-[#00F5A0]" />
+                <Inbox className="w-4 h-4 text-[#C7FF38]" />
                 <h3 className="text-xs font-black uppercase tracking-wider text-zinc-200 font-mono">
                   Gelen Kutusu & Gündem
                 </h3>
               </div>
               <Link
                 href="/inbox"
-                className="text-xs font-bold font-mono text-[#00F5A0] hover:underline"
+                className="text-xs font-bold font-mono text-[#C7FF38] hover:underline"
               >
                 TÜMÜ ({inboxMessages.length})
               </Link>
@@ -576,7 +576,7 @@ export default function DashboardPage() {
                     className="block p-3 bg-[#040810] hover:bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-all group"
                   >
                     <div className="flex items-center justify-between text-[10px] text-zinc-400 mb-1 font-mono">
-                      <span className="font-bold text-white group-hover:text-[#00F5A0] transition-colors">
+                      <span className="font-bold text-white group-hover:text-[#C7FF38] transition-colors">
                         {msg.senderRole}
                       </span>
                       <span>{msg.date}</span>
@@ -586,7 +586,7 @@ export default function DashboardPage() {
                 ))
               ) : (
                 <div className="py-4 text-center text-xs text-zinc-500 font-mono flex flex-col items-center gap-1.5">
-                  <CheckCircle2 className="w-5 h-5 text-[#00F5A0]" />
+                  <CheckCircle2 className="w-5 h-5 text-[#C7FF38]" />
                   <span>Okunmamış yeni bildiriminiz yok.</span>
                 </div>
               )}
@@ -660,7 +660,7 @@ export default function DashboardPage() {
           <div className="p-5 bg-[#070B12] border border-zinc-800 shadow-xl space-y-3">
             <div className="flex items-center justify-between pb-2.5 border-b border-zinc-800">
               <div className="flex items-center gap-2">
-                <Newspaper className="w-4 h-4 text-[#00F5A0]" />
+                <Newspaper className="w-4 h-4 text-[#C7FF38]" />
                 <h3 className="text-xs font-black uppercase tracking-wider text-zinc-200 font-mono">
                   Lig Bülteni
                 </h3>
@@ -676,7 +676,7 @@ export default function DashboardPage() {
                     className="p-2.5 bg-[#040810] border border-zinc-800 space-y-1"
                   >
                     <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
-                      <span className="font-bold text-[#00F5A0]">{news.category}</span>
+                      <span className="font-bold text-[#C7FF38]">{news.category}</span>
                       <span>{news.date}</span>
                     </div>
                     <h5 className="text-xs font-bold text-white leading-snug">{news.headline}</h5>
@@ -694,25 +694,25 @@ export default function DashboardPage() {
           <div className="grid grid-cols-3 gap-2.5">
             <Link
               href="/tactics"
-              className="p-3 bg-[#070B12] hover:bg-zinc-900 border border-zinc-800 hover:border-[#00F5A0] text-center transition-all group"
+              className="p-3 bg-[#070B12] hover:bg-zinc-900 border border-zinc-800 hover:border-[#C7FF38] text-center transition-all group"
             >
-              <Swords className="w-4 h-4 text-[#00F5A0] mx-auto mb-1 group-hover:scale-110 transition-transform" />
+              <Swords className="w-4 h-4 text-[#C7FF38] mx-auto mb-1 group-hover:scale-110 transition-transform" />
               <div className="text-xs font-black uppercase text-white">Taktik</div>
               <div className="text-[9px] font-mono text-zinc-500">DİZİLİŞ</div>
             </Link>
 
             <Link
               href="/transfers"
-              className="p-3 bg-[#070B12] hover:bg-zinc-900 border border-zinc-800 hover:border-[#00F5A0] text-center transition-all group"
+              className="p-3 bg-[#070B12] hover:bg-zinc-900 border border-zinc-800 hover:border-[#C7FF38] text-center transition-all group"
             >
-              <Wallet className="w-4 h-4 text-[#00D4FF] mx-auto mb-1 group-hover:scale-110 transition-transform" />
+              <Wallet className="w-4 h-4 text-[#4FE4FF] mx-auto mb-1 group-hover:scale-110 transition-transform" />
               <div className="text-xs font-black uppercase text-white">Transfer</div>
               <div className="text-[9px] font-mono text-zinc-500">PAZARLIK</div>
             </Link>
 
             <Link
               href="/scouting"
-              className="p-3 bg-[#070B12] hover:bg-zinc-900 border border-zinc-800 hover:border-[#00F5A0] text-center transition-all group"
+              className="p-3 bg-[#070B12] hover:bg-zinc-900 border border-zinc-800 hover:border-[#C7FF38] text-center transition-all group"
             >
               <Compass className="w-4 h-4 text-amber-400 mx-auto mb-1 group-hover:scale-110 transition-transform" />
               <div className="text-xs font-black uppercase text-white">Gözlem</div>

@@ -46,13 +46,13 @@ export const GamePanel: React.FC<GamePanelProps> = ({
   return (
     <section className={`rounded-2xl p-5 md:p-6 transition-all duration-200 ${variantStyles[variant]} ${className}`}>
       {variant === 'tactical' && (
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#00F5A0_1px,transparent_1px)] [background-size:16px_16px]" />
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#C7FF38_1px,transparent_1px)] [background-size:16px_16px]" />
       )}
       {(title || subtitle || Icon || headerAction || actionText) && (
         <div className="flex items-center justify-between gap-4 pb-4 mb-4 border-b border-slate-800/80 relative z-10">
           <div className="flex items-center gap-3 min-w-0">
             {Icon && (
-              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-[#00F5A0] shrink-0">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-[#C7FF38] shrink-0">
                 <Icon className="w-4 h-4" />
               </div>
             )}
@@ -67,7 +67,7 @@ export const GamePanel: React.FC<GamePanelProps> = ({
             {actionText && actionHref && (
               <Link
                 href={actionHref}
-                className="text-xs font-bold text-[#00F5A0] hover:text-[#00D68B] transition-colors flex items-center gap-1 group"
+                className="text-xs font-bold text-[#C7FF38] hover:text-[#D9FF73] transition-colors flex items-center gap-1 group"
               >
                 <span>{actionText}</span>
                 <ChevronRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
@@ -76,7 +76,7 @@ export const GamePanel: React.FC<GamePanelProps> = ({
             {actionText && !actionHref && onAction && (
               <button
                 onClick={onAction}
-                className="text-xs font-bold text-[#00F5A0] hover:text-[#00D68B] transition-colors flex items-center gap-1"
+                className="text-xs font-bold text-[#C7FF38] hover:text-[#D9FF73] transition-colors flex items-center gap-1"
               >
                 <span>{actionText}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -109,11 +109,11 @@ export const HeroPanel: React.FC<HeroPanelProps> = ({
   badgeVariant = 'emerald',
   title,
   subtitle,
-  glowColor = '#00F5A0',
+  glowColor = '#C7FF38',
   className = '',
 }) => {
   const badgeClasses = {
-    emerald: 'bg-emerald-500/15 text-[#00F5A0] border-emerald-500/30',
+    emerald: 'bg-emerald-500/15 text-[#C7FF38] border-emerald-500/30',
     amber: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
     blue: 'bg-blue-500/15 text-blue-300 border-blue-500/30',
     rose: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
@@ -184,7 +184,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
     <div className={`flex items-center justify-between gap-4 mb-4 ${className}`}>
       <div className="flex items-center gap-2.5">
         {Icon && (
-          <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-[#00F5A0]">
+          <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-[#C7FF38]">
             <Icon className="w-4 h-4" />
           </div>
         )}
@@ -204,7 +204,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
       {actionText && actionHref && (
         <Link
           href={actionHref}
-          className="text-xs font-bold text-[#00F5A0] hover:text-[#00D68B] transition-colors flex items-center gap-1 group"
+          className="text-xs font-bold text-[#C7FF38] hover:text-[#D9FF73] transition-colors flex items-center gap-1 group"
         >
           <span>{actionText}</span>
           <ChevronRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
@@ -233,7 +233,7 @@ export const StatusChip: React.FC<StatusChipProps> = ({
   pulse = false,
 }) => {
   const styles = {
-    emerald: 'bg-emerald-500/15 text-[#00F5A0] border-emerald-500/30',
+    emerald: 'bg-emerald-500/15 text-[#C7FF38] border-emerald-500/30',
     amber: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
     rose: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
     sky: 'bg-sky-500/15 text-sky-300 border-sky-500/30',
@@ -284,7 +284,7 @@ export const PrimaryAction: React.FC<PrimaryActionProps> = ({
 }) => {
   const variants = {
     emerald:
-      'bg-gradient-to-r from-[#00F5A0] to-[#00D68B] text-black hover:brightness-110 shadow-lg shadow-emerald-500/20 active:scale-95',
+      'bg-gradient-to-r from-[#C7FF38] to-[#D9FF73] text-black hover:brightness-110 shadow-lg shadow-emerald-500/20 active:scale-95',
     cyan: 'bg-gradient-to-r from-cyan-400 to-blue-500 text-black hover:brightness-110 shadow-lg shadow-cyan-500/20 active:scale-95',
     secondary:
       'bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 active:scale-95',
@@ -370,7 +370,7 @@ export const FixtureHero: React.FC<FixtureHeroProps> = ({
       {/* Top Meta Line */}
       <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-800/80">
         <div className="flex items-center gap-2">
-          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-[#00F5A0] border border-emerald-500/40">
+          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-[#C7FF38] border border-emerald-500/40">
             {fixture.competition} • Hafta {fixture.round}
           </span>
           <span className="text-xs text-slate-400 font-medium">
@@ -410,7 +410,7 @@ export const FixtureHero: React.FC<FixtureHeroProps> = ({
 
         {/* VS / Center Timing */}
         <div className="flex flex-col items-center justify-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-700/80 flex items-center justify-center font-black text-lg text-[#00F5A0] shadow-inner">
+          <div className="w-12 h-12 rounded-2xl bg-slate-900 border border-slate-700/80 flex items-center justify-center font-black text-lg text-[#C7FF38] shadow-inner">
             VS
           </div>
           <div className="flex items-center gap-1.5 text-xs text-slate-400">
@@ -459,7 +459,7 @@ export const FixtureHero: React.FC<FixtureHeroProps> = ({
             className={`flex-1 sm:flex-initial px-6 py-2.5 rounded-xl font-black text-sm text-center shadow-lg transition-all flex items-center justify-center gap-2 ${
               isMatchDay
                 ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-rose-500/30'
-                : 'bg-gradient-to-r from-[#00F5A0] to-[#00D68B] text-black shadow-emerald-500/25 hover:brightness-110'
+                : 'bg-gradient-to-r from-[#C7FF38] to-[#D9FF73] text-black shadow-emerald-500/25 hover:brightness-110'
             }`}
           >
             <Swords className="w-4 h-4" />
@@ -500,7 +500,7 @@ export const ClubIdentity: React.FC<ClubIdentityProps> = ({
           {showReputation && (
             <>
               <span>•</span>
-              <span className="text-[#00F5A0] font-bold">%{club.reputation} İtibar</span>
+              <span className="text-[#C7FF38] font-bold">%{club.reputation} İtibar</span>
             </>
           )}
         </div>
@@ -544,7 +544,7 @@ export const GameTabs: React.FC<GameTabsProps> = ({
             onClick={() => onTabChange(tab.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
               isActive
-                ? 'bg-emerald-500/20 text-[#00F5A0] border border-emerald-500/40 shadow-sm'
+                ? 'bg-emerald-500/20 text-[#C7FF38] border border-emerald-500/40 shadow-sm'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/50 border border-transparent'
             }`}
           >
@@ -553,7 +553,7 @@ export const GameTabs: React.FC<GameTabsProps> = ({
             {typeof tab.count === 'number' && (
               <span
                 className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
-                  isActive ? 'bg-[#00F5A0] text-black' : 'bg-slate-800 text-slate-400'
+                  isActive ? 'bg-[#C7FF38] text-black' : 'bg-slate-800 text-slate-400'
                 }`}
               >
                 {tab.count}

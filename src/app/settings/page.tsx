@@ -40,8 +40,8 @@ export default function SettingsPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -53,27 +53,27 @@ export default function SettingsPage() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 bg-[#00F5A0] text-black text-[10px] font-black uppercase tracking-widest">
+            <span className="px-2.5 py-0.5 bg-[#C7FF38] text-black text-[10px] font-black uppercase tracking-widest">
               SYSTEM CONFIG
             </span>
             <span className="text-xs text-zinc-400 font-mono">SQUADCRAFT 26 // PRO SETTINGS</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tight text-white mt-1 flex items-center gap-2.5">
-            <Settings className="w-7 h-7 text-[#00F5A0]" />
+            <Settings className="w-7 h-7 text-[#C7FF38]" />
             AYARLAR VE KAYIT YÖNETİMİ
           </h1>
         </div>
 
         {/* Save Status Badge */}
         <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-950 border border-zinc-800 text-xs font-mono font-bold text-zinc-300 w-fit">
-          <span className="w-2 h-2 rounded-full bg-[#00F5A0]" />
+          <span className="w-2 h-2 rounded-full bg-[#C7FF38]" />
           <span>KAYIT: AKTİF (SAVE V1.0)</span>
         </div>
       </div>
 
       {resetSuccessMessage && (
-        <div className="p-3.5 bg-emerald-950 border border-[#00F5A0] text-emerald-200 text-xs font-mono font-bold flex items-center gap-3">
-          <CheckCircle2 className="w-5 h-5 text-[#00F5A0]" />
+        <div className="p-3.5 bg-emerald-950 border border-[#C7FF38] text-emerald-200 text-xs font-mono font-bold flex items-center gap-3">
+          <CheckCircle2 className="w-5 h-5 text-[#C7FF38]" />
           <span>{resetSuccessMessage}</span>
         </div>
       )}
@@ -81,13 +81,13 @@ export default function SettingsPage() {
       {/* Settings Grid */}
       <div className="space-y-5">
         {/* Manager Contract & Career Status Card */}
-        <div className="p-6 bg-[#070B12] border border-[#00F5A0]/40 shadow-xl space-y-4">
+        <div className="p-6 bg-[#070B12] border border-[#C7FF38]/40 shadow-xl space-y-4">
           <div className="flex items-center justify-between pb-2.5 border-b border-zinc-800">
             <h2 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#00F5A0]" />
+              <Shield className="w-4 h-4 text-[#C7FF38]" />
               Teknik Direktör Sözleşmesi & Kariyer Özeti
             </h2>
-            <span className="px-2 py-0.5 bg-[#00F5A0]/10 border border-[#00F5A0]/30 text-[#00F5A0] text-[10px] font-mono font-bold uppercase">
+            <span className="px-2 py-0.5 bg-[#C7FF38]/10 border border-[#C7FF38]/30 text-[#C7FF38] text-[10px] font-mono font-bold uppercase">
               SEZON #{seasonNumber} • {seasonYear}
             </span>
           </div>
@@ -96,13 +96,13 @@ export default function SettingsPage() {
             <div className="p-3 bg-zinc-950 border border-zinc-850">
               <span className="text-[10px] font-mono uppercase text-zinc-400 block font-bold">Kalan Sözleşme Süresi</span>
               <span className="text-lg font-black text-white">{managerContract.yearsLeft} Yıl</span>
-              <span className="text-[10px] font-mono text-[#00F5A0] block mt-0.5">
+              <span className="text-[10px] font-mono text-[#C7FF38] block mt-0.5">
                 {managerContract.status === 'OFFERED' ? 'Yeni Teklif Bekliyor' : 'Aktif Sözleşme'}
               </span>
             </div>
             <div className="p-3 bg-zinc-950 border border-zinc-850">
               <span className="text-[10px] font-mono uppercase text-zinc-400 block font-bold">Haftalık Menajer Maaşı</span>
-              <span className="text-lg font-black text-[#00F5A0]">€{(managerContract.weeklySalary).toLocaleString('tr-TR')}</span>
+              <span className="text-lg font-black text-[#C7FF38]">€{(managerContract.weeklySalary).toLocaleString('tr-TR')}</span>
               <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
                 Yıllık: €{(managerContract.weeklySalary * 52).toLocaleString('tr-TR')}
               </span>
@@ -120,7 +120,7 @@ export default function SettingsPage() {
         {/* 1. General Preferences Card */}
         <div className="p-6 bg-[#070B12] border border-zinc-800 shadow-xl space-y-5">
           <h2 className="text-sm font-black uppercase tracking-wider text-zinc-200 flex items-center gap-2 pb-2.5 border-b border-zinc-800">
-            <Sliders className="w-4 h-4 text-[#00F5A0]" />
+            <Sliders className="w-4 h-4 text-[#C7FF38]" />
             Oynanış ve Simülasyon Tercihleri
           </h2>
 
@@ -136,7 +136,7 @@ export default function SettingsPage() {
               onClick={() => setAutoSaveEnabled(!autoSaveEnabled)}
               className={`px-4 py-2 font-mono font-bold text-xs uppercase tracking-wider transition-all border ${
                 autoSaveEnabled
-                  ? 'bg-[#00F5A0] text-black border-[#00F5A0] shadow-md'
+                  ? 'bg-[#C7FF38] text-black border-[#C7FF38] shadow-md'
                   : 'bg-zinc-900 text-zinc-400 border-zinc-700'
               }`}
             >
@@ -159,7 +159,7 @@ export default function SettingsPage() {
                   onClick={() => setDefaultSpeed(spd)}
                   className={`px-3 py-1 font-mono font-bold text-xs transition-all ${
                     defaultSpeed === spd
-                      ? 'bg-[#00F5A0] text-black font-black'
+                      ? 'bg-[#C7FF38] text-black font-black'
                       : 'text-zinc-400 hover:text-white'
                   }`}
                 >
@@ -203,7 +203,7 @@ export default function SettingsPage() {
             </div>
             <div className="p-3 bg-[#040810] border border-zinc-800">
               <span className="text-zinc-500 block text-[10px] font-mono uppercase font-bold">Sezon</span>
-              <span className="font-black text-[#00F5A0] text-sm">{seasonYear}</span>
+              <span className="font-black text-[#C7FF38] text-sm">{seasonYear}</span>
             </div>
             <div className="p-3 bg-[#040810] border border-zinc-800">
               <span className="text-zinc-500 block text-[10px] font-mono uppercase font-bold">Oyun Tarihi</span>

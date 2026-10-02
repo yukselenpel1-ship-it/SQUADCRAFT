@@ -23,14 +23,14 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     <div
       className={`p-4 sm:p-5 border transition-all ${
         highlight
-          ? 'bg-[#0A1020] border-2 border-[#00F5A0] shadow-xl'
+          ? 'bg-[#0A1020] border-2 border-[#C7FF38] shadow-xl'
           : 'bg-[#080D1A] border-zinc-800 hover:border-zinc-700'
       }`}
     >
       {/* Top Competition & Date Banner */}
       <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80 text-xs">
         <div className="flex items-center gap-2">
-          <span className="font-mono text-[10px] uppercase font-black px-1.5 py-0.5 bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
+          <span className="font-mono text-[10px] uppercase font-black px-1.5 py-0.5 bg-[#C7FF38]/10 text-[#C7FF38] border border-[#C7FF38]/30">
             {fixture.competition}
           </span>
           <span className="font-mono text-zinc-400 text-[11px]">HAFTA {fixture.round}</span>
@@ -69,7 +69,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
             </div>
           ) : (
             <div className="flex flex-col items-center">
-              <span className="px-2.5 py-1 bg-[#00F5A0]/10 border border-[#00F5A0]/40 text-[#00F5A0] text-xs font-mono font-black tracking-wider">
+              <span className="px-2.5 py-1 bg-[#C7FF38]/10 border border-[#C7FF38]/40 text-[#C7FF38] text-xs font-mono font-black tracking-wider">
                 VS
               </span>
               <span className="text-[10px] font-mono text-zinc-400 mt-1">{fixture.time}</span>
@@ -103,7 +103,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
 
         <Link
           href={`/match/${fixture.id}`}
-          className="flex items-center gap-1 font-mono font-bold text-xs uppercase text-[#00F5A0] hover:text-white transition-colors bg-[#00F5A0]/10 hover:bg-[#00F5A0]/20 px-2.5 py-1 border border-[#00F5A0]/30"
+          className="flex items-center gap-1 font-mono font-bold text-xs uppercase text-[#C7FF38] hover:text-white transition-colors bg-[#C7FF38]/10 hover:bg-[#C7FF38]/20 px-2.5 py-1 border border-[#C7FF38]/30"
         >
           <span>MAÇ MERKEZİ</span>
           <ChevronRight className="w-3.5 h-3.5" />

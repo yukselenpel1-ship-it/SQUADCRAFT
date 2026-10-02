@@ -21,7 +21,7 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
 
   const getFormPill = (form: 'W' | 'D' | 'L', index: number) => {
     const config = {
-      W: { label: 'G', bg: 'bg-[#00F5A0]/20 text-[#00F5A0] border-[#00F5A0]/40' },
+      W: { label: 'G', bg: 'bg-[#C7FF38]/20 text-[#C7FF38] border-[#C7FF38]/40' },
       D: { label: 'B', bg: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
       L: { label: 'M', bg: 'bg-rose-500/20 text-rose-400 border-rose-500/40' },
     }[form];
@@ -62,8 +62,8 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
 
             // Position qualification markers
             let rankBorder = 'border-l-2 border-transparent';
-            if (rank === 1) rankBorder = 'border-l-4 border-[#00F5A0]'; // Kıtasal Şampiyona
-            else if (rank <= 3) rankBorder = 'border-l-4 border-[#00D4FF]'; // Kıtasal Eleme
+            if (rank === 1) rankBorder = 'border-l-4 border-[#C7FF38]'; // Kıtasal Şampiyona
+            else if (rank <= 3) rankBorder = 'border-l-4 border-[#4FE4FF]'; // Kıtasal Eleme
             else if (rank >= 9) rankBorder = 'border-l-4 border-rose-500'; // Relegation
 
             return (
@@ -71,7 +71,7 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
                 key={item.clubId}
                 className={`transition-colors ${rankBorder} ${
                   isUserClub
-                    ? 'bg-[#00F5A0]/10 hover:bg-[#00F5A0]/15'
+                    ? 'bg-[#C7FF38]/10 hover:bg-[#C7FF38]/15'
                     : 'hover:bg-zinc-900/70'
                 }`}
               >
@@ -80,9 +80,9 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
                   <span
                     className={`inline-flex items-center justify-center w-6 h-6 text-xs font-black ${
                       rank === 1
-                        ? 'bg-[#00F5A0] text-black border border-white'
+                        ? 'bg-[#C7FF38] text-black border border-white'
                         : rank <= 3
-                        ? 'bg-[#00D4FF]/20 text-[#00D4FF] border border-[#00D4FF]/40'
+                        ? 'bg-[#4FE4FF]/20 text-[#4FE4FF] border border-[#4FE4FF]/40'
                         : rank >= 9
                         ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40'
                         : 'text-zinc-400 font-mono'
@@ -109,7 +109,7 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
                           {club ? club.name : item.clubId}
                         </span>
                         {isUserClub && (
-                          <span className="text-[9px] font-mono font-black px-1.5 py-0.2 bg-[#00F5A0] text-black border border-white">
+                          <span className="text-[9px] font-mono font-black px-1.5 py-0.2 bg-[#C7FF38] text-black border border-white">
                             KULÜBÜNÜZ
                           </span>
                         )}
@@ -129,7 +129,7 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
                 <td
                   className={`py-3 px-3 text-center font-mono font-bold ${
                     item.goalDifference > 0
-                      ? 'text-[#00F5A0]'
+                      ? 'text-[#C7FF38]'
                       : item.goalDifference < 0
                       ? 'text-rose-400'
                       : 'text-zinc-400'
