@@ -124,7 +124,14 @@ export default function MatchCenterPage() {
     if (!isCareerHydrated || !isInitialized || !fixture || !homeClub || !awayClub || homePlayers.length === 0 || awayPlayers.length === 0) return;
 
     const isUserHome = homeClub.id === userClub.id;
-    const userTacticsSettings = tactics.settings;
+    const userTacticsSettings = tactics?.settings || {
+      mentality: (tactics as any)?.mentality || ('Dengeli' as Mentality),
+      tempo: (tactics as any)?.tempo || ('Standart' as Tempo),
+      pressing: (tactics as any)?.pressing || ('Orta' as Pressing),
+      passingStyle: (tactics as any)?.passingStyle || ('Karışık' as PassingStyle),
+      defensiveLine: (tactics as any)?.defensiveLine || ('Standart' as DefensiveLine),
+      width: (tactics as any)?.width || ('Dengeli' as Width),
+    };
     const opponentTacticsSettings = {
       mentality: 'Dengeli' as Mentality,
       tempo: 'Standart' as Tempo,
