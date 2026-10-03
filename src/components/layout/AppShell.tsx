@@ -45,7 +45,6 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
               {/* Mobile Bottom Navigation */}
               <MobileNav />
             </div>
-            <MobileBottomNav />
           </>
         )}
       </div>
