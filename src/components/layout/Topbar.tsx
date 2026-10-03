@@ -66,7 +66,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
 
   return (
     <>
-      <header className="sticky top-0 z-30 h-14 bg-[#050B14]/95 backdrop-blur-xl border-b border-[#14233A] px-4 lg:px-8 flex items-center justify-between gap-4">
+      <header className="sc-career-topbar sticky top-0 z-30 h-[58px] bg-[#050B14]/95 backdrop-blur-xl border-b border-[#14233A] px-4 lg:px-5 flex items-center justify-between gap-4">
         {/* Left: Mobile Toggle & Date Indicator (Exact to Mockup) */}
         <div className="flex items-center gap-3">
           <button

@@ -193,7 +193,7 @@ export default function DraftHomePage() {
       {/* ==================================================================== */}
       <div
         className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+        style={{ backgroundImage: `url('/theme-career/stadium-bg.webp')` }}
       >
         {/* High-contrast crisp sports vignette: zero blur */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#040814]/85 via-transparent to-[#040814]/95" />

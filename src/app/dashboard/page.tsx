@@ -185,34 +185,19 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* LEFT / CENTER: HERO TITLE & 2 PRIMARY MODE CARDS (7 COLS) */}
         <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
-          {/* Hero Branding & Managerial Quote */}
-          <div className="relative overflow-hidden rounded-2xl bg-[#07101C] border border-[#14233A] p-5 sm:p-6 shadow-xl flex flex-col justify-between min-h-[160px]">
-            {/* Background stadium lights glow */}
-            <div
-              className="absolute inset-0 opacity-20 pointer-events-none bg-cover bg-center"
-              style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#07101C] via-[#07101C]/85 to-transparent pointer-events-none" />
-
-            <div className="relative z-10">
-              <div className="flex items-center gap-2">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-black italic tracking-tighter text-white uppercase font-display leading-none">
-                  SQUADCRAFT <span className="text-[#00F5A0]">26</span>
-                </h1>
-              </div>
-              <p className="text-[11px] sm:text-xs font-mono font-bold tracking-widest text-[#8E9EB5] uppercase mt-1">
-                YENİ NESİL FUTBOL MENAJERLİK DENEYİMİ
-              </p>
-            </div>
-
-            <div className="relative z-10 pt-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-t border-[#14233A]/60">
-              <div className="text-[11px] text-[#8E9EB5] italic font-medium">
-                &ldquo;KULÜBÜNÜ KUR, TAKTİĞİNİ YAZ, EFSANENİ YAŞA&rdquo;
-              </div>
-              <div className="font-serif italic text-xs text-[#00F5A0] opacity-80 select-none">
-                ~ Oguzhan Kaya
+          <div className="relative overflow-hidden rounded-2xl border border-[#14233A] bg-[#07101C] p-5 sm:p-6 shadow-xl min-h-[185px]">
+            <div className="absolute inset-0 bg-cover bg-center opacity-55" style={{ backgroundImage: `url('/theme-career/stadium-bg.webp')` }} />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#07101C] via-[#07101C]/85 to-[#07101C]/15" />
+            <Image src="/theme-career/manager-cutout.webp" alt="" fill sizes="(max-width: 1024px) 50vw, 25vw" className="pointer-events-none !left-auto !right-0 !w-[38%] object-contain object-bottom opacity-70" />
+            <div className="relative z-10 flex items-center gap-4">
+              <ClubBadge code={userClub.code} name={userClub.name} clubId={userClub.id} primaryColor={userClub.primaryColor} secondaryColor={userClub.secondaryColor} size="lg" />
+              <div>
+                <p className="text-[10px] font-black tracking-[.2em] text-[#0ef0a2]">KARİYER MODU • {seasonNumber || 1}. SEZON</p>
+                <h1 className="mt-1 text-2xl sm:text-4xl font-black italic uppercase tracking-tight text-white">{userClub.name}</h1>
+                <p className="mt-1 text-xs text-slate-300">Süper Lig • {userClub.managerName}</p>
               </div>
             </div>
+            <p className="relative z-10 mt-7 text-[11px] italic tracking-wider text-slate-300">“KULÜBÜNÜ KUR, TAKTİĞİNİ YAZ, EFSANENİ YAŞA”</p>
           </div>
 
           {/* TWO PRIMARY MODE CARDS: KARİYER MODU (Green) & DRAFT LİGİ (Purple) */}
@@ -376,7 +361,7 @@ export default function DashboardPage() {
             {/* Background stadium lights */}
             <div
               className="absolute inset-0 opacity-20 pointer-events-none bg-cover bg-center"
-              style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+              style={{ backgroundImage: `url('/theme-career/stadium-bg.webp')` }}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#07101C] via-[#07101C]/80 to-[#07101C]/90 pointer-events-none" />
 

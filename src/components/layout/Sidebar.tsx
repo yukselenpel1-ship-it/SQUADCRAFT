@@ -93,7 +93,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-[#050B14]/98 backdrop-blur-xl border-r border-[#14233A] flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 ${
+        className={`sc-career-sidebar fixed top-0 bottom-0 left-0 z-40 w-[246px] bg-[#050B14]/98 backdrop-blur-xl border-r border-[#14233A] flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -147,6 +147,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
                     <Link
                       key={item.href}
                       href={item.href}
+                      aria-current={active ? 'page' : undefined}
                       onClick={onClose}
                       className={`group flex items-center justify-between px-3 py-2 text-xs font-bold uppercase tracking-wider rounded-xl transition-all ${
                         active
@@ -196,7 +197,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
           {/* Subtle floodlights in background */}
           <div
             className="absolute inset-0 opacity-15 pointer-events-none bg-cover bg-bottom"
-            style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+            style={{ backgroundImage: `url('/theme-career/stadium-bg.webp')` }}
           />
           <div className="relative z-10 flex items-center justify-between text-[11px] font-mono text-[#8E9EB5]">
             <span className="flex items-center gap-1.5 font-bold text-[#51647E]">
