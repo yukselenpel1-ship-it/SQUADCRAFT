@@ -334,12 +334,12 @@ export default function MainMenuPage() {
           <div className="relative overflow-hidden rounded-3xl bg-[#07101C] border-2 border-[#00F5A0] shadow-[0_0_40px_rgba(0,245,160,0.22)] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.01] group">
             {/* Background Texture with Tactical Hologram Feel */}
             <div
-              className="absolute inset-0 opacity-25 pointer-events-none bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-              style={{ backgroundImage: `url('/images/card-career-manager.jpg')` }}
+              className="absolute inset-0 opacity-70 pointer-events-none bg-cover bg-[position:60%_center] transition-transform duration-700 group-hover:scale-105"
+              style={{ backgroundImage: `url('/images/arena-career-mode.png')` }}
             />
             {/* Gradient Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#07101C] via-[#07101C]/80 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#07101C] via-[#07101C]/70 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#07101C]/95 via-[#07101C]/45 to-[#07101C]/10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#07101C]/85 via-[#07101C]/35 to-transparent pointer-events-none" />
 
             {/* Tactical Pitch Grid Vector Overlay */}
             <div className="absolute right-4 top-4 w-64 h-48 opacity-15 pointer-events-none border border-[#00F5A0]/40 rounded-xl bg-[radial-gradient(#00F5A0_1px,transparent_1px)] [background-size:16px_16px]" />
@@ -433,12 +433,12 @@ export default function MainMenuPage() {
           <div className="relative overflow-hidden rounded-3xl bg-[#07101C] border-2 border-[#00D4FF] shadow-[0_0_40px_rgba(0,212,255,0.22)] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.01] group">
             {/* Background Texture with Championship Trophy Look */}
             <div
-              className="absolute inset-0 opacity-25 pointer-events-none bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-              style={{ backgroundImage: `url('/images/card-draft-room.jpg')` }}
+              className="absolute inset-0 opacity-70 pointer-events-none bg-cover bg-[position:60%_center] transition-transform duration-700 group-hover:scale-105"
+              style={{ backgroundImage: `url('/images/arena-draft-mode.png')` }}
             />
             {/* Gradient Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#07101C] via-[#07101C]/80 to-transparent pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#07101C] via-[#07101C]/70 to-transparent pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#07101C]/95 via-[#07101C]/45 to-[#07101C]/10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#07101C]/85 via-[#07101C]/35 to-transparent pointer-events-none" />
 
             {/* Stadium Floodlights & Trophy Silhouette Flare */}
             <div className="absolute right-6 top-6 w-32 h-32 rounded-full bg-[#00D4FF]/10 blur-3xl pointer-events-none" />
