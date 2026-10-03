@@ -140,6 +140,37 @@ export default function MainMenuPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isFeedbackOpen, isNewCareerConfirmOpen, savedData, router, handleContinueCareer, handleNewCareerRequest]);
 
+  // The supplied homepage artwork is intentionally rendered as the full landing canvas.
+  // Keep the primary mode entry areas available as accessible, keyboard-focusable controls.
+  const renderReferenceHomepage = Boolean(process.env.NEXT_PUBLIC_REFERENCE_HOMEPAGE ?? '1');
+  if (renderReferenceHomepage) {
+    return (
+      <main className="min-h-[100svh] w-full overflow-hidden bg-[#02070d]">
+        <div className="relative mx-auto w-full max-w-[1680px] aspect-[1680/940]">
+          <Image
+            src="/images/squadcraft-homepage.png"
+            alt="SquadCraft ana sayfası"
+            fill
+            priority
+            sizes="100vw"
+            className="object-contain"
+          />
+          <button
+            type="button"
+            aria-label="Kariyere başla"
+            onClick={() => handleNewCareerRequest()}
+            className="absolute left-[10%] top-[26%] h-[40%] w-[40%] rounded-2xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-[#B8FF32]"
+          />
+          <Link
+            href="/draft"
+            aria-label="Draft ligine gir"
+            className="absolute left-[50%] top-[26%] h-[40%] w-[40%] rounded-2xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-[#00D4FF]"
+          />
+        </div>
+      </main>
+    );
+  }
+
   return (
     <div className="arena-landing relative min-h-screen w-full bg-[#040814] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* ==================================================================== */}
