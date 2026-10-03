@@ -7,32 +7,22 @@ import { useRouter } from 'next/navigation';
 import { useGame } from '@/lib/context/GameContext';
 import { loadCareerState, loadCareerMetadata } from '@/lib/career';
 import { FeedbackModal } from '@/components/draft/FeedbackModal';
-import { APP_VERSION } from '@/lib/version';
 import {
   Gamepad2,
-  MessageSquare,
   Globe,
   Users,
   Activity,
   ArrowRight,
   ArrowRightLeft,
-  Play,
   Trophy,
-  Zap,
-  Shield,
-  Radio,
   Search,
   ChevronDown,
-  Sparkles,
   TrendingUp,
   BarChart2,
   Award,
-  Layers,
   Swords,
-  Target,
   UserCheck,
   AlertTriangle,
-  Flame,
 } from 'lucide-react';
 
 export default function MainMenuPage() {
@@ -52,7 +42,7 @@ export default function MainMenuPage() {
 
   // Load existing career save state canonical hydration check
   useEffect(() => {
-    // 1. Instant synchronous check from lightweight localStorage metadata (< 1KB)
+    // 1. Instant check from lightweight localStorage metadata
     const meta = loadCareerMetadata();
     if (meta && meta.exists) {
       setSavedData({
@@ -140,62 +130,33 @@ export default function MainMenuPage() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isFeedbackOpen, isNewCareerConfirmOpen, savedData, router, handleContinueCareer, handleNewCareerRequest]);
 
-  // The supplied homepage artwork is intentionally rendered as the full landing canvas.
-  // Keep the primary mode entry areas available as accessible, keyboard-focusable controls.
-  const renderReferenceHomepage = Boolean(process.env.NEXT_PUBLIC_REFERENCE_HOMEPAGE ?? '1');
-  if (renderReferenceHomepage) {
-    return (
-      <main className="min-h-[100svh] w-full overflow-hidden bg-[#02070d]">
-        <div className="relative mx-auto w-full max-w-[1680px] aspect-[1680/940]">
-          <Image
-            src="/images/squadcraft-homepage.png"
-            alt="SquadCraft ana sayfası"
-            fill
-            priority
-            sizes="100vw"
-            className="object-contain"
-          />
-          <button
-            type="button"
-            aria-label="Kariyere başla"
-            onClick={() => handleNewCareerRequest()}
-            className="absolute left-[10%] top-[26%] h-[40%] w-[40%] rounded-2xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-[#B8FF32]"
-          />
-          <Link
-            href="/draft"
-            aria-label="Draft ligine gir"
-            className="absolute left-[50%] top-[26%] h-[40%] w-[40%] rounded-2xl focus-visible:outline focus-visible:outline-4 focus-visible:outline-[#00D4FF]"
-          />
-        </div>
-      </main>
-    );
-  }
-
   return (
-    <div className="arena-landing relative min-h-screen w-full bg-[#040814] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="relative w-full min-h-screen xl:h-screen xl:max-h-screen xl:overflow-hidden bg-[#040814] text-white flex flex-col justify-between select-none font-sans antialiased">
       {/* ==================================================================== */}
-      {/* 1. AUTHENTIC STADIUM FLOODLIGHT AMBIANCE                             */}
+      {/* 1. HOMEPAGE STADIUM BACKGROUND (DIRECT ASSET: homepage-stadium.png)   */}
       {/* ==================================================================== */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/images/arena-hero-stadium.png')` }}
-      >
-        {/* High-contrast crisp sports vignette */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#040814]/80 via-[#040814]/60 to-[#040814]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#040814]/30 to-[#040814]/90" />
-        {/* Neon stadium flares */}
-        <div className="absolute -top-32 left-1/4 w-[600px] h-[350px] bg-[#00F5A0]/10 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute -top-32 right-1/4 w-[600px] h-[350px] bg-[#00D4FF]/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <Image
+          src="/images/homepage-stadium.png"
+          alt="SquadCraft Stadium Arena"
+          fill
+          priority
+          className="object-cover object-center"
+        />
+        {/* Cinematic dark vignette overlays for text legibility */}
+        <div className="absolute inset-0 bg-[#040814]/75" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#040814]/85 via-transparent to-[#040814]/90" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#040814]/40 to-[#040814]/95" />
       </div>
 
       {/* ==================================================================== */}
-      {/* 2. SQUADCRAFT TOP NAVIGATION BAR (FAITHFUL TO MOCKUP)                */}
+      {/* 2. TOP BROADCAST NAVIGATION BAR                                      */}
       {/* ==================================================================== */}
-      <header className="relative z-30 w-full border-b border-[#14233A]/80 bg-[#07101C]/90 backdrop-blur-xl px-4 sm:px-8 py-3.5 sticky top-0 shadow-lg">
-        <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4">
+      <header className="relative z-30 w-full border-b border-[#14233A]/80 bg-[#07101C]/85 backdrop-blur-xl px-4 sm:px-8 py-2.5 shrink-0 shadow-lg">
+        <div className="max-w-[1720px] mx-auto flex items-center justify-between gap-4">
           {/* Left: SquadCraft Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative h-9 w-9 flex items-center justify-center">
+          <Link href="/" className="flex items-center gap-3 group shrink-0">
+            <div className="relative h-8 sm:h-9 w-8 sm:w-9 flex items-center justify-center">
               <Image
                 src="/images/sc-emblem-official-hd.png"
                 alt="SquadCraft Logo"
@@ -211,7 +172,7 @@ export default function MainMenuPage() {
           </Link>
 
           {/* Center Navigation Tabs */}
-          <nav className="hidden lg:flex items-center gap-8 text-xs font-black uppercase tracking-wider">
+          <nav className="hidden lg:flex items-center gap-9 text-xs font-black uppercase tracking-wider">
             <button
               onClick={() => setActiveNav('home')}
               className={`relative py-1.5 transition-colors ${
@@ -260,7 +221,7 @@ export default function MainMenuPage() {
             </Link>
 
             <a
-              href="#features"
+              href="#ozellikler"
               onClick={() => setActiveNav('features')}
               className={`relative py-1.5 transition-colors ${
                 activeNav === 'features'
@@ -275,25 +236,25 @@ export default function MainMenuPage() {
             </a>
           </nav>
 
-          {/* Right Utility & CTA Actions */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            {/* Search Icon Button */}
+          {/* Right Utility & Actions */}
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+            {/* Search Icon */}
             <button
               onClick={() => router.push('/scouting')}
               className="w-8 h-8 rounded-lg bg-[#081325] hover:bg-[#0E1E38] border border-[#14233A] text-zinc-400 hover:text-white flex items-center justify-center transition-colors"
-              title="Oyuncu / Kulüp Ara"
+              title="Arama"
             >
               <Search className="w-3.5 h-3.5" />
             </button>
 
-            {/* Language Selector */}
+            {/* Language Dropdown */}
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#081325] border border-[#14233A] text-zinc-300 text-xs font-mono font-bold">
               <Globe className="w-3.5 h-3.5 text-zinc-400" />
               <span>TR</span>
               <ChevronDown className="w-3 h-3 text-zinc-500" />
             </div>
 
-            {/* Giriş Yap / Kariyer Devam */}
+            {/* Giriş Yap / Devam Et */}
             <button
               onClick={savedData ? handleContinueCareer : handleNewCareerRequest}
               className="px-3.5 sm:px-4 py-2 rounded-lg bg-[#081325] hover:bg-[#0E1E38] text-white border border-[#14233A] hover:border-zinc-500 text-xs font-black uppercase tracking-wider transition-all active:scale-95"
@@ -301,7 +262,7 @@ export default function MainMenuPage() {
               {savedData ? 'Kariyeri Aç' : 'Giriş Yap'}
             </button>
 
-            {/* Hemen Kayıt Ol / Oyuna Başla */}
+            {/* Hemen Kayıt Ol */}
             <button
               onClick={handleNewCareerRequest}
               className="px-4 sm:px-5 py-2 rounded-lg bg-[#00F5A0] hover:bg-[#00E590] text-[#040814] font-black text-xs uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(0,245,160,0.4)] active:scale-95"
@@ -313,434 +274,405 @@ export default function MainMenuPage() {
       </header>
 
       {/* ==================================================================== */}
-      {/* 3. HERO TITLE & SLOGAN BANNER                                        */}
+      {/* 3. MAIN CENTER STAGE                                                 */}
       {/* ==================================================================== */}
-      <main className="relative z-20 max-w-[1440px] w-full mx-auto px-4 sm:px-8 pt-8 pb-12 flex flex-col items-center">
-        {/* Top Kicker */}
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-[11px] sm:text-xs font-mono font-bold tracking-[0.3em] uppercase text-zinc-300">
+      <main className="relative z-20 max-w-[1720px] w-full mx-auto px-4 sm:px-8 py-2 xl:py-3 flex-1 flex flex-col justify-between">
+        {/* ================================================================== */}
+        {/* 3.1 HERO SQUADCRAFT TITLE SECTION                                  */}
+        {/* ================================================================== */}
+        <div className="flex flex-col items-center text-center my-0.5 xl:my-1">
+          {/* Top Kicker */}
+          <div className="text-[10px] sm:text-xs font-mono font-bold tracking-[0.35em] uppercase text-zinc-300 mb-0.5">
             F U T B O L U &nbsp; S E N &nbsp; Y Ö N E T
-          </span>
-        </div>
-
-        {/* Massive SQUADCRAFT Title with Speed Beams */}
-        <div className="relative flex items-center justify-center my-1">
-          {/* Angled speed lines left & right */}
-          <div className="hidden md:flex items-center gap-1.5 mr-4 opacity-75">
-            <span className="h-0.5 w-8 bg-gradient-to-r from-transparent to-[#00F5A0]" />
-            <span className="h-0.5 w-4 bg-[#00F5A0]" />
-            <span className="w-1.5 h-1.5 rotate-45 bg-[#00F5A0]" />
           </div>
 
-          <h1 className="text-5xl sm:text-7xl md:text-8xl font-black italic tracking-tight uppercase leading-none font-display">
-            <span className="text-white drop-shadow-[0_4px_20px_rgba(0,0,0,0.9)]">SQUAD</span>
-            <span className="text-[#00F5A0] drop-shadow-[0_0_30px_rgba(0,245,160,0.4)]">CRAFT</span>
-          </h1>
+          {/* SQUADCRAFT Brand Typography with Neon Speed Slits */}
+          <div className="relative flex items-center justify-center">
+            {/* Left speed slashes */}
+            <div className="hidden sm:flex items-center gap-1.5 mr-4 opacity-85">
+              <span className="w-1.5 h-6 bg-[#00F5A0] -skew-x-[25deg] shadow-[0_0_10px_#00F5A0]" />
+              <span className="w-1.5 h-6 bg-[#00F5A0]/60 -skew-x-[25deg]" />
+              <span className="w-1 h-4 bg-[#00F5A0]/30 -skew-x-[25deg]" />
+            </div>
 
-          <div className="hidden md:flex items-center gap-1.5 ml-4 opacity-75">
-            <span className="w-1.5 h-1.5 rotate-45 bg-[#00F5A0]" />
-            <span className="h-0.5 w-4 bg-[#00F5A0]" />
-            <span className="h-0.5 w-8 bg-gradient-to-l from-transparent to-[#00F5A0]" />
+            <h1 className="text-3xl sm:text-5xl xl:text-6xl font-black italic tracking-tighter uppercase leading-none font-display drop-shadow-[0_4px_25px_rgba(0,0,0,0.9)]">
+              <span className="text-white">SQUAD</span>
+              <span className="text-[#00F5A0] drop-shadow-[0_0_30px_rgba(0,245,160,0.5)]">CRAFT</span>
+            </h1>
+
+            {/* Right speed slashes */}
+            <div className="hidden sm:flex items-center gap-1.5 ml-4 opacity-85">
+              <span className="w-1 h-4 bg-[#00F5A0]/30 -skew-x-[25deg]" />
+              <span className="w-1.5 h-6 bg-[#00F5A0]/60 -skew-x-[25deg]" />
+              <span className="w-1.5 h-6 bg-[#00F5A0] -skew-x-[25deg] shadow-[0_0_10px_#00F5A0]" />
+            </div>
+          </div>
+
+          {/* Subtitle Slogan */}
+          <div className="flex items-center gap-3 sm:gap-6 text-[10px] sm:text-xs font-mono font-black tracking-widest text-[#8E9EB5] uppercase mt-1">
+            <span>KUR</span>
+            <span className="text-[#00F5A0]">•</span>
+            <span>DRAFT ET</span>
+            <span className="text-[#00D4FF]">•</span>
+            <span>YARIŞ</span>
+            <span className="text-[#00F5A0]">•</span>
+            <span>ZAFERE ULAŞ</span>
           </div>
         </div>
 
-        {/* Subtitle Slogan */}
-        <div className="flex items-center gap-3 sm:gap-6 text-xs sm:text-sm font-mono font-black tracking-widest text-[#8E9EB5] uppercase mt-2">
-          <span>KUR</span>
-          <span className="text-[#00F5A0]">•</span>
-          <span>DRAFT ET</span>
-          <span className="text-[#00D4FF]">•</span>
-          <span>YARIŞ</span>
-          <span className="text-[#00F5A0]">•</span>
-          <span>ZAFERE ULAŞ</span>
-        </div>
-
-        {/* ==================================================================== */}
-        {/* 4. THE TWO PRIMARY HERO MODE CARDS (CENTER STAGE)                    */}
-        {/* ==================================================================== */}
-        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 mt-10">
+        {/* ================================================================== */}
+        {/* 3.2 THE TWO PRIMARY HERO MODE CARDS (SIDE BY SIDE)                 */}
+        {/* ================================================================== */}
+        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 xl:gap-6 my-1.5 xl:my-2">
           {/* =============================================================== */}
-          {/* CARD 1: KARİYER MODU (Vibrant Neon Green Aura)                  */}
+          {/* LEFT: KARİYER MODU (career-manager.png fills card height)        */}
           {/* =============================================================== */}
-          <div className="relative overflow-hidden rounded-3xl bg-[#07101C] border-2 border-[#00F5A0] shadow-[0_0_40px_rgba(0,245,160,0.22)] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.01] group">
-            {/* Background Texture with Tactical Hologram Feel */}
-            <div
-              className="absolute inset-0 opacity-70 pointer-events-none bg-cover bg-[position:60%_center] transition-transform duration-700 group-hover:scale-105"
-              style={{ backgroundImage: `url('/images/arena-career-mode.png')` }}
-            />
-            {/* Gradient Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#07101C]/95 via-[#07101C]/45 to-[#07101C]/10 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#07101C]/85 via-[#07101C]/35 to-transparent pointer-events-none" />
+          <div className="relative overflow-hidden rounded-2xl xl:rounded-3xl bg-[#07101C]/95 border-2 border-[#00F5A0] shadow-[0_0_35px_rgba(0,245,160,0.22)] p-5 sm:p-7 flex flex-col justify-between transition-all duration-300 hover:scale-[1.006] group min-h-[300px] xl:min-h-[340px]">
+            {/* Prominent Manager Figure: Filling the full card height on the right side with soft blend */}
+            <div className="absolute right-0 top-0 bottom-0 w-[48%] pointer-events-none overflow-hidden select-none">
+              <Image
+                src="/images/career-manager.png"
+                alt="SquadCraft Kariyer Menajeri"
+                fill
+                priority
+                className="object-contain object-right-bottom group-hover:scale-105 transition-transform duration-700"
+              />
+              {/* Soft gradient edge to melt left and bottom into card background */}
+              <div className="absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#07101C] via-[#07101C]/80 to-transparent z-10" />
+              <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#07101C] via-[#07101C]/60 to-transparent z-10" />
+              <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[#07101C] to-transparent z-10" />
+            </div>
 
-            {/* Tactical Pitch Grid Vector Overlay */}
-            <div className="absolute right-4 top-4 w-64 h-48 opacity-15 pointer-events-none border border-[#00F5A0]/40 rounded-xl bg-[radial-gradient(#00F5A0_1px,transparent_1px)] [background-size:16px_16px]" />
+            {/* Tactical Grid Ambient Glow */}
+            <div className="absolute right-6 top-6 w-56 h-36 opacity-15 pointer-events-none rounded-xl border border-[#00F5A0]/40 bg-[radial-gradient(#00F5A0_1px,transparent_1px)] [background-size:16px_16px]" />
 
-            <div className="relative z-10 space-y-4">
-              {/* Badge Tag */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00F5A0]/15 border border-[#00F5A0]/40 text-[#00F5A0] text-xs font-mono font-black uppercase tracking-wider">
+            {/* Text & Content on Left Half */}
+            <div className="relative z-10 space-y-2.5 max-w-[58%]">
+              {/* Green Pill Badge */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00F5A0]/15 border border-[#00F5A0]/50 text-[#00F5A0] text-[10px] sm:text-xs font-mono font-black uppercase tracking-wider">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00F5A0] animate-pulse" />
                 <span>MENAJER OL // KULÜBÜNÜ İNŞA ET</span>
               </div>
 
-              {/* Title */}
+              {/* Title & Description */}
               <div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black italic uppercase tracking-tight text-white font-display">
+                <h2 className="text-2xl sm:text-3xl xl:text-4xl font-black italic uppercase tracking-tight text-white font-display">
                   KARİYER <span className="text-[#00F5A0]">MODU</span>
                 </h2>
-                <p className="text-xs sm:text-sm text-zinc-300 font-medium mt-2.5 max-w-xl leading-relaxed">
+                <p className="text-xs sm:text-[13px] text-zinc-300 font-medium mt-1.5 leading-relaxed">
                   Kendi kulübünü yönet, transferlerini yap, taktiğini belirle ve efsane bir kariyer inşa et. Yerel liglerden Avrupa&apos;nın zirvesine uzanan yolculuk senin elinde.
                 </p>
               </div>
             </div>
 
-            {/* Bottom Actions & Feature Pills */}
-            <div className="relative z-10 pt-8 space-y-4">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                {savedData ? (
-                  <button
-                    onClick={handleContinueCareer}
-                    className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl bg-[#00F5A0] hover:bg-[#00E590] text-[#040814] font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_25px_rgba(0,245,160,0.4)] active:scale-95"
-                  >
-                    <span>DEVAM ET ({savedData.userClub.name})</span>
-                    <ArrowRight className="w-4 h-4 stroke-[3]" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleNewCareerRequest}
-                    className="flex-1 inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl bg-[#00F5A0] hover:bg-[#00E590] text-[#040814] font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_25px_rgba(0,245,160,0.4)] active:scale-95"
-                  >
-                    <span>KARİYERE BAŞLA</span>
-                    <ArrowRight className="w-4 h-4 stroke-[3]" />
-                  </button>
-                )}
+            {/* Bottom Actions & Feature Icons */}
+            <div className="relative z-10 pt-4 xl:pt-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+              {/* Primary Action Button */}
+              {savedData ? (
+                <button
+                  onClick={handleContinueCareer}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#00F5A0] hover:bg-[#00E590] text-[#040814] font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(0,245,160,0.4)] active:scale-95 shrink-0"
+                >
+                  <span>DEVAM ET ({savedData.userClub.name})</span>
+                  <ArrowRight className="w-4 h-4 stroke-[3]" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleNewCareerRequest}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#00F5A0] hover:bg-[#00E590] text-[#040814] font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(0,245,160,0.4)] active:scale-95 shrink-0"
+                >
+                  <span>KARİYERE BAŞLA</span>
+                  <ArrowRight className="w-4 h-4 stroke-[3]" />
+                </button>
+              )}
 
-                {savedData && (
-                  <button
-                    onClick={handleNewCareerRequest}
-                    className="px-4 py-4 rounded-xl bg-[#081325] hover:bg-[#0E1E38] border border-[#14233A] text-zinc-300 hover:text-white font-black text-xs uppercase tracking-wider transition-colors"
-                  >
-                    YENİ
-                  </button>
-                )}
-              </div>
-
-              {/* 4 Feature Pills Row */}
-              <div className="grid grid-cols-4 gap-2 pt-2 border-t border-[#14233A]/60 text-center">
+              {/* 4 Feature Icons Row in Frosted Glass HUD */}
+              <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 px-3 py-1.5 rounded-xl bg-[#040814]/80 backdrop-blur-md border border-white/5 text-center">
                 <Link
                   href="/transfers"
-                  className="flex flex-col items-center gap-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                  className="flex flex-col items-center gap-1 hover:text-[#00F5A0] transition-colors"
                 >
                   <ArrowRightLeft className="w-4 h-4 text-[#00F5A0]" />
-                  <span className="text-[11px] font-bold text-zinc-300">Transfer</span>
+                  <span className="text-[10px] font-bold text-zinc-300">Transfer</span>
                 </Link>
                 <Link
                   href="/tactics"
-                  className="flex flex-col items-center gap-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                  className="flex flex-col items-center gap-1 hover:text-[#00F5A0] transition-colors"
                 >
                   <Swords className="w-4 h-4 text-[#00F5A0]" />
-                  <span className="text-[11px] font-bold text-zinc-300">Taktik</span>
+                  <span className="text-[10px] font-bold text-zinc-300">Taktik</span>
                 </Link>
                 <Link
                   href="/scouting"
-                  className="flex flex-col items-center gap-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                  className="flex flex-col items-center gap-1 hover:text-[#00F5A0] transition-colors"
                 >
                   <BarChart2 className="w-4 h-4 text-[#00F5A0]" />
-                  <span className="text-[11px] font-bold text-zinc-300">Gelişim</span>
+                  <span className="text-[10px] font-bold text-zinc-300">Gelişim</span>
                 </Link>
                 <Link
                   href="/league"
-                  className="flex flex-col items-center gap-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                  className="flex flex-col items-center gap-1 hover:text-[#00F5A0] transition-colors"
                 >
                   <Trophy className="w-4 h-4 text-[#00F5A0]" />
-                  <span className="text-[11px] font-bold text-zinc-300">Zafer</span>
+                  <span className="text-[10px] font-bold text-zinc-300">Zafer</span>
                 </Link>
               </div>
             </div>
           </div>
 
           {/* =============================================================== */}
-          {/* CARD 2: DRAFT LİGİ (Electric Cyan Aura & Championship Trophy)   */}
+          {/* RIGHT: DRAFT LİGİ (draft-trophy.png as main visual focus)        */}
           {/* =============================================================== */}
-          <div className="relative overflow-hidden rounded-3xl bg-[#07101C] border-2 border-[#00D4FF] shadow-[0_0_40px_rgba(0,212,255,0.22)] p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 hover:scale-[1.01] group">
-            {/* Background Texture with Championship Trophy Look */}
-            <div
-              className="absolute inset-0 opacity-70 pointer-events-none bg-cover bg-[position:60%_center] transition-transform duration-700 group-hover:scale-105"
-              style={{ backgroundImage: `url('/images/arena-draft-mode.png')` }}
-            />
-            {/* Gradient Overlays */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#07101C]/95 via-[#07101C]/45 to-[#07101C]/10 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#07101C]/85 via-[#07101C]/35 to-transparent pointer-events-none" />
+          <div className="relative overflow-hidden rounded-2xl xl:rounded-3xl bg-[#07101C]/95 border-2 border-[#00D4FF] shadow-[0_0_35px_rgba(0,212,255,0.22)] p-5 sm:p-7 flex flex-col justify-between transition-all duration-300 hover:scale-[1.006] group min-h-[300px] xl:min-h-[340px]">
+            {/* Visual Focus: draft-trophy.png filling right side with the glowing Crown Trophy with smooth mask */}
+            <div className="absolute right-0 top-0 bottom-0 w-[58%] pointer-events-none overflow-hidden select-none">
+              <Image
+                src="/images/draft-trophy.png"
+                alt="Draft Şampiyonluk Arenası ve Kupa"
+                fill
+                priority
+                className="object-cover object-[55%_center] group-hover:scale-105 transition-transform duration-700"
+              />
+              {/* Soft gradient edge to melt left and bottom into card background */}
+              <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#07101C] via-[#07101C]/80 to-transparent z-10" />
+              <div className="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-[#07101C] via-[#07101C]/60 to-transparent z-10" />
+              <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-[#07101C] to-transparent z-10" />
+            </div>
 
-            {/* Stadium Floodlights & Trophy Silhouette Flare */}
-            <div className="absolute right-6 top-6 w-32 h-32 rounded-full bg-[#00D4FF]/10 blur-3xl pointer-events-none" />
+            {/* Cyan Spotlight Flare */}
+            <div className="absolute right-8 top-8 w-44 h-44 rounded-full bg-[#00D4FF]/15 blur-3xl pointer-events-none" />
 
-            <div className="relative z-10 space-y-4">
-              {/* Badge Tag */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00D4FF]/15 border border-[#00D4FF]/40 text-[#00D4FF] text-xs font-mono font-black uppercase tracking-wider">
+            {/* Text & Content on Left */}
+            <div className="relative z-10 space-y-2.5 max-w-[58%]">
+              {/* Cyan Pill Badge */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#00D4FF]/15 border border-[#00D4FF]/50 text-[#00D4FF] text-[10px] sm:text-xs font-mono font-black uppercase tracking-wider">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#00D4FF] animate-pulse" />
                 <span>GERÇEK OYUNCULAR // CANLI REKABET</span>
               </div>
 
-              {/* Title */}
+              {/* Title & Description */}
               <div>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black italic uppercase tracking-tight text-white font-display">
+                <h2 className="text-2xl sm:text-3xl xl:text-4xl font-black italic uppercase tracking-tight text-white font-display">
                   DRAFT <span className="text-[#00D4FF]">LİGİ</span>
                 </h2>
-                <p className="text-xs sm:text-sm text-zinc-300 font-medium mt-2.5 max-w-xl leading-relaxed">
+                <p className="text-xs sm:text-[13px] text-zinc-300 font-medium mt-1.5 leading-relaxed">
                   Sıfırdan kadro kur, arkadaşlarınla veya diğer menajerlerle aynı ligde mücadele et. Stratejini konuştur, haftalık maçlarla en iyinin kim olduğunu göster.
                 </p>
               </div>
             </div>
 
-            {/* Bottom Actions & Feature Pills */}
-            <div className="relative z-10 pt-8 space-y-4">
+            {/* Bottom Actions & Feature Icons */}
+            <div className="relative z-10 pt-4 xl:pt-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+              {/* Primary Action Button */}
               <Link
                 href="/draft"
-                className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl bg-[#00D4FF] hover:bg-[#00B8E6] text-[#040814] font-black text-sm uppercase tracking-wider transition-all shadow-[0_0_25px_rgba(0,212,255,0.4)] active:scale-95"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#00D4FF] hover:bg-[#00B8E6] text-[#040814] font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(0,212,255,0.4)] active:scale-95 shrink-0"
               >
                 <span>DRAFT&apos;A GİR</span>
                 <ArrowRight className="w-4 h-4 stroke-[3]" />
               </Link>
 
-              {/* 4 Feature Pills Row */}
-              <div className="grid grid-cols-4 gap-2 pt-2 border-t border-[#14233A]/60 text-center">
+              {/* 4 Feature Icons Row in Frosted Glass HUD */}
+              <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-4 px-3 py-1.5 rounded-xl bg-[#040814]/80 backdrop-blur-md border border-white/5 text-center">
                 <Link
                   href="/draft"
-                  className="flex flex-col items-center gap-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                  className="flex flex-col items-center gap-1 hover:text-[#00D4FF] transition-colors"
                 >
                   <Users className="w-4 h-4 text-[#00D4FF]" />
-                  <span className="text-[11px] font-bold text-zinc-300">Lig Kur</span>
+                  <span className="text-[10px] font-bold text-zinc-300">Lig Kur</span>
                 </Link>
                 <Link
                   href="/draft"
-                  className="flex flex-col items-center gap-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                  className="flex flex-col items-center gap-1 hover:text-[#00D4FF] transition-colors"
                 >
                   <UserCheck className="w-4 h-4 text-[#00D4FF]" />
-                  <span className="text-[11px] font-bold text-zinc-300 truncate">Arkadaşla Oyna</span>
+                  <span className="text-[10px] font-bold text-zinc-300 truncate">Arkadaşla</span>
                 </Link>
                 <Link
                   href="/draft"
-                  className="flex flex-col items-center gap-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                  className="flex flex-col items-center gap-1 hover:text-[#00D4FF] transition-colors"
                 >
                   <Activity className="w-4 h-4 text-[#00D4FF]" />
-                  <span className="text-[11px] font-bold text-zinc-300">Canlı Maçlar</span>
+                  <span className="text-[10px] font-bold text-zinc-300">Canlı</span>
                 </Link>
                 <Link
                   href="/draft"
-                  className="flex flex-col items-center gap-1 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                  className="flex flex-col items-center gap-1 hover:text-[#00D4FF] transition-colors"
                 >
                   <Award className="w-4 h-4 text-[#00D4FF]" />
-                  <span className="text-[11px] font-bold text-zinc-300">Ödüller</span>
+                  <span className="text-[10px] font-bold text-zinc-300">Ödüller</span>
                 </Link>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ==================================================================== */}
-        {/* 5. THE 4 FEATURE BLOCKS (ÖZELLİKLER)                                */}
-        {/* ==================================================================== */}
-        <section id="features" className="w-full mt-12 scroll-mt-20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Feature 1: Canlı Maç Merkezi */}
+        {/* ================================================================== */}
+        {/* 3.3 THE 4 VISUAL FEATURE CARDS (IMAGES FILLING TOP HALF)           */}
+        {/* ================================================================== */}
+        <section id="ozellikler" className="w-full my-1 xl:my-1.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 xl:gap-4">
+            {/* 1. CANLI MAÇ MERKEZİ (feature-live-match.png) */}
             <Link
               href="/fixtures"
-              className="relative overflow-hidden rounded-2xl bg-[#07101C] border border-[#14233A] hover:border-[#00F5A0]/60 p-4 transition-all duration-300 hover:-translate-y-1 group shadow-lg flex flex-col justify-between"
+              className="relative overflow-hidden rounded-2xl bg-[#081220]/95 border border-[#14233A] hover:border-[#00F5A0]/60 transition-all duration-300 hover:-translate-y-1 group shadow-xl flex flex-col justify-between"
             >
-              <div>
-                {/* Visual Thumbnail: Realistic Stadium Simulator */}
-                <div className="relative w-full h-32 rounded-xl overflow-hidden mb-3 bg-[#0c2e1c] border border-[#14233A]">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center opacity-65 group-hover:scale-105 transition-transform duration-500"
-                    style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#07101C] via-transparent to-black/30" />
-
-                  {/* Floating Scoreboard Pill (72:14 SC 2 - 1 RVD) */}
-                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md border border-white/10 text-[10px] font-mono font-black">
-                    <span className="text-[#FFB800]">72:14</span>
-                    <span className="text-zinc-600">|</span>
-                    <span className="text-[#00F5A0]">SC</span>
-                    <span className="text-white">2 - 1</span>
-                    <span className="text-[#00D4FF]">RVD</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#00F5A0]/10 flex items-center justify-center text-[#00F5A0]">
-                    <Activity className="w-3.5 h-3.5" />
-                  </div>
-                  <h3 className="text-sm font-black italic uppercase tracking-wider text-white group-hover:text-[#00F5A0] transition-colors">
-                    CANLI MAÇ MERKEZİ
-                  </h3>
-                </div>
-
-                <p className="text-xs text-zinc-400 font-medium leading-relaxed">
-                  Maçları canlı takip et, istatistikleri anlık gör ve oyunun heyecanını yaşa.
-                </p>
+              {/* Image filling top half */}
+              <div className="relative w-full h-28 xl:h-32 overflow-hidden bg-black/60 border-b border-[#14233A]">
+                <Image
+                  src="/images/feature-live-match.png"
+                  alt="Canlı Maç Merkezi"
+                  fill
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#081220] via-transparent to-transparent opacity-50" />
               </div>
 
-              <div className="pt-3 flex items-center justify-end">
-                <span className="w-7 h-7 rounded-lg bg-[#081325] border border-[#14233A] flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-[#00F5A0]/40 transition-colors">
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </span>
+              {/* Bottom Content */}
+              <div className="p-3 xl:p-3.5 flex flex-col justify-between flex-1">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-5 h-5 rounded-md bg-[#00F5A0]/10 flex items-center justify-center text-[#00F5A0] shrink-0">
+                      <Activity className="w-3.5 h-3.5" />
+                    </div>
+                    <h3 className="text-xs sm:text-sm font-black italic uppercase tracking-wider text-white group-hover:text-[#00F5A0] transition-colors truncate">
+                      CANLI MAÇ MERKEZİ
+                    </h3>
+                  </div>
+
+                  <p className="text-[11px] text-zinc-400 font-medium leading-relaxed line-clamp-2">
+                    Maçları canlı takip et, istatistikleri anlık gör ve oyunun heyecanını yaşa.
+                  </p>
+                </div>
+
+                <div className="pt-2 flex items-center justify-end">
+                  <span className="w-6 h-6 rounded-lg bg-[#07101C] border border-[#14233A] flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-[#00F5A0]/40 transition-colors">
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
               </div>
             </Link>
 
-            {/* Feature 2: Transfer & Taktik */}
+            {/* 2. TRANSFER & TAKTİK (feature-transfer-tactics.png) */}
             <Link
               href="/tactics"
-              className="relative overflow-hidden rounded-2xl bg-[#07101C] border border-[#14233A] hover:border-[#00F5A0]/60 p-4 transition-all duration-300 hover:-translate-y-1 group shadow-lg flex flex-col justify-between"
+              className="relative overflow-hidden rounded-2xl bg-[#081220]/95 border border-[#14233A] hover:border-[#00F5A0]/60 transition-all duration-300 hover:-translate-y-1 group shadow-xl flex flex-col justify-between"
             >
-              <div>
-                {/* Visual Thumbnail: Tactical Tablet & Squad */}
-                <div className="relative w-full h-32 rounded-xl overflow-hidden mb-3 bg-[#081325] border border-[#14233A]">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center opacity-70 group-hover:scale-105 transition-transform duration-500"
-                    style={{ backgroundImage: `url('/images/thumb-tactics-tablet.jpg')` }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#07101C] via-transparent to-black/30" />
-
-                  {/* Tactical Formation Overlay Badges */}
-                  <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5">
-                    <span className="px-2 py-0.5 rounded bg-black/80 backdrop-blur-md border border-[#00F5A0]/40 text-[#00F5A0] text-[9px] font-mono font-black uppercase">
-                      4-2-3-1 MODERN
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#00F5A0]/10 flex items-center justify-center text-[#00F5A0]">
-                    <ArrowRightLeft className="w-3.5 h-3.5" />
-                  </div>
-                  <h3 className="text-sm font-black italic uppercase tracking-wider text-white group-hover:text-[#00F5A0] transition-colors">
-                    TRANSFER & TAKTİK
-                  </h3>
-                </div>
-
-                <p className="text-xs text-zinc-400 font-medium leading-relaxed">
-                  Transferlerle kadronu güçlendir, oyun planını oluştur, rakiplerine üstünlük kur.
-                </p>
+              {/* Image filling top half */}
+              <div className="relative w-full h-28 xl:h-32 overflow-hidden bg-black/60 border-b border-[#14233A]">
+                <Image
+                  src="/images/feature-transfer-tactics.png"
+                  alt="Transfer & Taktik"
+                  fill
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#081220] via-transparent to-transparent opacity-50" />
               </div>
 
-              <div className="pt-3 flex items-center justify-end">
-                <span className="w-7 h-7 rounded-lg bg-[#081325] border border-[#14233A] flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-[#00F5A0]/40 transition-colors">
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </span>
+              {/* Bottom Content */}
+              <div className="p-3 xl:p-3.5 flex flex-col justify-between flex-1">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-5 h-5 rounded-md bg-[#00F5A0]/10 flex items-center justify-center text-[#00F5A0] shrink-0">
+                      <ArrowRightLeft className="w-3.5 h-3.5" />
+                    </div>
+                    <h3 className="text-xs sm:text-sm font-black italic uppercase tracking-wider text-white group-hover:text-[#00F5A0] transition-colors truncate">
+                      TRANSFER & TAKTİK
+                    </h3>
+                  </div>
+
+                  <p className="text-[11px] text-zinc-400 font-medium leading-relaxed line-clamp-2">
+                    Transferlerle kadronu güçlendir, oyun planını oluştur, rakiplerine üstünlük kur.
+                  </p>
+                </div>
+
+                <div className="pt-2 flex items-center justify-end">
+                  <span className="w-6 h-6 rounded-lg bg-[#07101C] border border-[#14233A] flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-[#00F5A0]/40 transition-colors">
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
               </div>
             </Link>
 
-            {/* Feature 3: Scout & Gelişim */}
+            {/* 3. SCOUT & GELİŞİM (feature-scout.png cropped from feature-transfer-tactics) */}
             <Link
               href="/scouting"
-              className="relative overflow-hidden rounded-2xl bg-[#07101C] border border-[#14233A] hover:border-[#00F5A0]/60 p-4 transition-all duration-300 hover:-translate-y-1 group shadow-lg flex flex-col justify-between"
+              className="relative overflow-hidden rounded-2xl bg-[#081220]/95 border border-[#14233A] hover:border-[#00F5A0]/60 transition-all duration-300 hover:-translate-y-1 group shadow-xl flex flex-col justify-between"
             >
-              <div>
-                {/* Visual Thumbnail: Attribute Growth Progression Bars */}
-                <div className="relative w-full h-32 rounded-xl overflow-hidden mb-3 bg-[#081325] border border-[#14233A] p-3 flex items-end justify-around">
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#07101C] via-[#081325]/80 to-transparent" />
-
-                  {/* 4 Neon Attribute Progress Bars (+8 HIZ, +8 ŞUT, +8 PAS, +12 DRİBLİNG) */}
-                  <div className="relative z-10 flex flex-col items-center">
-                    <span className="text-[9px] font-mono font-black text-[#00F5A0]">+8</span>
-                    <div className="w-3.5 h-12 bg-zinc-800 rounded-sm overflow-hidden my-1 flex items-end">
-                      <div className="w-full h-3/4 bg-[#00F5A0] rounded-sm shadow-[0_0_8px_#00F5A0]" />
-                    </div>
-                    <span className="text-[8px] font-mono text-zinc-400 font-bold uppercase">HIZ</span>
-                  </div>
-
-                  <div className="relative z-10 flex flex-col items-center">
-                    <span className="text-[9px] font-mono font-black text-[#00F5A0]">+8</span>
-                    <div className="w-3.5 h-12 bg-zinc-800 rounded-sm overflow-hidden my-1 flex items-end">
-                      <div className="w-full h-2/3 bg-[#00F5A0] rounded-sm shadow-[0_0_8px_#00F5A0]" />
-                    </div>
-                    <span className="text-[8px] font-mono text-zinc-400 font-bold uppercase">ŞUT</span>
-                  </div>
-
-                  <div className="relative z-10 flex flex-col items-center">
-                    <span className="text-[9px] font-mono font-black text-[#00F5A0]">+8</span>
-                    <div className="w-3.5 h-12 bg-zinc-800 rounded-sm overflow-hidden my-1 flex items-end">
-                      <div className="w-full h-4/5 bg-[#00F5A0] rounded-sm shadow-[0_0_8px_#00F5A0]" />
-                    </div>
-                    <span className="text-[8px] font-mono text-zinc-400 font-bold uppercase">PAS</span>
-                  </div>
-
-                  <div className="relative z-10 flex flex-col items-center">
-                    <span className="text-[9px] font-mono font-black text-[#00F5A0]">+12</span>
-                    <div className="w-3.5 h-12 bg-zinc-800 rounded-sm overflow-hidden my-1 flex items-end">
-                      <div className="w-full h-full bg-[#00F5A0] rounded-sm shadow-[0_0_12px_#00F5A0]" />
-                    </div>
-                    <span className="text-[8px] font-mono text-zinc-400 font-bold uppercase">DRİBLİNG</span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#00F5A0]/10 flex items-center justify-center text-[#00F5A0]">
-                    <TrendingUp className="w-3.5 h-3.5" />
-                  </div>
-                  <h3 className="text-sm font-black italic uppercase tracking-wider text-white group-hover:text-[#00F5A0] transition-colors">
-                    SCOUT & GELİŞİM
-                  </h3>
-                </div>
-
-                <p className="text-xs text-zinc-400 font-medium leading-relaxed">
-                  Geleceğin yıldızlarını keşfet, oyuncularını geliştir ve değerlerini artır.
-                </p>
+              {/* Image filling top half */}
+              <div className="relative w-full h-28 xl:h-32 overflow-hidden bg-black/60 border-b border-[#14233A]">
+                <Image
+                  src="/images/feature-scout.png"
+                  alt="Scout & Gelişim"
+                  fill
+                  className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#081220] via-transparent to-transparent opacity-50" />
               </div>
 
-              <div className="pt-3 flex items-center justify-end">
-                <span className="w-7 h-7 rounded-lg bg-[#081325] border border-[#14233A] flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-[#00F5A0]/40 transition-colors">
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </span>
+              {/* Bottom Content */}
+              <div className="p-3 xl:p-3.5 flex flex-col justify-between flex-1">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-5 h-5 rounded-md bg-[#00F5A0]/10 flex items-center justify-center text-[#00F5A0] shrink-0">
+                      <TrendingUp className="w-3.5 h-3.5" />
+                    </div>
+                    <h3 className="text-xs sm:text-sm font-black italic uppercase tracking-wider text-white group-hover:text-[#00F5A0] transition-colors truncate">
+                      SCOUT & GELİŞİM
+                    </h3>
+                  </div>
+
+                  <p className="text-[11px] text-zinc-400 font-medium leading-relaxed line-clamp-2">
+                    Geleceğin yıldızlarını keşfet, oyuncularını geliştir ve değerlerini artır.
+                  </p>
+                </div>
+
+                <div className="pt-2 flex items-center justify-end">
+                  <span className="w-6 h-6 rounded-lg bg-[#07101C] border border-[#14233A] flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-[#00F5A0]/40 transition-colors">
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
               </div>
             </Link>
 
-            {/* Feature 4: Çok Oyunculu Rekabet */}
+            {/* 4. ÇOK OYUNCULU REKABET (feature-multiplayer.png) */}
             <Link
               href="/draft"
-              className="relative overflow-hidden rounded-2xl bg-[#07101C] border border-[#14233A] hover:border-[#00D4FF]/60 p-4 transition-all duration-300 hover:-translate-y-1 group shadow-lg flex flex-col justify-between"
+              className="relative overflow-hidden rounded-2xl bg-[#081220]/95 border border-[#14233A] hover:border-[#00D4FF]/60 transition-all duration-300 hover:-translate-y-1 group shadow-xl flex flex-col justify-between"
             >
-              <div>
-                {/* Visual Thumbnail: Squad Numbers in Stadium */}
-                <div className="relative w-full h-32 rounded-xl overflow-hidden mb-3 bg-[#081325] border border-[#14233A] flex items-center justify-center">
-                  <div
-                    className="absolute inset-0 bg-cover bg-center opacity-65 group-hover:scale-105 transition-transform duration-500"
-                    style={{ backgroundImage: `url('/images/thumb-draft-team.jpg')` }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#07101C] via-transparent to-black/30" />
-
-                  {/* Jersey Numbers 10, 7, 8 Badge */}
-                  <div className="relative z-10 flex items-center gap-2">
-                    <span className="px-2.5 py-1 rounded-md bg-black/80 border border-white/20 text-white font-mono font-black text-xs">
-                      #10
-                    </span>
-                    <span className="px-3 py-1.5 rounded-md bg-black/90 border border-[#00D4FF]/60 text-[#00D4FF] font-mono font-black text-sm shadow-[0_0_12px_rgba(0,212,255,0.4)]">
-                      #7
-                    </span>
-                    <span className="px-2.5 py-1 rounded-md bg-black/80 border border-white/20 text-white font-mono font-black text-xs">
-                      #8
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 mb-1.5">
-                  <div className="w-6 h-6 rounded-lg bg-[#00D4FF]/10 flex items-center justify-center text-[#00D4FF]">
-                    <Trophy className="w-3.5 h-3.5" />
-                  </div>
-                  <h3 className="text-sm font-black italic uppercase tracking-wider text-white group-hover:text-[#00D4FF] transition-colors">
-                    ÇOK OYUNCULU REKABET
-                  </h3>
-                </div>
-
-                <p className="text-xs text-zinc-400 font-medium leading-relaxed">
-                  Arkadaşlarına karşı oyna, kendi ligini kur ve global sıralamada yerini al.
-                </p>
+              {/* Image filling top half */}
+              <div className="relative w-full h-28 xl:h-32 overflow-hidden bg-black/60 border-b border-[#14233A]">
+                <Image
+                  src="/images/feature-multiplayer.png"
+                  alt="Çok Oyunculu Rekabet"
+                  fill
+                  className="object-cover object-bottom group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#081220] via-transparent to-transparent opacity-50" />
               </div>
 
-              <div className="pt-3 flex items-center justify-end">
-                <span className="w-7 h-7 rounded-lg bg-[#081325] border border-[#14233A] flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-[#00D4FF]/40 transition-colors">
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </span>
+              {/* Bottom Content */}
+              <div className="p-3 xl:p-3.5 flex flex-col justify-between flex-1">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-5 h-5 rounded-md bg-[#00D4FF]/10 flex items-center justify-center text-[#00D4FF] shrink-0">
+                      <Trophy className="w-3.5 h-3.5" />
+                    </div>
+                    <h3 className="text-xs sm:text-sm font-black italic uppercase tracking-wider text-white group-hover:text-[#00D4FF] transition-colors truncate">
+                      ÇOK OYUNCULU REKABET
+                    </h3>
+                  </div>
+
+                  <p className="text-[11px] text-zinc-400 font-medium leading-relaxed line-clamp-2">
+                    Arkadaşlarına karşı oyna, kendi ligini kur ve global sıralamada yerini al.
+                  </p>
+                </div>
+
+                <div className="pt-2 flex items-center justify-end">
+                  <span className="w-6 h-6 rounded-lg bg-[#07101C] border border-[#14233A] flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:border-[#00D4FF]/40 transition-colors">
+                    <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
               </div>
             </Link>
           </div>
@@ -748,99 +680,83 @@ export default function MainMenuPage() {
       </main>
 
       {/* ==================================================================== */}
-      {/* 6. STATS & COMMUNITY FOOTER STRIP (FAITHFUL TO MOCKUP)               */}
+      {/* 4. BOTTOM STATS & COMMUNITY BAR                                      */}
       {/* ==================================================================== */}
-      <footer className="relative z-20 w-full border-t border-[#14233A] bg-[#07101C]/95 backdrop-blur-md">
-        <div className="max-w-[1440px] mx-auto px-4 sm:px-8 py-4">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
-            {/* The 4 Stats Columns */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-8 w-full lg:w-auto">
-              {/* Stat 1 */}
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#081325] border border-[#14233A] flex items-center justify-center text-[#00F5A0] shrink-0">
-                  <Users className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-base sm:text-lg font-black font-mono text-white leading-none">250K+</div>
-                  <div className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider mt-1">
-                    AKTİF MENAJER
-                  </div>
-                </div>
+      <footer className="relative z-30 w-full border-t border-[#14233A] bg-[#07101C]/90 backdrop-blur-md px-4 sm:px-8 py-2 xl:py-2.5 shrink-0">
+        <div className="max-w-[1720px] mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+          {/* 4 Core Metrics */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-8 w-full md:w-auto">
+            {/* Stat 1 */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#081325] border border-[#14233A] flex items-center justify-center text-[#00F5A0] shrink-0">
+                <Users className="w-3.5 h-3.5" />
               </div>
-
-              {/* Stat 2 */}
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#081325] border border-[#14233A] flex items-center justify-center text-[#00F5A0] shrink-0">
-                  <Gamepad2 className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-base sm:text-lg font-black font-mono text-white leading-none">4 LİG MODU</div>
-                  <div className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider mt-1">
-                    KARİYER & DRAFT
-                  </div>
-                </div>
-              </div>
-
-              {/* Stat 3 */}
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#081325] border border-[#14233A] flex items-center justify-center text-[#00D4FF] shrink-0">
-                  <Activity className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-base sm:text-lg font-black font-mono text-white leading-none">GERÇEK ZAMANLI</div>
-                  <div className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider mt-1">
-                    MAÇ DENEYİMİ
-                  </div>
-                </div>
-              </div>
-
-              {/* Stat 4 */}
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-[#081325] border border-[#14233A] flex items-center justify-center text-[#00F5A0] shrink-0">
-                  <Globe className="w-4 h-4" />
-                </div>
-                <div>
-                  <div className="text-base sm:text-lg font-black font-mono text-white leading-none">BÜYÜYEN TOPLULUK</div>
-                  <div className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider mt-1">
-                    TÜRKİYE VE DAHA FAZLASI
-                  </div>
+              <div>
+                <div className="text-sm sm:text-base font-black font-mono text-white leading-none">250K+</div>
+                <div className="text-[9px] font-mono font-bold text-zinc-400 uppercase tracking-wider mt-0.5">
+                  AKTİF MENAJER
                 </div>
               </div>
             </div>
 
-            {/* Right Tagline */}
-            <div className="text-center lg:text-right shrink-0">
-              <div className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-400">
-                DAHA FAZLA
+            {/* Stat 2 */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#081325] border border-[#14233A] flex items-center justify-center text-[#00F5A0] shrink-0">
+                <Gamepad2 className="w-3.5 h-3.5" />
               </div>
-              <div className="text-sm font-black italic uppercase text-white font-display">
-                BİR MENAJERLİK DENEYİMİ
+              <div>
+                <div className="text-sm sm:text-base font-black font-mono text-white leading-none">4 LİG MODU</div>
+                <div className="text-[9px] font-mono font-bold text-zinc-400 uppercase tracking-wider mt-0.5">
+                  KARİYER & DRAFT
+                </div>
+              </div>
+            </div>
+
+            {/* Stat 3 */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#081325] border border-[#14233A] flex items-center justify-center text-[#00D4FF] shrink-0">
+                <Activity className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <div className="text-sm sm:text-base font-black font-mono text-white leading-none">GERÇEK ZAMANLI</div>
+                <div className="text-[9px] font-mono font-bold text-zinc-400 uppercase tracking-wider mt-0.5">
+                  MAÇ DENEYİMİ
+                </div>
+              </div>
+            </div>
+
+            {/* Stat 4 */}
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-[#081325] border border-[#14233A] flex items-center justify-center text-[#00F5A0] shrink-0">
+                <Globe className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <div className="text-sm sm:text-base font-black font-mono text-white leading-none">BÜYÜYEN TOPLULUK</div>
+                <div className="text-[9px] font-mono font-bold text-zinc-400 uppercase tracking-wider mt-0.5">
+                  TÜRKİYE VE DAHA FAZLASI
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Bottom Micro Bar */}
-        <div className="w-full bg-[#040814] border-t border-[#14233A]/70 px-4 sm:px-8 py-2">
-          <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-[10px] font-mono text-zinc-500">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#00F5A0]" />
-              <span className="text-zinc-400">SQUADCRAFT ENGINE {APP_VERSION}</span>
-              <span>•</span>
-              <span>TÜM HAKLARI SAKLIDIR &copy; 2026</span>
+          {/* Right: Tagline with 3D Ball Accent */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="text-center md:text-right">
+              <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400 italic">
+                DAHA FAZLA
+              </div>
+              <div className="text-xs sm:text-sm font-black italic uppercase text-white font-display">
+                BİR MENAJERLİK DENEYİMİ
+              </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => setIsFeedbackOpen(true)}
-                className="hover:text-white transition-colors flex items-center gap-1"
-              >
-                <MessageSquare className="w-3 h-3 text-[#00F5A0]" />
-                <span>Geri Bildirim</span>
-              </button>
-              <Link href="/settings" className="hover:text-white transition-colors">
-                Ayarlar
-              </Link>
+            <div className="relative w-9 h-9 rounded-full overflow-hidden border border-white/20 shadow-md shrink-0 hidden sm:block">
+              <Image
+                src="/images/art-ball-cleats.jpg"
+                alt="SquadCraft Ball"
+                fill
+                className="object-cover"
+              />
             </div>
           </div>
         </div>
@@ -891,7 +807,7 @@ export default function MainMenuPage() {
         </div>
       )}
 
-      {/* Feedback & Bug Reporting Modal */}
+      {/* Feedback Modal */}
       <FeedbackModal
         isOpen={isFeedbackOpen}
         onClose={() => setIsFeedbackOpen(false)}
