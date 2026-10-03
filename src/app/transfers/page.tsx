@@ -275,14 +275,14 @@ export default function TransfersPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
       {/* Broadcast Header HUD */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-[#182338]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
               // TRANSFER & SCOUTING HEADQUARTERS
             </span>
             <span
-              className={`px-2 py-0.5 text-[10px] font-mono font-black uppercase border ${
+              className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-black uppercase border ${
                 windowStatus === 'OPEN'
                   ? 'bg-emerald-500/20 text-[#00F5A0] border-[#00F5A0]/40'
                   : 'bg-zinc-850 text-zinc-400 border-zinc-700'
@@ -298,14 +298,14 @@ export default function TransfersPage() {
         </div>
 
         {/* Transfer & Wage Budget Badges */}
-        <div className="flex items-center gap-3 bg-[#080D1A] p-2.5 border border-zinc-800 text-xs font-mono">
+        <div className="flex items-center gap-3 sc-panel rounded-2xl p-2.5 border border-[#182338] text-xs font-mono">
           <div className="px-3 text-center">
             <span className="text-[10px] text-zinc-500 block uppercase font-bold">Transfer Bütçesi</span>
             <span className="text-base font-black text-[#00F5A0]">
               €{(finances.transferBudget / 1000000).toFixed(2)}M
             </span>
           </div>
-          <div className="px-3 text-center border-l border-zinc-800">
+          <div className="px-3 text-center border-l border-[#182338]">
             <span className="text-[10px] text-zinc-500 block uppercase font-bold">Kalan Maaş Limiti</span>
             <span className="text-base font-black text-[#00D4FF]">
               €{((finances.wageBudget - finances.weeklyWages) / 1000).toFixed(0)}K/hf
@@ -315,13 +315,13 @@ export default function TransfersPage() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-zinc-800 pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-[#182338] pb-3">
         <button
           onClick={() => setActiveTab('MARKET')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+          className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeTab === 'MARKET'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -330,10 +330,10 @@ export default function TransfersPage() {
 
         <button
           onClick={() => setActiveTab('FREE_AGENTS')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+          className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeTab === 'FREE_AGENTS'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <UserCheck className="w-4 h-4" />
@@ -342,10 +342,10 @@ export default function TransfersPage() {
 
         <button
           onClick={() => setActiveTab('OUTGOING')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
+          className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
             activeTab === 'OUTGOING'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <Clock className="w-4 h-4" />
@@ -357,25 +357,25 @@ export default function TransfersPage() {
 
         <button
           onClick={() => setActiveTab('INCOMING')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
+          className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
             activeTab === 'INCOMING'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <DollarSign className="w-4 h-4" />
           <span>Gelen Teklifler ({incomingOffers.length})</span>
           {incomingOffers.some((o) => o.status === 'PENDING') && (
-            <span className="w-2 h-2 bg-rose-500 animate-pulse" />
+            <span className="w-2 h-2 bg-rose-500 animate-pulse rounded-full" />
           )}
         </button>
 
         <button
           onClick={() => setActiveTab('SHORTLIST')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+          className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeTab === 'SHORTLIST'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <Bookmark className="w-4 h-4" />
@@ -384,10 +384,10 @@ export default function TransfersPage() {
 
         <button
           onClick={() => setActiveTab('HISTORY')}
-          className={`px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+          className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeTab === 'HISTORY'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <History className="w-4 h-4" />
@@ -399,7 +399,7 @@ export default function TransfersPage() {
       {activeTab === 'MARKET' && (
         <div className="space-y-4">
           {/* Search & Filters */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 p-3 bg-[#080D1A] border border-zinc-800">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 p-3 sc-panel rounded-2xl border border-[#182338]">
             <div className="relative sm:col-span-2">
               <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
@@ -410,7 +410,7 @@ export default function TransfersPage() {
                   setSearchQuery(e.target.value);
                   setMarketPage(1);
                 }}
-                className="w-full pl-9 pr-3 py-2 bg-[#040810] border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#00F5A0]"
+                className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#070D1A] border border-[#182338] text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#00F5A0]"
               />
             </div>
 
@@ -421,7 +421,7 @@ export default function TransfersPage() {
                   setSelectedPosition(e.target.value);
                   setMarketPage(1);
                 }}
-                className="w-full px-3 py-2 bg-[#040810] border border-zinc-800 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
+                className="w-full px-3 py-2 rounded-xl bg-[#070D1A] border border-[#182338] text-xs text-white focus:outline-none focus:border-[#00F5A0]"
               >
                 <option value="ALL">Tüm Mevkiler</option>
                 <option value="GK">Kaleci (GK)</option>
@@ -446,7 +446,7 @@ export default function TransfersPage() {
                   setMinOverall(Number(e.target.value));
                   setMarketPage(1);
                 }}
-                className="w-1/2 px-2 py-2 bg-[#040810] border border-zinc-800 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
+                className="w-1/2 px-2 py-2 rounded-xl bg-[#070D1A] border border-[#182338] text-xs text-white focus:outline-none focus:border-[#00F5A0]"
               >
                 <option value="0">Min OVR: Hepsi</option>
                 <option value="70">70+ OVR</option>
@@ -461,7 +461,7 @@ export default function TransfersPage() {
                   setMaxAge(Number(e.target.value));
                   setMarketPage(1);
                 }}
-                className="w-1/2 px-2 py-2 bg-[#040810] border border-zinc-800 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
+                className="w-1/2 px-2 py-2 rounded-xl bg-[#070D1A] border border-[#182338] text-xs text-white focus:outline-none focus:border-[#00F5A0]"
               >
                 <option value="40">Maks Yaş: 40</option>
                 <option value="21">21 ve Altı (Genç)</option>
@@ -472,10 +472,10 @@ export default function TransfersPage() {
           </div>
 
           {/* Market Player Table */}
-          <div className="overflow-x-auto border border-zinc-850 bg-[#080D1A] shadow-2xl">
+          <div className="overflow-x-auto sc-panel rounded-2xl border border-[#182338] shadow-2xl">
             <table className="w-full text-left border-collapse min-w-[1050px]">
               <thead>
-                <tr className="border-b border-zinc-800 bg-[#040711] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
+                <tr className="border-b border-[#182338] bg-[#070D1A] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
                   <th className="py-3 px-4">OYUNCU</th>
                   <th className="py-3 px-3">KULÜBÜ</th>
                   <th className="py-3 px-2 text-center">MEVKİ</th>
@@ -489,7 +489,7 @@ export default function TransfersPage() {
                   <th className="py-3 px-4 text-center">İŞLEM</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-850 text-xs font-semibold">
+              <tbody className="divide-y divide-[#182338]/60 text-xs font-semibold">
                 {paginatedMarketPlayers.map((player) => {
                   const club = getClub(player.clubId);
                   const isShortlisted = shortlistIds.includes(player.id);

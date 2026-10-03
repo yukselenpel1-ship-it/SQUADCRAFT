@@ -334,32 +334,33 @@ export default function MatchCenterPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* 1. Header & Navigation Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#182338]">
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#121622] hover:bg-zinc-800 border border-zinc-800 text-xs font-bold text-zinc-300 hover:text-white transition-colors w-fit"
+          className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#0B1323] hover:bg-[#182338] border border-[#182338] text-xs font-bold text-zinc-300 hover:text-white transition-colors w-fit"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Fikstüre Dön</span>
         </button>
 
         <div className="flex items-center gap-2 text-xs text-zinc-400">
-          <span className="px-2.5 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-[#00F5A0] border border-emerald-500/30">
+          <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30 font-mono">
             Alveria Elit Ligi • Hafta {fixture?.round}
           </span>
-          <span className="hidden md:inline">{fixture?.date}</span>
+          <span className="hidden md:inline font-mono">{fixture?.date}</span>
         </div>
       </div>
 
       {/* 2. LIVE SCOREBOARD & HEADER HERO */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-[#111728] via-[#0D121F] to-[#080B12] border border-[#1E293F] p-5 sm:p-7 shadow-2xl">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl sc-panel border border-[#182338] p-5 sm:p-7 shadow-2xl">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#00F5A0]/5 rounded-full blur-3xl pointer-events-none" />
 
         {/* Match Clock & Venue Pill */}
         <div className="relative z-10 flex flex-col items-center justify-center mb-5">
-          <div className="flex items-center gap-2 px-4 py-1 rounded-full bg-zinc-900/90 border border-zinc-700 text-xs font-black shadow-lg">
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#070D1A] border border-[#182338] text-xs font-black shadow-lg">
             <Clock className={`w-3.5 h-3.5 ${isPlaying ? 'text-[#00F5A0] animate-spin' : 'text-zinc-400'}`} />
-            <span className="text-white tracking-wider">
+            <span className="text-white tracking-wider font-mono">
               {engineState.minute === 0
                 ? 'MAÇ BAŞLAMADI'
                 : engineState.isFinished
@@ -370,8 +371,8 @@ export default function MatchCenterPage() {
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 mt-1.5 text-[11px] text-zinc-400">
-            <MapPin className="w-3 h-3 text-zinc-500" />
+          <div className="flex items-center gap-1.5 mt-2 text-[11px] text-zinc-400">
+            <MapPin className="w-3.5 h-3.5 text-zinc-500" />
             <span>{fixture?.stadium || homeClub.stadium}</span>
           </div>
         </div>
@@ -386,7 +387,7 @@ export default function MatchCenterPage() {
               secondaryColor={homeClub.secondaryColor}
               size="lg"
             />
-            <h2 className="mt-2.5 text-sm sm:text-xl font-black text-white truncate max-w-full">
+            <h2 className="mt-2.5 text-sm sm:text-xl font-black text-white truncate max-w-full font-display">
               {homeClub.name}
             </h2>
             <span className="text-[11px] text-zinc-400 truncate">
@@ -396,11 +397,11 @@ export default function MatchCenterPage() {
 
           {/* Central Score Card */}
           <div className="col-span-1 flex flex-col items-center justify-center">
-            <div className="flex items-center gap-2 sm:gap-3 px-3.5 py-1.5 sm:px-5 sm:py-2.5 rounded-2xl bg-[#090C14] border border-[#222E47] shadow-inner">
+            <div className="flex items-center gap-2 sm:gap-3 px-4 py-2 sm:px-6 sm:py-3 rounded-2xl bg-[#040711] border border-[#182338] shadow-inner">
               <span className="text-3xl sm:text-5xl font-black text-white tracking-tight">
                 {engineState.homeScore}
               </span>
-              <span className="text-xl sm:text-3xl font-black text-zinc-600">:</span>
+              <span className="text-xl sm:text-3xl font-black text-[#00F5A0]">:</span>
               <span className="text-3xl sm:text-5xl font-black text-white tracking-tight">
                 {engineState.awayScore}
               </span>
@@ -415,7 +416,7 @@ export default function MatchCenterPage() {
               secondaryColor={awayClub.secondaryColor}
               size="lg"
             />
-            <h2 className="mt-2.5 text-sm sm:text-xl font-black text-white truncate max-w-full">
+            <h2 className="mt-2.5 text-sm sm:text-xl font-black text-white truncate max-w-full font-display">
               {awayClub.name}
             </h2>
             <span className="text-[11px] text-zinc-400 truncate">
@@ -425,24 +426,24 @@ export default function MatchCenterPage() {
         </div>
 
         {/* Simulation Control Buttons Bar */}
-        <div className="mt-6 pt-4 border-t border-zinc-800/80 flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+        <div className="mt-6 pt-4 border-t border-[#182338] flex flex-wrap items-center justify-center gap-2 sm:gap-3">
           <button
             onClick={() => setIsPlaying(!isPlaying)}
             disabled={engineState.isFinished}
-            className={`flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-black transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black transition-all ${
               engineState.isFinished
-                ? 'bg-zinc-800 text-zinc-500 cursor-not-allowed'
+                ? 'bg-[#0B1323] text-zinc-500 cursor-not-allowed border border-[#182338]'
                 : isPlaying
-                ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20'
-                : 'bg-[#00F5A0] text-black shadow-lg shadow-emerald-500/20 hover:bg-[#00D68B]'
+                ? 'bg-amber-400 text-[#040711] shadow-[0_0_15px_rgba(251,191,36,0.3)]'
+                : 'bg-[#00F5A0] text-[#040711] shadow-[0_0_20px_rgba(0,245,160,0.3)] hover:bg-[#00F5A0]/90'
             }`}
           >
-            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current" />}
             <span>{isPlaying ? 'Durdur (Pause)' : engineState.minute === 0 ? 'Maçı Başlat' : 'Devam Et'}</span>
           </button>
 
           {/* Speed Selectors */}
-          <div className="flex items-center gap-1 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800">
+          <div className="flex items-center gap-1 bg-[#070D1A] p-1 rounded-xl border border-[#182338]">
             {[
               { val: 1, label: '1x' },
               { val: 2, label: '2x' },
@@ -455,9 +456,9 @@ export default function MatchCenterPage() {
                   setSpeed(s.val);
                   setIsPlaying(true);
                 }}
-                className={`px-2.5 py-1 rounded-lg text-xs font-black transition-all ${
+                className={`px-3 py-1 rounded-lg text-xs font-black transition-all ${
                   speed === s.val && isPlaying
-                    ? 'bg-[#00F5A0] text-black'
+                    ? 'bg-[#00F5A0] text-[#040711] shadow-[0_0_10px_rgba(0,245,160,0.2)]'
                     : 'text-zinc-400 hover:text-white'
                 }`}
               >
@@ -470,7 +471,7 @@ export default function MatchCenterPage() {
           <button
             onClick={handleInstantResult}
             disabled={engineState.isFinished}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black bg-zinc-800 hover:bg-zinc-700 text-zinc-200 transition-colors disabled:opacity-50"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-black bg-[#0B1323] hover:bg-[#182338] border border-[#182338] text-zinc-200 transition-colors disabled:opacity-50"
             title="Aynı simülasyon motorunu 90. dakikaya kadar tek seferde çalıştırır."
           >
             <FastForward className="w-3.5 h-3.5 text-[#00F5A0]" />
@@ -481,7 +482,7 @@ export default function MatchCenterPage() {
           {engineState.isFinished && (
             <button
               onClick={() => setShowPostMatchModal(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-blue-600 hover:bg-blue-500 text-white transition-colors"
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-black bg-[#00D4FF] hover:bg-[#00D4FF]/90 text-[#040711] shadow-[0_0_15px_rgba(0,212,255,0.3)] transition-colors"
             >
               <FileText className="w-3.5 h-3.5" />
               <span>Maç Raporu</span>
@@ -491,13 +492,13 @@ export default function MatchCenterPage() {
       </div>
 
       {/* 3. CENTER VIEW SWITCHER TABS */}
-      <div className="flex flex-wrap items-center gap-1.5 bg-[#121622] p-1.5 rounded-2xl border border-zinc-800 text-xs">
+      <div className="flex flex-wrap items-center gap-1.5 sc-panel p-1.5 rounded-2xl border border-[#182338] text-xs">
         <button
           onClick={() => setActiveCenterTab('RADAR')}
           className={`px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCenterTab === 'RADAR'
-              ? 'bg-[#00F5A0] text-black shadow'
-              : 'text-zinc-400 hover:text-white'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'text-zinc-400 hover:text-white hover:bg-[#0E1728]'
           }`}
         >
           <Activity className="w-3.5 h-3.5" />
@@ -508,8 +509,8 @@ export default function MatchCenterPage() {
           onClick={() => setActiveCenterTab('TIMELINE')}
           className={`px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCenterTab === 'TIMELINE'
-              ? 'bg-[#00F5A0] text-black shadow'
-              : 'text-zinc-400 hover:text-white'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'text-zinc-400 hover:text-white hover:bg-[#0E1728]'
           }`}
         >
           <Calendar className="w-3.5 h-3.5" />
@@ -520,8 +521,8 @@ export default function MatchCenterPage() {
           onClick={() => setActiveCenterTab('COMMENTARY')}
           className={`px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCenterTab === 'COMMENTARY'
-              ? 'bg-[#00F5A0] text-black shadow'
-              : 'text-zinc-400 hover:text-white'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'text-zinc-400 hover:text-white hover:bg-[#0E1728]'
           }`}
         >
           <Zap className="w-3.5 h-3.5" />
@@ -532,8 +533,8 @@ export default function MatchCenterPage() {
           onClick={() => setActiveCenterTab('TACTICS')}
           className={`px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCenterTab === 'TACTICS'
-              ? 'bg-[#00F5A0] text-black shadow'
-              : 'text-zinc-400 hover:text-white'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'text-zinc-400 hover:text-white hover:bg-[#0E1728]'
           }`}
         >
           <Sliders className="w-3.5 h-3.5" />
@@ -544,8 +545,8 @@ export default function MatchCenterPage() {
           onClick={() => setActiveCenterTab('SUBS')}
           className={`px-4 py-2 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCenterTab === 'SUBS'
-              ? 'bg-[#00F5A0] text-black shadow'
-              : 'text-zinc-400 hover:text-white'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'text-zinc-400 hover:text-white hover:bg-[#0E1728]'
           }`}
         >
           <Users className="w-3.5 h-3.5" />
@@ -572,11 +573,11 @@ export default function MatchCenterPage() {
 
               {/* Latest commentary snippet banner */}
               {engineState.latestEvent && (
-                <div className="p-3.5 rounded-2xl bg-[#121622] border border-[#1E273A] flex items-center gap-3 text-xs">
-                  <span className="px-2 py-0.5 rounded font-black bg-[#00F5A0] text-black">
+                <div className="p-3.5 rounded-2xl sc-panel border border-[#182338] flex items-center gap-3 text-xs">
+                  <span className="px-2.5 py-0.5 rounded-lg font-black bg-[#00F5A0] text-[#040711] font-mono">
                     {engineState.latestEvent.minute}&apos;
                   </span>
-                  <p className="text-zinc-200 font-semibold truncate">
+                  <p className="text-zinc-200 font-semibold truncate font-mono">
                     {engineState.latestEvent.commentary}
                   </p>
                 </div>
@@ -586,8 +587,8 @@ export default function MatchCenterPage() {
 
           {/* TAB 2: TIMELINE */}
           {activeCenterTab === 'TIMELINE' && (
-            <div className="p-5 rounded-2xl bg-[#121622] border border-[#1E273A] space-y-3 max-h-[500px] overflow-y-auto">
-              <h3 className="text-xs font-black uppercase text-zinc-400 pb-2 border-b border-zinc-800">
+            <div className="p-5 rounded-2xl sc-panel border border-[#182338] space-y-3 max-h-[500px] overflow-y-auto">
+              <h3 className="text-xs font-black uppercase text-zinc-400 pb-2 border-b border-[#182338]">
                 Maç Olayları
               </h3>
               {engineState.events.map((ev) => (
@@ -595,13 +596,13 @@ export default function MatchCenterPage() {
                   key={ev.id}
                   className={`p-3 rounded-xl border flex items-center gap-3 text-xs ${
                     ev.type === 'GOAL'
-                      ? 'bg-emerald-950/30 border-emerald-500/40 text-white'
+                      ? 'bg-emerald-950/40 border-emerald-500/40 text-white'
                       : ev.type === 'RED_CARD'
-                      ? 'bg-rose-950/30 border-rose-500/40 text-white'
-                      : 'bg-zinc-900/60 border-zinc-800 text-zinc-200'
+                      ? 'bg-rose-950/40 border-rose-500/40 text-white'
+                      : 'bg-[#070D1A] border-[#182338] text-zinc-200'
                   }`}
                 >
-                  <span className="w-8 h-6 rounded bg-zinc-950 font-black text-xs text-[#00F5A0] flex items-center justify-center shrink-0">
+                  <span className="w-8 h-6 rounded-lg bg-[#040711] border border-[#182338] font-black text-xs text-[#00F5A0] flex items-center justify-center shrink-0 font-mono">
                     {ev.minute}&apos;
                   </span>
                   <div className="flex-1">
@@ -622,12 +623,12 @@ export default function MatchCenterPage() {
 
           {/* TAB 3: COMMENTARY LOG */}
           {activeCenterTab === 'COMMENTARY' && (
-            <div className="p-5 rounded-2xl bg-[#121622] border border-[#1E273A] space-y-2 max-h-[500px] overflow-y-auto font-mono text-xs">
-              <h3 className="text-xs font-black uppercase text-zinc-400 pb-2 border-b border-zinc-800">
+            <div className="p-5 rounded-2xl sc-panel border border-[#182338] space-y-2 max-h-[500px] overflow-y-auto font-mono text-xs">
+              <h3 className="text-xs font-black uppercase text-zinc-400 pb-2 border-b border-[#182338]">
                 Canlı Maç Anlatım Akışı
               </h3>
               {[...engineState.commentaryLog].reverse().map((line, idx) => (
-                <div key={idx} className="py-2 border-b border-zinc-800/40 text-zinc-300">
+                <div key={idx} className="py-2 border-b border-[#182338]/60 text-zinc-300">
                   <span className="text-[#00F5A0] font-bold mr-2">›</span>
                   {line}
                 </div>
@@ -637,8 +638,8 @@ export default function MatchCenterPage() {
 
           {/* TAB 4: LIVE TACTICS */}
           {activeCenterTab === 'TACTICS' && (
-            <div className="p-5 rounded-2xl bg-[#121622] border border-[#1E273A] space-y-4">
-              <h3 className="text-xs font-black uppercase text-zinc-400 pb-2 border-b border-zinc-800">
+            <div className="p-5 rounded-2xl sc-panel border border-[#182338] space-y-4">
+              <h3 className="text-xs font-black uppercase text-zinc-400 pb-2 border-b border-[#182338]">
                 Canlı Taktik Talimatlarını Değiştir
               </h3>
 
@@ -650,8 +651,8 @@ export default function MatchCenterPage() {
                     <button
                       key={m}
                       onClick={() => handleLiveTacticsChange({ mentality: m })}
-                      className={`py-1.5 px-1 rounded-lg text-[11px] font-bold ${
-                        userTeamState.tactics.mentality === m ? 'bg-blue-600 text-white' : 'bg-zinc-900 text-zinc-400'
+                      className={`py-1.5 px-1 rounded-lg text-[11px] font-bold transition-all ${
+                        userTeamState.tactics.mentality === m ? 'bg-[#00D4FF] text-[#040711] font-black' : 'bg-[#070D1A] border border-[#182338] text-zinc-400 hover:text-white'
                       }`}
                     >
                       {m}
@@ -668,8 +669,8 @@ export default function MatchCenterPage() {
                     <button
                       key={t}
                       onClick={() => handleLiveTacticsChange({ tempo: t })}
-                      className={`py-1.5 px-1 rounded-lg text-[11px] font-bold ${
-                        userTeamState.tactics.tempo === t ? 'bg-[#00F5A0] text-black' : 'bg-zinc-900 text-zinc-400'
+                      className={`py-1.5 px-1 rounded-lg text-[11px] font-bold transition-all ${
+                        userTeamState.tactics.tempo === t ? 'bg-[#00F5A0] text-[#040711] font-black' : 'bg-[#070D1A] border border-[#182338] text-zinc-400 hover:text-white'
                       }`}
                     >
                       {t}
@@ -686,8 +687,8 @@ export default function MatchCenterPage() {
                     <button
                       key={p}
                       onClick={() => handleLiveTacticsChange({ pressing: p })}
-                      className={`py-1.5 px-1 rounded-lg text-[11px] font-bold ${
-                        userTeamState.tactics.pressing === p ? 'bg-amber-500 text-black' : 'bg-zinc-900 text-zinc-400'
+                      className={`py-1.5 px-1 rounded-lg text-[11px] font-bold transition-all ${
+                        userTeamState.tactics.pressing === p ? 'bg-amber-400 text-[#040711] font-black' : 'bg-[#070D1A] border border-[#182338] text-zinc-400 hover:text-white'
                       }`}
                     >
                       {p}
@@ -700,8 +701,8 @@ export default function MatchCenterPage() {
 
           {/* TAB 5: LIVE SUBSTITUTIONS */}
           {activeCenterTab === 'SUBS' && (
-            <div className="p-5 rounded-2xl bg-[#121622] border border-[#1E273A] space-y-4">
-              <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
+            <div className="p-5 rounded-2xl sc-panel border border-[#182338] space-y-4">
+              <div className="flex items-center justify-between pb-2 border-b border-[#182338]">
                 <h3 className="text-xs font-black uppercase text-zinc-300">
                   Oyuncu Değişikliği Masası ({userTeamState.substitutionsUsed}/5 Kullanıldı)
                 </h3>
@@ -724,10 +725,10 @@ export default function MatchCenterPage() {
                         <div
                           key={id}
                           onClick={() => setSelectedSubOutId(id)}
-                          className={`p-2 rounded-xl border cursor-pointer text-xs flex items-center justify-between ${
+                          className={`p-2.5 rounded-xl border cursor-pointer text-xs flex items-center justify-between transition-all ${
                             isSelected
                               ? 'bg-rose-500/20 border-rose-500/50 text-white'
-                              : 'bg-zinc-900/70 border-zinc-800 text-zinc-300 hover:bg-zinc-800'
+                              : 'bg-[#070D1A] border-[#182338] text-zinc-300 hover:bg-[#0E1728]'
                           }`}
                         >
                           <div>
@@ -754,10 +755,10 @@ export default function MatchCenterPage() {
                         <div
                           key={id}
                           onClick={() => setSelectedSubInId(id)}
-                          className={`p-2 rounded-xl border cursor-pointer text-xs flex items-center justify-between ${
+                          className={`p-2.5 rounded-xl border cursor-pointer text-xs flex items-center justify-between transition-all ${
                             isSelected
                               ? 'bg-emerald-500/20 border-emerald-500/50 text-white'
-                              : 'bg-zinc-900/70 border-zinc-800 text-zinc-300 hover:bg-zinc-800'
+                              : 'bg-[#070D1A] border-[#182338] text-zinc-300 hover:bg-[#0E1728]'
                           }`}
                         >
                           <div>
@@ -772,11 +773,11 @@ export default function MatchCenterPage() {
                 </div>
               </div>
 
-              <div className="pt-3 border-t border-zinc-800 flex justify-end">
+              <div className="pt-3 border-t border-[#182338] flex justify-end">
                 <button
                   onClick={handleConfirmSubstitution}
                   disabled={!selectedSubOutId || !selectedSubInId || userTeamState.substitutionsUsed >= 5}
-                  className="px-5 py-2 rounded-xl bg-[#00F5A0] text-black font-black text-xs hover:bg-[#00D68B] disabled:opacity-40 transition-all"
+                  className="px-5 py-2.5 rounded-xl bg-[#00F5A0] text-[#040711] font-black text-xs hover:bg-[#00F5A0]/90 disabled:opacity-40 transition-all shadow-[0_0_15px_rgba(0,245,160,0.3)]"
                 >
                   Değişikliği Onayla
                 </button>
@@ -788,9 +789,9 @@ export default function MatchCenterPage() {
         {/* Right Live Match Statistics & Team Ratings (5 Cols) */}
         <div className="lg:col-span-5 space-y-4">
           {/* Live Stats Comparison Card */}
-          <div className="p-5 rounded-2xl bg-[#121622] border border-[#1E273A] shadow-lg space-y-4">
-            <h3 className="text-xs font-black uppercase tracking-wider text-zinc-300 flex items-center gap-2 pb-2 border-b border-zinc-800">
-              <Award className="w-4 h-4 text-emerald-400" />
+          <div className="p-5 rounded-2xl sc-panel border border-[#182338] shadow-2xl space-y-4">
+            <h3 className="text-xs font-black uppercase tracking-wider text-zinc-300 flex items-center gap-2 pb-2.5 border-b border-[#182338]">
+              <Award className="w-4 h-4 text-[#00F5A0]" />
               Canlı Maç İstatistikleri
             </h3>
 

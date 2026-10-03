@@ -1460,6 +1460,15 @@ export class DraftMultiplayerStore {
           const existingMemState = memoryRooms[room.id] || memoryRooms[room.roomCode?.toUpperCase()];
           const existingLocalState = loadRoomLocal(room.id) || loadRoomLocal(room.roomCode);
 
+          // Preserve matchSpeed if set in memory or local storage
+          const existingMemSpeed = existingMemState?.room?.rules?.matchSpeed || existingLocalState?.room?.rules?.matchSpeed;
+          if (existingMemSpeed && !room.rules?.matchSpeed) {
+            room.rules.matchSpeed = existingMemSpeed;
+            if (room.liveMatchweek) {
+              room.liveMatchweek.paceMs = existingMemSpeed === 4 ? 200 : existingMemSpeed === 3 ? 266 : existingMemSpeed === 2 ? 400 : 800;
+            }
+          }
+
           // If drafting or league active/completed, or if memory/rules/storage already has picks/draftState
           const isDraftActive =
             room.status === 'DRAFTING' ||
@@ -4027,12 +4036,20 @@ export class DraftMultiplayerStore {
       }
     }
 
+    const effectiveSpeed = state.room.rules?.matchSpeed || (
+      state.room.liveMatchweek?.paceMs === 200 ? 4 :
+      state.room.liveMatchweek?.paceMs === 266 ? 3 :
+      state.room.liveMatchweek?.paceMs === 400 ? 2 : 1
+    );
+    const paceMs = state.room.liveMatchweek?.paceMs ||
+      (effectiveSpeed === 4 ? 200 : effectiveSpeed === 3 ? 266 : effectiveSpeed === 2 ? 400 : 800);
+
     liveMw = {
       matchweek: currentMatchweek,
       status: 'LIVE',
       readyMemberIds: liveMw.readyMemberIds || [],
       startedAt: new Date().toISOString(),
-      paceMs: 800, // 800ms per minute -> total game ~ 72 seconds
+      paceMs,
       completedMemberIds: [],
     };
 
@@ -4195,7 +4212,7 @@ export class DraftMultiplayerStore {
       status: isSeasonComplete ? 'COMPLETED' : 'PREPARING',
       readyMemberIds: [],
       completedMemberIds: [],
-      paceMs: state.room.liveMatchweek?.paceMs || 800,
+      paceMs: state.room.liveMatchweek?.paceMs || (state.room.rules?.matchSpeed === 4 ? 200 : state.room.rules?.matchSpeed === 3 ? 266 : state.room.rules?.matchSpeed === 2 ? 400 : 800),
     };
 
     const prevVersion = state.room.stateVersion || 1;
@@ -4924,7 +4941,9 @@ export class DraftMultiplayerStore {
       const err = formatMultiplayerError('SC-MP-001');
       return { success: false, error: err.message, errorCode: 'SC-MP-001' };
     }
-    if (state.room.hostMemberId !== hostMemberId) {
+    const currentMember = state.members.find((m) => m.id === hostMemberId);
+    const isHost = state.room.hostMemberId === hostMemberId || Boolean(currentMember?.isHost);
+    if (!isHost) {
       const err = formatMultiplayerError('SC-MP-007', 'Yalnızca oda kurucusu maç hızını değiştirebilir');
       return { success: false, error: err.message, errorCode: 'SC-MP-007' };
     }

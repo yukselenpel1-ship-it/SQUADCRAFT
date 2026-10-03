@@ -53,10 +53,10 @@ export default function FinancesPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
       {/* Broadcast Header HUD */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-[#182338]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
               // FINANCIAL CONTROL & LEDGER
             </span>
             <span className="text-[11px] font-mono text-zinc-400">
@@ -70,7 +70,7 @@ export default function FinancesPage() {
         </div>
 
         {/* Financial Status Pill */}
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#080D1A] border border-emerald-500/30 text-[#00F5A0] text-xs font-mono font-bold">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl sc-panel border border-emerald-500/30 text-[#00F5A0] text-xs font-mono font-bold">
           <ShieldCheck className="w-4 h-4 text-[#00F5A0]" />
           <span>FİNANSAL SAĞLIK: GÜÇLÜ & STABİL</span>
         </div>
@@ -111,7 +111,7 @@ export default function FinancesPage() {
       </div>
 
       {/* 2. Wage Budget Utilization Bar */}
-      <div className="p-4 sm:p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-3">
+      <div className="p-5 sc-panel rounded-2xl border border-[#182338] shadow-xl space-y-3">
         <div className="flex items-center justify-between text-xs font-mono">
           <div>
             <span className="font-bold text-white text-sm uppercase">Haftalık Maaş Bütçesi Kullanımı</span>
@@ -129,10 +129,10 @@ export default function FinancesPage() {
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-2.5 bg-[#040711] overflow-hidden border border-zinc-800">
+        <div className="w-full h-2.5 rounded-full bg-[#070D1A] overflow-hidden border border-[#182338]">
           <div
-            className={`h-full transition-all duration-500 ${
-              wagePercentage > 90 ? 'bg-rose-500' : 'bg-[#00F5A0]'
+            className={`h-full rounded-full transition-all duration-500 ${
+              wagePercentage > 90 ? 'bg-rose-500' : 'bg-[#00F5A0] shadow-[0_0_10px_rgba(0,245,160,0.5)]'
             }`}
             style={{ width: `${Math.min(100, wagePercentage)}%` }}
           />
@@ -142,8 +142,8 @@ export default function FinancesPage() {
       {/* 3. Income vs Expense Breakdown Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Income Breakdown */}
-        <div className="p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
+        <div className="p-5 sc-panel rounded-2xl border border-[#182338] shadow-xl space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#182338]">
             <h3 className="text-xs font-mono font-black uppercase tracking-widest text-[#00F5A0] flex items-center gap-2">
               <ArrowUpRight className="w-4 h-4" />
               Sezonluk Gelir Kalemleri
@@ -154,23 +154,23 @@ export default function FinancesPage() {
           </div>
 
           <div className="space-y-2 text-xs font-mono">
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
+            <div className="flex justify-between items-center py-2 border-b border-[#182338]/60">
               <span className="text-zinc-400">Yayın Hakları ve TV Gelirleri</span>
               <span className="font-bold text-white">€{(finances.incomeCategories?.broadcasting ?? 0).toLocaleString('tr-TR')}</span>
             </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
+            <div className="flex justify-between items-center py-2 border-b border-[#182338]/60">
               <span className="text-zinc-400">Resmi Sponsorluk Anlaşmaları</span>
               <span className="font-bold text-white">€{(finances.incomeCategories?.sponsorships ?? 0).toLocaleString('tr-TR')}</span>
             </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
+            <div className="flex justify-between items-center py-2 border-b border-[#182338]/60">
               <span className="text-zinc-400">Oyuncu Satış ve Bonservis Gelirleri</span>
               <span className="font-bold text-white">€{(finances.incomeCategories?.playerSales ?? 0).toLocaleString('tr-TR')}</span>
             </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
+            <div className="flex justify-between items-center py-2 border-b border-[#182338]/60">
               <span className="text-zinc-400">Maç Günü ve Bilet Satışları</span>
               <span className="font-bold text-white">€{(finances.incomeCategories?.matchdayTickets ?? 0).toLocaleString('tr-TR')}</span>
             </div>
-            <div className="flex justify-between items-center py-1.5">
+            <div className="flex justify-between items-center py-2">
               <span className="text-zinc-400">Lisanslı Ürün Satışı (Merchandising)</span>
               <span className="font-bold text-white">€{(finances.incomeCategories?.merchandising ?? 0).toLocaleString('tr-TR')}</span>
             </div>
@@ -178,8 +178,8 @@ export default function FinancesPage() {
         </div>
 
         {/* Expenses Breakdown */}
-        <div className="p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
+        <div className="p-5 sc-panel rounded-2xl border border-[#182338] shadow-xl space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#182338]">
             <h3 className="text-xs font-mono font-black uppercase tracking-widest text-rose-400 flex items-center gap-2">
               <ArrowDownRight className="w-4 h-4" />
               Sezonluk Gider Kalemleri
@@ -190,23 +190,23 @@ export default function FinancesPage() {
           </div>
 
           <div className="space-y-2 text-xs font-mono">
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
+            <div className="flex justify-between items-center py-2 border-b border-[#182338]/60">
               <span className="text-zinc-400">Futbolcu Maaşları</span>
               <span className="font-bold text-white">€{(finances.expenseCategories?.playerWages ?? 0).toLocaleString('tr-TR')}</span>
             </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
+            <div className="flex justify-between items-center py-2 border-b border-[#182338]/60">
               <span className="text-zinc-400">Yeni Transfer Bonservis Ödemeleri</span>
               <span className="font-bold text-white">€{(finances.expenseCategories?.playerSignings ?? 0).toLocaleString('tr-TR')}</span>
             </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
+            <div className="flex justify-between items-center py-2 border-b border-[#182338]/60">
               <span className="text-zinc-400">Teknik Heyet & Personel Maaşları</span>
               <span className="font-bold text-white">€{(finances.expenseCategories?.staffWages ?? 0).toLocaleString('tr-TR')}</span>
             </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-zinc-850">
+            <div className="flex justify-between items-center py-2 border-b border-[#182338]/60">
               <span className="text-zinc-400">Altyapı & Akademi Yatırımları</span>
               <span className="font-bold text-white">€{(finances.expenseCategories?.academyYouth ?? 0).toLocaleString('tr-TR')}</span>
             </div>
-            <div className="flex justify-between items-center py-1.5">
+            <div className="flex justify-between items-center py-2">
               <span className="text-zinc-400">Stadyum & Tesis Bakım Masrafları</span>
               <span className="font-bold text-white">€{(finances.expenseCategories?.stadiumMaintenance ?? 0).toLocaleString('tr-TR')}</span>
             </div>
@@ -215,24 +215,24 @@ export default function FinancesPage() {
       </div>
 
       {/* 4. Monthly Cashflow History */}
-      <div className="p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-3">
+      <div className="p-5 sc-panel rounded-2xl border border-[#182338] shadow-xl space-y-3">
         <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300">
           Son 5 Aylık Nakit Akış Tablosu <span className="text-[10px] text-zinc-500">// CASHFLOW STATEMENT</span>
         </h3>
 
-        <div className="border border-zinc-850 bg-[#040711] overflow-x-auto shadow-2xl">
+        <div className="sc-panel rounded-2xl border border-[#182338] overflow-x-auto shadow-2xl">
           <table className="w-full text-left text-xs font-mono min-w-[500px]">
             <thead>
-              <tr className="border-b border-zinc-800 bg-[#040711] text-[10px] text-zinc-500 font-black uppercase tracking-widest">
+              <tr className="border-b border-[#182338] bg-[#070D1A] text-[10px] text-zinc-400 font-black uppercase tracking-widest">
                 <th className="py-2.5 px-3">DÖNEM</th>
                 <th className="py-2.5 px-3 text-right">AYLIK GELİR</th>
                 <th className="py-2.5 px-3 text-right">AYLIK GİDER</th>
                 <th className="py-2.5 px-3 text-right">NET BAKİYE DEĞİŞİMİ</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-850 font-semibold">
+            <tbody className="divide-y divide-[#182338]/60 font-semibold">
               {finances.monthlyHistory.map((m, idx) => (
-                <tr key={idx} className="hover:bg-zinc-900/60">
+                <tr key={idx} className="hover:bg-[#0E1A2E]/60 transition-colors">
                   <td className="py-2.5 px-3 text-white font-bold">{m.month}</td>
                   <td className="py-2.5 px-3 text-right text-[#00F5A0]">
                     +€{m.income.toLocaleString('tr-TR')}
@@ -251,8 +251,8 @@ export default function FinancesPage() {
       </div>
 
       {/* 5. Future Transfer Commitments (Taksitler ve Vadeli Ödemeler) */}
-      <div className="p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-zinc-800/80">
+      <div className="p-5 sc-panel rounded-2xl border border-[#182338] shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#182338]">
           <div>
             <h3 className="text-xs font-mono font-black uppercase tracking-widest text-white flex items-center gap-2">
               <Layers className="w-4 h-4 text-[#00F5A0]" />

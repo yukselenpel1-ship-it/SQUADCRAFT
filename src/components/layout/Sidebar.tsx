@@ -92,21 +92,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-[#070A0F] border-r border-zinc-800 flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-[#070D1A]/98 backdrop-blur-md border-r border-[#182338] flex flex-col justify-between transition-transform duration-300 lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Top Scrollable Navigation */}
         <div className="overflow-y-auto flex-1 py-3.5">
           {/* Brand Logo Header */}
-          <div className="px-5 pb-3.5 border-b border-zinc-800 flex items-center justify-between">
+          <div className="px-5 pb-3.5 border-b border-[#182338] flex items-center justify-between">
             <Link href="/" onClick={onClose} className="hover:opacity-90 transition-opacity">
               <SquadCraftLogo size="sm" />
             </Link>
           </div>
 
           {/* Active Club Identity Card */}
-          <div className="px-3.5 py-2.5 mx-3 my-3 bg-[#0C101A] border border-zinc-800 flex items-center justify-between">
+          <div className="px-3.5 py-2.5 mx-3 my-3 bg-[#0B1323] border border-[#182338] rounded-xl flex items-center justify-between shadow-sm">
             <div className="flex items-center gap-2.5 overflow-hidden">
               <ClubBadge
                 code={userClub.code}
@@ -126,7 +126,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
               </div>
             </div>
 
-            <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-[#032416] text-[#00F5A0] border border-[#00F5A0]/40">
+            <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30 rounded">
               PRO
             </span>
           </div>
@@ -147,10 +147,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
                       key={item.href}
                       href={item.href}
                       onClick={onClose}
-                      className={`group flex items-center justify-between px-3 py-2 text-xs font-bold uppercase tracking-wider transition-all ${
+                      className={`group flex items-center justify-between px-3 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all ${
                         active
-                          ? 'bg-[#00F5A0] text-black font-black italic shadow-md'
-                          : 'text-zinc-400 hover:text-white hover:bg-zinc-900/90'
+                          ? 'bg-[#00F5A0] text-black font-black italic shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                          : 'text-zinc-400 hover:text-white hover:bg-[#0B1323]'
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
@@ -165,17 +165,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
                       <div className="flex items-center gap-1.5">
                         {item.isMultiplayer && (
                           <span
-                            className={`px-1.5 py-0.2 text-[9px] font-mono font-bold uppercase ${
+                            className={`px-1.5 py-0.2 text-[9px] font-mono font-bold uppercase rounded ${
                               active
                                 ? 'bg-black text-[#00D4FF]'
-                                : 'bg-cyan-950 text-[#00D4FF] border border-cyan-800'
+                                : 'bg-cyan-950/80 text-[#00D4FF] border border-cyan-800'
                             }`}
                           >
                             MP
                           </span>
                         )}
                         {item.badge ? (
-                          <span className="px-2 py-0.5 text-[10px] font-black bg-red-600 text-white animate-pulse">
+                          <span className="px-2 py-0.5 text-[10px] font-black bg-red-600 text-white rounded-full animate-pulse">
                             {item.badge}
                           </span>
                         ) : (

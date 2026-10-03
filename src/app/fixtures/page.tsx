@@ -42,9 +42,9 @@ export default function FixturesPage() {
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
       {/* Season End Summary Banner */}
       {seasonEndSummary && (
-        <div className="bg-[#141005] border-2 border-amber-500 p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="sc-panel rounded-2xl border-2 border-amber-500 p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-1">
-            <span className="px-2.5 py-0.5 bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest font-mono">
+            <span className="px-2.5 py-0.5 rounded-md bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest font-mono">
               SEZON TAMAMLANDI
             </span>
             <h2 className="text-xl sm:text-2xl font-black italic uppercase text-white">
@@ -56,7 +56,7 @@ export default function FixturesPage() {
           </div>
           <button
             onClick={startNextSeasonRoll}
-            className="px-6 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0"
+            className="px-6 py-3 rounded-xl bg-[#00F5A0] hover:bg-[#00D68B] text-[#040711] font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0"
           >
             YENİ SEZONA BAŞLA
           </button>
@@ -64,10 +64,10 @@ export default function FixturesPage() {
       )}
 
       {/* Broadcast Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-[#182338]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
               // FIXTURE CALENDAR
             </span>
             <span className="text-[11px] font-mono text-zinc-400">
@@ -81,43 +81,43 @@ export default function FixturesPage() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex items-center gap-1.5 bg-[#080D1A] p-1.5 border border-zinc-800">
+        <div className="flex items-center gap-1.5 sc-panel rounded-2xl p-1.5 border border-[#182338]">
           <button
             onClick={() => setSelectedFilter('ALL')}
-            className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all ${
               selectedFilter === 'ALL'
-                ? 'bg-[#00F5A0] text-black border border-white'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0E1A2E]'
             }`}
           >
             Tüm Maçlar
           </button>
           <button
             onClick={() => setSelectedFilter('MY_CLUB')}
-            className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all ${
               selectedFilter === 'MY_CLUB'
-                ? 'bg-[#00F5A0] text-black border border-white'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0E1A2E]'
             }`}
           >
             {userClub.code} Maçları
           </button>
           <button
             onClick={() => setSelectedFilter('PLAYED')}
-            className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all ${
               selectedFilter === 'PLAYED'
-                ? 'bg-[#00F5A0] text-black border border-white'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0E1A2E]'
             }`}
           >
             Oynananlar
           </button>
           <button
             onClick={() => setSelectedFilter('UPCOMING')}
-            className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all ${
               selectedFilter === 'UPCOMING'
-                ? 'bg-[#00F5A0] text-black border border-white'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0E1A2E]'
             }`}
           >
             Gelecek Maçlar
@@ -133,10 +133,10 @@ export default function FixturesPage() {
           return (
             <div key={roundNumber} className="space-y-3">
               <div className="flex items-center gap-3">
-                <span className="px-3 py-1 font-mono font-black text-xs uppercase bg-[#080D1A] border-2 border-[#00F5A0]/60 text-[#00F5A0] tracking-wider">
+                <span className="px-3.5 py-1 rounded-xl font-mono font-black text-xs uppercase bg-[#070D1A] border border-[#00F5A0]/40 text-[#00F5A0] tracking-wider shadow-[0_0_10px_rgba(0,245,160,0.2)]">
                   HAFTA {roundNumber}
                 </span>
-                <div className="h-px flex-1 bg-zinc-800" />
+                <div className="h-px flex-1 bg-[#182338]" />
                 <span className="text-[11px] font-mono text-zinc-500 uppercase">
                   {roundFixtures.length} KARŞILAŞMA
                 </span>

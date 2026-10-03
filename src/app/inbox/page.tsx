@@ -106,10 +106,10 @@ export default function InboxPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
       {/* Broadcast Header HUD */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-[#182338]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
+            <span className="px-2.5 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30 rounded-lg">
               // INBOX & COMMUNICATIONS
             </span>
             <span className="text-[11px] font-mono text-zinc-400">
@@ -123,10 +123,12 @@ export default function InboxPage() {
         </div>
 
         {/* Unread Counter HUD */}
-        <div className="flex items-center gap-3 bg-[#080D1A] p-2.5 border border-zinc-800 text-xs font-mono">
-          <Mail className="w-4 h-4 text-[#00F5A0]" />
+        <div className="flex items-center gap-3 sc-panel rounded-2xl p-3 border border-[#182338] text-xs font-mono shadow-lg">
+          <div className="w-9 h-9 rounded-xl bg-[#00F5A0]/10 border border-[#00F5A0]/30 flex items-center justify-center text-[#00F5A0]">
+            <Mail className="w-4 h-4" />
+          </div>
           <div>
-            <span className="text-[10px] text-zinc-500 uppercase block font-bold">Okunmamış Bildirim</span>
+            <span className="text-[10px] text-zinc-400 uppercase block font-bold">Okunmamış Bildirim</span>
             <span className="text-base font-black text-white">
               {inboxMessages.filter((m) => !m.isRead).length} <span className="text-xs text-zinc-400 font-normal">MESAJ</span>
             </span>
@@ -135,7 +137,7 @@ export default function InboxPage() {
       </div>
 
       {/* Category Tabs */}
-      <div className="flex flex-wrap items-center gap-1.5 bg-[#080D1A] p-1.5 border border-zinc-800">
+      <div className="flex flex-wrap items-center gap-1.5 sc-panel rounded-2xl p-1.5 border border-[#182338]">
         {[
           { id: 'ALL', label: 'Tüm Mesajlar' },
           { id: 'BOARD', label: 'Yönetim' },
@@ -148,10 +150,10 @@ export default function InboxPage() {
           <button
             key={cat.id}
             onClick={() => setSelectedCategory(cat.id)}
-            className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all ${
+            className={`px-3.5 py-1.5 text-xs font-mono font-bold uppercase rounded-xl transition-all ${
               selectedCategory === cat.id
-                ? 'bg-[#00F5A0] text-black border border-white'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0E1728]'
             }`}
           >
             {cat.label}
@@ -162,9 +164,9 @@ export default function InboxPage() {
       {/* Split Inbox Layout: Left List + Right Reader */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[550px]">
         {/* Left Message List (5 Cols) */}
-        <div className="lg:col-span-5 space-y-2 max-h-[650px] overflow-y-auto pr-1">
+        <div className="lg:col-span-5 space-y-2.5 max-h-[650px] overflow-y-auto pr-1">
           {filteredMessages.length === 0 ? (
-            <div className="p-8 bg-[#080D1A] border border-zinc-800 text-center text-zinc-500 font-mono text-xs">
+            <div className="p-8 sc-panel rounded-2xl border border-[#182338] text-center text-zinc-500 font-mono text-xs">
               Bu kategoride mesaj bulunmuyor.
             </div>
           ) : (
@@ -175,12 +177,12 @@ export default function InboxPage() {
                 <div
                   key={msg.id}
                   onClick={() => handleSelectMessage(msg)}
-                  className={`p-3.5 border cursor-pointer transition-all ${
+                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                     isSelected
-                      ? 'bg-[#0E1528] border-2 border-[#00F5A0] shadow-xl'
+                      ? 'bg-[#0E1728] border-2 border-[#00F5A0] shadow-[0_0_20px_rgba(0,245,160,0.15)] ring-1 ring-[#00F5A0]/30'
                       : !msg.isRead
-                      ? 'bg-[#080D1A] border-zinc-700 hover:border-zinc-600'
-                      : 'bg-[#040711] border-zinc-850 hover:border-zinc-700 opacity-80'
+                      ? 'sc-panel border-[#182338] hover:border-zinc-500 bg-[#0B1323]/90'
+                      : 'bg-[#070D1A]/80 border-[#182338] hover:border-zinc-700 opacity-75 hover:opacity-100'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2 mb-1.5 font-mono">
@@ -204,13 +206,13 @@ export default function InboxPage() {
                   </p>
 
                   <div className="mt-2.5 flex items-center justify-between text-[10px] font-mono">
-                    <span className="px-1.5 py-0.2 bg-zinc-900 border border-zinc-800 text-zinc-400 font-bold uppercase">
+                    <span className="px-2 py-0.5 bg-[#040711] border border-[#182338] text-zinc-400 font-bold uppercase rounded-md">
                       {getCategoryLabel(msg.category)}
                     </span>
 
                     {!msg.isRead && (
                       <span className="flex items-center gap-1 font-black text-[#00F5A0]">
-                        <span className="w-1.5 h-1.5 bg-[#00F5A0] animate-pulse" />
+                        <span className="w-1.5 h-1.5 bg-[#00F5A0] rounded-full animate-pulse" />
                         YENİ
                       </span>
                     )}
@@ -224,13 +226,13 @@ export default function InboxPage() {
         {/* Right Message Reader (7 Cols) */}
         <div className="lg:col-span-7">
           {selectedMessage ? (
-            <div className="p-5 sm:p-6 bg-[#080D1A] border border-zinc-800 shadow-2xl flex flex-col justify-between h-full space-y-6">
+            <div className="p-6 sc-panel rounded-2xl border border-[#182338] shadow-2xl flex flex-col justify-between h-full space-y-6">
               <div>
                 {/* Header */}
-                <div className="pb-4 border-b border-zinc-800 flex items-start justify-between gap-4">
+                <div className="pb-4 border-b border-[#182338] flex items-start justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase bg-[#040711] text-[#00F5A0] border border-zinc-800 flex items-center gap-1.5">
+                      <span className="px-2.5 py-0.5 text-[10px] font-mono font-black uppercase bg-[#040711] text-[#00F5A0] border border-[#182338] rounded-md flex items-center gap-1.5">
                         {getCategoryIcon(selectedMessage.category)}
                         {getCategoryLabel(selectedMessage.category)}
                       </span>
@@ -239,7 +241,7 @@ export default function InboxPage() {
                       </span>
                     </div>
 
-                    <h2 className="text-xl font-black text-white uppercase tracking-tight mt-2">
+                    <h2 className="text-xl font-black text-white uppercase tracking-tight mt-2.5">
                       {selectedMessage.subject}
                     </h2>
 
@@ -250,7 +252,7 @@ export default function InboxPage() {
 
                   <button
                     onClick={() => deleteMessage(selectedMessage.id)}
-                    className="p-2 bg-[#040711] text-zinc-400 hover:text-rose-400 border border-zinc-800 transition-colors"
+                    className="p-2.5 bg-[#040711] text-zinc-400 hover:text-rose-400 rounded-xl border border-[#182338] hover:border-rose-500/40 transition-colors"
                     title="Mesajı Sil"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -264,12 +266,12 @@ export default function InboxPage() {
               </div>
 
               {/* Action Buttons Footer */}
-              <div className="pt-4 border-t border-zinc-800 flex flex-wrap items-center justify-between gap-3 font-mono">
-                <div className="flex items-center gap-2">
+              <div className="pt-4 border-t border-[#182338] flex flex-wrap items-center justify-between gap-3 font-mono">
+                <div className="flex items-center gap-2.5">
                   {selectedMessage.actionType === 'REPLY_TRANSFER' && (
                     <Link
                       href="/transfers"
-                      className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors flex items-center gap-1.5 border border-white"
+                      className="px-4 py-2 bg-[#00F5A0] text-[#040711] font-black text-xs uppercase hover:bg-[#00F5A0]/90 transition-all flex items-center gap-1.5 rounded-xl shadow-[0_0_15px_rgba(0,245,160,0.3)]"
                     >
                       <DollarSign className="w-4 h-4" />
                       Teklife Git & Yanıtla
@@ -279,7 +281,7 @@ export default function InboxPage() {
                   {selectedMessage.actionType === 'VIEW_SQUAD' && (
                     <Link
                       href="/squad"
-                      className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors flex items-center gap-1.5 border border-white"
+                      className="px-4 py-2 bg-[#00F5A0] text-[#040711] font-black text-xs uppercase hover:bg-[#00F5A0]/90 transition-all flex items-center gap-1.5 rounded-xl shadow-[0_0_15px_rgba(0,245,160,0.3)]"
                     >
                       <HeartPulse className="w-4 h-4" />
                       Sağlık & Kadro Durumunu İncele
@@ -289,7 +291,7 @@ export default function InboxPage() {
                   {selectedMessage.actionType === 'VIEW_TACTICS' && (
                     <Link
                       href="/tactics"
-                      className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors flex items-center gap-1.5 border border-white"
+                      className="px-4 py-2 bg-[#00F5A0] text-[#040711] font-black text-xs uppercase hover:bg-[#00F5A0]/90 transition-all flex items-center gap-1.5 rounded-xl shadow-[0_0_15px_rgba(0,245,160,0.3)]"
                     >
                       <Swords className="w-4 h-4" />
                       Taktik Masasına Git
@@ -299,7 +301,7 @@ export default function InboxPage() {
                   {selectedMessage.actionType === 'RENEW_CONTRACT' && (
                     <Link
                       href="/squad"
-                      className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors flex items-center gap-1.5 border border-white"
+                      className="px-4 py-2 bg-[#00F5A0] text-[#040711] font-black text-xs uppercase hover:bg-[#00F5A0]/90 transition-all flex items-center gap-1.5 rounded-xl shadow-[0_0_15px_rgba(0,245,160,0.3)]"
                     >
                       <FileText className="w-4 h-4" />
                       Sözleşme Görüşmesi Başlat
@@ -310,13 +312,13 @@ export default function InboxPage() {
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => respondToManagerContractOffer(true)}
-                        className="px-3.5 py-1.5 bg-[#00F5A0] text-black font-bold text-xs uppercase hover:bg-[#00D68B] transition-colors border border-white"
+                        className="px-4 py-2 bg-[#00F5A0] text-[#040711] font-black text-xs uppercase hover:bg-[#00F5A0]/90 transition-all rounded-xl shadow-[0_0_15px_rgba(0,245,160,0.3)]"
                       >
                         Sözleşmeyi Kabul Et
                       </button>
                       <button
                         onClick={() => respondToManagerContractOffer(false)}
-                        className="px-3.5 py-1.5 bg-zinc-900 text-zinc-300 font-bold text-xs uppercase hover:bg-zinc-800 transition-colors border border-zinc-750"
+                        className="px-4 py-2 bg-[#0E1728] text-zinc-300 font-bold text-xs uppercase hover:bg-[#182338] transition-colors rounded-xl border border-[#182338]"
                       >
                         Teklifi Reddet
                       </button>
@@ -324,14 +326,14 @@ export default function InboxPage() {
                   )}
                 </div>
 
-                <span className="text-[11px] text-zinc-500 font-bold flex items-center gap-1">
+                <span className="text-[11px] text-zinc-500 font-bold flex items-center gap-1.5">
                   <Shield className="w-3.5 h-3.5 text-[#00F5A0]" />
                   SquadCraft Kulüp İletişim Sistemi
                 </span>
               </div>
             </div>
           ) : (
-            <div className="p-12 bg-[#080D1A] border border-zinc-800 text-center text-zinc-500 font-mono text-sm h-full flex flex-col items-center justify-center gap-2">
+            <div className="p-12 sc-panel rounded-2xl border border-[#182338] text-center text-zinc-500 font-mono text-sm h-full flex flex-col items-center justify-center gap-2.5">
               <MailOpen className="w-10 h-10 text-zinc-600" />
               <span>Görüntülemek için sol listeden bir mesaj seçin.</span>
             </div>

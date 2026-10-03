@@ -123,10 +123,10 @@ export default function SquadPage() {
   return (
     <div className="space-y-5 animate-in fade-in duration-300 pb-12">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-[#182338]">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 bg-[#00F5A0] text-black text-[10px] font-black uppercase tracking-widest">
+            <span className="px-2.5 py-0.5 rounded-md bg-[#00F5A0] text-[#040711] text-[10px] font-black uppercase tracking-widest">
               {userClub.name}
             </span>
             <span className="text-xs text-zinc-400 font-mono">2026/27 A TAKIM KADRO LİSTESİ</span>
@@ -138,24 +138,24 @@ export default function SquadPage() {
         </div>
 
         {/* Quick Squad Stats */}
-        <div className="flex items-center gap-2.5 bg-[#070B12] p-2 border border-zinc-800 text-xs">
+        <div className="flex items-center gap-2.5 sc-panel rounded-2xl p-2.5 border border-[#182338] text-xs">
           <div className="px-3 text-center">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Toplam Oyuncu</span>
             <span className="text-base font-black italic text-white">{userPlayers.length}</span>
           </div>
-          <div className="px-3 text-center border-l border-zinc-800">
+          <div className="px-3 text-center border-l border-[#182338]">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Yaş Ort.</span>
             <span className="text-base font-black italic text-emerald-400">
               {(userPlayers.reduce((acc, p) => acc + p.age, 0) / (userPlayers.length || 1)).toFixed(1)}
             </span>
           </div>
-          <div className="px-3 text-center border-l border-zinc-800">
+          <div className="px-3 text-center border-l border-[#182338]">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Genel Güç</span>
             <span className="text-base font-black italic text-[#00F5A0]">
               {(userPlayers.reduce((acc, p) => acc + p.overall, 0) / (userPlayers.length || 1)).toFixed(1)}
             </span>
           </div>
-          <div className="px-3 text-center border-l border-zinc-800">
+          <div className="px-3 text-center border-l border-[#182338]">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Haftalık Maaş</span>
             <span className="text-base font-black italic text-[#00D4FF]">
               €{(userPlayers.reduce((acc, p) => acc + p.wage, 0) / 1000).toFixed(0)}K
@@ -165,13 +165,13 @@ export default function SquadPage() {
       </div>
 
       {/* Main Sub-Tabs */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-zinc-800 pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-[#182338] pb-3">
         <button
           onClick={() => setActiveSquadTab('OVERVIEW')}
-          className={`px-4 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeSquadTab === 'OVERVIEW'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -180,16 +180,16 @@ export default function SquadPage() {
 
         <button
           onClick={() => setActiveSquadTab('CONTRACTS')}
-          className={`px-4 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
+          className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
             activeSquadTab === 'CONTRACTS'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <FileText className="w-4 h-4" />
           <span>Sözleşmeler & Maaşlar</span>
           {expiringContractsCount > 0 && (
-            <span className="px-1.5 py-0.2 bg-amber-500 text-black text-[9px] font-black font-mono">
+            <span className="px-1.5 py-0.5 rounded bg-amber-500 text-black text-[9px] font-black font-mono">
               {expiringContractsCount}
             </span>
           )}
@@ -197,10 +197,10 @@ export default function SquadPage() {
 
         <button
           onClick={() => setActiveSquadTab('TRAINING')}
-          className={`px-4 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeSquadTab === 'TRAINING'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <Dumbbell className="w-4 h-4" />
@@ -209,16 +209,16 @@ export default function SquadPage() {
 
         <button
           onClick={() => setActiveSquadTab('INJURIES')}
-          className={`px-4 py-2 text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
+          className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
             activeSquadTab === 'INJURIES'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <AlertTriangle className="w-4 h-4" />
           <span>Sakatlıklar & Cezalar</span>
           {injuredCount + suspendedCount > 0 && (
-            <span className="px-1.5 py-0.2 bg-rose-500 text-white text-[9px] font-black font-mono">
+            <span className="px-1.5 py-0.5 rounded bg-rose-500 text-white text-[9px] font-black font-mono">
               {injuredCount + suspendedCount}
             </span>
           )}
@@ -231,20 +231,20 @@ export default function SquadPage() {
           {/* Filters and Search Bar */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             {/* Category Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-1 bg-[#070B12] p-1 border border-zinc-800">
+            <div className="flex flex-wrap items-center gap-1.5 sc-panel rounded-2xl p-1.5 border border-[#182338]">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id as any)}
-                  className={`px-3 py-1.5 text-xs font-mono font-bold uppercase transition-all flex items-center gap-1.5 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-1.5 ${
                     selectedCategory === cat.id
-                      ? 'bg-[#00F5A0] text-black'
-                      : 'text-zinc-400 hover:text-white hover:bg-zinc-850'
+                      ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                      : 'text-zinc-400 hover:text-white hover:bg-[#0E1A2E]'
                   }`}
                 >
                   <span>{cat.label}</span>
-                  <span className={`text-[10px] px-1.5 py-0.2 font-mono ${
-                    selectedCategory === cat.id ? 'bg-black text-[#00F5A0]' : 'bg-zinc-800 text-zinc-400'
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
+                    selectedCategory === cat.id ? 'bg-[#040711] text-[#00F5A0]' : 'bg-[#070D1A] text-zinc-400'
                   }`}>
                     {cat.count}
                   </span>
@@ -260,16 +260,16 @@ export default function SquadPage() {
                 placeholder="Oyuncu ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-1.5 bg-[#070B12] border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#00F5A0] transition-colors"
+                className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#070D1A] border border-[#182338] text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#00F5A0] transition-colors"
               />
             </div>
           </div>
 
           {/* Squad Table */}
-          <div className="overflow-x-auto border border-zinc-850 bg-[#070B12]">
+          <div className="overflow-x-auto sc-panel rounded-2xl border border-[#182338]">
             <table className="w-full text-left border-collapse min-w-[850px]">
               <thead>
-                <tr className="border-b border-zinc-800 bg-[#05080E] text-[10px] font-mono font-black uppercase tracking-wider text-zinc-400">
+                <tr className="border-b border-[#182338] bg-[#070D1A] text-[10px] font-mono font-black uppercase tracking-wider text-zinc-400">
                   <th className="py-2.5 px-3 w-12 text-center">NO</th>
                   <th className="py-2.5 px-3 cursor-pointer hover:text-white" onClick={() => handleSort('lastName')}>
                     <div className="flex items-center gap-1">
@@ -324,12 +324,12 @@ export default function SquadPage() {
                   <th className="py-2.5 px-3 text-center">İŞLEM</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-850 text-xs font-semibold">
+              <tbody className="divide-y divide-[#182338]/60 text-xs font-semibold">
                 {filteredAndSortedPlayers.map((player, index) => (
                   <tr
                     key={player.id}
                     onClick={() => setSelectedPlayer(player)}
-                    className="hover:bg-zinc-850/60 cursor-pointer transition-colors group"
+                    className="hover:bg-[#0E1A2E]/60 cursor-pointer transition-colors group"
                   >
                     <td className="py-2.5 px-3 text-center font-mono text-zinc-500">
                       {index + 1}
@@ -345,12 +345,12 @@ export default function SquadPage() {
                           <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#00F5A0] transition-colors flex items-center gap-1.5">
                             <span>{player.firstName} {player.lastName}</span>
                             {player.isInjured && (
-                              <span className="px-1.5 py-0.2 bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[9px] font-mono">
+                              <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[9px] font-mono">
                                 SAKAT
                               </span>
                             )}
                             {player.isSuspended && (
-                              <span className="px-1.5 py-0.2 bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-mono">
+                              <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-mono">
                                 CEZALI
                               </span>
                             )}
@@ -363,7 +363,7 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-2.5 px-3 text-center">
-                      <span className="px-2 py-0.5 font-mono text-[10px] font-black uppercase bg-zinc-900 border border-zinc-700 text-[#00F5A0]">
+                      <span className="px-2 py-0.5 rounded font-mono text-[10px] font-black uppercase bg-[#070D1A] border border-[#182338] text-[#00F5A0]">
                         {player.position}
                       </span>
                     </td>
@@ -405,7 +405,7 @@ export default function SquadPage() {
                     <td className="py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => setSelectedPlayer(player)}
-                        className="px-2.5 py-1 bg-zinc-900 border border-zinc-700 hover:border-[#00F5A0] text-white hover:text-[#00F5A0] font-mono text-[10px] uppercase font-bold transition-all"
+                        className="px-3 py-1 bg-[#070D1A] border border-[#182338] hover:border-[#00F5A0] text-white hover:text-[#00F5A0] font-mono text-[10px] uppercase font-bold rounded-lg transition-all"
                       >
                         İncele
                       </button>
@@ -422,7 +422,7 @@ export default function SquadPage() {
       {activeSquadTab === 'CONTRACTS' && (
         <div className="space-y-4">
           {/* Contracts Overview Banner */}
-          <div className="p-4 bg-[#080D1A] border border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="p-5 sc-panel rounded-2xl border border-[#182338] flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <span className="text-[10px] font-mono text-zinc-500 block uppercase font-bold">Maaş Bütçesi Durumu</span>
               <div className="flex items-center gap-3 mt-1">
@@ -440,10 +440,10 @@ export default function SquadPage() {
           </div>
 
           {/* Contracts Table */}
-          <div className="overflow-x-auto border border-zinc-850 bg-[#080D1A] shadow-2xl">
+          <div className="overflow-x-auto sc-panel rounded-2xl border border-[#182338] shadow-2xl">
             <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
-                <tr className="border-b border-zinc-800 bg-[#040711] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
+                <tr className="border-b border-[#182338] bg-[#070D1A] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
                   <th className="py-3 px-4">FUTBOLCU</th>
                   <th className="py-3 px-3 text-center">MEVKİ</th>
                   <th className="py-3 px-3 text-center">YAŞ</th>
@@ -455,13 +455,13 @@ export default function SquadPage() {
                   <th className="py-3 px-4 text-center">İŞLEM</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-850 text-xs font-semibold">
+              <tbody className="divide-y divide-[#182338]/60 text-xs font-semibold">
                 {userPlayers.map((player) => {
                   const yearsLeft = player.contractYearsLeft ?? 2;
                   const isExpiringSoon = yearsLeft <= 1;
 
                   return (
-                    <tr key={player.id} className="hover:bg-zinc-900/60 transition-colors">
+                    <tr key={player.id} className="hover:bg-[#0E1A2E]/60 transition-colors">
                       <td className="py-3 px-4 font-bold text-white uppercase tracking-tight">
                         <div className="flex items-center gap-2.5">
                           <PlayerPortrait player={player} size="xs" />
@@ -470,7 +470,7 @@ export default function SquadPage() {
                       </td>
 
                       <td className="py-3 px-3 text-center">
-                        <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-zinc-900 border border-zinc-700 text-[#00F5A0]">
+                        <span className="px-2 py-0.5 rounded font-mono text-[10px] font-black bg-[#070D1A] border border-[#182338] text-[#00F5A0]">
                           {player.position}
                         </span>
                       </td>
@@ -496,7 +496,7 @@ export default function SquadPage() {
                       </td>
 
                       <td className="py-3 px-3 text-center">
-                        <span className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase border ${
+                        <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase border ${
                           isExpiringSoon
                             ? 'bg-rose-950/60 text-rose-300 border-rose-700/60'
                             : 'bg-emerald-950/40 text-[#00F5A0] border-emerald-800/40'
@@ -508,10 +508,10 @@ export default function SquadPage() {
                       <td className="py-3 px-4 text-center">
                         <button
                           onClick={() => setRenewingPlayer(player)}
-                          className={`px-3 py-1.5 font-mono font-bold text-xs uppercase border transition-all ${
+                          className={`px-3 py-1.5 rounded-xl font-mono font-bold text-xs uppercase border transition-all ${
                             isExpiringSoon
-                              ? 'bg-amber-500 text-black hover:bg-amber-400 border-amber-300'
-                              : 'bg-[#00F5A0] text-black hover:bg-[#00D68B] border-white'
+                              ? 'bg-amber-500 text-black hover:bg-amber-400 border-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)]'
+                              : 'bg-[#00F5A0] text-[#040711] hover:bg-[#00D68B] border-transparent font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
                           }`}
                         >
                           Sözleşme Yenile
@@ -530,7 +530,7 @@ export default function SquadPage() {
       {activeSquadTab === 'TRAINING' && (
         <div className="space-y-4">
           {/* Training Intensity Controller */}
-          <div className="p-4 bg-[#080D1A] border border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="p-5 sc-panel rounded-2xl border border-[#182338] flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <span className="text-[10px] font-mono text-zinc-500 block uppercase font-bold">Haftalık Antrenman Yoğunluğu</span>
               <p className="text-xs text-zinc-300 mt-1">
@@ -543,10 +543,10 @@ export default function SquadPage() {
                 <button
                   key={intensity}
                   onClick={() => setTrainingIntensity(intensity)}
-                  className={`px-4 py-2 font-mono text-xs font-bold uppercase border transition-all ${
+                  className={`px-4 py-2 rounded-xl font-mono text-xs font-bold uppercase border transition-all ${
                     trainingIntensity === intensity
-                      ? 'bg-[#00F5A0] text-black border-white'
-                      : 'bg-[#040810] text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
+                      ? 'bg-[#00F5A0] text-[#040711] font-black border-transparent shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                      : 'bg-[#070D1A] text-zinc-400 border-[#182338] hover:text-white hover:border-[#1E2E4A]'
                   }`}
                 >
                   {intensity}
@@ -556,10 +556,10 @@ export default function SquadPage() {
           </div>
 
           {/* Form and Training Progress Table */}
-          <div className="overflow-x-auto border border-zinc-850 bg-[#080D1A] shadow-2xl">
+          <div className="overflow-x-auto sc-panel rounded-2xl border border-[#182338] shadow-2xl">
             <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
-                <tr className="border-b border-zinc-800 bg-[#040711] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
+                <tr className="border-b border-[#182338] bg-[#070D1A] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
                   <th className="py-3 px-4">FUTBOLCU</th>
                   <th className="py-3 px-3 text-center">MEVKİ</th>
                   <th className="py-3 px-3 text-center">KONDİSYON</th>
@@ -570,15 +570,15 @@ export default function SquadPage() {
                   <th className="py-3 px-4 text-center">DURUM</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-850 text-xs font-semibold">
+              <tbody className="divide-y divide-[#182338]/60 text-xs font-semibold">
                 {userPlayers.map((player) => (
-                  <tr key={player.id} className="hover:bg-zinc-900/60 transition-colors">
+                  <tr key={player.id} className="hover:bg-[#0E1A2E]/60 transition-colors">
                     <td className="py-3 px-4 font-bold text-white uppercase tracking-tight">
                       {player.firstName} {player.lastName}
                     </td>
 
                     <td className="py-3 px-3 text-center">
-                      <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-zinc-900 border border-zinc-700 text-[#00F5A0]">
+                      <span className="px-2 py-0.5 rounded font-mono text-[10px] font-black bg-[#070D1A] border border-[#182338] text-[#00F5A0]">
                         {player.position}
                       </span>
                     </td>
@@ -611,11 +611,11 @@ export default function SquadPage() {
 
                     <td className="py-3 px-4 text-center font-mono text-[11px]">
                       {player.isInjured ? (
-                        <span className="text-rose-400">Tedavi Görüyor</span>
+                        <span className="text-rose-400 font-bold">Tedavi Görüyor</span>
                       ) : player.fitness < 70 ? (
-                        <span className="text-amber-400">Yorgun</span>
+                        <span className="text-amber-400 font-bold">Yorgun</span>
                       ) : (
-                        <span className="text-[#00F5A0]">Tam Hazır</span>
+                        <span className="text-[#00F5A0] font-bold">Tam Hazır</span>
                       )}
                     </td>
                   </tr>
@@ -631,8 +631,8 @@ export default function SquadPage() {
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Revir (Injuries) */}
-            <div className="p-4 bg-[#080D1A] border border-zinc-800 space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
+            <div className="p-5 sc-panel rounded-2xl border border-[#182338] space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[#182338]">
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-rose-400" />
                   <h3 className="font-bold text-white text-sm uppercase">Revir & Sakat Oyuncular ({injuredCount})</h3>
@@ -646,14 +646,14 @@ export default function SquadPage() {
               ) : (
                 <div className="space-y-2">
                   {userPlayers.filter((p) => p.isInjured).map((p) => (
-                    <div key={p.id} className="p-3 bg-rose-950/30 border border-rose-800/50 flex items-center justify-between">
+                    <div key={p.id} className="p-3.5 rounded-xl bg-rose-950/30 border border-rose-800/50 flex items-center justify-between">
                       <div>
                         <h4 className="font-bold text-white text-xs uppercase">{p.firstName} {p.lastName}</h4>
                         <span className="text-[11px] font-mono text-rose-300">
                           {p.injuryDetails?.type || 'Kas Zorlanması'}
                         </span>
                       </div>
-                      <span className="px-2 py-1 bg-rose-900 text-rose-200 font-mono text-xs font-bold border border-rose-700">
+                      <span className="px-2.5 py-1 rounded-lg bg-rose-900 text-rose-200 font-mono text-xs font-bold border border-rose-700">
                         {p.injuryDetails?.daysRemaining || 7} Gün Kaldı
                       </span>
                     </div>
@@ -663,8 +663,8 @@ export default function SquadPage() {
             </div>
 
             {/* Cezalılar (Suspensions) */}
-            <div className="p-4 bg-[#080D1A] border border-zinc-800 space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
+            <div className="p-5 sc-panel rounded-2xl border border-[#182338] space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[#182338]">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-amber-400" />
                   <h3 className="font-bold text-white text-sm uppercase">Cezalı Oyuncular ({suspendedCount})</h3>
@@ -678,14 +678,14 @@ export default function SquadPage() {
               ) : (
                 <div className="space-y-2">
                   {userPlayers.filter((p) => p.isSuspended).map((p) => (
-                    <div key={p.id} className="p-3 bg-amber-950/30 border border-amber-800/50 flex items-center justify-between">
+                    <div key={p.id} className="p-3.5 rounded-xl bg-amber-950/30 border border-amber-800/50 flex items-center justify-between">
                       <div>
                         <h4 className="font-bold text-white text-xs uppercase">{p.firstName} {p.lastName}</h4>
                         <span className="text-[11px] font-mono text-amber-300">
                           {p.suspensionDetails?.reason || 'Kırmızı Kart / Kart Limiti'}
                         </span>
                       </div>
-                      <span className="px-2 py-1 bg-amber-900 text-amber-200 font-mono text-xs font-bold border border-amber-700">
+                      <span className="px-2.5 py-1 rounded-lg bg-amber-900 text-amber-200 font-mono text-xs font-bold border border-amber-700">
                         {p.suspensionDetails?.matchesRemaining || 1} Maç Ceza
                       </span>
                     </div>

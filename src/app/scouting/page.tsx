@@ -78,10 +78,10 @@ export default function ScoutingPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
       {/* Broadcast Header HUD */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-zinc-800">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#182338]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/30">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black uppercase tracking-widest bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/30">
               // SCOUTING INTELLIGENCE NETWORK
             </span>
             <span className="text-[11px] font-mono text-zinc-400">
@@ -95,18 +95,18 @@ export default function ScoutingPage() {
         </div>
 
         {/* Quick Dept Stats */}
-        <div className="flex items-center gap-3 bg-[#080D1A] p-2.5 border border-zinc-800 text-xs font-mono">
+        <div className="flex items-center gap-3 sc-panel rounded-2xl p-2.5 border border-[#182338] text-xs font-mono">
           <div className="px-3 text-center">
             <span className="text-[10px] text-zinc-500 uppercase block font-bold">Gözlemciler</span>
             <span className="text-base font-black text-white">{scouts.length} / 6</span>
           </div>
-          <div className="px-3 text-center border-l border-zinc-800">
+          <div className="px-3 text-center border-l border-[#182338]">
             <span className="text-[10px] text-zinc-500 uppercase block font-bold">Aktif Görev</span>
             <span className="text-base font-black text-[#00D4FF]">
               {scoutingAssignments.filter((a) => a.status === 'ACTIVE').length}
             </span>
           </div>
-          <div className="px-3 text-center border-l border-zinc-800">
+          <div className="px-3 text-center border-l border-[#182338]">
             <span className="text-[10px] text-zinc-500 uppercase block font-bold">Rapor Arşivi</span>
             <span className="text-base font-black text-[#00F5A0]">{scoutingReports.length}</span>
           </div>
@@ -114,13 +114,13 @@ export default function ScoutingPage() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-zinc-800 pb-3 overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-[#182338] pb-3 overflow-x-auto">
         <button
           onClick={() => setActiveTab('dashboard')}
-          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all shrink-0 ${
             activeTab === 'dashboard'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <Compass className="w-4 h-4" />
@@ -129,10 +129,10 @@ export default function ScoutingPage() {
 
         <button
           onClick={() => setActiveTab('search')}
-          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all shrink-0 ${
             activeTab === 'search'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <Search className="w-4 h-4" />
@@ -141,10 +141,10 @@ export default function ScoutingPage() {
 
         <button
           onClick={() => setActiveTab('scouts')}
-          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all shrink-0 ${
             activeTab === 'scouts'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -153,10 +153,10 @@ export default function ScoutingPage() {
 
         <button
           onClick={() => setActiveTab('assignments')}
-          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all shrink-0 ${
             activeTab === 'assignments'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <Clock className="w-4 h-4" />
@@ -165,10 +165,10 @@ export default function ScoutingPage() {
 
         <button
           onClick={() => setActiveTab('reports')}
-          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all shrink-0 ${
             activeTab === 'reports'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <FileText className="w-4 h-4" />
@@ -177,10 +177,10 @@ export default function ScoutingPage() {
 
         <button
           onClick={() => setActiveTab('regions')}
-          className={`flex items-center gap-2 px-3.5 py-2 text-xs font-mono font-bold uppercase transition-all ${
+          className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all shrink-0 ${
             activeTab === 'regions'
-              ? 'bg-[#00F5A0] text-black border border-white'
-              : 'bg-[#080D1A] text-zinc-400 hover:text-white border border-zinc-800'
+              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
           }`}
         >
           <Globe className="w-4 h-4" />
@@ -193,7 +193,7 @@ export default function ScoutingPage() {
         <div className="space-y-6">
           {/* Quick Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 bg-[#080D1A] border border-zinc-800">
+            <div className="p-4 sc-panel rounded-2xl border border-[#182338]">
               <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Haftalık Scout Gideri</span>
               <span className="text-xl font-mono font-black text-[#00F5A0]">€{totalWeeklyScoutWages.toLocaleString('tr-TR')}/hf</span>
               <span className="text-[10px] font-mono text-zinc-500 block mt-1">Maaş bütçesinden düşülür</span>

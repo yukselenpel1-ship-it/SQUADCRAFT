@@ -63,19 +63,19 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
 
   return (
     <>
-      <header className="sticky top-0 z-30 h-14 bg-[#070A0F] border-b border-zinc-800 px-4 lg:px-8 flex items-center justify-between">
+      <header className="sticky top-0 z-30 h-14 bg-[#070D1A]/95 backdrop-blur-md border-b border-[#182338] px-4 lg:px-8 flex items-center justify-between">
         {/* Left: Mobile Toggle & Date Indicator */}
         <div className="flex items-center gap-3">
           <button
             onClick={onMenuToggle}
-            className="p-1.5 bg-zinc-900 border border-zinc-700 text-zinc-300 hover:text-white lg:hidden active:scale-95 transition"
+            className="p-1.5 bg-[#0B1323] border border-[#182338] text-zinc-300 hover:text-white rounded-lg lg:hidden active:scale-95 transition"
             aria-label="Menüyü Aç"
           >
             <Menu className="w-5 h-5" />
           </button>
 
           {/* Current Date Display */}
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-950 border border-zinc-800 text-xs">
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-[#0B1323] border border-[#182338] rounded-lg text-xs">
             <Calendar className="w-3.5 h-3.5 text-[#00F5A0]" />
             <span className="font-black italic uppercase text-white tracking-wide">
               {formatDateTurkish(currentDate)}
@@ -89,7 +89,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
           {isMatchDay && nextMatch && (
             <Link
               href={`/match/${nextMatch.id}`}
-              className="flex items-center gap-1.5 px-3 py-1 bg-red-950 border border-red-600 text-red-300 text-xs font-black italic uppercase animate-pulse shadow-md"
+              className="flex items-center gap-1.5 px-3 py-1 bg-red-950/80 border border-red-500 text-red-200 text-xs font-black italic uppercase rounded-lg animate-pulse shadow-md"
             >
               <Swords className="w-3.5 h-3.5" />
               <span>BUGÜN MAÇ GÜNÜ</span>
@@ -100,7 +100,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
         {/* Right Info Bars & Advance CTAs */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Club Balance */}
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-zinc-950 border border-zinc-800 text-xs">
+          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-[#0B1323] border border-[#182338] rounded-lg text-xs">
             <Wallet className="w-3.5 h-3.5 text-[#00F5A0]" />
             <div className="flex items-center gap-1 font-mono">
               <span className="text-zinc-400 text-[11px] font-bold">BÜTÇE:</span>
@@ -113,12 +113,12 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
           {/* Inbox Notification Bell */}
           <Link
             href="/inbox"
-            className="relative p-2 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white transition-colors"
+            className="relative p-2 bg-[#0B1323] hover:bg-[#0E1B33] border border-[#182338] text-zinc-300 hover:text-white rounded-lg transition-colors"
             title="Gelen Kutusu"
           >
             <Bell className="w-4 h-4" />
             {unreadMessageCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-black bg-red-600 text-white animate-pulse">
+              <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-black bg-red-600 text-white rounded-full animate-pulse">
                 {unreadMessageCount}
               </span>
             )}
@@ -128,7 +128,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
           <button
             onClick={handleSingleDayAdvance}
             title="1 Gün İlerle"
-            className="px-3 py-1.5 font-bold text-xs bg-zinc-900 hover:bg-zinc-800 text-zinc-200 border border-zinc-700 transition-colors hidden sm:flex items-center gap-1 active:scale-95 uppercase font-mono"
+            className="px-3 py-1.5 font-bold text-xs bg-[#0B1323] hover:bg-[#0E1B33] text-zinc-200 border border-[#182338] rounded-lg transition-colors hidden sm:flex items-center gap-1 active:scale-95 uppercase font-mono"
           >
             <span>+1 GÜN</span>
           </button>
@@ -136,10 +136,10 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
           {/* İLERLE or MAÇA GİT (Smart Advance) */}
           <button
             onClick={handleSmartAdvance}
-            className={`group relative flex items-center gap-1.5 px-4 sm:px-6 py-2 font-black text-xs sm:text-sm uppercase tracking-wider shadow-md active:scale-95 transition-all ${
+            className={`group relative flex items-center gap-1.5 px-4 sm:px-6 py-2 font-black text-xs sm:text-sm uppercase tracking-wider rounded-lg shadow-md active:scale-95 transition-all ${
               isMatchDay
                 ? 'bg-red-600 hover:bg-red-500 text-white shadow-red-950/40 animate-pulse'
-                : 'bg-[#00F5A0] hover:bg-[#00D68B] text-black shadow-emerald-950/40'
+                : 'bg-[#00F5A0] hover:bg-[#00E590] text-black shadow-[0_0_16px_rgba(0,245,160,0.3)]'
             }`}
           >
             {isMatchDay ? (

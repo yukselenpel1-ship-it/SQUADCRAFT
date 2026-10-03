@@ -90,27 +90,30 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-2xl shadow-2xl p-6 text-white my-8 max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 overflow-y-auto">
+      <div className="relative bg-[#070D1A]/95 border border-[#182338] rounded-3xl w-full max-w-2xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl p-6 text-white my-8 max-h-[90vh] overflow-y-auto">
+        {/* Top neon accent line */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
+
         {/* Header & Tabs */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+        <div className="flex items-center justify-between border-b border-[#182338] pb-4 mb-4">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setMode('feedback')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
                 mode === 'feedback'
-                  ? 'bg-emerald-600 text-white shadow-md'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                  ? 'bg-[#00F5A0] text-black shadow-md font-black'
+                  : 'bg-[#0B1323] text-zinc-400 hover:text-white border border-[#182338]'
               }`}
             >
               ⭐ Kapalı Alfa Anketi
             </button>
             <button
               onClick={() => setMode('bug_report')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 mode === 'bug_report'
-                  ? 'bg-rose-600 text-white shadow-md'
-                  : 'bg-slate-800 text-slate-400 hover:text-white'
+                  ? 'bg-rose-500 text-white shadow-md font-black'
+                  : 'bg-[#0B1323] text-zinc-400 hover:text-white border border-[#182338]'
               }`}
             >
               <span>🐛</span> Hızlı Hata Bildir

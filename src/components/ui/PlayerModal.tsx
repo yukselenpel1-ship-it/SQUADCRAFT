@@ -521,12 +521,12 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
     <>
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
         {/* Modal Shell with EA FC / FIFA Ultimate Team Stadium Aesthetic */}
-        <div className="relative w-full max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[92vh] flex flex-col bg-[#070B14] sm:border sm:border-zinc-800 sm:rounded-2xl shadow-[0_0_60px_rgba(0,0,0,0.95)] overflow-hidden text-zinc-200">
+        <div className="relative w-full max-w-5xl h-[100dvh] sm:h-auto sm:max-h-[92vh] flex flex-col bg-[#070D1A]/95 sm:border sm:border-[#182338] sm:rounded-3xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl overflow-hidden text-zinc-200">
           {/* Subtle top neon accent line */}
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
 
           {/* Top Bar for Mobile Close / Back */}
-          <div className="flex sm:hidden items-center justify-between p-3.5 bg-[#090E1D] border-b border-zinc-800">
+          <div className="flex sm:hidden items-center justify-between p-3.5 bg-[#070D1A] border-b border-[#182338]">
             <div className="flex items-center gap-2">
               <span className="px-2 py-0.5 rounded text-[10px] font-mono font-black bg-[#00F5A0]/20 text-[#00F5A0] border border-[#00F5A0]/40">
                 {player.position}
@@ -537,7 +537,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white"
+              className="p-1.5 rounded-lg bg-[#0B1323] border border-[#182338] text-zinc-400 hover:text-white"
               aria-label="Kapat"
             >
               <X className="w-5 h-5" />
@@ -549,7 +549,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             {/* ================================================================= */}
             {/* LEFT COLUMN: THE ICONIC FIFA ULTIMATE TEAM (FUT) CARD             */}
             {/* ================================================================= */}
-            <div className="w-full lg:w-[320px] shrink-0 p-4 sm:p-6 bg-gradient-to-b from-[#0B1020] via-[#080D1A] to-[#050810] border-b lg:border-b-0 lg:border-r border-zinc-800/80 flex flex-col items-center justify-center relative">
+            <div className="w-full lg:w-[320px] shrink-0 p-4 sm:p-6 bg-gradient-to-b from-[#0B1323] via-[#070D1A] to-[#040711] border-b lg:border-b-0 lg:border-r border-[#182338] flex flex-col items-center justify-center relative">
               {/* FIFA Ultimate Team Card Container */}
               <div
                 className={`relative w-[250px] sm:w-[270px] rounded-2xl overflow-hidden p-3.5 transition-transform duration-300 hover:scale-[1.02] ${
@@ -662,9 +662,9 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             {/* ================================================================= */}
             {/* RIGHT COLUMN: EA FC MODERN TABS & MANAGEMENT HUD                  */}
             {/* ================================================================= */}
-            <div className="flex-1 flex flex-col min-w-0 bg-[#070B14]">
+            <div className="flex-1 flex flex-col min-w-0 bg-[#070D1A]">
               {/* Desktop Header Banner */}
-              <div className="hidden sm:flex items-center justify-between p-5 border-b border-zinc-800/80 bg-gradient-to-r from-[#090E1D] to-[#070B14]">
+              <div className="hidden sm:flex items-center justify-between p-5 border-b border-[#182338] bg-gradient-to-r from-[#0B1323] to-[#070D1A]">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <span className="px-2 py-0.5 rounded text-xs font-mono font-black uppercase tracking-wider bg-[#00F5A0]/20 text-[#00F5A0] border border-[#00F5A0]/40">
@@ -673,7 +673,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                     {player.secondaryPositions?.map((sec) => (
                       <span
                         key={sec}
-                        className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-zinc-800 text-zinc-300 border border-zinc-700"
+                        className="px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-[#0B1323] text-zinc-300 border border-[#182338]"
                       >
                         {sec}
                       </span>
@@ -711,7 +711,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                   {/* Close X Button */}
                   <button
                     onClick={onClose}
-                    className="p-2 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700/70 transition-all shadow-md"
+                    className="p-2 rounded-xl bg-[#0B1323] hover:bg-[#121D33] text-zinc-400 hover:text-white border border-[#182338] transition-all shadow-md"
                     aria-label="Kapat"
                   >
                     <X className="w-5 h-5" />
@@ -720,7 +720,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               </div>
 
               {/* Segmented EA FC Tab Bar */}
-              <div className="flex items-center gap-1 px-4 sm:px-6 bg-[#080D1A] border-b border-zinc-800 overflow-x-auto no-scrollbar">
+              <div className="flex items-center gap-1 px-4 sm:px-6 bg-[#070D1A] border-b border-[#182338] overflow-x-auto no-scrollbar">
                 <button
                   onClick={() => setActiveTab('bio')}
                   className={`flex items-center gap-2 px-3.5 py-3 text-xs font-mono font-black uppercase tracking-wider border-b-2 transition-all shrink-0 ${

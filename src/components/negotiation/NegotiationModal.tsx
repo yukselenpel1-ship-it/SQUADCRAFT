@@ -193,13 +193,15 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
   const remainingBudgetAfterOffer = finances.transferBudget - totalTransferCommitment;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-5 bg-black/95 select-none animate-in fade-in">
-      <div className="relative w-full max-w-4xl h-[100dvh] sm:h-auto sm:max-h-[92vh] flex flex-col bg-[#070A12] border-0 sm:border-2 border-zinc-700 shadow-2xl text-zinc-200 overflow-hidden">
-        
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-5 bg-black/85 backdrop-blur-xl select-none animate-in fade-in">
+      <div className="relative w-full max-w-4xl h-[100dvh] sm:h-auto sm:max-h-[92vh] flex flex-col bg-[#070D1A]/95 sm:border sm:border-[#182338] sm:rounded-3xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl text-zinc-200 overflow-hidden">
+        {/* Top neon accent line */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
+
         {/* 1. Modal Top Bar */}
-        <div className="p-4 sm:p-5 bg-[#0B101D] border-b border-zinc-800 flex items-center justify-between shrink-0">
+        <div className="p-4 sm:p-5 bg-[#070D1A] border-b border-[#182338] flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <span className="w-2.5 h-6 bg-[#00F5A0]" />
+            <span className="w-2.5 h-6 rounded bg-[#00F5A0] shadow-[0_0_10px_rgba(0,245,160,0.5)]" />
             <div>
               <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-[#00F5A0]">
                 {isContractRenewal ? '// SÖZLEŞME YENİLEME MASASI' : '// RESMİ TRANSFER & PAZARLIK MASASI'}
@@ -212,7 +214,7 @@ export const NegotiationModal: React.FC<NegotiationModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700 transition-colors"
+            className="p-2 rounded-xl bg-[#0B1323] hover:bg-[#121D33] text-zinc-400 hover:text-white border border-[#182338] transition-colors"
             title="Kapat"
           >
             <X className="w-5 h-5" />

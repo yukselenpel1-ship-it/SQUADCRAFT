@@ -28,10 +28,10 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({
 
   return (
     <div
-      className={`p-4 sm:p-5 border transition-all ${
+      className={`p-4 sm:p-5 rounded-2xl transition-all ${
         highlight
-          ? 'bg-[#0A1020] border-2 border-[#00F5A0] shadow-xl'
-          : 'bg-[#080D1A] border-zinc-800 hover:border-zinc-700'
+          ? 'bg-[#0B1323] border-2 border-[#00F5A0] shadow-[0_0_25px_rgba(0,245,160,0.15)]'
+          : 'sc-panel hover:border-[#1E2E4A]'
       }`}
     >
       <div className="flex items-center justify-between mb-2">
@@ -39,7 +39,7 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({
           {title}
         </span>
         {Icon && (
-          <div className="p-1.5 bg-[#040711] text-[#00F5A0] border border-zinc-800">
+          <div className="p-2 rounded-xl bg-[#070D1A] text-[#00F5A0] border border-[#182338]">
             <Icon className="w-4 h-4" />
           </div>
         )}

@@ -1083,7 +1083,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         {/* COLUMN 1: PLAYER POOL & SMART PRESET FILTERS (5 Cols)              */}
         {/* ================================================================== */}
         <div
-          className={`lg:col-span-5 bg-[#070D14]/95 border border-zinc-800 flex flex-col justify-between h-[700px] shadow-2xl rounded-lg overflow-hidden ${
+          className={`lg:col-span-5 sc-panel border border-[#182338] flex flex-col justify-between h-[720px] shadow-2xl rounded-2xl overflow-hidden ${
             mobileTab !== 'pool' ? 'hidden lg:flex' : 'flex'
           }`}
         >
@@ -1351,15 +1351,15 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         {/* COLUMN 2: SQUADCRAFT PLAYER SCOUTING SPOTLIGHT (4 Cols)             */}
         {/* ================================================================== */}
         <div
-          className={`lg:col-span-4 bg-[#070D14]/95 border-2 border-zinc-800 flex flex-col justify-between h-[700px] p-5 shadow-2xl rounded-lg ${
+          className={`lg:col-span-4 sc-panel border-2 border-[#FFB800]/50 sc-glow-gold flex flex-col justify-between h-[720px] p-5 shadow-2xl rounded-2xl ${
             mobileTab !== 'card' ? 'hidden lg:flex' : 'flex'
           }`}
         >
           {activeSpotlightPlayer ? (
             <div className="space-y-4 flex-1 flex flex-col justify-between">
               {/* Top Tactical Scouting Card */}
-              <div className="relative p-5 bg-gradient-to-b from-[#0B1522] to-[#050B12] border border-[#00D4FF]/30 shadow-xl overflow-hidden rounded-xl">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#00D4FF]/10 rounded-full blur-2xl pointer-events-none" />
+              <div className="relative p-5 bg-gradient-to-b from-[#1C1605]/95 via-[#0B1323]/95 to-[#070D1A]/95 border-2 border-[#FFB800]/60 shadow-xl overflow-hidden rounded-xl">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="relative flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -1506,9 +1506,9 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                 <button
                   onClick={() => handleSelectPlayer(activeSpotlightPlayer)}
                   disabled={isSubmittingPick || !spotlightCanDraft}
-                  className={`w-full py-3.5 rounded font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-xl flex items-center justify-center gap-2 active:scale-98 ${
+                  className={`w-full py-3.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-xl flex items-center justify-center gap-2 active:scale-98 ${
                     spotlightCanDraft
-                      ? 'bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] hover:to-[#00C475] text-black shadow-[#00F5A0]/20'
+                      ? 'bg-[#00F5A0] hover:bg-[#00E590] text-black shadow-[0_0_20px_rgba(0,245,160,0.4)]'
                       : 'bg-zinc-800 text-zinc-500 cursor-not-allowed opacity-60'
                   }`}
                 >
@@ -1553,7 +1553,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         >
           {/* My Club Live Quota & Budget Breakdown Card */}
           {currentMember && currentClub && (
-            <div className="bg-[#070D14]/95 border border-zinc-800 p-4 shadow-xl space-y-3 rounded-lg">
+            <div className="sc-panel border border-[#182338] p-4 shadow-xl space-y-3 rounded-2xl">
               <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                 <div className="flex items-center gap-2.5">
                   <BadgePreview badge={currentClub.badge} clubCode={currentClub.code} size={28} />

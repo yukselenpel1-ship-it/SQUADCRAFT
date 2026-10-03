@@ -53,11 +53,14 @@ export const AssignScoutModal: React.FC<AssignScoutModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg bg-[#070B14] border-2 border-zinc-700 shadow-2xl p-6 text-zinc-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg bg-[#070D1A]/95 border border-[#182338] rounded-3xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl p-6 text-zinc-200 overflow-hidden">
+        {/* Top neon accent line */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
+
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-700"
+          className="absolute top-4 right-4 p-2 rounded-xl bg-[#0B1323] hover:bg-[#121D33] text-zinc-400 hover:text-white border border-[#182338] transition-colors"
         >
           <X className="w-5 h-5" />
         </button>

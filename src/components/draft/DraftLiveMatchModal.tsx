@@ -41,6 +41,7 @@ interface DraftLiveMatchModalProps {
   startedAt?: string;
   paceMs?: number;
   isMultiplayerSynced?: boolean;
+  onSpeedChange?: (speed: 1 | 2 | 3 | 4) => void;
 }
 
 export function DraftLiveMatchModal({
@@ -53,11 +54,18 @@ export function DraftLiveMatchModal({
   startedAt,
   paceMs = 800,
   isMultiplayerSynced,
+  onSpeedChange,
 }: DraftLiveMatchModalProps) {
   const [activeTab, setActiveTab] = useState<'RADAR' | 'STATS' | 'EVENTS' | 'LINEUPS'>('RADAR');
   const [speed, setSpeed] = useState<number>(
     paceMs <= 200 ? 4 : paceMs <= 300 ? 3 : paceMs <= 500 ? 2 : 1
   ); // 1 = 1x, 2 = 2x, 3 = 3x, 4 = 4x
+
+  // Sync speed state whenever paceMs prop changes
+  useEffect(() => {
+    const spd = paceMs <= 200 ? 4 : paceMs <= 300 ? 3 : paceMs <= 500 ? 2 : 1;
+    setSpeed(spd);
+  }, [paceMs]);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [engineState, setEngineState] = useState<MatchEngineState | null>(null);
   const [isFinished, setIsFinished] = useState<boolean>(false);
@@ -101,7 +109,9 @@ export function DraftLiveMatchModal({
       const now = Date.now();
       const startMs = startedAt ? new Date(startedAt).getTime() : now;
       const elapsedMs = Math.max(0, now - startMs);
-      const calculatedMinute = Math.min(90, Math.floor(elapsedMs / (paceMs || 800)));
+      const effectivePaceMs =
+        speed === 4 ? 200 : speed === 3 ? 266 : speed === 2 ? 400 : (paceMs || 800);
+      const calculatedMinute = Math.min(90, Math.floor(elapsedMs / effectivePaceMs));
 
       setCurrentSyncMinute(calculatedMinute);
 
@@ -140,7 +150,7 @@ export function DraftLiveMatchModal({
     updateFromWallClock();
     const timer = setInterval(updateFromWallClock, 250);
     return () => clearInterval(timer);
-  }, [isOpen, fixture?.id, isWallClockSynced, startedAt, paceMs, clubs]);
+  }, [isOpen, fixture?.id, isWallClockSynced, startedAt, paceMs, speed, clubs]);
 
   // 2. LOCAL ENGINE FALLBACK MODE (Solo / Unsynced)
   useEffect(() => {
@@ -327,8 +337,8 @@ export function DraftLiveMatchModal({
   const awayPlayersList = engineState?.away?.players ? Object.values(engineState.away.players) : [];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-3 md:p-4 bg-[#04060A]/95 backdrop-blur-md animate-in fade-in duration-200 select-none font-sans overflow-x-hidden">
-      <div className="bg-[#070D14] border-0 sm:border-2 border-zinc-800 max-w-5xl w-full h-full sm:h-[94vh] flex flex-col shadow-2xl relative overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-3 md:p-4 bg-[#040711]/90 backdrop-blur-md animate-in fade-in duration-200 select-none font-sans overflow-x-hidden">
+      <div className="sc-panel border border-[#182338] max-w-5xl w-full h-full sm:h-[94vh] flex flex-col shadow-2xl relative overflow-hidden rounded-none sm:rounded-2xl">
         {/* Top Glow Light */}
         <div
           className={`h-[2.5px] w-full bg-gradient-to-r ${
@@ -339,19 +349,16 @@ export function DraftLiveMatchModal({
         />
 
         {/* Header Broadcast Scoreboard */}
-        <div className="bg-[#0A101A] border-b border-zinc-800 px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4 shrink-0">
+        <div className="bg-[#070D1A]/95 border-b border-[#182338] px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4 shrink-0">
           <div className="flex items-center gap-2 sm:gap-3 truncate">
-            <span className="text-[10px] font-mono font-black uppercase px-2 py-0.5 bg-[#00F5A0]/10 border border-[#00F5A0]/40 text-[#00F5A0] shrink-0">
-              HAFTA {fixture.round} // CANLI MAÇ
+            {/* Red pulsing CANLI badge */}
+            <span className="px-2.5 py-0.5 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 animate-pulse shadow-md">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+              CANLI
             </span>
-            <span className="text-zinc-700 hidden sm:inline">|</span>
+            <span className="text-zinc-600 hidden sm:inline">|</span>
             <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-zinc-300">
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  isFinished ? 'bg-[#FFB800]' : 'bg-red-500 animate-ping'
-                }`}
-              />
-              <span className={isFinished ? 'text-amber-400 font-black' : 'text-emerald-400'}>
+              <span className={isFinished ? 'text-amber-400 font-black' : 'text-[#00F5A0] font-black'}>
                 {isFinished ? "MAÇ SONU (90')" : `${currentMinute}' DAKİKA`}
               </span>
             </div>
@@ -360,7 +367,7 @@ export function DraftLiveMatchModal({
           {/* Sync Badge or Solo Speed Controls */}
           <div className="flex items-center gap-1.5 shrink-0">
             {isWallClockSynced ? (
-              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-zinc-950 border border-emerald-500/40 text-[#00F5A0] text-[10px] font-mono font-bold">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#040711] border border-emerald-500/40 text-[#00F5A0] text-[10px] font-mono font-bold rounded-lg">
                 <Radio className="w-3 h-3 text-red-500 animate-pulse" />
                 <span className="hidden sm:inline">SENKRONİZE YAYIN</span>
                 <span className="sm:hidden">CANLI</span>
@@ -386,6 +393,7 @@ export function DraftLiveMatchModal({
                     onClick={() => {
                       setSpeed(s);
                       setIsPlaying(true);
+                      onSpeedChange?.(s as 1 | 2 | 3 | 4);
                     }}
                     className={`px-2 sm:px-2.5 py-1 text-xs font-mono font-black transition border ${
                       speed === s && isPlaying

@@ -29,7 +29,7 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
     return (
       <span
         key={index}
-        className={`inline-flex items-center justify-center w-5 h-5 font-mono text-[10px] font-black border ${config.bg}`}
+        className={`inline-flex items-center justify-center w-5 h-5 rounded-md font-mono text-[10px] font-black border ${config.bg}`}
       >
         {config.label}
       </span>
@@ -37,10 +37,10 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
   };
 
   return (
-    <div className="w-full overflow-x-auto border border-zinc-850 bg-[#080D1A] shadow-2xl">
+    <div className="w-full overflow-x-auto sc-panel rounded-2xl border border-[#182338] shadow-2xl">
       <table className="w-full text-left border-collapse min-w-[620px]">
         <thead>
-          <tr className="border-b border-zinc-800 bg-[#040711] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
+          <tr className="border-b border-[#182338] bg-[#070D1A] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
             <th className="py-3 px-3 text-center w-12"># POS</th>
             <th className="py-3 px-4">KULÜP</th>
             <th className="py-3 px-3 text-center w-10">O</th>
@@ -50,11 +50,11 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
             <th className="py-3 px-3 text-center w-10">A</th>
             <th className="py-3 px-3 text-center w-10">Y</th>
             <th className="py-3 px-3 text-center w-12">AV</th>
-            <th className="py-3 px-4 text-center w-14 text-white bg-zinc-900/60">P</th>
+            <th className="py-3 px-4 text-center w-14 text-white bg-[#0B1323]">P</th>
             <th className="py-3 px-4 text-center hidden md:table-cell">FORM</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-zinc-850 text-xs font-semibold">
+        <tbody className="divide-y divide-[#182338]/60 text-xs font-semibold">
           {displayStandings.map((item, index) => {
             const club = getClub(item.clubId);
             const isUserClub = item.clubId === userClubId;
@@ -72,15 +72,15 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
                 className={`transition-colors ${rankBorder} ${
                   isUserClub
                     ? 'bg-[#00F5A0]/10 hover:bg-[#00F5A0]/15'
-                    : 'hover:bg-zinc-900/70'
+                    : 'hover:bg-[#0E1A2E]/60'
                 }`}
               >
                 {/* Rank Number */}
                 <td className="py-3 px-3 text-center font-mono font-black">
                   <span
-                    className={`inline-flex items-center justify-center w-6 h-6 text-xs font-black ${
+                    className={`inline-flex items-center justify-center w-6 h-6 rounded-md text-xs font-black ${
                       rank === 1
-                        ? 'bg-[#00F5A0] text-black border border-white'
+                        ? 'bg-[#00F5A0] text-[#040711] shadow-[0_0_10px_rgba(0,245,160,0.4)]'
                         : rank <= 3
                         ? 'bg-[#00D4FF]/20 text-[#00D4FF] border border-[#00D4FF]/40'
                         : rank >= 9
@@ -109,7 +109,7 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
                           {club ? club.name : item.clubId}
                         </span>
                         {isUserClub && (
-                          <span className="text-[9px] font-mono font-black px-1.5 py-0.2 bg-[#00F5A0] text-black border border-white">
+                          <span className="text-[9px] font-mono font-black px-1.5 py-0.5 rounded bg-[#00F5A0] text-[#040711]">
                             KULÜBÜNÜZ
                           </span>
                         )}
@@ -139,7 +139,7 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
                 </td>
 
                 {/* Points */}
-                <td className="py-3 px-4 text-center font-mono font-black text-sm text-white bg-zinc-900/40">
+                <td className="py-3 px-4 text-center font-mono font-black text-sm text-white bg-[#0B1323]">
                   {item.points}
                 </td>
 

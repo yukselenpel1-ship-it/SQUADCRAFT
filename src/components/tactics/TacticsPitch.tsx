@@ -66,26 +66,13 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
   return (
     <div className="relative w-full flex flex-col items-center">
       {/* Pitch Outer Shell */}
-      <div className="relative w-full max-w-[620px] aspect-[3/4] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-4 border-[#1B2433] bg-[#0c2415] select-none">
-        {/* Grass Pattern & Stripes */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0e2c1a] to-[#0a1f12]">
-          {/* Repeating Field Grass Stripes */}
-          <div className="w-full h-full flex flex-col opacity-30">
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div
-                key={i}
-                className={`w-full flex-1 ${i % 2 === 0 ? 'bg-black/15' : 'bg-white/5'}`}
-              />
-            ))}
-          </div>
-        </div>
-
+      <div className="relative w-full max-w-[620px] aspect-[3/4] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-4 border-[#182338] football-pitch-bg select-none">
         {/* Pitch Lines (SVG Layer) */}
         <svg
           viewBox="0 0 1000 1300"
           preserveAspectRatio="none"
-          className="absolute inset-0 w-full h-full pointer-events-none stroke-emerald-400/30"
-          strokeWidth="2"
+          className="absolute inset-0 w-full h-full pointer-events-none stroke-white/25"
+          strokeWidth="2.5"
           fill="none"
         >
           {/* Pitch Outer Margin */}
@@ -96,7 +83,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
           {/* Center Circle */}
           <circle cx="500" cy="650" r="140" />
-          <circle cx="500" cy="650" r="15" fill="#00F5A0" fillOpacity="0.4" />
+          <circle cx="500" cy="650" r="12" fill="#00F5A0" fillOpacity="0.6" />
 
           {/* Top Penalty Box (Opponent Side) */}
           <rect x="250" y="52" width="500" height="234" />
@@ -135,23 +122,23 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
             >
               {/* Pulse ring when selected */}
               {isSelected && (
-                <span className="absolute -inset-2 rounded-full border-2 border-[#00F5A0] animate-ping opacity-75" />
+                <span className="absolute -inset-2 rounded-full border-2 border-[#00F5A0] animate-ping opacity-75 shadow-[0_0_12px_#00F5A0]" />
               )}
 
               {/* Player Jersey / Crest Node */}
               <div
                 className={`relative flex items-center justify-center w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 shadow-2xl transition-all ${
                   isSelected
-                    ? 'bg-[#00F5A0] border-white text-black shadow-[0_0_18px_#00F5A0]'
+                    ? 'bg-[#00F5A0] border-white text-black shadow-[0_0_20px_#00F5A0]'
                     : player?.isInjured
                     ? 'bg-rose-950 border-rose-500 text-white'
-                    : 'bg-[#050811] hover:bg-zinc-900 border-emerald-500/70 text-white'
+                    : 'bg-[#0B1323] hover:bg-[#0E1B33] border-[#182338] hover:border-[#00F5A0] text-white'
                 }`}
               >
                 {/* Role indicator pill */}
                 <span
                   className={`text-[10px] sm:text-xs font-black tracking-wider ${
-                    isSelected ? 'text-black' : 'text-emerald-400'
+                    isSelected ? 'text-black' : 'text-[#00F5A0]'
                   }`}
                 >
                   {slot.role}
@@ -160,12 +147,12 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
                 {/* Overall rating pill */}
                 {player && (
                   <span
-                    className={`absolute -top-1.5 -right-1.5 text-[9px] font-extrabold px-1 py-0.2 rounded-full border shadow-sm ${
+                    className={`absolute -top-1.5 -right-1.5 text-[9px] font-extrabold px-1.5 py-0.2 rounded-full border shadow-sm ${
                       player.overall >= 80
-                        ? 'bg-emerald-500 text-black border-emerald-300'
+                        ? 'bg-[#00F5A0] text-black border-emerald-300 shadow-[0_0_6px_rgba(0,245,160,0.5)]'
                         : player.overall >= 74
-                        ? 'bg-sky-500 text-white border-sky-300'
-                        : 'bg-amber-500 text-black border-amber-300'
+                        ? 'bg-[#00D4FF] text-black border-sky-300'
+                        : 'bg-amber-400 text-black border-amber-200'
                     }`}
                   >
                     {player.overall}
@@ -176,7 +163,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
                 <button
                   onClick={(e) => handleOpenBenchSwap(slot.slotId, e)}
                   title="Yedeklerle Değiştir"
-                  className="absolute -bottom-1 -left-1 p-1 rounded-full bg-zinc-900 border border-zinc-700 hover:border-[#00F5A0] text-zinc-400 hover:text-[#00F5A0] transition-colors"
+                  className="absolute -bottom-1 -left-1 p-1 rounded-full bg-[#0B1323] border border-[#182338] hover:border-[#00F5A0] text-zinc-400 hover:text-[#00F5A0] transition-colors"
                 >
                   <RefreshCw className="w-2.5 h-2.5" />
                 </button>
@@ -184,10 +171,10 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
               {/* Player Name Tag */}
               <div
-                className={`mt-1 px-2 py-0.5 rounded-md text-[10px] sm:text-[11px] font-bold tracking-tight shadow-md border truncate max-w-[110px] text-center transition-all ${
+                className={`mt-1 px-2.5 py-0.5 rounded-md text-[10px] sm:text-[11px] font-bold tracking-tight shadow-md border truncate max-w-[110px] text-center transition-all ${
                   isSelected
                     ? 'bg-[#00F5A0] text-black border-white'
-                    : 'bg-zinc-950/95 text-zinc-100 border-zinc-700/80 group-hover:border-emerald-500/60'
+                    : 'bg-[#0B1323]/95 text-white border-[#182338] group-hover:border-[#00F5A0]/60'
                 }`}
               >
                 {player ? `${player.firstName[0]}. ${player.lastName}` : 'Boş'}

@@ -37,9 +37,9 @@ export default function LeaguePage() {
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
       {/* Season End Summary Banner */}
       {seasonEndSummary && (
-        <div className="bg-[#141005] border-2 border-amber-500 p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="sc-panel rounded-2xl border-2 border-amber-500 p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-1">
-            <span className="px-2.5 py-0.5 bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest font-mono">
+            <span className="px-2.5 py-0.5 rounded-md bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest font-mono">
               SEZON TAMAMLANDI
             </span>
             <h2 className="text-xl sm:text-2xl font-black italic uppercase text-white">
@@ -52,7 +52,7 @@ export default function LeaguePage() {
           </div>
           <button
             onClick={startNextSeasonRoll}
-            className="px-6 py-3 bg-[#00F5A0] hover:bg-[#00D68B] text-black font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0"
+            className="px-6 py-3 rounded-xl bg-[#00F5A0] hover:bg-[#00D68B] text-[#040711] font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0"
           >
             YENİ SEZONA BAŞLA
           </button>
@@ -60,10 +60,10 @@ export default function LeaguePage() {
       )}
 
       {/* Broadcast Header HUD */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-zinc-800">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-[#182338]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
+            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
               // OFFICIAL STANDINGS
             </span>
             <span className="text-[11px] font-mono text-zinc-400">
@@ -78,16 +78,16 @@ export default function LeaguePage() {
 
         {/* Legend */}
         <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#080D1A] border border-zinc-800">
-            <span className="w-2.5 h-2.5 bg-[#00F5A0]" />
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl sc-panel border border-[#182338]">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00F5A0] shadow-[0_0_8px_rgba(0,245,160,0.5)]" />
             <span className="text-zinc-300 text-[11px] uppercase">Kıtasal Şampiyona (1.)</span>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#080D1A] border border-zinc-800">
-            <span className="w-2.5 h-2.5 bg-[#00D4FF]" />
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl sc-panel border border-[#182338]">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00D4FF] shadow-[0_0_8px_rgba(0,212,255,0.5)]" />
             <span className="text-zinc-300 text-[11px] uppercase">Kıtasal Eleme (2-3.)</span>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#080D1A] border border-zinc-800">
-            <span className="w-2.5 h-2.5 bg-rose-500" />
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl sc-panel border border-[#182338]">
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
             <span className="text-zinc-300 text-[11px] uppercase">Düşme Hattı (9-10.)</span>
           </div>
         </div>
@@ -105,8 +105,8 @@ export default function LeaguePage() {
       {/* Stats Leaders Section (Top Scorers & Assists) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
         {/* Top Scorers */}
-        <div className="p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
+        <div className="p-5 sc-panel rounded-2xl border border-[#182338] shadow-xl space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#182338]">
             <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
               <Flame className="w-4 h-4 text-amber-400" />
               Gol Krallığı <span className="text-[10px] text-zinc-500">// TOP SCORERS</span>
@@ -114,7 +114,7 @@ export default function LeaguePage() {
             <span className="text-[10px] font-mono text-zinc-400 uppercase">GOL</span>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {topScorers.length === 0 ? (
               <div className="text-xs text-zinc-500 font-mono py-4 text-center">Henüz gol istatistiği kaydedilmedi.</div>
             ) : (
@@ -123,7 +123,7 @@ export default function LeaguePage() {
                 return (
                   <div
                     key={player.id}
-                    className="flex items-center justify-between p-2.5 bg-[#040711] border border-zinc-850 hover:border-amber-400/50 transition-all"
+                    className="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1A] border border-[#182338] hover:border-amber-400/50 transition-all"
                   >
                     <div className="flex items-center gap-3">
                       <span className="w-5 font-mono font-black text-xs text-amber-400">
@@ -148,7 +148,7 @@ export default function LeaguePage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-mono font-black text-amber-400 bg-amber-400/10 px-2 py-0.5 border border-amber-400/30">
+                      <span className="text-sm font-mono font-black text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
                         {player.seasonStats?.goals} GOL
                       </span>
                     </div>
@@ -160,8 +160,8 @@ export default function LeaguePage() {
         </div>
 
         {/* Top Assists */}
-        <div className="p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
+        <div className="p-5 sc-panel rounded-2xl border border-[#182338] shadow-xl space-y-4">
+          <div className="flex items-center justify-between pb-3 border-b border-[#182338]">
             <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
               <Award className="w-4 h-4 text-sky-400" />
               Asist Krallığı <span className="text-[10px] text-zinc-500">// TOP ASSISTS</span>
@@ -169,7 +169,7 @@ export default function LeaguePage() {
             <span className="text-[10px] font-mono text-zinc-400 uppercase">ASİST</span>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {topAssists.length === 0 ? (
               <div className="text-xs text-zinc-500 font-mono py-4 text-center">Henüz asist istatistiği kaydedilmedi.</div>
             ) : (
@@ -178,7 +178,7 @@ export default function LeaguePage() {
                 return (
                   <div
                     key={player.id}
-                    className="flex items-center justify-between p-2.5 bg-[#040711] border border-zinc-850 hover:border-sky-400/50 transition-all"
+                    className="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1A] border border-[#182338] hover:border-sky-400/50 transition-all"
                   >
                     <div className="flex items-center gap-3">
                       <span className="w-5 font-mono font-black text-xs text-sky-400">
@@ -203,7 +203,7 @@ export default function LeaguePage() {
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-mono font-black text-sky-400 bg-sky-400/10 px-2 py-0.5 border border-sky-400/30">
+                      <span className="text-sm font-mono font-black text-sky-400 bg-sky-400/10 px-2 py-0.5 rounded border border-sky-400/30">
                         {player.seasonStats?.assists} AST
                       </span>
                     </div>

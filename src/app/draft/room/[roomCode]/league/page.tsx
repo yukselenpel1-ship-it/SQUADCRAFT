@@ -166,6 +166,31 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   const [selectedBenchId, setSelectedBenchId] = useState<string | null>(null);
   const [dismissedLiveMw, setDismissedLiveMw] = useState<number | null>(null);
 
+  // Match simulation speed single source of truth (1x, 2x, 3x, 4x)
+  const [selectedSpeed, setSelectedSpeed] = useState<1 | 2 | 3 | 4>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(`squadcraft_speed_${roomCode}`);
+      if (saved && ['1', '2', '3', '4'].includes(saved)) {
+        return Number(saved) as 1 | 2 | 3 | 4;
+      }
+    }
+    return 1;
+  });
+
+  const [isSimulatingWeek, setIsSimulatingWeek] = useState(false);
+  const [simulationProgress, setSimulationProgress] = useState<{ current: number; total: number } | null>(null);
+
+  // Sync selected speed when remote rules provide matchSpeed
+  useEffect(() => {
+    const remoteSpeed = hydrationResult.state?.room?.rules?.matchSpeed;
+    if (remoteSpeed && [1, 2, 3, 4].includes(remoteSpeed)) {
+      setSelectedSpeed(remoteSpeed);
+      try {
+        localStorage.setItem(`squadcraft_speed_${roomCode}`, String(remoteSpeed));
+      } catch {}
+    }
+  }, [hydrationResult.state?.room?.rules?.matchSpeed, roomCode]);
+
   const fetchInFlightRef = useRef(false);
   const fetchQueuedRef = useRef(false);
   const latestRequestIdRef = useRef(0);
@@ -649,13 +674,19 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
   // Set match simulation speed (1x, 2x, 3x, 4x)
   const handleSetMatchSpeed = (speed: 1 | 2 | 3 | 4) => {
-    if (!currentMember || !isHost) return;
-    const res = DraftMultiplayerStore.updateMatchSpeed(room.id, currentMember.id, speed);
-    if (res.state) {
-      setHydrationResult((prev) => ({ ...prev, state: res.state }));
-      setStatusMessage(`Maç simülasyon hızı ${speed}x olarak güncellendi.`);
-      setTimeout(() => setStatusMessage(null), 2500);
+    setSelectedSpeed(speed);
+    try {
+      localStorage.setItem(`squadcraft_speed_${roomCode}`, String(speed));
+    } catch {}
+
+    if (currentMember && isHost && room) {
+      const res = DraftMultiplayerStore.updateMatchSpeed(room.id, currentMember.id, speed);
+      if (res.state) {
+        setHydrationResult((prev) => ({ ...prev, state: res.state }));
+      }
     }
+    setStatusMessage(`Maç simülasyon hızı ${speed}x olarak güncellendi.`);
+    setTimeout(() => setStatusMessage(null), 2500);
   };
 
   // Fast Simulate Fixture (Instantly simulate + auto-simulate other bots in week)
@@ -680,18 +711,43 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
     }
   };
 
-  // Simulate all remaining matches in current matchweek
-  const handleSimulateRemainingInWeek = () => {
+  // Simulate all remaining matches in current matchweek with speed-scaled delay
+  const handleSimulateRemainingInWeek = async () => {
+    if (isSimulatingWeek) return;
     const pendingInWeek = currentWeekFixtures.filter((f: DraftFixture) => f.status !== 'COMPLETED');
     if (pendingInWeek.length === 0) return;
 
-    let lastState: any = null;
-    for (const f of pendingInWeek) {
-      const res = DraftMultiplayerStore.simulateFixture(room.id, f.id);
-      if (res.state) lastState = res.state;
+    setIsSimulatingWeek(true);
+    setSimulationProgress({ current: 0, total: pendingInWeek.length });
+
+    // Delay per fixture based on single source of truth selectedSpeed:
+    // 1x = 1000ms, 2x = 500ms, 3x = 333ms, 4x = 150ms
+    const stepDelayMs =
+      selectedSpeed === 4 ? 150 :
+      selectedSpeed === 3 ? 333 :
+      selectedSpeed === 2 ? 500 : 1000;
+
+    let currentState = roomState;
+    try {
+      for (let i = 0; i < pendingInWeek.length; i++) {
+        const f = pendingInWeek[i];
+        setSimulationProgress({ current: i + 1, total: pendingInWeek.length });
+
+        await new Promise((resolve) => setTimeout(resolve, stepDelayMs));
+
+        const res = DraftMultiplayerStore.simulateFixture(room.id, f.id);
+        if (res.state) {
+          currentState = res.state;
+          setHydrationResult((prev) => ({ ...prev, state: res.state }));
+        }
+      }
+    } finally {
+      setIsSimulatingWeek(false);
+      setSimulationProgress(null);
     }
-    if (lastState) {
-      setHydrationResult((prev) => ({ ...prev, state: lastState }));
+
+    if (currentState) {
+      setHydrationResult((prev) => ({ ...prev, state: currentState }));
     } else {
       fetchState();
     }
@@ -1156,29 +1212,21 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                   <span>HIZ:</span>
                 </span>
                 {([1, 2, 3, 4] as const).map((spd) => {
-                  const currentSpeed =
-                    room.rules?.matchSpeed ||
-                    (room.liveMatchweek?.paceMs === 200
-                      ? 4
-                      : room.liveMatchweek?.paceMs === 266
-                      ? 3
-                      : room.liveMatchweek?.paceMs === 400
-                      ? 2
-                      : 1);
-                  const isSelected = currentSpeed === spd;
+                  const isSelected = selectedSpeed === spd;
                   return (
                     <button
                       key={spd}
-                      onClick={() => isHost && handleSetMatchSpeed(spd)}
-                      disabled={!isHost}
+                      onClick={() => handleSetMatchSpeed(spd)}
+                      data-speed={spd}
+                      data-testid={`speed-btn-${spd}x`}
                       className={`px-2 py-0.5 font-mono text-[11px] font-black transition-all ${
                         isSelected
                           ? 'bg-[#00F5A0] text-black shadow-sm'
                           : isHost
                           ? 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-                          : 'text-zinc-600 cursor-not-allowed'
+                          : 'text-zinc-500 hover:text-zinc-300'
                       }`}
-                      title={isHost ? `Maç hızını ${spd}x yap` : `Yalnızca kurucu hızı değiştirebilir (${spd}x)`}
+                      title={isHost ? `Maç hızını ${spd}x yap` : `Hızı ${spd}x yap`}
                     >
                       {spd}x
                     </button>
@@ -1234,11 +1282,17 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                       {isHost && (
                         <button
                           onClick={handleSimulateRemainingInWeek}
-                          className="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 hover:text-white font-bold text-xs uppercase tracking-wider transition flex items-center gap-1.5"
-                          title="Haftanın maçlarını Match Engine ile anında tamamla"
+                          disabled={isSimulatingWeek}
+                          data-testid="simulate-week-btn"
+                          className="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 hover:text-white font-bold text-xs uppercase tracking-wider transition flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                          title="Haftanın maçlarını Match Engine ile tamamla"
                         >
-                          <Play className="w-3.5 h-3.5 text-[#00D4FF]" />
-                          <span>HAFTAYI OYNA</span>
+                          <Play className={`w-3.5 h-3.5 text-[#00D4FF] ${isSimulatingWeek ? 'animate-spin' : ''}`} />
+                          <span>
+                            {isSimulatingWeek
+                              ? `SİMÜLE EDİLİYOR (${simulationProgress?.current || 0}/${simulationProgress?.total || 0})...`
+                              : 'HAFTAYI OYNA'}
+                          </span>
                         </button>
                       )}
                     </>
@@ -2896,8 +2950,9 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         onClose={handleCloseLiveModal}
         onMatchFinished={handleLiveMatchFinished}
         startedAt={room.liveMatchweek?.startedAt}
-        paceMs={room.liveMatchweek?.paceMs || (room.rules?.matchSpeed === 4 ? 200 : room.rules?.matchSpeed === 3 ? 266 : room.rules?.matchSpeed === 2 ? 400 : 800)}
+        paceMs={selectedSpeed === 4 ? 200 : selectedSpeed === 3 ? 266 : selectedSpeed === 2 ? 400 : 800}
         isMultiplayerSynced={room.liveMatchweek?.status === 'LIVE'}
+        onSpeedChange={handleSetMatchSpeed}
       />
 
       {/* Match Post-Report Modal */}

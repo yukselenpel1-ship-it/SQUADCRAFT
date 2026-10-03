@@ -68,55 +68,55 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
   return (
     <div className="space-y-4">
       {/* Formation Selector Hub */}
-      <div className="p-4 sm:p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-3">
-        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2.5">
+      <div className="sc-panel p-4 sm:p-5 rounded-2xl border border-[#182338] shadow-xl space-y-3">
+        <div className="flex items-center justify-between border-b border-[#182338] pb-2.5">
           <label className="text-xs font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
             <Target className="w-4 h-4 text-[#00F5A0]" />
             Diziliş Seçimi <span className="text-[10px] text-zinc-500 font-mono">// FORMATION ({formationCatalog.length})</span>
           </label>
-          <span className="text-xs font-mono font-bold text-[#00F5A0] bg-[#00F5A0]/10 px-2 py-0.5 border border-[#00F5A0]/30">
+          <span className="text-xs font-mono font-bold text-[#00F5A0] bg-[#00F5A0]/10 px-2 py-0.5 rounded border border-[#00F5A0]/30">
             {formation}
           </span>
         </div>
 
         {/* Category Filter Pills */}
-        <div className="flex items-center gap-1.5 bg-[#040711] p-1 border border-zinc-800">
+        <div className="flex items-center gap-1.5 bg-[#040711] p-1 rounded-lg border border-[#182338]">
           <button
             onClick={() => setFilterCategory('ALL')}
-            className={`flex-1 py-1 text-[10px] font-mono font-bold uppercase transition-all ${
+            className={`flex-1 py-1 text-[10px] font-mono font-bold uppercase rounded transition-all ${
               filterCategory === 'ALL'
-                ? 'bg-[#00F5A0] text-black border border-white'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-[#00F5A0] text-black font-black'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0E1B33]'
             }`}
           >
             Tümü ({formationCatalog.length})
           </button>
           <button
             onClick={() => setFilterCategory('4_DEF')}
-            className={`flex-1 py-1 text-[10px] font-mono font-bold uppercase transition-all ${
+            className={`flex-1 py-1 text-[10px] font-mono font-bold uppercase rounded transition-all ${
               filterCategory === '4_DEF'
-                ? 'bg-[#00F5A0] text-black border border-white'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-[#00F5A0] text-black font-black'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0E1B33]'
             }`}
           >
             4&apos;lü (8)
           </button>
           <button
             onClick={() => setFilterCategory('3_DEF')}
-            className={`flex-1 py-1 text-[10px] font-mono font-bold uppercase transition-all ${
+            className={`flex-1 py-1 text-[10px] font-mono font-bold uppercase rounded transition-all ${
               filterCategory === '3_DEF'
-                ? 'bg-[#00F5A0] text-black border border-white'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-[#00F5A0] text-black font-black'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0E1B33]'
             }`}
           >
             3&apos;lü (4)
           </button>
           <button
             onClick={() => setFilterCategory('5_DEF')}
-            className={`flex-1 py-1 text-[10px] font-mono font-bold uppercase transition-all ${
+            className={`flex-1 py-1 text-[10px] font-mono font-bold uppercase rounded transition-all ${
               filterCategory === '5_DEF'
-                ? 'bg-[#00F5A0] text-black border border-white'
-                : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                ? 'bg-[#00F5A0] text-black font-black'
+                : 'text-zinc-400 hover:text-white hover:bg-[#0E1B33]'
             }`}
           >
             5&apos;li (2)
@@ -131,10 +131,10 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
               <button
                 key={item.id}
                 onClick={() => onFormationChange(item.id)}
-                className={`py-2 px-1.5 text-center transition-all flex flex-col items-center justify-center ${
+                className={`py-2 px-1.5 text-center rounded-lg transition-all flex flex-col items-center justify-center ${
                   isSelected
-                    ? 'bg-[#00F5A0] text-black border-2 border-white shadow-lg scale-[1.02]'
-                    : 'bg-[#040711] text-zinc-300 hover:bg-zinc-900 border border-zinc-800'
+                    ? 'bg-[#00F5A0] text-black font-black border-2 border-white shadow-lg scale-[1.02]'
+                    : 'bg-[#040711] text-zinc-300 hover:bg-[#0E1B33] border border-[#182338]'
                 }`}
               >
                 <span className="text-xs font-mono font-black tracking-tight">{item.label}</span>
@@ -152,8 +152,8 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
       </div>
 
       {/* Tactical Instructions Grid */}
-      <div className="p-4 sm:p-5 bg-[#080D1A] border border-zinc-800 shadow-xl space-y-4">
-        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2.5">
+      <div className="sc-panel p-4 sm:p-5 rounded-2xl border border-[#182338] shadow-xl space-y-4">
+        <div className="flex items-center justify-between border-b border-[#182338] pb-2.5">
           <h3 className="text-xs font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
             <Sliders className="w-4 h-4 text-[#00F5A0]" />
             Taktiksel Talimatlar <span className="text-[10px] text-zinc-500 font-mono">// TEAM INSTRUCTIONS</span>
@@ -294,20 +294,81 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
             </span>
             <span className="text-purple-400 font-mono font-bold text-xs">{settings.width}</span>
           </div>
-          <div className="grid grid-cols-3 gap-1 bg-[#040711] p-1 border border-zinc-800">
+          <div className="grid grid-cols-3 gap-1 bg-[#040711] p-1 rounded-lg border border-[#182338]">
             {widths.map((w) => (
               <button
                 key={w}
                 onClick={() => onSettingsChange({ width: w })}
-                className={`py-1.5 px-1 text-[10px] font-bold uppercase transition-all truncate ${
+                className={`py-1.5 px-1 text-[10px] font-bold uppercase rounded transition-all truncate ${
                   settings.width === w
-                    ? 'bg-purple-500 text-white font-black border border-white'
-                    : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
+                    ? 'bg-purple-500 text-white font-black'
+                    : 'text-zinc-400 hover:text-white hover:bg-[#0E1B33]'
                 }`}
               >
                 {w}
               </button>
             ))}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. ÖZEL TALİMATLAR (SCREEN 4 MOCKUP) */}
+      <div className="sc-panel p-4 sm:p-5 rounded-2xl border border-[#182338] space-y-3.5">
+        <div className="flex items-center justify-between border-b border-[#182338] pb-2.5">
+          <span className="text-xs font-black uppercase tracking-wider text-white font-mono flex items-center gap-2">
+            <Zap className="w-4 h-4 text-[#00F5A0]" />
+            ÖZEL TALİMATLAR
+          </span>
+          <span className="text-[10px] font-mono text-zinc-400">TACTICAL TOGGLES</span>
+        </div>
+
+        <div className="space-y-3 pt-1">
+          {/* Toggle 1: Ofsayt Taktiği */}
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1A] border border-[#182338]">
+            <div>
+              <div className="text-xs font-bold text-white uppercase">Ofsayt Taktiği</div>
+              <div className="text-[10px] text-zinc-400">Savunma hattı senkronize öne fırlar</div>
+            </div>
+            <label className="sc-toggle">
+              <input type="checkbox" defaultChecked />
+              <span className="sc-toggle-slider" />
+            </label>
+          </div>
+
+          {/* Toggle 2: Duran Toplar */}
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1A] border border-[#182338]">
+            <div>
+              <div className="text-xs font-bold text-white uppercase">Duran Toplar</div>
+              <div className="text-[10px] text-zinc-400">Korner ve serbest vuruşlarda ceza sahasına yığılma</div>
+            </div>
+            <label className="sc-toggle">
+              <input type="checkbox" defaultChecked />
+              <span className="sc-toggle-slider" />
+            </label>
+          </div>
+
+          {/* Toggle 3: Kaleciden Oyun Kurma */}
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1A] border border-[#182338]">
+            <div>
+              <div className="text-xs font-bold text-white uppercase">Kaleciden Oyun Kurma</div>
+              <div className="text-[10px] text-zinc-400">Stoperler açılır, kısa pasla çıkılır</div>
+            </div>
+            <label className="sc-toggle">
+              <input type="checkbox" defaultChecked />
+              <span className="sc-toggle-slider" />
+            </label>
+          </div>
+
+          {/* Toggle 4: Kanatları Kullan */}
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1A] border border-[#182338]">
+            <div>
+              <div className="text-xs font-bold text-white uppercase">Kanatları Kullan</div>
+              <div className="text-[10px] text-zinc-400">Bekler hücuma katılır, çizgiye inilir</div>
+            </div>
+            <label className="sc-toggle">
+              <input type="checkbox" />
+              <span className="sc-toggle-slider" />
+            </label>
           </div>
         </div>
       </div>
