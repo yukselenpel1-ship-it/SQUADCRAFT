@@ -147,7 +147,7 @@ export default function MainMenuPage() {
       {/* ==================================================================== */}
       <div
         className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+        style={{ backgroundImage: `url('/images/arena-hero-stadium.png')` }}
       >
         {/* High-contrast crisp sports vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#040814]/80 via-[#040814]/60 to-[#040814]/95" />
