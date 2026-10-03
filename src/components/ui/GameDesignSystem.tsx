@@ -36,20 +36,20 @@ export const GamePanel: React.FC<GamePanelProps> = ({
   variant = 'default',
 }) => {
   const variantStyles = {
-    default: 'sc-panel rounded-2xl border border-[#182338] shadow-2xl backdrop-blur-xl',
-    elevated: 'bg-gradient-to-b from-[#0F1A2E] to-[#070D1A] rounded-2xl border border-[#182338] shadow-2xl',
-    glass: 'bg-[#0B1323]/80 backdrop-blur-2xl rounded-2xl border border-[#182338] shadow-2xl',
-    highlight: 'bg-gradient-to-b from-emerald-950/40 via-[#0B1323] to-[#070D1A] rounded-2xl border border-[#00F5A0]/40 shadow-[0_0_30px_rgba(0,245,160,0.15)]',
-    tactical: 'bg-[#070D1A] rounded-2xl border border-[#182338] shadow-2xl relative overflow-hidden',
+    default: 'sc-panel rounded-2xl border border-[#14233A] shadow-2xl backdrop-blur-xl',
+    elevated: 'bg-gradient-to-b from-[#0E1E38] to-[#07101C] rounded-2xl border border-[#14233A] shadow-2xl',
+    glass: 'bg-[#081325]/85 backdrop-blur-2xl rounded-2xl border border-[#14233A] shadow-2xl',
+    highlight: 'bg-gradient-to-b from-emerald-950/40 via-[#081325] to-[#07101C] rounded-2xl border border-[#00F5A0]/40 shadow-[0_0_30px_rgba(0,245,160,0.15)]',
+    tactical: 'bg-[#07101C] rounded-2xl border border-[#14233A] shadow-2xl relative overflow-hidden',
   };
 
   return (
     <section className={`p-5 md:p-6 transition-all duration-200 ${variantStyles[variant]} ${className}`}>
       {variant === 'tactical' && (
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#C7FF38_1px,transparent_1px)] [background-size:16px_16px]" />
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#00F5A0_1px,transparent_1px)] [background-size:16px_16px]" />
       )}
       {(title || subtitle || Icon || headerAction || actionText) && (
-        <div className="flex items-center justify-between gap-4 pb-4 mb-4 border-b border-[#182338] relative z-10">
+        <div className="flex items-center justify-between gap-4 pb-4 mb-4 border-b border-[#14233A] relative z-10">
           <div className="flex items-center gap-3 min-w-0">
             {Icon && (
               <div className="w-8 h-8 rounded-xl bg-[#00F5A0]/10 border border-[#00F5A0]/30 flex items-center justify-center text-[#00F5A0] shrink-0">
@@ -67,7 +67,7 @@ export const GamePanel: React.FC<GamePanelProps> = ({
             {actionText && actionHref && (
               <Link
                 href={actionHref}
-                className="text-xs font-bold text-[#C7FF38] hover:text-[#D9FF73] transition-colors flex items-center gap-1 group"
+                className="text-xs font-bold text-[#00F5A0] hover:text-[#00E590] transition-colors flex items-center gap-1 group"
               >
                 <span>{actionText}</span>
                 <ChevronRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
@@ -76,7 +76,7 @@ export const GamePanel: React.FC<GamePanelProps> = ({
             {actionText && !actionHref && onAction && (
               <button
                 onClick={onAction}
-                className="text-xs font-bold text-[#C7FF38] hover:text-[#D9FF73] transition-colors flex items-center gap-1"
+                className="text-xs font-bold text-[#00F5A0] hover:text-[#00E590] transition-colors flex items-center gap-1"
               >
                 <span>{actionText}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -109,7 +109,7 @@ export const HeroPanel: React.FC<HeroPanelProps> = ({
   badgeVariant = 'emerald',
   title,
   subtitle,
-  glowColor = '#C7FF38',
+  glowColor = '#00F5A0',
   className = '',
 }) => {
   const badgeClasses = {
@@ -117,12 +117,12 @@ export const HeroPanel: React.FC<HeroPanelProps> = ({
     amber: 'bg-[#FFB800]/15 text-[#FFB800] border-[#FFB800]/30',
     blue: 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/30',
     rose: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
-    slate: 'bg-[#0B1323] text-zinc-300 border-[#182338]',
+    slate: 'bg-[#081325] text-zinc-300 border-[#14233A]',
   };
 
   return (
     <div
-      className={`relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#070D1A] via-[#0B1323] to-[#040711] border border-[#182338] p-6 md:p-8 shadow-2xl backdrop-blur-xl ${className}`}
+      className={`relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#07101C] via-[#081325] to-[#040814] border border-[#14233A] p-6 md:p-8 shadow-2xl backdrop-blur-xl ${className}`}
     >
       {/* Background ambient lighting */}
       <div
@@ -192,7 +192,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
           <div className="flex items-center gap-2">
             <h2 className="text-base font-black text-white tracking-wide uppercase italic font-display">{title}</h2>
             {badge && (
-              <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold uppercase bg-[#0B1323] text-zinc-300 border border-[#182338]">
+              <span className="px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold uppercase bg-[#081325] text-zinc-300 border border-[#14233A]">
                 {badge}
               </span>
             )}
@@ -204,7 +204,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
       {actionText && actionHref && (
         <Link
           href={actionHref}
-          className="text-xs font-bold text-[#C7FF38] hover:text-[#D9FF73] transition-colors flex items-center gap-1 group"
+          className="text-xs font-bold text-[#00F5A0] hover:text-[#00E590] transition-colors flex items-center gap-1 group"
         >
           <span>{actionText}</span>
           <ChevronRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
@@ -238,7 +238,7 @@ export const StatusChip: React.FC<StatusChipProps> = ({
     rose: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
     sky: 'bg-[#00D4FF]/15 text-[#00D4FF] border-[#00D4FF]/30',
     purple: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
-    slate: 'bg-[#0B1323] text-zinc-300 border-[#182338]',
+    slate: 'bg-[#081325] text-zinc-300 border-[#14233A]',
   };
 
   const sizes = {
@@ -284,10 +284,10 @@ export const PrimaryAction: React.FC<PrimaryActionProps> = ({
 }) => {
   const variants = {
     emerald:
-      'bg-[#00F5A0] hover:bg-[#00D68B] text-[#040711] shadow-[0_0_20px_rgba(0,245,160,0.3)] active:scale-95',
-    cyan: 'bg-[#00D4FF] hover:bg-[#00B8E6] text-[#040711] shadow-[0_0_20px_rgba(0,212,255,0.3)] active:scale-95',
+      'bg-[#00F5A0] hover:bg-[#00D68B] text-[#040814] font-black shadow-[0_0_20px_rgba(0,245,160,0.3)] active:scale-95',
+    cyan: 'bg-[#00D4FF] hover:bg-[#00B8E6] text-[#040814] font-black shadow-[0_0_20px_rgba(0,212,255,0.3)] active:scale-95',
     secondary:
-      'bg-[#0B1323] hover:bg-[#182338] text-white border border-[#182338] active:scale-95',
+      'bg-[#081325] hover:bg-[#0E1E38] text-white border border-[#14233A] active:scale-95',
     danger:
       'bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-600/20 active:scale-95',
   };
@@ -362,13 +362,13 @@ export const FixtureHero: React.FC<FixtureHeroProps> = ({
   const opponent = isUserHome ? awayClub : homeClub;
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#070D1A] via-[#0B1323] to-[#040711] border border-[#182338] p-6 md:p-8 shadow-2xl backdrop-blur-xl">
+    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#07101C] via-[#081325] to-[#040814] border border-[#14233A] p-6 md:p-8 shadow-2xl backdrop-blur-xl">
       {/* Dynamic Stadium Pitch Backing */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,245,160,0.06)_0%,transparent_70%)] pointer-events-none" />
       <div className="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-[#00F5A0]/10 blur-3xl pointer-events-none" />
 
       {/* Top Meta Line */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#182338]">
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-[#14233A]">
         <div className="flex items-center gap-2">
           <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider bg-[#00F5A0]/20 text-[#00F5A0] border border-[#00F5A0]/40">
             {fixture.competition} • Hafta {fixture.round}
@@ -385,7 +385,7 @@ export const FixtureHero: React.FC<FixtureHeroProps> = ({
               BUGÜN MAÇ GÜNÜ
             </span>
           ) : (
-            <span className="px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-[#0B1323] text-zinc-300 border border-[#182338]">
+            <span className="px-3 py-1 rounded-xl text-xs font-black uppercase tracking-wider bg-[#081325] text-zinc-300 border border-[#14233A]">
               {daysUntilNextMatch > 0 ? `${daysUntilNextMatch} Gün Kaldı` : 'Maç Başlıyor'}
             </span>
           )}
@@ -410,7 +410,7 @@ export const FixtureHero: React.FC<FixtureHeroProps> = ({
 
         {/* VS / Center Timing */}
         <div className="flex flex-col items-center justify-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-[#070D1A] border border-[#182338] flex items-center justify-center font-black text-lg text-[#00F5A0] shadow-inner">
+          <div className="w-12 h-12 rounded-2xl bg-[#07101C] border border-[#14233A] flex items-center justify-center font-black text-lg text-[#00F5A0] shadow-inner">
             VS
           </div>
           <div className="flex items-center gap-1.5 text-xs text-zinc-400">
@@ -438,7 +438,7 @@ export const FixtureHero: React.FC<FixtureHeroProps> = ({
       </div>
 
       {/* Bottom Action Footer */}
-      <div className="relative z-10 pt-4 border-t border-[#182338] flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="relative z-10 pt-4 border-t border-[#14233A] flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="text-xs text-zinc-400 text-center sm:text-left">
           <span>Rakip İtibarı: </span>
           <strong className="text-white">%{opponent.reputation}</strong> •{' '}
@@ -449,7 +449,7 @@ export const FixtureHero: React.FC<FixtureHeroProps> = ({
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <Link
             href="/tactics"
-            className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#0B1323] hover:bg-[#182338] text-zinc-200 font-bold text-xs border border-[#182338] text-center transition-colors"
+            className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#081325] hover:bg-[#0E1E38] text-zinc-200 font-bold text-xs border border-[#14233A] text-center transition-colors"
           >
             Taktik Ayarla
           </Link>
@@ -459,7 +459,7 @@ export const FixtureHero: React.FC<FixtureHeroProps> = ({
             className={`flex-1 sm:flex-initial px-6 py-2.5 rounded-xl font-black text-sm text-center shadow-lg transition-all flex items-center justify-center gap-2 ${
               isMatchDay
                 ? 'bg-rose-500 hover:bg-rose-400 text-white shadow-rose-500/30'
-                : 'bg-[#00F5A0] hover:bg-[#00D68B] text-[#040711] shadow-[0_0_20px_rgba(0,245,160,0.3)]'
+                : 'bg-[#00F5A0] hover:bg-[#00D68B] text-[#040814] shadow-[0_0_20px_rgba(0,245,160,0.3)]'
             }`}
           >
             <Swords className="w-4 h-4" />
@@ -500,7 +500,7 @@ export const ClubIdentity: React.FC<ClubIdentityProps> = ({
           {showReputation && (
             <>
               <span>•</span>
-              <span className="text-[#C7FF38] font-bold">%{club.reputation} İtibar</span>
+              <span className="text-[#00F5A0] font-bold">%{club.reputation} İtibar</span>
             </>
           )}
         </div>
@@ -533,7 +533,7 @@ export const GameTabs: React.FC<GameTabsProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`flex items-center gap-1.5 bg-[#070D1A] p-1.5 rounded-2xl border border-[#182338] overflow-x-auto ${className}`}>
+    <div className={`flex items-center gap-1.5 bg-[#07101C] p-1.5 rounded-2xl border border-[#14233A] overflow-x-auto ${className}`}>
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         const Icon = tab.icon;
@@ -544,8 +544,8 @@ export const GameTabs: React.FC<GameTabsProps> = ({
             onClick={() => onTabChange(tab.id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 ${
               isActive
-                ? 'bg-[#00F5A0] text-[#040711] shadow-[0_0_15px_rgba(0,245,160,0.3)] font-black'
-                : 'text-zinc-400 hover:text-white hover:bg-[#0B1323] border border-transparent'
+                ? 'bg-[#00F5A0] text-[#040814] shadow-[0_0_15px_rgba(0,245,160,0.3)] font-black'
+                : 'text-zinc-400 hover:text-white hover:bg-[#081325] border border-transparent'
             }`}
           >
             {Icon && <Icon className="w-3.5 h-3.5" />}
@@ -553,7 +553,7 @@ export const GameTabs: React.FC<GameTabsProps> = ({
             {typeof tab.count === 'number' && (
               <span
                 className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
-                  isActive ? 'bg-[#040711] text-[#00F5A0]' : 'bg-[#0B1323] text-zinc-400'
+                  isActive ? 'bg-[#040814] text-[#00F5A0]' : 'bg-[#081325] text-zinc-400'
                 }`}
               >
                 {tab.count}
@@ -587,8 +587,8 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   actionHref,
 }) => {
   return (
-    <div className="text-center py-12 px-4 rounded-2xl bg-[#070D1A]/50 border border-dashed border-[#182338]">
-      <div className="w-12 h-12 rounded-2xl bg-[#0B1323] border border-[#182338] flex items-center justify-center text-zinc-500 mx-auto mb-3">
+    <div className="text-center py-12 px-4 rounded-2xl bg-[#07101C]/50 border border-dashed border-[#14233A]">
+      <div className="w-12 h-12 rounded-2xl bg-[#081325] border border-[#14233A] flex items-center justify-center text-zinc-500 mx-auto mb-3">
         <Icon className="w-6 h-6" />
       </div>
       <h3 className="text-sm font-bold text-white mb-1">{title}</h3>

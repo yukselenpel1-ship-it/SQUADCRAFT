@@ -19,7 +19,7 @@ export default function MatchIndexPage() {
   if (!isCareerHydrated || !isInitialized) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -33,7 +33,7 @@ export default function MatchIndexPage() {
 
   return (
     <div className="min-h-[70vh] flex items-center justify-center p-6 animate-in fade-in duration-300">
-      <div className="max-w-md w-full sc-panel rounded-3xl border border-[#182338] p-8 text-center space-y-6 shadow-2xl relative overflow-hidden">
+      <div className="max-w-md w-full sc-panel rounded-3xl border border-[#14233A] p-8 text-center space-y-6 shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
 
         <div className="w-16 h-16 bg-[#00F5A0]/10 border border-[#00F5A0]/30 rounded-2xl flex items-center justify-center mx-auto text-[#00F5A0] shadow-[0_0_20px_rgba(0,245,160,0.2)]">
@@ -57,7 +57,7 @@ export default function MatchIndexPage() {
         {nextMatch ? (
           <Link
             href={`/match/${nextMatch.id}`}
-            className="w-full py-3.5 bg-[#00F5A0] text-[#040711] font-mono font-black uppercase text-sm flex items-center justify-center gap-2 hover:bg-[#00F5A0]/90 transition-all rounded-xl shadow-[0_0_20px_rgba(0,245,160,0.3)]"
+            className="w-full py-3.5 bg-[#00F5A0] text-[#040814] font-mono font-black uppercase text-sm flex items-center justify-center gap-2 hover:bg-[#00F5A0]/90 transition-all rounded-xl shadow-[0_0_20px_rgba(0,245,160,0.3)]"
           >
             <Play className="w-4 h-4 fill-current" />
             Maça Başla
@@ -65,7 +65,7 @@ export default function MatchIndexPage() {
         ) : (
           <Link
             href="/fixtures"
-            className="w-full py-3.5 bg-[#0B1323] hover:bg-[#182338] border border-[#182338] text-white font-mono font-bold uppercase text-xs flex items-center justify-center gap-2 rounded-xl transition-all"
+            className="w-full py-3.5 bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-white font-mono font-bold uppercase text-xs flex items-center justify-center gap-2 rounded-xl transition-all"
           >
             <Calendar className="w-4 h-4" />
             Fikstürü İncele

@@ -30,7 +30,7 @@ export const MobileNav: React.FC = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#070D1A]/95 backdrop-blur-md border-t border-[#182338] px-2 py-1.5 flex items-center justify-around lg:hidden safe-area-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#07101C]/95 backdrop-blur-md border-t border-[#14233A] px-2 py-1.5 flex items-center justify-around lg:hidden safe-area-bottom">
       {navItems.map((item) => {
         const Icon = item.icon;
         const active = isActive(item.href);

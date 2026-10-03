@@ -30,7 +30,7 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 overflow-y-auto">
-      <div className="relative bg-[#070D1A]/95 border border-[#182338] rounded-3xl w-full max-w-xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl p-6 sm:p-8 text-white my-8 overflow-hidden">
+      <div className="relative bg-[#07101C]/95 border border-[#14233A] rounded-3xl w-full max-w-xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl p-6 sm:p-8 text-white my-8 overflow-hidden">
         {/* Top neon accent line */}
         <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
 
@@ -38,7 +38,7 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
 
-        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#182338] pb-5 mb-6 gap-3">
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#14233A] pb-5 mb-6 gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold">
               <Settings className="w-5 h-5" />

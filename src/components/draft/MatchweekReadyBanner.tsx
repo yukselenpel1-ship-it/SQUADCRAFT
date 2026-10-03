@@ -77,7 +77,7 @@ export function MatchweekReadyBanner({
   }, [status, liveMatchweek?.countdownStartedAt, onLaunchMatchweek]);
 
   return (
-    <div className="sc-panel rounded-2xl border border-[#182338] p-4 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+    <div className="sc-panel rounded-2xl border border-[#14233A] p-4 sm:p-6 shadow-2xl relative overflow-hidden backdrop-blur-xl">
       {/* Top Accent Gradient Line */}
       <div
         className={`absolute top-0 left-0 right-0 h-[3px] ${
@@ -85,12 +85,12 @@ export function MatchweekReadyBanner({
             ? 'bg-gradient-to-r from-red-500 via-rose-500 to-amber-500 animate-pulse'
             : status === 'COUNTDOWN'
             ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 animate-ping'
-            : 'bg-gradient-to-r from-[#C7FF38] via-[#4FE4FF] to-[#C7FF38]'
+            : 'bg-gradient-to-r from-[#00F5A0] via-[#4FE4FF] to-[#00F5A0]'
         }`}
       />
 
       {/* Main Header & Stage Badge */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#182338] pb-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#14233A] pb-4">
         <div>
           <div className="flex items-center gap-2.5">
             <span className="text-[11px] font-mono font-black px-2.5 py-0.5 rounded-lg bg-[#00F5A0]/10 border border-[#00F5A0]/40 text-[#00F5A0] uppercase tracking-wider">
@@ -125,8 +125,8 @@ export function MatchweekReadyBanner({
               onClick={() => onToggleReady(!isCurrentMemberReady)}
               className={`w-full sm:w-auto px-8 py-3.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider transition-all duration-200 flex items-center justify-center gap-2.5 shadow-xl active:scale-95 ${
                 isCurrentMemberReady
-                  ? 'bg-[#070D1A] hover:bg-[#182338] text-amber-300 border border-amber-500/50 shadow-amber-500/10'
-                  : 'bg-[#00F5A0] hover:bg-[#00D68B] text-[#040711] shadow-[0_0_20px_rgba(0,245,160,0.35)]'
+                  ? 'bg-[#07101C] hover:bg-[#14233A] text-amber-300 border border-amber-500/50 shadow-amber-500/10'
+                  : 'bg-[#00F5A0] hover:bg-[#00D68B] text-[#040814] shadow-[0_0_20px_rgba(0,245,160,0.35)]'
               }`}
             >
               {isCurrentMemberReady ? (
@@ -151,7 +151,7 @@ export function MatchweekReadyBanner({
               </div>
               <button
                 onClick={() => onToggleReady(false)}
-                className="px-4 py-3.5 rounded-xl bg-[#070D1A] hover:bg-[#182338] text-rose-400 border border-rose-500/40 text-xs font-black uppercase tracking-wider transition"
+                className="px-4 py-3.5 rounded-xl bg-[#07101C] hover:bg-[#14233A] text-rose-400 border border-rose-500/40 text-xs font-black uppercase tracking-wider transition"
                 title="Geri sayımı durdur ve hazırlanmaya geri dön"
               >
                 İPTAL
@@ -193,7 +193,7 @@ export function MatchweekReadyBanner({
                 className={`p-2.5 rounded-xl border transition-all flex items-center justify-between gap-3 ${
                   isReady
                     ? 'bg-[#00F5A0]/5 border-[#00F5A0]/40 shadow-[0_0_15px_rgba(0,245,160,0.1)]'
-                    : 'bg-[#070D1A] border-[#182338]'
+                    : 'bg-[#07101C] border-[#14233A]'
                 } ${isMe ? 'ring-1 ring-[#00F5A0]/40' : ''}`}
               >
                 {/* Member / Club Info */}
@@ -203,7 +203,7 @@ export function MatchweekReadyBanner({
                     <div className="text-xs font-black text-white uppercase italic tracking-wide truncate flex items-center gap-1.5">
                       <span>{member.username}</span>
                       {isMe && (
-                        <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-[#00F5A0] text-[#040711]">
+                        <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-[#00F5A0] text-[#040814]">
                           SEN
                         </span>
                       )}
@@ -219,7 +219,7 @@ export function MatchweekReadyBanner({
                   {isBot ? (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#00D4FF]/10 border border-[#00D4FF]/40 text-[#00D4FF]">
                       <span>🤖 Bot</span>
-                      <CheckCircle2 className="w-3 h-3 text-[#C7FF38]" />
+                      <CheckCircle2 className="w-3 h-3 text-[#00F5A0]" />
                     </span>
                   ) : isReady ? (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-mono font-black bg-emerald-950/60 border border-emerald-500/50 text-[#00F5A0]">
@@ -227,7 +227,7 @@ export function MatchweekReadyBanner({
                       <span>HAZIR</span>
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#0B1323] border border-[#182338] text-zinc-400">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#081325] border border-[#14233A] text-zinc-400">
                       <Clock className="w-3 h-3 text-amber-400 animate-spin" />
                       <span>BEKLİYOR</span>
                     </span>

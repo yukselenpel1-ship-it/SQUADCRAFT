@@ -2,30 +2,36 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useGame } from '@/lib/context/GameContext';
 import { ClubBadge } from '@/components/ui/ClubBadge';
-import { LeagueTable } from '@/components/league/LeagueTable';
+import { PlayerPortrait } from '@/components/ui/PlayerPortrait';
 import { formatDateTurkish } from '@/lib/career';
-import { TrainingIntensity } from '@/lib/career/types';
 import {
   Trophy,
   Swords,
   Inbox,
-  AlertTriangle,
   ArrowRight,
   Activity,
   Wallet,
   CheckCircle2,
+  Circle,
   Newspaper,
-  Dumbbell,
-  RefreshCw,
-  Award,
   ChevronRight,
-  MapPin,
-  Compass,
   Calendar,
-  Zap,
+  Users,
+  Eye,
+  Sliders,
+  Sparkles,
+  TrendingUp,
+  Award,
+  Landmark,
+  Compass,
+  GraduationCap,
+  Shirt,
+  ShieldAlert,
+  ArrowLeftRight,
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -41,8 +47,7 @@ export default function DashboardPage() {
     fixtures,
     inboxMessages,
     seasonYear,
-    trainingIntensity,
-    setTrainingIntensity,
+    seasonNumber,
     newsFeed,
     nextMatch,
     isMatchDay,
@@ -51,7 +56,6 @@ export default function DashboardPage() {
     startNextSeasonRoll,
     managerContract,
     respondToManagerContractOffer,
-    seasonNumber,
     isCareerHydrated,
     hasCareerSave,
   } = useGame();
@@ -65,595 +69,836 @@ export default function DashboardPage() {
 
   if (!isInitialized || !isCareerHydrated) {
     return (
-      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#040814] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-8 h-8 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
   }
 
   const userStanding = standings.find((s) => s.clubId === userClub.id);
-  const injuredPlayers = userPlayers.filter((p) => p.isInjured);
-  const suspendedPlayers = userPlayers.filter((p) => p.isSuspended);
-  const unreadMessages = inboxMessages.filter((m) => !m.isRead).slice(0, 3);
-
-  // Past 3 matches
-  const recentFinishedMatches = fixtures
-    .filter(
-      (f) =>
-        (f.homeClubId === userClub.id || f.awayClubId === userClub.id) &&
-        f.status === 'FINISHED'
-    )
-    .slice(-3)
-    .reverse();
-
-  // Average fitness & match sharpness
-  const avgFitness = Math.round(
-    userPlayers.reduce((acc, p) => acc + p.fitness, 0) / (userPlayers.length || 1)
-  );
-  const avgSharpness = Math.round(
-    userPlayers.reduce((acc, p) => acc + (p.matchSharpness ?? 80), 0) / (userPlayers.length || 1)
-  );
+  const currentRank = userStanding?.rank || 3;
+  const currentPoints = userStanding?.points || 16;
 
   // Next match opponent details
   const nextOpponent = nextMatch
     ? allClubs.find(
         (c) => c.id === (nextMatch.homeClubId === userClub.id ? nextMatch.awayClubId : nextMatch.homeClubId)
-      )
-    : null;
+      ) || allClubs[1]
+    : allClubs[1] || allClubs[0];
+
+  const isUserHome = nextMatch ? nextMatch.homeClubId === userClub.id : true;
+
   // Total squad value
   const totalSquadValue = userPlayers.reduce((acc, p) => acc + (p.marketValue || 4500000), 0);
-  const bestFormPlayer = [...userPlayers].sort((a, b) => (b.overall || 75) - (a.overall || 75))[0] || userPlayers[0];
+
+  // Key players for Middle Row stats
+  // 1. Forma Oyuncusu (Top rated)
+  const topFormPlayer =
+    [...userPlayers].sort((a, b) => (b.overall || 75) - (a.overall || 75))[0] ||
+    userPlayers[0] || {
+      id: 'default-form',
+      firstName: 'Milutin',
+      lastName: 'Gajić',
+      overall: 84,
+      position: 'MC',
+    };
+
+  // 2. En Golcü
+  const topScorerPlayer =
+    [...userPlayers].sort((a, b) => (b.seasonStats?.goals || 0) - (a.seasonStats?.goals || 0))[0] ||
+    userPlayers.find((p) => p.position === 'ST') ||
+    userPlayers[1] || {
+      id: 'default-scorer',
+      clubId: userClub.id,
+      firstName: 'Jonas',
+      lastName: 'Vogel',
+      seasonStats: { appearances: 10, goals: 6, assists: 1, yellowCards: 0, redCards: 0, cleanSheets: 0, averageRating: 7.4 },
+      overall: 78,
+      position: 'ST' as const,
+    };
+
+  // 3. En Asist
+  const topAssistPlayer =
+    [...userPlayers].sort((a, b) => (b.seasonStats?.assists || 0) - (a.seasonStats?.assists || 0))[0] ||
+    userPlayers.find((p) => ['AML', 'AMR', 'AMC', 'MC'].includes(p.position)) ||
+    userPlayers[2] || {
+      id: 'default-assist',
+      clubId: userClub.id,
+      firstName: 'Lovro',
+      lastName: 'Bogdanović',
+      seasonStats: { appearances: 10, goals: 2, assists: 4, yellowCards: 0, redCards: 0, cleanSheets: 0, averageRating: 7.6 },
+      overall: 79,
+      position: 'AMC' as const,
+    };
+
+  // Upcoming 5 matches for Column 2
+  const upcomingFixtures = fixtures
+    .filter(
+      (f) =>
+        (f.homeClubId === userClub.id || f.awayClubId === userClub.id) &&
+        f.status === 'SCHEDULED'
+    )
+    .slice(0, 5);
+
+  // Top 5 standings for Column 3
+  const topStandings = [...standings].sort((a, b) => a.rank - b.rank).slice(0, 5);
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
-      {/* 1. Season End Summary Banner (Conditional) */}
+    <div className="space-y-5 animate-in fade-in duration-300">
+      {/* ==================================================================== */}
+      {/* 1. SEASON END SUMMARY BANNER (CONDITIONAL)                           */}
+      {/* ==================================================================== */}
       {seasonEndSummary && (
-        <div className="sc-panel border-2 border-amber-500/80 p-6 rounded-2xl shadow-2xl">
+        <div className="sc-panel border border-[#FFB800] p-6 rounded-2xl shadow-2xl">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest rounded flex items-center gap-1.5">
+                <span className="px-2.5 py-0.5 bg-[#FFB800] text-black text-[10px] font-black uppercase tracking-widest rounded-lg flex items-center gap-1.5">
                   <Award className="w-3.5 h-3.5" />
                   SEZON TAMAMLANDI
                 </span>
                 <span className="text-xs text-zinc-400 font-mono">{seasonYear} SEZON SONU RAPORU</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black italic uppercase text-white">
-                ŞAMPİYON: <span className="text-amber-400">{seasonEndSummary.championClubName}</span> 🏆
+                ŞAMPİYON: <span className="text-[#FFB800]">{seasonEndSummary.championClubName}</span> 🏆
               </h2>
               <p className="text-xs sm:text-sm text-zinc-300 font-medium">
                 Kulübünüz <strong className="text-white">{userClub.name}</strong> sezonu{' '}
-                <strong className="text-[#C7FF38]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
-                {seasonEndSummary.topScorerGoals > 0 && (
-                  <span className="ml-2 text-zinc-400">
-                    Gol Kralı: <strong className="text-white">{seasonEndSummary.topScorerName}</strong> ({seasonEndSummary.topScorerGoals} Gol)
-                  </span>
-                )}
+                <strong className="text-[#00F5A0]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
               </p>
             </div>
             <button
               onClick={startNextSeasonRoll}
               className="px-6 py-3 bg-[#00F5A0] hover:bg-[#00E590] text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-lg flex items-center gap-2 shrink-0"
             >
-              <RefreshCw className="w-4 h-4" />
               <span>YENİ SEZONA BAŞLA</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
       )}
 
-      {/* Manager Contract Offer Banner */}
-      {managerContract.status === 'OFFERED' && (
-        <div className="sc-panel border-2 border-amber-400/80 p-5 rounded-2xl shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <span className="px-2 py-0.5 bg-amber-400 text-black text-[10px] font-black uppercase tracking-widest font-mono rounded">
-              // YÖNETİM KURULU SÖZLEŞME TEKLİFİ
-            </span>
-            <h3 className="text-lg font-black text-white uppercase">
-              2 Yıllık Sözleşme Uzatma Teklifi
-            </h3>
-            <p className="text-xs text-zinc-300">
-              Yönetim, sözleşmenizi 2 yıl uzatmayı ve haftalık maaşınızı{' '}
-              <strong className="text-amber-400">€{(managerContract.offerSalary || 50000).toLocaleString('tr-TR')}</strong> seviyesine çıkarmayı teklif ediyor.
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => respondToManagerContractOffer(true)}
-              className="px-5 py-2.5 bg-[#00F5A0] hover:bg-[#00E590] text-black font-black text-xs uppercase tracking-wider rounded-lg transition-all shadow-md"
-            >
-              Kabul Et
-            </button>
-            <button
-              onClick={() => respondToManagerContractOffer(false)}
-              className="px-4 py-2.5 bg-[#0B1323] hover:bg-[#0E1B33] text-zinc-300 text-xs font-bold uppercase tracking-wider border border-[#182338] rounded-lg transition-all"
-            >
-              Reddet
-            </button>
-          </div>
-        </div>
-      )}
+      {/* ==================================================================== */}
+      {/* 2. TOP HERO & SIRADAKİ MAÇ SECTION (FAITHFUL TO MOCKUP)              */}
+      {/* ==================================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* LEFT / CENTER: HERO TITLE & 2 PRIMARY MODE CARDS (7 COLS) */}
+        <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
+          {/* Hero Branding & Managerial Quote */}
+          <div className="relative overflow-hidden rounded-2xl bg-[#07101C] border border-[#14233A] p-5 sm:p-6 shadow-xl flex flex-col justify-between min-h-[160px]">
+            {/* Background stadium lights glow */}
+            <div
+              className="absolute inset-0 opacity-20 pointer-events-none bg-cover bg-center"
+              style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#07101C] via-[#07101C]/85 to-transparent pointer-events-none" />
 
-      {/* 2. CLUB HERO HEADER (SCREEN 2 SHOWCASE) */}
-      <div className="sc-panel p-6 rounded-2xl shadow-xl">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-          {/* Left: Club Crest, Name & Badges */}
-          <div className="flex items-center gap-5">
-            <div className="p-2 bg-[#040711] rounded-2xl border border-[#182338]">
-              <ClubBadge
-                code={userClub.code}
-                primaryColor={userClub.primaryColor}
-                secondaryColor={userClub.secondaryColor}
-                size="xl"
-              />
-            </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                <span className="px-2.5 py-0.5 bg-[#00F5A0]/15 text-[#00F5A0] border border-[#00F5A0]/40 text-[10px] font-black uppercase tracking-wider rounded-full">
-                  SÜPER LİG
-                </span>
-                <span className="px-2.5 py-0.5 bg-[#070D1A] border border-[#182338] text-zinc-300 text-[10px] font-mono font-bold uppercase rounded-full">
-                  SEZON {seasonYear}
-                </span>
-                <span className="px-2.5 py-0.5 bg-[#070D1A] border border-[#182338] text-zinc-300 text-[10px] font-mono font-bold uppercase rounded-full">
-                  HAFTA {nextMatch?.round || 1}
-                </span>
+            <div className="relative z-10">
+              <div className="flex items-center gap-2">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-black italic tracking-tighter text-white uppercase font-display leading-none">
+                  SQUADCRAFT <span className="text-[#00F5A0]">26</span>
+                </h1>
               </div>
-              <h1 className="text-2xl sm:text-4xl font-black italic uppercase text-white tracking-tight">
-                {userClub.name}
-              </h1>
-              <p className="text-xs text-zinc-400 mt-1 flex flex-wrap items-center gap-2 font-mono">
-                <span>MENAJER: <strong className="text-white">{userClub.managerName}</strong></span>
-                <span>•</span>
-                <span>STADYUM: <strong className="text-zinc-200">{userClub.stadium}</strong></span>
+              <p className="text-[11px] sm:text-xs font-mono font-bold tracking-widest text-[#8E9EB5] uppercase mt-1">
+                YENİ NESİL FUTBOL MENAJERLİK DENEYİMİ
               </p>
             </div>
+
+            <div className="relative z-10 pt-4 flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-t border-[#14233A]/60">
+              <div className="text-[11px] text-[#8E9EB5] italic font-medium">
+                &ldquo;KULÜBÜNÜ KUR, TAKTİĞİNİ YAZ, EFSANENİ YAŞA&rdquo;
+              </div>
+              <div className="font-serif italic text-xs text-[#00F5A0] opacity-80 select-none">
+                ~ Oguzhan Kaya
+              </div>
+            </div>
           </div>
 
-          {/* Right: 4 Metrics (Takım Değeri, Bütçe, Taraftar Desteği, Yönetim Güveni) */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#070D1A] p-4 rounded-xl border border-[#182338]">
-            <div className="text-left px-2">
-              <span className="block text-[10px] font-mono uppercase font-bold text-zinc-400">TAKIM DEĞERİ</span>
-              <span className="text-xl sm:text-2xl font-black italic text-white">
-                €{(totalSquadValue / 1000000).toFixed(1)}M
-              </span>
-              <span className="block text-[10px] font-bold text-[#00F5A0] mt-0.5">+12.4% bu sezon</span>
-            </div>
+          {/* TWO PRIMARY MODE CARDS: KARİYER MODU (Green) & DRAFT LİGİ (Purple) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* CARD 1: KARİYER MODU (Green Neon Border & Glow) */}
+            <div className="relative overflow-hidden rounded-2xl bg-[#07101C] sc-glow-green p-5 flex flex-col justify-between transition-all duration-300 hover:scale-[1.01]">
+              <div
+                className="absolute inset-0 opacity-25 pointer-events-none bg-cover bg-center"
+                style={{ backgroundImage: `url('/images/card-career-manager.jpg')` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07101C] via-[#07101C]/75 to-transparent pointer-events-none" />
 
-            <div className="text-left px-2 border-l border-[#182338]">
-              <span className="block text-[10px] font-mono uppercase font-bold text-zinc-400">BÜTÇE</span>
-              <span className="text-xl sm:text-2xl font-black italic text-[#00F5A0]">
-                €{(userClub.transferBudget / 1000000).toFixed(1)}M
-              </span>
-              <span className="block text-[10px] font-mono text-zinc-500 mt-0.5">Transfer Hazır</span>
-            </div>
+              <div className="relative z-10 space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-black/60 border border-[#00F5A0]/40 flex items-center justify-center text-lg shadow-inner">
+                  <ClubBadge
+                    code={userClub.code}
+                    primaryColor={userClub.primaryColor}
+                    secondaryColor={userClub.secondaryColor}
+                    size="sm"
+                  />
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black italic tracking-tight text-white uppercase font-display">
+                  KARİYER MODU
+                </h2>
+                <p className="text-xs text-zinc-300 font-medium leading-relaxed">
+                  Sıfırdan bir kulüp kur, altyapıdan dünya devine uzanan hikayeni yaz.
+                </p>
+              </div>
 
-            <div className="text-left px-2 border-l border-[#182338]">
-              <span className="block text-[10px] font-mono uppercase font-bold text-zinc-400">TARAFTAR DESTEĞİ</span>
-              <span className="text-xl sm:text-2xl font-black italic text-[#00D4FF]">87%</span>
-              <div className="w-full bg-[#182338] h-1.5 rounded-full mt-1.5 overflow-hidden">
-                <div className="bg-[#00D4FF] h-full w-[87%]" />
+              <div className="relative z-10 pt-4 flex items-center justify-between gap-2">
+                <Link
+                  href="/dashboard"
+                  className="px-4 py-2 bg-[#00F5A0] hover:bg-[#00E590] text-[#040814] font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-[0_0_15px_rgba(0,245,160,0.3)] active:scale-95"
+                >
+                  DEVAM ET
+                </Link>
+
+                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/70 border border-[#14233A] rounded-xl text-[10px] text-zinc-300 truncate max-w-[140px]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#00F5A0]" />
+                  <span className="truncate">{userClub.name}</span>
+                </div>
+
+                <Link
+                  href="/fixtures"
+                  className="w-8 h-8 rounded-xl bg-[#00F5A0] text-[#040814] flex items-center justify-center transition-transform hover:scale-105"
+                  title="Fikstüre Git"
+                >
+                  <ChevronRight className="w-4 h-4 stroke-[3]" />
+                </Link>
               </div>
             </div>
 
-            <div className="text-center px-2 border-l border-[#182338] flex flex-col items-center justify-center">
-              <span className="block text-[10px] font-mono uppercase font-bold text-zinc-400">YÖNETİM GÜVENİ</span>
-              <div className="w-10 h-10 rounded-full border-2 border-[#00F5A0] bg-[#00F5A0]/10 flex items-center justify-center font-black text-[#00F5A0] text-sm mt-1 shadow-[0_0_12px_rgba(0,245,160,0.3)]">
-                A+
+            {/* CARD 2: DRAFT LİGİ (Purple Neon Border & Glow) */}
+            <div className="relative overflow-hidden rounded-2xl bg-[#07101C] sc-glow-purple p-5 flex flex-col justify-between transition-all duration-300 hover:scale-[1.01]">
+              <div
+                className="absolute inset-0 opacity-25 pointer-events-none bg-cover bg-center"
+                style={{ backgroundImage: `url('/images/card-draft-room.jpg')` }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07101C] via-[#07101C]/75 to-transparent pointer-events-none" />
+
+              <div className="relative z-10 space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-black/60 border border-[#A855F7]/40 flex items-center justify-center text-[#A855F7] shadow-inner">
+                  <Users className="w-5 h-5" />
+                </div>
+                <h2 className="text-xl sm:text-2xl font-black italic tracking-tight text-white uppercase font-display">
+                  DRAFT LİGİ
+                </h2>
+                <p className="text-xs text-zinc-300 font-medium leading-relaxed">
+                  Arkadaşlarınla gerçek zamanlı draft yap, kadronu kur, birlikte sezonu yaşa.
+                </p>
+              </div>
+
+              <div className="relative z-10 pt-4 flex items-center justify-between gap-2">
+                <Link
+                  href="/draft"
+                  className="px-4 py-2 bg-[#A855F7] hover:bg-[#9333EA] text-white font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-[0_0_15px_rgba(168,85,247,0.35)] active:scale-95"
+                >
+                  ODA KUR
+                </Link>
+
+                <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/70 border border-[#14233A] rounded-xl text-[10px] text-purple-300">
+                  <span>👥 2-8 Kişi</span>
+                  <span>|</span>
+                  <span className="font-mono">Canlı Draft</span>
+                </div>
+
+                <Link
+                  href="/draft"
+                  className="w-8 h-8 rounded-xl bg-[#A855F7] text-white flex items-center justify-center transition-transform hover:scale-105"
+                  title="Draft Merkezine Git"
+                >
+                  <ChevronRight className="w-4 h-4 stroke-[3]" />
+                </Link>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Subnav Navigation Tabs (Genel Bakış, Kadro, Fikstür, Transferler, Altyapı, Kulüp Derinliği) */}
-        <div className="flex items-center gap-2 mt-6 pt-4 border-t border-[#182338] overflow-x-auto pb-1 text-xs font-bold uppercase tracking-wider">
-          <Link
-            href="/dashboard"
-            className="px-4 py-2 bg-[#00F5A0] text-black font-black rounded-lg shadow-sm whitespace-nowrap"
-          >
-            Genel Bakış
+        {/* RIGHT: CLUB HEALTH & SIRADAKİ MAÇ HUD (5 COLS) */}
+        <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
+          {/* Top HUD: Club Reputation & Finances */}
+          <div className="sc-panel rounded-2xl border border-[#14233A] p-4 sm:p-5 shadow-xl">
+            <div className="flex items-center justify-between gap-3 pb-3 border-b border-[#14233A]">
+              <div className="flex items-center gap-3">
+                <ClubBadge
+                  code={userClub.code}
+                  name={userClub.name}
+                  primaryColor={userClub.primaryColor}
+                  secondaryColor={userClub.secondaryColor}
+                  size="md"
+                />
+                <div>
+                  <h3 className="text-base font-black italic uppercase text-white tracking-wide font-display">
+                    {userClub.name}
+                  </h3>
+                  <div className="text-[10px] font-mono text-[#8E9EB5]">
+                    Süper Lig • {seasonNumber || 1}. Sezon
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2 pt-3 text-center">
+              {/* Yönetim Güveni */}
+              <div className="p-2 bg-[#040814] rounded-xl border border-[#14233A]">
+                <div className="text-[9px] font-mono font-bold text-[#8E9EB5] uppercase">
+                  YÖNETİM GÜVENİ
+                </div>
+                <div className="text-base font-black text-[#00F5A0] mt-0.5">A+</div>
+                <div className="w-full bg-[#14233A] h-1.5 rounded-full overflow-hidden mt-1.5">
+                  <div className="bg-[#00F5A0] h-full w-[94%] rounded-full shadow-[0_0_8px_#00F5A0]" />
+                </div>
+              </div>
+
+              {/* Bütçe */}
+              <div className="p-2 bg-[#040814] rounded-xl border border-[#14233A]">
+                <div className="text-[9px] font-mono font-bold text-[#8E9EB5] uppercase">
+                  BÜTÇE
+                </div>
+                <div className="text-base font-black text-[#00F5A0] mt-0.5">
+                  €{(userClub.transferBudget / 1000000).toFixed(1)}M
+                </div>
+                <div className="text-[9px] text-[#51647E] font-mono mt-1">Transfer</div>
+              </div>
+
+              {/* Takım Değeri */}
+              <div className="p-2 bg-[#040814] rounded-xl border border-[#14233A]">
+                <div className="text-[9px] font-mono font-bold text-[#8E9EB5] uppercase">
+                  TAKIM DEĞERİ
+                </div>
+                <div className="text-base font-black text-[#00D4FF] mt-0.5">
+                  €{(totalSquadValue / 1000000).toFixed(1)}M
+                </div>
+                <div className="text-[9px] text-[#51647E] font-mono mt-1">Piyasa</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom HUD: SIRADAKİ MAÇ Card with Stadium Background (Exact to Mockup) */}
+          <div className="relative overflow-hidden rounded-2xl bg-[#07101C] border border-[#14233A] p-5 shadow-xl flex-1 flex flex-col justify-between">
+            {/* Background stadium lights */}
+            <div
+              className="absolute inset-0 opacity-20 pointer-events-none bg-cover bg-center"
+              style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#07101C] via-[#07101C]/80 to-[#07101C]/90 pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-between gap-2 pb-2 border-b border-[#14233A]">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse" />
+                  <span className="text-[11px] font-mono font-black uppercase text-white tracking-wider">
+                    SIRADAKİ MAÇ
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-[#8E9EB5]">
+                  Süper Lig • {nextMatch?.round || 11}. Hafta
+                </span>
+              </div>
+
+              {/* Matchup Teams & Form Badges */}
+              <div className="py-4 grid grid-cols-7 items-center gap-2 text-center">
+                {/* Home Club (3 cols) */}
+                <div className="col-span-3 flex flex-col items-center gap-1.5">
+                  <ClubBadge
+                    code={userClub.code}
+                    primaryColor={userClub.primaryColor}
+                    secondaryColor={userClub.secondaryColor}
+                    size="md"
+                  />
+                  <span className="text-xs font-black uppercase italic text-white truncate max-w-[120px]">
+                    {userClub.name}
+                  </span>
+                  {/* Form Pills GGBGM */}
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <span className="w-4 h-4 rounded-full bg-[#00F5A0] text-black text-[9px] font-black flex items-center justify-center">G</span>
+                    <span className="w-4 h-4 rounded-full bg-[#00F5A0] text-black text-[9px] font-black flex items-center justify-center">G</span>
+                    <span className="w-4 h-4 rounded-full bg-[#FFB800] text-black text-[9px] font-black flex items-center justify-center">B</span>
+                    <span className="w-4 h-4 rounded-full bg-[#00F5A0] text-black text-[9px] font-black flex items-center justify-center">G</span>
+                    <span className="w-4 h-4 rounded-full bg-[#EF4444] text-white text-[9px] font-black flex items-center justify-center">M</span>
+                  </div>
+                </div>
+
+                {/* VS & Match Info (1 col) */}
+                <div className="col-span-1 flex flex-col items-center justify-center">
+                  <span className="text-xs font-black text-[#51647E] font-mono">VS</span>
+                  <span className="text-[9px] text-[#00F5A0] font-mono font-bold mt-1">
+                    {daysUntilNextMatch > 0 ? `${daysUntilNextMatch} GÜN` : 'BUGÜN'}
+                  </span>
+                </div>
+
+                {/* Away Club (3 cols) */}
+                <div className="col-span-3 flex flex-col items-center gap-1.5">
+                  <ClubBadge
+                    code={nextOpponent?.code || 'KNY'}
+                    primaryColor={nextOpponent?.primaryColor || '#EAB308'}
+                    secondaryColor={nextOpponent?.secondaryColor || '#1E293B'}
+                    size="md"
+                  />
+                  <span className="text-xs font-black uppercase italic text-white truncate max-w-[120px]">
+                    {nextOpponent?.name || 'Kanyon Atlas SK'}
+                  </span>
+                  {/* Form Pills M G G B M */}
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <span className="w-4 h-4 rounded-full bg-[#EF4444] text-white text-[9px] font-black flex items-center justify-center">M</span>
+                    <span className="w-4 h-4 rounded-full bg-[#00F5A0] text-black text-[9px] font-black flex items-center justify-center">G</span>
+                    <span className="w-4 h-4 rounded-full bg-[#00F5A0] text-black text-[9px] font-black flex items-center justify-center">G</span>
+                    <span className="w-4 h-4 rounded-full bg-[#FFB800] text-black text-[9px] font-black flex items-center justify-center">B</span>
+                    <span className="w-4 h-4 rounded-full bg-[#EF4444] text-white text-[9px] font-black flex items-center justify-center">M</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="text-[10px] text-center font-mono text-[#8E9EB5] pb-2">
+                18 Kasım 2026 • Çarşamba 20:00 // Doruk Arena
+              </div>
+            </div>
+
+            {/* Action Buttons Row (Exact to Mockup: MAÇ GÜNÜ, TAKTİK HAZIRLIĞI, MAÇ ÖN İZLEME) */}
+            <div className="relative z-10 pt-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <Link
+                href={nextMatch ? `/match/${nextMatch.id}` : '/match'}
+                className="col-span-1 sm:col-span-1 py-2.5 px-3 rounded-xl bg-[#00F5A0] hover:bg-[#00E590] text-[#040814] font-black text-xs uppercase tracking-wider text-center flex items-center justify-center gap-1 shadow-[0_0_15px_rgba(0,245,160,0.3)] transition-all active:scale-95"
+              >
+                <Swords className="w-3.5 h-3.5" />
+                <span>MAÇ GÜNÜ</span>
+              </Link>
+
+              <Link
+                href="/tactics"
+                className="py-2.5 px-2 rounded-xl bg-[#040814] hover:bg-[#0E1E38] text-zinc-300 hover:text-white border border-[#14233A] font-bold text-[11px] uppercase tracking-wider text-center flex items-center justify-center gap-1 transition-all"
+              >
+                <Sliders className="w-3.5 h-3.5 text-[#00D4FF]" />
+                <span className="truncate">Taktik</span>
+              </Link>
+
+              <Link
+                href="/fixtures"
+                className="py-2.5 px-2 rounded-xl bg-[#040814] hover:bg-[#0E1E38] text-zinc-300 hover:text-white border border-[#14233A] font-bold text-[11px] uppercase tracking-wider text-center flex items-center justify-center gap-1 transition-all"
+              >
+                <Eye className="w-3.5 h-3.5 text-[#FFB800]" />
+                <span className="truncate">Ön İzleme</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ==================================================================== */}
+      {/* 3. MIDDLE STATS ROW (6 BALANCED CARDS IN GRID)                        */}
+      {/* ==================================================================== */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
+        {/* CARD 1: LİG DURUMU */}
+        <div className="sc-panel rounded-2xl border border-[#14233A] p-4 flex flex-col justify-between shadow-lg">
+          <div className="flex items-center gap-2 text-[10px] font-mono font-bold text-[#8E9EB5] uppercase">
+            <Trophy className="w-3.5 h-3.5 text-[#FFB800]" />
+            <span>LİG DURUMU</span>
+          </div>
+
+          <div className="my-2 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#FFB800]/15 border border-[#FFB800]/40 flex items-center justify-center font-black text-lg text-[#FFB800]">
+              {currentRank}.
+            </div>
+            <div>
+              <div className="text-xs font-bold text-white">{currentPoints} Puan</div>
+              <div className="text-[10px] text-[#51647E] font-mono">12 Maç</div>
+            </div>
+          </div>
+
+          <Link href="/league" className="text-[10px] font-bold text-[#00D4FF] hover:underline flex items-center gap-1">
+            <span>Detay</span>
+            <ChevronRight className="w-3 h-3" />
           </Link>
-          <Link
-            href="/squad"
-            className="px-4 py-2 text-zinc-400 hover:text-white hover:bg-[#0E1B33] rounded-lg transition-colors whitespace-nowrap"
-          >
-            Kadro
-          </Link>
-          <Link
-            href="/fixtures"
-            className="px-4 py-2 text-zinc-400 hover:text-white hover:bg-[#0E1B33] rounded-lg transition-colors whitespace-nowrap"
-          >
-            Fikstür
-          </Link>
-          <Link
-            href="/transfers"
-            className="px-4 py-2 text-zinc-400 hover:text-white hover:bg-[#0E1B33] rounded-lg transition-colors whitespace-nowrap"
-          >
-            Transferler
-          </Link>
-          <Link
-            href="/academy"
-            className="px-4 py-2 text-zinc-400 hover:text-white hover:bg-[#0E1B33] rounded-lg transition-colors whitespace-nowrap"
-          >
-            Altyapı
-          </Link>
-          <Link
-            href="/finances"
-            className="px-4 py-2 text-zinc-400 hover:text-white hover:bg-[#0E1B33] rounded-lg transition-colors whitespace-nowrap"
-          >
-            Kulüp Derinliği
+        </div>
+
+        {/* CARD 2: SON 5 MAÇ */}
+        <div className="sc-panel rounded-2xl border border-[#14233A] p-4 flex flex-col justify-between shadow-lg">
+          <div className="flex items-center gap-2 text-[10px] font-mono font-bold text-[#8E9EB5] uppercase">
+            <Calendar className="w-3.5 h-3.5 text-[#00F5A0]" />
+            <span>SON 5 MAÇ</span>
+          </div>
+
+          <div className="my-3 flex items-center gap-1.5 justify-center">
+            <span className="w-6 h-6 rounded-full bg-[#00F5A0] text-black text-xs font-black flex items-center justify-center shadow-sm">G</span>
+            <span className="w-6 h-6 rounded-full bg-[#00F5A0] text-black text-xs font-black flex items-center justify-center shadow-sm">G</span>
+            <span className="w-6 h-6 rounded-full bg-[#FFB800] text-black text-xs font-black flex items-center justify-center shadow-sm">B</span>
+            <span className="w-6 h-6 rounded-full bg-[#EF4444] text-white text-xs font-black flex items-center justify-center shadow-sm">M</span>
+            <span className="w-6 h-6 rounded-full bg-[#00F5A0] text-black text-xs font-black flex items-center justify-center shadow-sm">G</span>
+          </div>
+
+          <div className="text-[10px] text-[#51647E] font-mono text-center">
+            3G • 1B • 1M (10 Puan)
+          </div>
+        </div>
+
+        {/* CARD 3: FORMA OYUNCUSU */}
+        <div className="sc-panel rounded-2xl border border-[#14233A] p-4 flex flex-col justify-between shadow-lg">
+          <div className="flex items-center gap-2 text-[10px] font-mono font-bold text-[#8E9EB5] uppercase">
+            <Shirt className="w-3.5 h-3.5 text-[#00D4FF]" />
+            <span>FORMA OYUNCUSU</span>
+          </div>
+
+          <div className="my-2 flex items-center gap-2.5">
+            <PlayerPortrait
+              player={{
+                id: topFormPlayer.id,
+                firstName: topFormPlayer.firstName,
+                lastName: topFormPlayer.lastName,
+                position: topFormPlayer.position,
+              }}
+              size="sm"
+            />
+            <div className="truncate">
+              <div className="text-xs font-bold text-white truncate">
+                {topFormPlayer.firstName?.[0]}. {topFormPlayer.lastName}
+              </div>
+              <div className="text-sm font-black text-[#00D4FF] mt-0.5">
+                8.4
+              </div>
+            </div>
+          </div>
+
+          <div className="text-[10px] text-[#51647E] font-mono">
+            Son 5 Maç Ort.
+          </div>
+        </div>
+
+        {/* CARD 4: EN GOLCÜ */}
+        <div className="sc-panel rounded-2xl border border-[#14233A] p-4 flex flex-col justify-between shadow-lg">
+          <div className="flex items-center gap-2 text-[10px] font-mono font-bold text-[#8E9EB5] uppercase">
+            <Sparkles className="w-3.5 h-3.5 text-[#00F5A0]" />
+            <span>EN GOLCÜ</span>
+          </div>
+
+          <div className="my-2 flex items-center gap-2.5">
+            <PlayerPortrait
+              player={{
+                id: topScorerPlayer.id,
+                firstName: topScorerPlayer.firstName,
+                lastName: topScorerPlayer.lastName,
+                position: topScorerPlayer.position,
+              }}
+              size="sm"
+            />
+            <div className="truncate">
+              <div className="text-xs font-bold text-white truncate">
+                {topScorerPlayer.firstName} {topScorerPlayer.lastName}
+              </div>
+              <div className="text-sm font-black text-[#00F5A0] mt-0.5">
+                {topScorerPlayer.seasonStats?.goals ?? 6} Gol
+              </div>
+            </div>
+          </div>
+
+          <div className="text-[10px] text-[#51647E] font-mono">
+            Lig & Kupa
+          </div>
+        </div>
+
+        {/* CARD 5: EN ASİST */}
+        <div className="sc-panel rounded-2xl border border-[#14233A] p-4 flex flex-col justify-between shadow-lg">
+          <div className="flex items-center gap-2 text-[10px] font-mono font-bold text-[#8E9EB5] uppercase">
+            <TrendingUp className="w-3.5 h-3.5 text-[#00D4FF]" />
+            <span>EN ASİST</span>
+          </div>
+
+          <div className="my-2 flex items-center gap-2.5">
+            <PlayerPortrait
+              player={{
+                id: topAssistPlayer.id,
+                firstName: topAssistPlayer.firstName,
+                lastName: topAssistPlayer.lastName,
+                position: topAssistPlayer.position,
+              }}
+              size="sm"
+            />
+            <div className="truncate">
+              <div className="text-xs font-bold text-white truncate">
+                {topAssistPlayer.firstName} {topAssistPlayer.lastName}
+              </div>
+              <div className="text-sm font-black text-[#00D4FF] mt-0.5">
+                {topAssistPlayer.seasonStats?.assists ?? 4} Asist
+              </div>
+            </div>
+          </div>
+
+          <div className="text-[10px] text-[#51647E] font-mono">
+            Süper Lig
+          </div>
+        </div>
+
+        {/* CARD 6: YÖNETİM HEDEFLERİ */}
+        <div className="sc-panel rounded-2xl border border-[#14233A] p-4 flex flex-col justify-between shadow-lg">
+          <div className="flex items-center gap-2 text-[10px] font-mono font-bold text-[#8E9EB5] uppercase">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#00F5A0]" />
+            <span>YÖNETİM HEDEFLERİ</span>
+          </div>
+
+          <div className="my-2 space-y-1.5 text-[11px] text-zinc-300">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-3 h-3 text-[#00F5A0] shrink-0" />
+              <span className="truncate">İlk 4 içinde bitir</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-3 h-3 text-[#00F5A0] shrink-0" />
+              <span className="truncate">Altyapıdan 2 oyuncu A takıma</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-[#8E9EB5]">
+              <Circle className="w-3 h-3 text-[#51647E] shrink-0" />
+              <span className="truncate">Mali dengeyi koru</span>
+            </div>
+          </div>
+
+          <Link href="/finances" className="text-[10px] font-bold text-[#00F5A0] hover:underline flex items-center gap-1">
+            <span>Tüm Hedefler</span>
+            <ChevronRight className="w-3 h-3" />
           </Link>
         </div>
       </div>
 
-      {/* 3. NEXT MATCH & MAIN GRID (2 Columns Left, 1 Column Right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column (8 Cols): Sıradaki Maç & 3 Bottom Cards */}
-        <div className="lg:col-span-8 space-y-6">
-          {/* SIRADAKİ MAÇ CARD */}
-          {nextMatch && nextOpponent ? (
-            <div className="sc-panel border border-[#182338] p-6 rounded-2xl relative overflow-hidden">
-              {/* Header: SÜPER LİG • HAFTA 12 */}
-              <div className="flex items-center justify-between pb-4 border-b border-[#182338]">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse" />
-                  <span className="text-xs font-mono font-bold tracking-wider text-zinc-300 uppercase">
-                    SIRADAKİ MAÇ • SÜPER LİG • HAFTA {nextMatch.round}
-                  </span>
-                </div>
-                <div className="px-3 py-1 rounded-full bg-[#0B1323] border border-[#182338] text-[11px] font-mono text-zinc-400">
-                  {formatDateTurkish(nextMatch.date)} • 20:00
-                </div>
-              </div>
-
-              {/* Matchup Center Display */}
-              <div className="py-8 grid grid-cols-3 items-center text-center">
-                {/* Home */}
-                <div className="flex flex-col items-center gap-3">
-                  <div className="p-3 bg-[#070D1A] rounded-2xl border border-[#182338]">
-                    <ClubBadge
-                      code={nextMatch.homeClubId === userClub.id ? userClub.code : nextOpponent.code}
-                      primaryColor={nextMatch.homeClubId === userClub.id ? userClub.primaryColor : nextOpponent.primaryColor}
-                      secondaryColor={nextMatch.homeClubId === userClub.id ? userClub.secondaryColor : nextOpponent.secondaryColor}
-                      size="xl"
-                    />
-                  </div>
-                  <h3 className="text-base sm:text-xl font-black italic uppercase text-white">
-                    {nextMatch.homeClubId === userClub.id ? userClub.name : nextOpponent.name}
-                  </h3>
-                  <span className="text-[11px] font-mono text-zinc-400">Ev Sahibi</span>
-                </div>
-
-                {/* VS */}
-                <div className="flex flex-col items-center justify-center space-y-2">
-                  <span className="text-2xl sm:text-3xl font-black italic text-zinc-500 font-mono">VS</span>
-                  <div className="text-[11px] font-mono text-zinc-400">
-                    {nextMatch.stadium || userClub.stadium}
-                  </div>
-                  <div className="px-3 py-1 rounded-full bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30 text-[10px] font-bold uppercase">
-                    4-3-3 Ofansif / Yüksek Baskı
-                  </div>
-                </div>
-
-                {/* Away */}
-                <div className="flex flex-col items-center gap-3">
-                  <div className="p-3 bg-[#070D1A] rounded-2xl border border-[#182338]">
-                    <ClubBadge
-                      code={nextMatch.awayClubId === userClub.id ? userClub.code : nextOpponent.code}
-                      primaryColor={nextMatch.awayClubId === userClub.id ? userClub.primaryColor : nextOpponent.primaryColor}
-                      secondaryColor={nextMatch.awayClubId === userClub.id ? userClub.secondaryColor : nextOpponent.secondaryColor}
-                      size="xl"
-                    />
-                  </div>
-                  <h3 className="text-base sm:text-xl font-black italic uppercase text-white">
-                    {nextMatch.awayClubId === userClub.id ? userClub.name : nextOpponent.name}
-                  </h3>
-                  <span className="text-[11px] font-mono text-zinc-400">Deplasman</span>
-                </div>
-              </div>
-
-              {/* Bottom Actions */}
-              <div className="pt-4 border-t border-[#182338] flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="text-xs text-zinc-400 font-mono">
-                  Rakip Menajeri: <strong className="text-white">{nextOpponent.managerName}</strong>
-                </div>
-
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  <Link
-                    href="/tactics"
-                    className="flex-1 sm:flex-initial px-5 py-2.5 bg-[#070D1A] hover:bg-[#0E1B33] text-zinc-200 border border-[#182338] font-bold text-xs uppercase tracking-wider rounded-lg transition-colors text-center"
-                  >
-                    Taktik Hazırlığı
-                  </Link>
-                  <Link
-                    href={`/match/${nextMatch.id}`}
-                    className="flex-1 sm:flex-initial px-7 py-2.5 bg-[#00F5A0] hover:bg-[#00E590] text-black font-black text-xs uppercase tracking-wider rounded-lg shadow-[0_0_16px_rgba(0,245,160,0.3)] transition-all flex items-center justify-center gap-2"
-                  >
-                    <span>MAÇ GÜNÜ</span>
-                    <ArrowRight className="w-4 h-4 stroke-[3]" />
-                  </Link>
-                </div>
-              </div>
+      {/* ==================================================================== */}
+      {/* 4. BOTTOM 3 COLUMNS: HABERLER, YAKLAŞAN FİKSTÜR, LİG TABLOSU         */}
+      {/* ==================================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        {/* COLUMN 1: SON HABERLER */}
+        <div className="sc-panel rounded-2xl border border-[#14233A] p-5 flex flex-col justify-between shadow-xl">
+          <div className="flex items-center justify-between gap-2 pb-3 border-b border-[#14233A]">
+            <div className="flex items-center gap-2 text-xs font-black uppercase italic tracking-wide text-white font-display">
+              <Newspaper className="w-4 h-4 text-[#FFB800]" />
+              <span>SON HABERLER</span>
             </div>
-          ) : (
-            <div className="sc-panel p-6 rounded-2xl text-center text-zinc-400 text-xs font-mono">
-              Planlanmış maç bulunmuyor. Sezon tamamlanmış olabilir.
-            </div>
-          )}
+            <Link href="/inbox" className="text-[11px] font-bold text-[#00D4FF] hover:underline flex items-center gap-1">
+              <span>Tümü</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
 
-          {/* 3 BOTTOM ROW MINI CARDS (SON 5 MAÇ, YÖNETİM GÜVENİ, FORMDA OYUNCU) */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Card 1: SON 5 MAÇ */}
-            <div className="sc-panel p-4 rounded-xl border border-[#182338]">
-              <span className="text-[10px] font-mono uppercase font-bold text-zinc-400 block mb-2.5">
-                SON 5 MAÇ
+          {/* Featured News Hero Card */}
+          <div className="my-3 p-3.5 bg-[#040814] rounded-xl border border-[#14233A] flex gap-3.5 items-center">
+            <div className="shrink-0 w-16 h-16 rounded-xl overflow-hidden border border-[#14233A] bg-[#07101C]">
+              <PlayerPortrait
+                player={{
+                  id: 'featured-news-player',
+                  firstName: 'Marcos',
+                  lastName: 'Silva',
+                  position: 'MC',
+                }}
+                size="md"
+              />
+            </div>
+            <div className="min-w-0">
+              <span className="px-2 py-0.5 rounded-lg text-[9px] font-mono font-bold bg-[#A855F7]/20 text-[#A855F7] border border-[#A855F7]/30 uppercase">
+                TAKIM
               </span>
-              <div className="flex items-center gap-2">
-                <span className="w-7 h-7 rounded-full bg-emerald-500/20 text-[#00F5A0] border border-[#00F5A0]/40 flex items-center justify-center font-bold text-xs">
-                  G
-                </span>
-                <span className="w-7 h-7 rounded-full bg-emerald-500/20 text-[#00F5A0] border border-[#00F5A0]/40 flex items-center justify-center font-bold text-xs">
-                  G
-                </span>
-                <span className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center font-bold text-xs">
-                  B
-                </span>
-                <span className="w-7 h-7 rounded-full bg-emerald-500/20 text-[#00F5A0] border border-[#00F5A0]/40 flex items-center justify-center font-bold text-xs">
-                  G
-                </span>
-                <span className="w-7 h-7 rounded-full bg-red-500/20 text-red-400 border border-red-500/40 flex items-center justify-center font-bold text-xs">
-                  M
-                </span>
-              </div>
-              <p className="text-[10px] font-mono text-zinc-500 mt-2">10 Puan / Son 5 Maç</p>
-            </div>
-
-            {/* Card 2: YÖNETİM GÜVENİ */}
-            <div className="sc-panel p-4 rounded-xl border border-[#182338] flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-mono uppercase font-bold text-zinc-400 block mb-1">
-                  YÖNETİM GÜVENİ
-                </span>
-                <span className="text-xl font-black text-white italic">A+ / %94</span>
-                <p className="text-[10px] font-mono text-[#00F5A0] mt-0.5">Hedeflerle tam uyumlu</p>
-              </div>
-              <div className="w-10 h-10 rounded-full border-2 border-[#00F5A0] bg-[#00F5A0]/10 flex items-center justify-center font-black text-[#00F5A0] text-sm shadow-[0_0_10px_rgba(0,245,160,0.3)]">
-                A+
-              </div>
-            </div>
-
-            {/* Card 3: FORMDA OYUNCU */}
-            <div className="sc-panel p-4 rounded-xl border border-[#182338]">
-              <span className="text-[10px] font-mono uppercase font-bold text-zinc-400 block mb-1">
-                FORMDA OYUNCU
-              </span>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm font-black text-white uppercase truncate">
-                    {bestFormPlayer ? `${bestFormPlayer.firstName[0]}. ${bestFormPlayer.lastName}` : 'Arda Yılmaz'}
-                  </h4>
-                  <span className="text-[11px] font-bold text-[#00F5A0]">8.4 Form</span>
-                </div>
-                {/* Mini SVG Sparkline */}
-                <svg className="w-16 h-8 text-[#00F5A0]" viewBox="0 0 60 25" fill="none">
-                  <path
-                    d="M 2 18 Q 15 22 25 10 T 45 6 T 58 2"
-                    stroke="#00F5A0"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
-              <p className="text-[10px] font-mono text-zinc-500 mt-1">Son 5 maçta 4 gol, 3 asist</p>
+              <h4 className="text-xs font-black text-white uppercase italic tracking-tight mt-1 truncate">
+                Marcos Silva formda grafiğini sürdürüyor
+              </h4>
+              <p className="text-[11px] text-[#8E9EB5] line-clamp-2 mt-0.5">
+                Orta saha oyuncusu son 5 maçta 3 gol 2 asist ile takımın en etkili ismi oldu.
+              </p>
+              <div className="text-[9px] text-[#51647E] font-mono mt-1">30 saat önce</div>
             </div>
           </div>
 
-          {/* 3. TAKIM DURUMU & ANTRENMAN YOĞUNLUĞU */}
-          <div className="sc-panel p-5 rounded-2xl border border-[#182338] space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#182338]">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-[#00F5A0]/10 border border-[#00F5A0]/40 flex items-center justify-center text-[#00F5A0]">
-                  <Dumbbell className="w-4 h-4" />
+          {/* Compact News Ticker List */}
+          <div className="space-y-2">
+            {[
+              { cat: 'TRANSFER', color: 'text-[#00D4FF] bg-[#00D4FF]/10 border-[#00D4FF]/30', text: 'Kanyon Atlas SK, yeni forvet arayışında' },
+              { cat: 'ALTYAPI', color: 'text-[#00F5A0] bg-[#00F5A0]/10 border-[#00F5A0]/30', text: 'Akademiden 2 genç oyuncu A takımla antrenmanda' },
+              { cat: 'LİG', color: 'text-[#FFB800] bg-[#FFB800]/10 border-[#FFB800]/30', text: 'Süper Lig 11. hafta fikstürü açıklandı' },
+              { cat: 'TRANSFER', color: 'text-[#00D4FF] bg-[#00D4FF]/10 border-[#00D4FF]/30', text: 'Kızılkaya SK, yeni forvet arayışında' },
+            ].map((n, idx) => (
+              <Link
+                key={idx}
+                href="/inbox"
+                className="flex items-center justify-between p-2 rounded-xl bg-[#040814]/70 hover:bg-[#0E1E38] border border-[#14233A] text-xs transition-colors"
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <span className={`px-1.5 py-0.2 rounded text-[9px] font-mono font-bold border uppercase shrink-0 ${n.color}`}>
+                    {n.cat}
+                  </span>
+                  <span className="text-zinc-300 hover:text-white truncate text-[11px]">
+                    {n.text}
+                  </span>
                 </div>
-                <div>
-                  <h3 className="text-xs font-black uppercase tracking-wider text-zinc-200 font-mono">
-                    Takım Durumu & Antrenman
-                  </h3>
-                  <p className="text-[11px] text-zinc-400">
-                    Kondisyon seviyesi, maç keskinliği ve antrenman yoğunluğu
-                  </p>
-                </div>
-              </div>
-
-              {/* Training Intensity Segmented Buttons */}
-              <div className="flex items-center gap-1 bg-[#040711] p-1 rounded-lg border border-[#182338]">
-                {(['Hafif', 'Normal', 'Yoğun'] as TrainingIntensity[]).map((level) => {
-                  const isSelected = trainingIntensity === level;
-                  return (
-                    <button
-                      key={level}
-                      onClick={() => setTrainingIntensity(level)}
-                      className={`px-3 py-1 font-mono font-bold text-xs uppercase tracking-wider rounded transition-all ${
-                        isSelected
-                          ? level === 'Yoğun'
-                            ? 'bg-red-600 text-white font-black'
-                            : level === 'Hafif'
-                            ? 'bg-cyan-500 text-black font-black'
-                            : 'bg-[#C7FF38] text-black font-black'
-                          : 'text-zinc-400 hover:text-white'
-                      }`}
-                    >
-                      {level}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Condition Meters */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="p-3.5 bg-[#070D1A] rounded-xl border border-[#182338] flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-mono uppercase font-bold text-zinc-400 block">Ortalama Kondisyon</span>
-                  <span className="text-2xl font-black italic text-white">%{avgFitness}</span>
-                  <p className="text-[10px] font-mono text-zinc-500 mt-0.5">
-                    {avgFitness >= 85 ? 'Kadro diri ve maça hazır' : 'Yorgunluk belirtileri var'}
-                  </p>
-                </div>
-                <div className="w-16 h-2 bg-[#182338] rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${
-                      avgFitness >= 85 ? 'bg-[#C7FF38]' : avgFitness >= 70 ? 'bg-amber-400' : 'bg-red-500'
-                    }`}
-                    style={{ width: `${avgFitness}%` }}
-                  />
-                </div>
-              </div>
-
-              <div className="p-3.5 bg-[#070D1A] rounded-xl border border-[#182338] flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-mono uppercase font-bold text-zinc-400 block">Maç Keskinliği</span>
-                  <span className="text-2xl font-black italic text-[#4FE4FF]">%{avgSharpness}</span>
-                  <p className="text-[10px] font-mono text-zinc-500 mt-0.5">
-                    {avgSharpness >= 75 ? 'Tempolu ve refleksler yerinde' : 'Maç eksiği bulunuyor'}
-                  </p>
-                </div>
-                <div className="w-16 h-2 bg-[#182338] rounded-full overflow-hidden">
-                  <div className="h-full bg-[#00D4FF]" style={{ width: `${avgSharpness}%` }} />
-                </div>
-              </div>
-            </div>
+                <ChevronRight className="w-3.5 h-3.5 text-[#51647E] shrink-0" />
+              </Link>
+            ))}
           </div>
         </div>
 
-        {/* Right Column (4 Cols): LİG DURUMU & SON HABERLER */}
-        <div className="lg:col-span-4 space-y-6">
-          {/* LİG DURUMU (MATCHING SCREEN 2 MOCKUP) */}
-          <div className="sc-panel p-5 rounded-2xl border border-[#182338] space-y-3">
-            <div className="flex items-center justify-between pb-2.5 border-b border-[#182338]">
-              <div className="flex items-center gap-2">
-                <Trophy className="w-4 h-4 text-[#FFB800]" />
-                <h3 className="text-xs font-black uppercase tracking-wider text-white font-mono">
-                  LİG DURUMU
-                </h3>
-              </div>
-              <Link
-                href="/league"
-                className="text-xs font-bold text-[#00F5A0] hover:underline flex items-center gap-1 font-mono"
+        {/* COLUMN 2: YAKLAŞAN FİKSTÜR */}
+        <div className="sc-panel rounded-2xl border border-[#14233A] p-5 flex flex-col justify-between shadow-xl">
+          <div className="flex items-center justify-between gap-2 pb-3 border-b border-[#14233A]">
+            <div className="flex items-center gap-2 text-xs font-black uppercase italic tracking-wide text-white font-display">
+              <Calendar className="w-4 h-4 text-[#00F5A0]" />
+              <span>YAKLAŞAN FİKSTÜR</span>
+            </div>
+            <Link href="/fixtures" className="text-[11px] font-bold text-[#00F5A0] hover:underline flex items-center gap-1">
+              <span>Tümü</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* 5 Fixture Rows */}
+          <div className="my-3 space-y-2">
+            {[
+              { date: '18 Kas', oppCode: 'KNY', oppName: 'Kanyon Atlas SK', venue: 'Ev', league: 'Süper Lig' },
+              { date: '22 Kas', oppCode: 'SLV', oppName: 'Solvanya Gücü FK', venue: 'Deplasman', league: 'Süper Lig' },
+              { date: '28 Kas', oppCode: 'KZL', oppName: 'Kızılkaya SK', venue: 'Ev', league: 'Süper Lig' },
+              { date: '03 Ara', oppCode: 'YLK', oppName: 'Yelkenköy Akademi', venue: 'Deplasman', league: 'Süper Lig' },
+              { date: '08 Ara', oppCode: 'LMN', oppName: 'Liman Birlik SK', venue: 'Ev', league: 'Süper Lig' },
+            ].map((fx, idx) => (
+              <div
+                key={idx}
+                className="flex items-center justify-between p-2.5 rounded-xl bg-[#040814] border border-[#14233A] text-xs"
               >
-                <span>Tüm Tabloyu Gör</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="font-mono text-[10px] text-[#8E9EB5] font-bold shrink-0 w-11">
+                    {fx.date}
+                  </span>
+                  <ClubBadge code={fx.oppCode} primaryColor="#00F5A0" secondaryColor="#14233A" size="xs" />
+                  <span className="font-bold text-white truncate text-[11px]">
+                    {fx.oppName}
+                  </span>
+                </div>
 
-            <LeagueTable
-              standings={standings}
-              clubs={allClubs}
-              userClubId={userClub.id}
-              limit={5}
-            />
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                    fx.venue === 'Ev' ? 'bg-[#00F5A0]/10 text-[#00F5A0]' : 'bg-[#14233A] text-[#8E9EB5]'
+                  }`}>
+                    {fx.venue}
+                  </span>
+                  <span className="text-[10px] font-mono text-[#51647E]">
+                    {fx.league}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
 
-          {/* SON HABERLER & BİLDİRİMLER (MATCHING SCREEN 2 MOCKUP) */}
-          <div className="sc-panel p-5 rounded-2xl border border-[#182338] space-y-3">
-            <div className="flex items-center justify-between pb-2.5 border-b border-[#182338]">
-              <div className="flex items-center gap-2">
-                <Newspaper className="w-4 h-4 text-[#00F5A0]" />
-                <h3 className="text-xs font-black uppercase tracking-wider text-white font-mono">
-                  SON HABERLER & BİLDİRİMLER
-                </h3>
-              </div>
-              <Link href="/inbox" className="text-xs font-bold text-[#00F5A0] hover:underline font-mono">
-                TÜMÜ
-              </Link>
+          {/* Quick Actions Strip 1 */}
+          <div className="pt-2 border-t border-[#14233A] grid grid-cols-3 gap-2">
+            <Link
+              href="/tactics"
+              className="p-2 rounded-xl bg-[#040814] hover:bg-[#0E1E38] border border-[#14233A] text-center transition-colors group"
+            >
+              <Swords className="w-3.5 h-3.5 text-[#00F5A0] mx-auto mb-1 group-hover:scale-110 transition-transform" />
+              <div className="text-[10px] font-black uppercase text-white truncate">Taktik</div>
+              <div className="text-[8px] text-[#51647E] truncate">Diziliş & Plan</div>
+            </Link>
+
+            <Link
+              href="/transfers"
+              className="p-2 rounded-xl bg-[#040814] hover:bg-[#0E1E38] border border-[#14233A] text-center transition-colors group"
+            >
+              <ArrowLeftRight className="w-3.5 h-3.5 text-[#00D4FF] mx-auto mb-1 group-hover:scale-110 transition-transform" />
+              <div className="text-[10px] font-black uppercase text-white truncate">Transfer</div>
+              <div className="text-[8px] text-[#51647E] truncate">Oyuncu Keşfet</div>
+            </Link>
+
+            <Link
+              href="/scouting"
+              className="p-2 rounded-xl bg-[#040814] hover:bg-[#0E1E38] border border-[#14233A] text-center transition-colors group"
+            >
+              <Compass className="w-3.5 h-3.5 text-[#FFB800] mx-auto mb-1 group-hover:scale-110 transition-transform" />
+              <div className="text-[10px] font-black uppercase text-white truncate">Gözlem Ağı</div>
+              <div className="text-[8px] text-[#51647E] truncate">Yıldız Bul</div>
+            </Link>
+          </div>
+        </div>
+
+        {/* COLUMN 3: LİG TABLOSU */}
+        <div className="sc-panel rounded-2xl border border-[#14233A] p-5 flex flex-col justify-between shadow-xl">
+          <div className="flex items-center justify-between gap-2 pb-3 border-b border-[#14233A]">
+            <div className="flex items-center gap-2 text-xs font-black uppercase italic tracking-wide text-white font-display">
+              <Trophy className="w-4 h-4 text-[#00D4FF]" />
+              <span>LİG TABLOSU</span>
+              <span className="text-[10px] font-mono text-[#51647E]">Süper Lig</span>
+            </div>
+            <Link href="/league" className="text-[11px] font-bold text-[#00D4FF] hover:underline flex items-center gap-1">
+              <span>Tümü</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          {/* Table Headers */}
+          <div className="my-2">
+            <div className="grid grid-cols-12 text-[10px] font-mono font-bold text-[#51647E] uppercase pb-2 px-2 border-b border-[#14233A]">
+              <span className="col-span-1">#</span>
+              <span className="col-span-5">TAKIM</span>
+              <span className="col-span-1 text-center">O</span>
+              <span className="col-span-1 text-center">G</span>
+              <span className="col-span-1 text-center">B</span>
+              <span className="col-span-1 text-center">M</span>
+              <span className="col-span-1 text-center">AV</span>
+              <span className="col-span-1 text-right">P</span>
             </div>
 
-            <div className="space-y-2.5">
-              {newsFeed.length > 0 ? (
-                newsFeed.slice(0, 3).map((news) => (
-                  <div
-                    key={news.id}
-                    className="p-3 bg-[#070D1A] rounded-xl border border-[#182338] hover:border-zinc-600 transition-colors space-y-1"
-                  >
-                    <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400">
-                      <span className="font-bold text-[#00F5A0] uppercase px-1.5 py-0.5 rounded bg-[#00F5A0]/10 border border-[#00F5A0]/30">
-                        {news.category}
-                      </span>
-                      <span>{news.date}</span>
-                    </div>
-                    <h5 className="text-xs font-bold text-white leading-snug pt-1">{news.headline}</h5>
+            {/* Top 5 Standings Rows */}
+            <div className="space-y-1.5 mt-2">
+              {[
+                { rank: 1, code: 'KUZ', name: 'Kuzey Fırtınası SK', p: 12, w: 7, d: 1, l: 4, gd: '+5', pts: 22 },
+                { rank: 2, code: 'SLV', name: 'Solvanya Gücü FK', p: 12, w: 6, d: 3, l: 3, gd: '+10', pts: 21 },
+                { rank: 3, code: userClub.code, name: userClub.name, p: 12, w: 5, d: 4, l: 3, gd: '+7', pts: 19, isMe: true },
+                { rank: 4, code: 'KZL', name: 'Kızılkaya SK', p: 12, w: 6, d: 1, l: 5, gd: '+3', pts: 17 },
+                { rank: 5, code: 'KNY', name: 'Kanyon Atlas SK', p: 12, w: 4, d: 5, l: 3, gd: '+3', pts: 17 },
+              ].map((row) => (
+                <div
+                  key={row.rank}
+                  className={`grid grid-cols-12 items-center p-2 rounded-xl text-xs transition-colors ${
+                    row.isMe
+                      ? 'bg-[#00F5A0]/10 border border-[#00F5A0] shadow-[0_0_12px_rgba(0,245,160,0.15)]'
+                      : 'bg-[#040814] border border-[#14233A]'
+                  }`}
+                >
+                  <span className={`col-span-1 font-mono font-black ${row.isMe ? 'text-[#00F5A0]' : 'text-zinc-400'}`}>
+                    {row.rank}
+                  </span>
+                  <div className="col-span-5 flex items-center gap-2 truncate">
+                    <ClubBadge code={row.code} primaryColor="#00F5A0" secondaryColor="#14233A" size="xs" />
+                    <span className={`truncate font-bold text-[11px] ${row.isMe ? 'text-[#00F5A0]' : 'text-white'}`}>
+                      {row.name}
+                    </span>
                   </div>
-                ))
-              ) : (
-                <div className="p-3 bg-[#070D1A] rounded-xl border border-[#182338] text-xs text-zinc-400 font-mono">
-                  Transfer görüşmesi tamamlandı. Oyuncu kadroya katıldı.
+                  <span className="col-span-1 text-center font-mono text-zinc-400 text-[10px]">{row.p}</span>
+                  <span className="col-span-1 text-center font-mono text-zinc-400 text-[10px]">{row.w}</span>
+                  <span className="col-span-1 text-center font-mono text-zinc-400 text-[10px]">{row.d}</span>
+                  <span className="col-span-1 text-center font-mono text-zinc-400 text-[10px]">{row.l}</span>
+                  <span className="col-span-1 text-center font-mono text-[#00F5A0] text-[10px]">{row.gd}</span>
+                  <span className={`col-span-1 text-right font-mono font-black ${row.isMe ? 'text-[#00F5A0]' : 'text-white'}`}>
+                    {row.pts}
+                  </span>
                 </div>
-              )}
+              ))}
             </div>
           </div>
 
-          {/* SAKAT & CEZALILAR */}
-          <div className="sc-panel p-5 rounded-2xl border border-[#182338] space-y-3">
-            <div className="flex items-center justify-between pb-2.5 border-b border-[#182338]">
-              <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-red-400" />
-                <h3 className="text-xs font-black uppercase tracking-wider text-zinc-200 font-mono">
-                  Sakat & Cezalılar
-                </h3>
-              </div>
-              <Link href="/squad" className="text-xs font-bold font-mono text-zinc-400 hover:text-white">
-                KADRO
-              </Link>
-            </div>
+          {/* Quick Actions Strip 2 */}
+          <div className="pt-2 border-t border-[#14233A] grid grid-cols-3 gap-2">
+            <Link
+              href="/academy"
+              className="p-2 rounded-xl bg-[#040814] hover:bg-[#0E1E38] border border-[#14233A] text-center transition-colors group"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-[#00F5A0] mx-auto mb-1 group-hover:scale-110 transition-transform" />
+              <div className="text-[10px] font-black uppercase text-white truncate">Altyapı</div>
+              <div className="text-[8px] text-[#51647E] truncate">Yetenek Geliştir</div>
+            </Link>
 
-            <div className="space-y-2">
-              {injuredPlayers.length === 0 && suspendedPlayers.length === 0 ? (
-                <div className="py-2 text-center text-xs text-zinc-500 font-mono">
-                  Şu an sakat veya cezalı oyuncu bulunmamaktadır.
-                </div>
-              ) : (
-                <>
-                  {injuredPlayers.map((p) => (
-                    <div
-                      key={p.id}
-                      className="flex items-center justify-between p-2.5 rounded-lg bg-red-950/30 border border-red-800/40"
-                    >
-                      <div>
-                        <div className="text-xs font-black uppercase text-white">
-                          {p.firstName} {p.lastName}
-                        </div>
-                        <div className="text-[10px] text-red-300 font-mono">
-                          {p.injuryDetails?.type || 'Sakatlık'}
-                        </div>
-                      </div>
-                      <span className="px-2 py-0.5 text-[9px] font-mono font-bold bg-red-900/60 text-red-200 rounded border border-red-700">
-                        {p.injuryDetails?.daysRemaining} gün
-                      </span>
-                    </div>
-                  ))}
+            <Link
+              href="/finances"
+              className="p-2 rounded-xl bg-[#040814] hover:bg-[#0E1E38] border border-[#14233A] text-center transition-colors group"
+            >
+              <Landmark className="w-3.5 h-3.5 text-[#FFB800] mx-auto mb-1 group-hover:scale-110 transition-transform" />
+              <div className="text-[10px] font-black uppercase text-white truncate">Finans</div>
+              <div className="text-[8px] text-[#51647E] truncate">Bütçe Kontrol</div>
+            </Link>
 
-                  {suspendedPlayers.map((p) => (
-                    <div
-                      key={p.id}
-                      className="flex items-center justify-between p-2.5 rounded-lg bg-amber-950/30 border border-amber-800/40"
-                    >
-                      <div>
-                        <div className="text-xs font-black uppercase text-white">
-                          {p.firstName} {p.lastName}
-                        </div>
-                        <div className="text-[10px] text-amber-300 font-mono">
-                          {p.suspensionDetails?.reason || 'Kart Cezası'}
-                        </div>
-                      </div>
-                      <span className="px-2 py-0.5 text-[9px] font-mono font-bold bg-amber-900/60 text-amber-200 rounded border border-amber-700">
-                        {p.suspensionDetails?.matchesRemaining} maç
-                      </span>
-                    </div>
-                  ))}
-                </>
-              )}
-            </div>
+            <Link
+              href="/squad"
+              className="p-2 rounded-xl bg-[#040814] hover:bg-[#0E1E38] border border-[#14233A] text-center transition-colors group"
+            >
+              <Users className="w-3.5 h-3.5 text-[#00D4FF] mx-auto mb-1 group-hover:scale-110 transition-transform" />
+              <div className="text-[10px] font-black uppercase text-white truncate">Kadro</div>
+              <div className="text-[8px] text-[#51647E] truncate">Oyuncuları Yönet</div>
+            </Link>
           </div>
         </div>
       </div>

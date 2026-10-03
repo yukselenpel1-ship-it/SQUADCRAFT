@@ -113,8 +113,8 @@ export default function SquadPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#040814] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -123,39 +123,39 @@ export default function SquadPage() {
   return (
     <div className="space-y-5 animate-in fade-in duration-300 pb-12">
       {/* Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-[#182338]">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-[#14233A]">
         <div>
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-md bg-[#00F5A0] text-[#040711] text-[10px] font-black uppercase tracking-widest">
+            <span className="px-2.5 py-0.5 rounded-md bg-[#00F5A0] text-[#040814] text-[10px] font-black uppercase tracking-widest">
               {userClub.name}
             </span>
             <span className="text-xs text-zinc-400 font-mono">2026/27 A TAKIM KADRO LİSTESİ</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tight text-white mt-1 flex items-center gap-2.5">
-            <Users className="w-7 h-7 text-[#C7FF38]" />
+            <Users className="w-7 h-7 text-[#00F5A0]" />
             KADRO YÖNETİMİ
           </h1>
         </div>
 
         {/* Quick Squad Stats */}
-        <div className="flex items-center gap-2.5 sc-panel rounded-2xl p-2.5 border border-[#182338] text-xs">
+        <div className="flex items-center gap-2.5 sc-panel rounded-2xl p-2.5 border border-[#14233A] text-xs">
           <div className="px-3 text-center">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Toplam Oyuncu</span>
             <span className="text-base font-black italic text-white">{userPlayers.length}</span>
           </div>
-          <div className="px-3 text-center border-l border-[#182338]">
+          <div className="px-3 text-center border-l border-[#14233A]">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Yaş Ort.</span>
             <span className="text-base font-black italic text-emerald-400">
               {(userPlayers.reduce((acc, p) => acc + p.age, 0) / (userPlayers.length || 1)).toFixed(1)}
             </span>
           </div>
-          <div className="px-3 text-center border-l border-[#182338]">
+          <div className="px-3 text-center border-l border-[#14233A]">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Genel Güç</span>
-            <span className="text-base font-black italic text-[#C7FF38]">
+            <span className="text-base font-black italic text-[#00F5A0]">
               {(userPlayers.reduce((acc, p) => acc + p.overall, 0) / (userPlayers.length || 1)).toFixed(1)}
             </span>
           </div>
-          <div className="px-3 text-center border-l border-[#182338]">
+          <div className="px-3 text-center border-l border-[#14233A]">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Haftalık Maaş</span>
             <span className="text-base font-black italic text-[#4FE4FF]">
               €{(userPlayers.reduce((acc, p) => acc + p.wage, 0) / 1000).toFixed(0)}K
@@ -165,13 +165,13 @@ export default function SquadPage() {
       </div>
 
       {/* Main Sub-Tabs */}
-      <div className="flex flex-wrap items-center gap-2 border-b border-[#182338] pb-3">
+      <div className="flex flex-wrap items-center gap-2 border-b border-[#14233A] pb-3">
         <button
           onClick={() => setActiveSquadTab('OVERVIEW')}
           className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeSquadTab === 'OVERVIEW'
-              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
-              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
+              ? 'bg-[#00F5A0] text-[#040814] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#14233A]'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -182,8 +182,8 @@ export default function SquadPage() {
           onClick={() => setActiveSquadTab('CONTRACTS')}
           className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
             activeSquadTab === 'CONTRACTS'
-              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
-              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
+              ? 'bg-[#00F5A0] text-[#040814] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#14233A]'
           }`}
         >
           <FileText className="w-4 h-4" />
@@ -199,8 +199,8 @@ export default function SquadPage() {
           onClick={() => setActiveSquadTab('TRAINING')}
           className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 ${
             activeSquadTab === 'TRAINING'
-              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
-              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
+              ? 'bg-[#00F5A0] text-[#040814] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#14233A]'
           }`}
         >
           <Dumbbell className="w-4 h-4" />
@@ -211,8 +211,8 @@ export default function SquadPage() {
           onClick={() => setActiveSquadTab('INJURIES')}
           className={`px-4 py-2 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 relative ${
             activeSquadTab === 'INJURIES'
-              ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
-              : 'sc-panel text-zinc-400 hover:text-white border border-[#182338]'
+              ? 'bg-[#00F5A0] text-[#040814] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
+              : 'sc-panel text-zinc-400 hover:text-white border border-[#14233A]'
           }`}
         >
           <AlertTriangle className="w-4 h-4" />
@@ -231,20 +231,20 @@ export default function SquadPage() {
           {/* Filters and Search Bar */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             {/* Category Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-1.5 sc-panel rounded-2xl p-1.5 border border-[#182338]">
+            <div className="flex flex-wrap items-center gap-1.5 sc-panel rounded-2xl p-1.5 border border-[#14233A]">
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id as any)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-1.5 ${
                     selectedCategory === cat.id
-                      ? 'bg-[#00F5A0] text-[#040711] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                      ? 'bg-[#00F5A0] text-[#040814] font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
                       : 'text-zinc-400 hover:text-white hover:bg-[#0E1A2E]'
                   }`}
                 >
                   <span>{cat.label}</span>
                   <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${
-                    selectedCategory === cat.id ? 'bg-[#040711] text-[#00F5A0]' : 'bg-[#070D1A] text-zinc-400'
+                    selectedCategory === cat.id ? 'bg-[#040814] text-[#00F5A0]' : 'bg-[#07101C] text-zinc-400'
                   }`}>
                     {cat.count}
                   </span>
@@ -260,16 +260,16 @@ export default function SquadPage() {
                 placeholder="Oyuncu ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#070D1A] border border-[#182338] text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#00F5A0] transition-colors"
+                className="w-full pl-9 pr-4 py-2 rounded-xl bg-[#07101C] border border-[#14233A] text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#00F5A0] transition-colors"
               />
             </div>
           </div>
 
           {/* Squad Table */}
-          <div className="overflow-x-auto sc-panel rounded-2xl border border-[#182338]">
+          <div className="overflow-x-auto sc-panel rounded-2xl border border-[#14233A]">
             <table className="w-full text-left border-collapse min-w-[850px]">
               <thead>
-                <tr className="border-b border-[#182338] bg-[#070D1A] text-[10px] font-mono font-black uppercase tracking-wider text-zinc-400">
+                <tr className="border-b border-[#14233A] bg-[#07101C] text-[10px] font-mono font-black uppercase tracking-wider text-zinc-400">
                   <th className="py-2.5 px-3 w-12 text-center">NO</th>
                   <th className="py-2.5 px-3 cursor-pointer hover:text-white" onClick={() => handleSort('lastName')}>
                     <div className="flex items-center gap-1">
@@ -324,7 +324,7 @@ export default function SquadPage() {
                   <th className="py-2.5 px-3 text-center">İŞLEM</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#182338]/60 text-xs font-semibold">
+              <tbody className="divide-y divide-[#14233A]/60 text-xs font-semibold">
                 {filteredAndSortedPlayers.map((player, index) => (
                   <tr
                     key={player.id}
@@ -342,7 +342,7 @@ export default function SquadPage() {
                           size="sm"
                         />
                         <div>
-                          <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#C7FF38] transition-colors flex items-center gap-1.5">
+                          <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#00F5A0] transition-colors flex items-center gap-1.5">
                             <span>{player.firstName} {player.lastName}</span>
                             {player.isInjured && (
                               <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[9px] font-mono">
@@ -363,7 +363,7 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-2.5 px-3 text-center">
-                      <span className="px-2 py-0.5 rounded font-mono text-[10px] font-black uppercase bg-[#070D1A] border border-[#182338] text-[#00F5A0]">
+                      <span className="px-2 py-0.5 rounded font-mono text-[10px] font-black uppercase bg-[#07101C] border border-[#14233A] text-[#00F5A0]">
                         {player.position}
                       </span>
                     </td>
@@ -381,7 +381,7 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-2.5 px-3 text-center font-mono">
-                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#C7FF38]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
+                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#00F5A0]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
                         {player.form.toFixed(1)}
                       </span>
                     </td>
@@ -405,7 +405,7 @@ export default function SquadPage() {
                     <td className="py-2.5 px-3 text-center" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={() => setSelectedPlayer(player)}
-                        className="px-3 py-1 bg-[#070D1A] border border-[#182338] hover:border-[#00F5A0] text-white hover:text-[#00F5A0] font-mono text-[10px] uppercase font-bold rounded-lg transition-all"
+                        className="px-3 py-1 bg-[#07101C] border border-[#14233A] hover:border-[#00F5A0] text-white hover:text-[#00F5A0] font-mono text-[10px] uppercase font-bold rounded-lg transition-all"
                       >
                         İncele
                       </button>
@@ -422,7 +422,7 @@ export default function SquadPage() {
       {activeSquadTab === 'CONTRACTS' && (
         <div className="space-y-4">
           {/* Contracts Overview Banner */}
-          <div className="p-5 sc-panel rounded-2xl border border-[#182338] flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="p-5 sc-panel rounded-2xl border border-[#14233A] flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <span className="text-[10px] font-mono text-zinc-500 block uppercase font-bold">Maaş Bütçesi Durumu</span>
               <div className="flex items-center gap-3 mt-1">
@@ -440,10 +440,10 @@ export default function SquadPage() {
           </div>
 
           {/* Contracts Table */}
-          <div className="overflow-x-auto sc-panel rounded-2xl border border-[#182338] shadow-2xl">
+          <div className="overflow-x-auto sc-panel rounded-2xl border border-[#14233A] shadow-2xl">
             <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
-                <tr className="border-b border-[#182338] bg-[#070D1A] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
+                <tr className="border-b border-[#14233A] bg-[#07101C] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
                   <th className="py-3 px-4">FUTBOLCU</th>
                   <th className="py-3 px-3 text-center">MEVKİ</th>
                   <th className="py-3 px-3 text-center">YAŞ</th>
@@ -455,7 +455,7 @@ export default function SquadPage() {
                   <th className="py-3 px-4 text-center">İŞLEM</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#182338]/60 text-xs font-semibold">
+              <tbody className="divide-y divide-[#14233A]/60 text-xs font-semibold">
                 {userPlayers.map((player) => {
                   const yearsLeft = player.contractYearsLeft ?? 2;
                   const isExpiringSoon = yearsLeft <= 1;
@@ -470,7 +470,7 @@ export default function SquadPage() {
                       </td>
 
                       <td className="py-3 px-3 text-center">
-                        <span className="px-2 py-0.5 rounded font-mono text-[10px] font-black bg-[#070D1A] border border-[#182338] text-[#00F5A0]">
+                        <span className="px-2 py-0.5 rounded font-mono text-[10px] font-black bg-[#07101C] border border-[#14233A] text-[#00F5A0]">
                           {player.position}
                         </span>
                       </td>
@@ -483,7 +483,7 @@ export default function SquadPage() {
                         <StatBadge value={player.overall} size="sm" />
                       </td>
 
-                      <td className="py-3 px-3 text-right font-mono text-[#C7FF38] font-bold">
+                      <td className="py-3 px-3 text-right font-mono text-[#00F5A0] font-bold">
                         €{player.wage.toLocaleString('tr-TR')}/hf
                       </td>
 
@@ -499,7 +499,7 @@ export default function SquadPage() {
                         <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase border ${
                           isExpiringSoon
                             ? 'bg-rose-950/60 text-rose-300 border-rose-700/60'
-                            : 'bg-emerald-950/40 text-[#C7FF38] border-emerald-800/40'
+                            : 'bg-emerald-950/40 text-[#00F5A0] border-emerald-800/40'
                         }`}>
                           {isExpiringSoon ? 'Sözleşme Bitiyor' : 'Güvenli'}
                         </span>
@@ -511,7 +511,7 @@ export default function SquadPage() {
                           className={`px-3 py-1.5 rounded-xl font-mono font-bold text-xs uppercase border transition-all ${
                             isExpiringSoon
                               ? 'bg-amber-500 text-black hover:bg-amber-400 border-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.3)]'
-                              : 'bg-[#00F5A0] text-[#040711] hover:bg-[#00D68B] border-transparent font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                              : 'bg-[#00F5A0] text-[#040814] hover:bg-[#00D68B] border-transparent font-black shadow-[0_0_12px_rgba(0,245,160,0.3)]'
                           }`}
                         >
                           Sözleşme Yenile
@@ -530,7 +530,7 @@ export default function SquadPage() {
       {activeSquadTab === 'TRAINING' && (
         <div className="space-y-4">
           {/* Training Intensity Controller */}
-          <div className="p-5 sc-panel rounded-2xl border border-[#182338] flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="p-5 sc-panel rounded-2xl border border-[#14233A] flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <span className="text-[10px] font-mono text-zinc-500 block uppercase font-bold">Haftalık Antrenman Yoğunluğu</span>
               <p className="text-xs text-zinc-300 mt-1">
@@ -545,8 +545,8 @@ export default function SquadPage() {
                   onClick={() => setTrainingIntensity(intensity)}
                   className={`px-4 py-2 rounded-xl font-mono text-xs font-bold uppercase border transition-all ${
                     trainingIntensity === intensity
-                      ? 'bg-[#00F5A0] text-[#040711] font-black border-transparent shadow-[0_0_12px_rgba(0,245,160,0.3)]'
-                      : 'bg-[#070D1A] text-zinc-400 border-[#182338] hover:text-white hover:border-[#1E2E4A]'
+                      ? 'bg-[#00F5A0] text-[#040814] font-black border-transparent shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                      : 'bg-[#07101C] text-zinc-400 border-[#14233A] hover:text-white hover:border-[#1E2E4A]'
                   }`}
                 >
                   {intensity}
@@ -556,10 +556,10 @@ export default function SquadPage() {
           </div>
 
           {/* Form and Training Progress Table */}
-          <div className="overflow-x-auto sc-panel rounded-2xl border border-[#182338] shadow-2xl">
+          <div className="overflow-x-auto sc-panel rounded-2xl border border-[#14233A] shadow-2xl">
             <table className="w-full text-left border-collapse min-w-[900px]">
               <thead>
-                <tr className="border-b border-[#182338] bg-[#070D1A] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
+                <tr className="border-b border-[#14233A] bg-[#07101C] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
                   <th className="py-3 px-4">FUTBOLCU</th>
                   <th className="py-3 px-3 text-center">MEVKİ</th>
                   <th className="py-3 px-3 text-center">KONDİSYON</th>
@@ -570,7 +570,7 @@ export default function SquadPage() {
                   <th className="py-3 px-4 text-center">DURUM</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#182338]/60 text-xs font-semibold">
+              <tbody className="divide-y divide-[#14233A]/60 text-xs font-semibold">
                 {userPlayers.map((player) => (
                   <tr key={player.id} className="hover:bg-[#0E1A2E]/60 transition-colors">
                     <td className="py-3 px-4 font-bold text-white uppercase tracking-tight">
@@ -578,7 +578,7 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-3 px-3 text-center">
-                      <span className="px-2 py-0.5 rounded font-mono text-[10px] font-black bg-[#070D1A] border border-[#182338] text-[#00F5A0]">
+                      <span className="px-2 py-0.5 rounded font-mono text-[10px] font-black bg-[#07101C] border border-[#14233A] text-[#00F5A0]">
                         {player.position}
                       </span>
                     </td>
@@ -592,7 +592,7 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-3 px-3 text-center font-mono">
-                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#C7FF38]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
+                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#00F5A0]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
                         {player.form.toFixed(1)} / 10
                       </span>
                     </td>
@@ -631,8 +631,8 @@ export default function SquadPage() {
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Revir (Injuries) */}
-            <div className="p-5 sc-panel rounded-2xl border border-[#182338] space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-[#182338]">
+            <div className="p-5 sc-panel rounded-2xl border border-[#14233A] space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[#14233A]">
                 <div className="flex items-center gap-2">
                   <AlertTriangle className="w-4 h-4 text-rose-400" />
                   <h3 className="font-bold text-white text-sm uppercase">Revir & Sakat Oyuncular ({injuredCount})</h3>
@@ -663,8 +663,8 @@ export default function SquadPage() {
             </div>
 
             {/* Cezalılar (Suspensions) */}
-            <div className="p-5 sc-panel rounded-2xl border border-[#182338] space-y-3">
-              <div className="flex items-center justify-between pb-2 border-b border-[#182338]">
+            <div className="p-5 sc-panel rounded-2xl border border-[#14233A] space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-[#14233A]">
                 <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-amber-400" />
                   <h3 className="font-bold text-white text-sm uppercase">Cezalı Oyuncular ({suspendedCount})</h3>

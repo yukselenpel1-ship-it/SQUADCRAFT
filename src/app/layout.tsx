@@ -27,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr" className="dark">
-      <body className="bg-[#040711] text-[#F8FAFC] antialiased selection:bg-[#00F5A0] selection:text-black">
+      <body className="bg-[#040814] text-[#F8FAFC] antialiased selection:bg-[#00F5A0] selection:text-black">
         <AppShell>{children}</AppShell>
       </body>
     </html>

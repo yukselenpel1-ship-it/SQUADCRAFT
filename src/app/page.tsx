@@ -131,7 +131,7 @@ export default function MainMenuPage() {
   }, [isFeedbackOpen, isNewCareerConfirmOpen, savedData, router, handleContinueCareer, handleNewCareerRequest]);
 
   return (
-    <div className="arena-landing relative min-h-screen w-full bg-[#070A0F] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="arena-landing relative min-h-screen w-full bg-[#040814] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. SHARP STADIUM ARENA BACKGROUND (NO BLUR, CRISP GRAPHITE & LIGHTS) */}
       {/* ==================================================================== */}
@@ -140,8 +140,8 @@ export default function MainMenuPage() {
         style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
       >
         {/* High-contrast crisp sports vignette: zero blur */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#070A0F]/85 via-transparent to-[#070A0F]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#070A0F]/40 to-[#070A0F]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#040814]/85 via-transparent to-[#040814]/95" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#040814]/40 to-[#040814]/90" />
       </div>
 
       {/* ==================================================================== */}
@@ -150,7 +150,7 @@ export default function MainMenuPage() {
       {/* ==================================================================== */}
       {/* 2. SQUADCRAFT BRAND HEADER                                            */}
       {/* ==================================================================== */}
-      <header className="relative z-20 w-full border-b border-[#182338] bg-[#070D1A]/95 backdrop-blur-md px-4 sm:px-8 py-3">
+      <header className="relative z-20 w-full border-b border-[#14233A] bg-[#07101C]/95 backdrop-blur-md px-4 sm:px-8 py-3">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between gap-4">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
@@ -233,7 +233,7 @@ export default function MainMenuPage() {
 
           <Link
             href="/draft"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#0B1323] hover:bg-[#0E1B33] text-zinc-200 hover:text-white border border-[#182338] font-bold text-sm uppercase tracking-wider rounded-xl transition-all active:scale-95"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#081325] hover:bg-[#0E1B33] text-zinc-200 hover:text-white border border-[#14233A] font-bold text-sm uppercase tracking-wider rounded-xl transition-all active:scale-95"
           >
             <Gamepad2 className="w-4 h-4 text-[#A855F7]" />
             <span>DRAFT LİGİNE GÖZ AT</span>
@@ -313,7 +313,7 @@ export default function MainMenuPage() {
                   </button>
                   <button
                     onClick={handleNewCareerRequest}
-                    className="px-4 py-3.5 bg-[#0B1323] hover:bg-[#0E1B33] text-zinc-300 hover:text-white border border-[#182338] text-xs font-bold uppercase rounded-xl transition-all"
+                    className="px-4 py-3.5 bg-[#081325] hover:bg-[#0E1B33] text-zinc-300 hover:text-white border border-[#14233A] text-xs font-bold uppercase rounded-xl transition-all"
                   >
                     YENİ
                   </button>
@@ -384,14 +384,14 @@ export default function MainMenuPage() {
           {/* Card 1: Özgün Futbol Evreni */}
           <div className="bg-[#090D14] border border-zinc-800 hover:border-zinc-600 p-4 flex items-center justify-between transition-all group">
             <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-10 h-10 bg-[#0E1624] border border-[#C7FF38]/80 text-[#C7FF38] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 bg-[#0E1624] border border-[#00F5A0]/80 text-[#00F5A0] flex items-center justify-center shrink-0">
                 <Globe className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] font-mono font-bold text-[#C7FF38] uppercase tracking-wider">
+                <div className="text-[10px] font-mono font-bold text-[#00F5A0] uppercase tracking-wider">
                   DATABASE 2.0 // 01
                 </div>
-                <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#C7FF38] transition-colors truncate">
+                <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#00F5A0] transition-colors truncate">
                   2000+ Futbolcu Evreni
                 </h3>
                 <p className="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">
@@ -399,7 +399,7 @@ export default function MainMenuPage() {
                 </p>
               </div>
             </div>
-            <div className="relative w-12 h-12 shrink-0 ml-2 rounded-lg border border-[#182338] overflow-hidden">
+            <div className="relative w-12 h-12 shrink-0 ml-2 rounded-lg border border-[#14233A] overflow-hidden">
               <Image
                 src="/images/thumb-globe.jpg"
                 alt="Özgün Futbol Evreni"
@@ -413,7 +413,7 @@ export default function MainMenuPage() {
           {/* Card 2: Canlı Draft Sistemi */}
           <div className="sc-panel hover:border-zinc-500 p-4 flex items-center justify-between transition-all group rounded-xl">
             <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-[#0B1323] border border-[#00D4FF]/40 text-[#00D4FF] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-[#081325] border border-[#00D4FF]/40 text-[#00D4FF] flex items-center justify-center shrink-0">
                 <Users className="w-5 h-5" />
               </div>
               <div className="min-w-0">
@@ -428,7 +428,7 @@ export default function MainMenuPage() {
                 </p>
               </div>
             </div>
-            <div className="relative w-12 h-12 shrink-0 ml-2 rounded-lg border border-[#182338] overflow-hidden">
+            <div className="relative w-12 h-12 shrink-0 ml-2 rounded-lg border border-[#14233A] overflow-hidden">
               <Image
                 src="/images/thumb-draft-team.jpg"
                 alt="Canlı Draft Sistemi"
@@ -442,14 +442,14 @@ export default function MainMenuPage() {
           {/* Card 3: Menajerlik & Taktik */}
           <div className="sc-panel hover:border-zinc-500 p-4 flex items-center justify-between transition-all group rounded-xl">
             <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-[#0B1323] border border-[#00F5A0]/40 text-[#00F5A0] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-lg bg-[#081325] border border-[#00F5A0]/40 text-[#00F5A0] flex items-center justify-center shrink-0">
                 <Activity className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] font-mono font-bold text-[#C7FF38] uppercase tracking-wider">
+                <div className="text-[10px] font-mono font-bold text-[#00F5A0] uppercase tracking-wider">
                   HYPER-SIM // 03
                 </div>
-                <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#C7FF38] transition-colors truncate">
+                <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#00F5A0] transition-colors truncate">
                   Taktik, Scouting & Haberler
                 </h3>
                 <p className="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">
@@ -457,7 +457,7 @@ export default function MainMenuPage() {
                 </p>
               </div>
             </div>
-            <div className="relative w-12 h-12 shrink-0 ml-2 rounded-lg border border-[#182338] overflow-hidden">
+            <div className="relative w-12 h-12 shrink-0 ml-2 rounded-lg border border-[#14233A] overflow-hidden">
               <Image
                 src="/images/thumb-tactics-tablet.jpg"
                 alt="Menajerlik Taktik Ekranı"
@@ -473,10 +473,10 @@ export default function MainMenuPage() {
       {/* ==================================================================== */}
       {/* 6. SQUADCRAFT BROADCAST TICKER & CONTROLLER PROMPT FOOTER             */}
       {/* ==================================================================== */}
-      <footer className="relative z-20 w-full border-t border-[#182338] bg-[#070D1A] text-xs">
+      <footer className="relative z-20 w-full border-t border-[#14233A] bg-[#07101C] text-xs">
         {/* Broadcast Live News Ticker Strip */}
-        <div className="w-full bg-[#040711] border-b border-[#182338] px-4 py-1.5 flex items-center overflow-hidden">
-          <div className="flex items-center gap-2 shrink-0 pr-4 border-r border-[#182338] text-[10px] font-black uppercase text-[#00F5A0]">
+        <div className="w-full bg-[#040814] border-b border-[#14233A] px-4 py-1.5 flex items-center overflow-hidden">
+          <div className="flex items-center gap-2 shrink-0 pr-4 border-r border-[#14233A] text-[10px] font-black uppercase text-[#00F5A0]">
             <Radio className="w-3 h-3 text-[#00F5A0] animate-pulse" />
             <span>CANLI BÜLTEN</span>
           </div>
@@ -489,7 +489,7 @@ export default function MainMenuPage() {
             <span className="mx-3 text-zinc-600">•</span>
             <span>SUPABASE GERÇEK ZAMANLI SENKRONİZASYON AKTİF</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#C7FF38]">SQUADCRAFT KAPALI ALFA SÜRÜMÜ {APP_VERSION}</span>
+            <span className="text-[#00F5A0]">SQUADCRAFT KAPALI ALFA SÜRÜMÜ {APP_VERSION}</span>
           </div>
         </div>
 
@@ -506,12 +506,12 @@ export default function MainMenuPage() {
               <span>DRAFT LEAGUE</span>
             </div>
             <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#C7FF38] font-bold">K</kbd>
+              <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#00F5A0] font-bold">K</kbd>
               <span>YENİ KARİYER</span>
             </div>
             {savedData && (
               <div className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#C7FF38] font-bold">C</kbd>
+                <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#00F5A0] font-bold">C</kbd>
                 <span>DEVAM ET</span>
               </div>
             )}
@@ -525,7 +525,7 @@ export default function MainMenuPage() {
           <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
             <span className="text-zinc-300 font-bold">SQUADCRAFT PRO ENGINE</span>
             <span className="text-zinc-600">•</span>
-            <span className="text-[#C7FF38] font-bold">{APP_VERSION}</span>
+            <span className="text-[#00F5A0] font-bold">{APP_VERSION}</span>
             <span className="text-zinc-600">•</span>
             <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

@@ -68,10 +68,10 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
   return (
     <div className="space-y-4">
       {/* Formation Selector Hub */}
-      <div className="sc-panel p-4 sm:p-5 rounded-2xl border border-[#182338] shadow-xl space-y-3">
-        <div className="flex items-center justify-between border-b border-[#182338] pb-2.5">
+      <div className="sc-panel p-4 sm:p-5 rounded-2xl border border-[#14233A] shadow-xl space-y-3">
+        <div className="flex items-center justify-between border-b border-[#14233A] pb-2.5">
           <label className="text-xs font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
-            <Target className="w-4 h-4 text-[#C7FF38]" />
+            <Target className="w-4 h-4 text-[#00F5A0]" />
             Diziliş Seçimi <span className="text-[10px] text-zinc-500 font-mono">// FORMATION ({formationCatalog.length})</span>
           </label>
           <span className="text-xs font-mono font-bold text-[#00F5A0] bg-[#00F5A0]/10 px-2 py-0.5 rounded border border-[#00F5A0]/30">
@@ -80,7 +80,7 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
         </div>
 
         {/* Category Filter Pills */}
-        <div className="flex items-center gap-1.5 bg-[#040711] p-1 rounded-lg border border-[#182338]">
+        <div className="flex items-center gap-1.5 bg-[#040814] p-1 rounded-lg border border-[#14233A]">
           <button
             onClick={() => setFilterCategory('ALL')}
             className={`flex-1 py-1 text-[10px] font-mono font-bold uppercase rounded transition-all ${
@@ -134,7 +134,7 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
                 className={`py-2 px-1.5 text-center rounded-lg transition-all flex flex-col items-center justify-center ${
                   isSelected
                     ? 'bg-[#00F5A0] text-black font-black border-2 border-white shadow-lg scale-[1.02]'
-                    : 'bg-[#040711] text-zinc-300 hover:bg-[#0E1B33] border border-[#182338]'
+                    : 'bg-[#040814] text-zinc-300 hover:bg-[#0E1B33] border border-[#14233A]'
                 }`}
               >
                 <span className="text-xs font-mono font-black tracking-tight">{item.label}</span>
@@ -152,10 +152,10 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
       </div>
 
       {/* Tactical Instructions Grid */}
-      <div className="sc-panel p-4 sm:p-5 rounded-2xl border border-[#182338] shadow-xl space-y-4">
-        <div className="flex items-center justify-between border-b border-[#182338] pb-2.5">
+      <div className="sc-panel p-4 sm:p-5 rounded-2xl border border-[#14233A] shadow-xl space-y-4">
+        <div className="flex items-center justify-between border-b border-[#14233A] pb-2.5">
           <h3 className="text-xs font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
-            <Sliders className="w-4 h-4 text-[#C7FF38]" />
+            <Sliders className="w-4 h-4 text-[#00F5A0]" />
             Taktiksel Talimatlar <span className="text-[10px] text-zinc-500 font-mono">// TEAM INSTRUCTIONS</span>
           </h3>
           <span className="text-[10px] font-mono text-zinc-400">TACTICAL ENGINE v2.0</span>
@@ -167,9 +167,9 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
             <span className="font-bold text-zinc-300 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
               <Shield className="w-3.5 h-3.5 text-blue-400" /> Mentalite
             </span>
-            <span className="text-[#C7FF38] font-mono font-bold text-xs">{settings.mentality}</span>
+            <span className="text-[#00F5A0] font-mono font-bold text-xs">{settings.mentality}</span>
           </div>
-          <div className="grid grid-cols-5 gap-1 bg-[#040711] p-1 border border-zinc-800">
+          <div className="grid grid-cols-5 gap-1 bg-[#040814] p-1 border border-zinc-800">
             {mentalities.map((m) => (
               <button
                 key={m}
@@ -192,16 +192,16 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
             <span className="font-bold text-zinc-300 flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
               <Gauge className="w-3.5 h-3.5 text-emerald-400" /> Oyun Temposu
             </span>
-            <span className="text-[#C7FF38] font-mono font-bold text-xs">{settings.tempo}</span>
+            <span className="text-[#00F5A0] font-mono font-bold text-xs">{settings.tempo}</span>
           </div>
-          <div className="grid grid-cols-5 gap-1 bg-[#040711] p-1 border border-zinc-800">
+          <div className="grid grid-cols-5 gap-1 bg-[#040814] p-1 border border-zinc-800">
             {tempos.map((t) => (
               <button
                 key={t}
                 onClick={() => onSettingsChange({ tempo: t })}
                 className={`py-1.5 px-1 text-[10px] font-bold uppercase transition-all truncate ${
                   settings.tempo === t
-                    ? 'bg-[#C7FF38] text-black font-black border border-white'
+                    ? 'bg-[#00F5A0] text-black font-black border border-white'
                     : 'text-zinc-400 hover:text-white hover:bg-zinc-900'
                 }`}
               >
@@ -219,7 +219,7 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
             </span>
             <span className="text-amber-400 font-mono font-bold text-xs">{settings.pressing}</span>
           </div>
-          <div className="grid grid-cols-4 gap-1 bg-[#040711] p-1 border border-zinc-800">
+          <div className="grid grid-cols-4 gap-1 bg-[#040814] p-1 border border-zinc-800">
             {pressings.map((p) => (
               <button
                 key={p}
@@ -244,7 +244,7 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
             </span>
             <span className="text-sky-400 font-mono font-bold text-xs">{settings.passingStyle}</span>
           </div>
-          <div className="grid grid-cols-4 gap-1 bg-[#040711] p-1 border border-zinc-800">
+          <div className="grid grid-cols-4 gap-1 bg-[#040814] p-1 border border-zinc-800">
             {passingStyles.map((ps) => (
               <button
                 key={ps}
@@ -269,7 +269,7 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
             </span>
             <span className="text-rose-400 font-mono font-bold text-xs">{settings.defensiveLine}</span>
           </div>
-          <div className="grid grid-cols-5 gap-1 bg-[#040711] p-1 border border-zinc-800">
+          <div className="grid grid-cols-5 gap-1 bg-[#040814] p-1 border border-zinc-800">
             {defensiveLines.map((dl) => (
               <button
                 key={dl}
@@ -294,7 +294,7 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
             </span>
             <span className="text-purple-400 font-mono font-bold text-xs">{settings.width}</span>
           </div>
-          <div className="grid grid-cols-3 gap-1 bg-[#040711] p-1 rounded-lg border border-[#182338]">
+          <div className="grid grid-cols-3 gap-1 bg-[#040814] p-1 rounded-lg border border-[#14233A]">
             {widths.map((w) => (
               <button
                 key={w}
@@ -313,8 +313,8 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
       </div>
 
       {/* 3. ÖZEL TALİMATLAR (SCREEN 4 MOCKUP) */}
-      <div className="sc-panel p-4 sm:p-5 rounded-2xl border border-[#182338] space-y-3.5">
-        <div className="flex items-center justify-between border-b border-[#182338] pb-2.5">
+      <div className="sc-panel p-4 sm:p-5 rounded-2xl border border-[#14233A] space-y-3.5">
+        <div className="flex items-center justify-between border-b border-[#14233A] pb-2.5">
           <span className="text-xs font-black uppercase tracking-wider text-white font-mono flex items-center gap-2">
             <Zap className="w-4 h-4 text-[#00F5A0]" />
             ÖZEL TALİMATLAR
@@ -324,7 +324,7 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
 
         <div className="space-y-3 pt-1">
           {/* Toggle 1: Ofsayt Taktiği */}
-          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1A] border border-[#182338]">
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#07101C] border border-[#14233A]">
             <div>
               <div className="text-xs font-bold text-white uppercase">Ofsayt Taktiği</div>
               <div className="text-[10px] text-zinc-400">Savunma hattı senkronize öne fırlar</div>
@@ -336,7 +336,7 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
           </div>
 
           {/* Toggle 2: Duran Toplar */}
-          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1A] border border-[#182338]">
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#07101C] border border-[#14233A]">
             <div>
               <div className="text-xs font-bold text-white uppercase">Duran Toplar</div>
               <div className="text-[10px] text-zinc-400">Korner ve serbest vuruşlarda ceza sahasına yığılma</div>
@@ -348,7 +348,7 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
           </div>
 
           {/* Toggle 3: Kaleciden Oyun Kurma */}
-          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1A] border border-[#182338]">
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#07101C] border border-[#14233A]">
             <div>
               <div className="text-xs font-bold text-white uppercase">Kaleciden Oyun Kurma</div>
               <div className="text-[10px] text-zinc-400">Stoperler açılır, kısa pasla çıkılır</div>
@@ -360,7 +360,7 @@ export const TacticalSliders: React.FC<TacticalSlidersProps> = ({
           </div>
 
           {/* Toggle 4: Kanatları Kullan */}
-          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#070D1A] border border-[#182338]">
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#07101C] border border-[#14233A]">
             <div>
               <div className="text-xs font-bold text-white uppercase">Kanatları Kullan</div>
               <div className="text-[10px] text-zinc-400">Bekler hücuma katılır, çizgiye inilir</div>

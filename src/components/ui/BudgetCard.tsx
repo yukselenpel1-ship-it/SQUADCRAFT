@@ -30,7 +30,7 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({
     <div
       className={`p-4 sm:p-5 rounded-2xl transition-all ${
         highlight
-          ? 'bg-[#0B1323] border-2 border-[#00F5A0] shadow-[0_0_25px_rgba(0,245,160,0.15)]'
+          ? 'bg-[#081325] border-2 border-[#00F5A0] shadow-[0_0_25px_rgba(0,245,160,0.15)]'
           : 'sc-panel hover:border-[#1E2E4A]'
       }`}
     >
@@ -39,7 +39,7 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({
           {title}
         </span>
         {Icon && (
-          <div className="p-2 rounded-xl bg-[#070D1A] text-[#00F5A0] border border-[#182338]">
+          <div className="p-2 rounded-xl bg-[#07101C] text-[#00F5A0] border border-[#14233A]">
             <Icon className="w-4 h-4" />
           </div>
         )}
@@ -55,7 +55,7 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({
         {trend && (
           <div
             className={`flex items-center gap-1 font-bold ml-auto text-[11px] ${
-              trend.isPositive ? 'text-[#C7FF38]' : 'text-rose-400'
+              trend.isPositive ? 'text-[#00F5A0]' : 'text-rose-400'
             }`}
           >
             {trend.isPositive ? (

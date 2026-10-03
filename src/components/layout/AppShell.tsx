@@ -19,15 +19,20 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
 
   return (
     <GameProvider>
-      <div className="relative min-h-screen w-full bg-[#040711] text-[#F8FAFC] flex flex-col font-sans selection:bg-[#00F5A0] selection:text-black antialiased overflow-x-hidden">
+      <div className="relative min-h-screen w-full bg-[#040814] text-[#F8FAFC] flex flex-col font-sans selection:bg-[#00F5A0] selection:text-black antialiased overflow-x-hidden">
         {isStandalonePage ? (
           <main className="flex-1 w-full min-h-screen">
             {children}
           </main>
         ) : (
           <>
-            {/* Dark glassmorphic background layer */}
-            <div className="fixed inset-0 pointer-events-none z-0 bg-radial from-[#070D1A] via-[#040711] to-[#020409]" />
+            {/* Stadium floodlight ambience in bottom left, faithful to mockup */}
+            <div
+              className="fixed inset-0 pointer-events-none z-0 bg-cover bg-no-repeat bg-bottom opacity-20"
+              style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+            />
+            <div className="fixed inset-0 pointer-events-none z-0 bg-gradient-to-t from-[#040814] via-[#040814]/85 to-[#040814]/95" />
+            <div className="fixed inset-0 pointer-events-none z-0 bg-radial from-[#081325]/40 via-transparent to-[#040814]" />
 
             {/* Sidebar */}
             <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
@@ -38,7 +43,7 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
               <Topbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 
               {/* Page Body */}
-              <main className="flex-1 p-4 pb-24 sm:p-6 sm:pb-24 lg:p-8 lg:pb-8 max-w-[1600px] w-full mx-auto">
+              <main className="flex-1 p-4 pb-24 sm:p-5 sm:pb-24 lg:p-6 lg:pb-8 max-w-[1680px] w-full mx-auto">
                 {children}
               </main>
 

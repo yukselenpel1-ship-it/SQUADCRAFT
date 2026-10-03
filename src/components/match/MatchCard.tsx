@@ -23,12 +23,12 @@ export const MatchCard: React.FC<MatchCardProps> = ({
     <div
       className={`p-4 sm:p-5 rounded-2xl transition-all ${
         highlight
-          ? 'bg-[#0B1323] border-2 border-[#00F5A0] shadow-[0_0_25px_rgba(0,245,160,0.2)]'
+          ? 'bg-[#081325] border-2 border-[#00F5A0] shadow-[0_0_25px_rgba(0,245,160,0.2)]'
           : 'sc-panel hover:border-[#1E2E4A]'
       }`}
     >
       {/* Top Competition & Date Banner */}
-      <div className="flex items-center justify-between pb-3 border-b border-[#182338] text-xs">
+      <div className="flex items-center justify-between pb-3 border-b border-[#14233A] text-xs">
         <div className="flex items-center gap-2">
           <span className="font-mono text-[10px] uppercase font-black px-2 py-0.5 rounded-md bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
             {fixture.competition}
@@ -62,7 +62,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
         {/* Center Score / VS */}
         <div className="col-span-1 flex flex-col items-center justify-center">
           {isFinished ? (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#040711] border border-[#182338] shadow-inner">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#040814] border border-[#14233A] shadow-inner">
               <span className="text-xl sm:text-2xl font-mono font-black text-white">{fixture.homeScore}</span>
               <span className="text-zinc-600 font-bold">:</span>
               <span className="text-xl sm:text-2xl font-mono font-black text-white">{fixture.awayScore}</span>
@@ -95,7 +95,7 @@ export const MatchCard: React.FC<MatchCardProps> = ({
       </div>
 
       {/* Footer Info & Match Center Button */}
-      <div className="pt-3 border-t border-[#182338] flex items-center justify-between text-xs">
+      <div className="pt-3 border-t border-[#14233A] flex items-center justify-between text-xs">
         <div className="flex items-center gap-1.5 text-zinc-400 text-[11px] truncate">
           <MapPin className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
           <span className="truncate font-mono">{fixture.stadium || homeClub?.stadium || 'Şehir Stadyumu'}</span>
