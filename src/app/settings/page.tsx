@@ -40,8 +40,8 @@ export default function SettingsPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -59,7 +59,7 @@ export default function SettingsPage() {
             <span className="text-xs text-zinc-400 font-mono">SQUADCRAFT 26 // PRO SETTINGS</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tight text-white mt-1 flex items-center gap-2.5">
-            <Settings className="w-7 h-7 text-[#00F5A0]" />
+            <Settings className="w-7 h-7 text-[#C7FF38]" />
             AYARLAR VE KAYIT YÖNETİMİ
           </h1>
         </div>
@@ -84,7 +84,7 @@ export default function SettingsPage() {
         <div className="p-6 sc-panel rounded-2xl border border-[#182338] shadow-2xl space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-[#182338]">
             <h2 className="text-sm font-black uppercase tracking-wider text-white flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#00F5A0]" />
+              <Shield className="w-4 h-4 text-[#C7FF38]" />
               Teknik Direktör Sözleşmesi & Kariyer Özeti
             </h2>
             <span className="px-2.5 py-1 bg-[#00F5A0]/10 border border-[#00F5A0]/30 text-[#00F5A0] text-[10px] font-mono font-bold uppercase rounded-lg">
@@ -96,13 +96,13 @@ export default function SettingsPage() {
             <div className="p-4 bg-[#070D1A] rounded-xl border border-[#182338]">
               <span className="text-[10px] font-mono uppercase text-zinc-400 block font-bold">Kalan Sözleşme Süresi</span>
               <span className="text-lg font-black text-white">{managerContract.yearsLeft} Yıl</span>
-              <span className="text-[10px] font-mono text-[#00F5A0] block mt-0.5">
+              <span className="text-[10px] font-mono text-[#C7FF38] block mt-0.5">
                 {managerContract.status === 'OFFERED' ? 'Yeni Teklif Bekliyor' : 'Aktif Sözleşme'}
               </span>
             </div>
             <div className="p-4 bg-[#070D1A] rounded-xl border border-[#182338]">
               <span className="text-[10px] font-mono uppercase text-zinc-400 block font-bold">Haftalık Menajer Maaşı</span>
-              <span className="text-lg font-black text-[#00F5A0]">€{(managerContract.weeklySalary).toLocaleString('tr-TR')}</span>
+              <span className="text-lg font-black text-[#C7FF38]">€{(managerContract.weeklySalary).toLocaleString('tr-TR')}</span>
               <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
                 Yıllık: €{(managerContract.weeklySalary * 52).toLocaleString('tr-TR')}
               </span>
@@ -203,7 +203,7 @@ export default function SettingsPage() {
             </div>
             <div className="p-3.5 bg-[#070D1A] rounded-xl border border-[#182338]">
               <span className="text-zinc-500 block text-[10px] font-mono uppercase font-bold">Sezon</span>
-              <span className="font-black text-[#00F5A0] text-sm">{seasonYear}</span>
+              <span className="font-black text-[#C7FF38] text-sm">{seasonYear}</span>
             </div>
             <div className="p-3.5 bg-[#070D1A] rounded-xl border border-[#182338]">
               <span className="text-zinc-500 block text-[10px] font-mono uppercase font-bold">Oyun Tarihi</span>

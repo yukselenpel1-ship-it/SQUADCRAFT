@@ -38,13 +38,14 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
               <Topbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 
               {/* Page Body */}
-              <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto">
+              <main className="flex-1 p-4 pb-24 sm:p-6 sm:pb-24 lg:p-8 lg:pb-8 max-w-[1600px] w-full mx-auto">
                 {children}
               </main>
 
               {/* Mobile Bottom Navigation */}
               <MobileNav />
             </div>
+            <MobileBottomNav />
           </>
         )}
       </div>

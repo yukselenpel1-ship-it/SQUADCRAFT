@@ -194,10 +194,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
         <div className="p-3 border-t border-zinc-800 bg-[#05070B]">
           <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400">
             <span className="flex items-center gap-1.5 font-bold">
-              <ShieldCheck className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <ShieldCheck className="w-3.5 h-3.5 text-[#C7FF38]" />
               SQUADCRAFT {APP_VERSION}
             </span>
-            <span className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-800 text-[9px] font-black text-[#00F5A0]">
+            <span className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-800 text-[9px] font-black text-[#C7FF38]">
               CLOSED ALPHA
             </span>
           </div>

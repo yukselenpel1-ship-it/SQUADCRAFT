@@ -27,8 +27,8 @@ export default function FinancesPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -64,7 +64,7 @@ export default function FinancesPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Landmark className="w-7 h-7 text-[#00F5A0]" />
+            <Landmark className="w-7 h-7 text-[#C7FF38]" />
             Finansal Yönetim
           </h1>
         </div>
@@ -121,7 +121,7 @@ export default function FinancesPage() {
           </div>
           <span
             className={`text-sm font-black ${
-              wagePercentage > 90 ? 'text-rose-400' : 'text-[#00F5A0]'
+              wagePercentage > 90 ? 'text-rose-400' : 'text-[#C7FF38]'
             }`}
           >
             %{wagePercentage} DOLU
@@ -234,7 +234,7 @@ export default function FinancesPage() {
               {finances.monthlyHistory.map((m, idx) => (
                 <tr key={idx} className="hover:bg-[#0E1A2E]/60 transition-colors">
                   <td className="py-2.5 px-3 text-white font-bold">{m.month}</td>
-                  <td className="py-2.5 px-3 text-right text-[#00F5A0]">
+                  <td className="py-2.5 px-3 text-right text-[#C7FF38]">
                     +€{m.income.toLocaleString('tr-TR')}
                   </td>
                   <td className="py-2.5 px-3 text-right text-rose-400">
@@ -255,7 +255,7 @@ export default function FinancesPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#182338]">
           <div>
             <h3 className="text-xs font-mono font-black uppercase tracking-widest text-white flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#00F5A0]" />
+              <Layers className="w-4 h-4 text-[#C7FF38]" />
               Transfer Taahhütleri (Taksitli Ödeme & Alacaklar)
             </h3>
             <p className="text-[11px] font-mono text-zinc-400 mt-0.5">
@@ -267,7 +267,7 @@ export default function FinancesPage() {
               Borç: €{totalPayable.toLocaleString('tr-TR')}
             </span>
             <span className="text-zinc-700">|</span>
-            <span className="text-[#00F5A0]">
+            <span className="text-[#C7FF38]">
               Alacak: €{totalReceivable.toLocaleString('tr-TR')}
             </span>
           </div>
@@ -319,7 +319,7 @@ export default function FinancesPage() {
 
             {/* Receivables */}
             <div className="space-y-3">
-              <h4 className="text-xs font-mono font-black uppercase tracking-wider text-[#00F5A0] flex items-center gap-1.5">
+              <h4 className="text-xs font-mono font-black uppercase tracking-wider text-[#C7FF38] flex items-center gap-1.5">
                 <ArrowUpRight className="w-3.5 h-3.5" />
                 Tahsil Edilecek Taksitler ({receivableCommitments.length})
               </h4>
@@ -332,7 +332,7 @@ export default function FinancesPage() {
                   {receivableCommitments.map((c) => (
                     <div
                       key={c.id}
-                      className="p-3 bg-[#040711] border border-[#00F5A0]/30 flex items-center justify-between text-xs font-mono"
+                      className="p-3 bg-[#040711] border border-[#C7FF38]/30 flex items-center justify-between text-xs font-mono"
                     >
                       <div>
                         <div className="font-bold text-white uppercase">{c.playerName}</div>
@@ -341,7 +341,7 @@ export default function FinancesPage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-black text-[#00F5A0]">
+                        <div className="font-black text-[#C7FF38]">
                           +€{c.amount.toLocaleString('tr-TR')}
                         </div>
                         <div className="text-[10px] text-zinc-500 flex items-center gap-1 justify-end">

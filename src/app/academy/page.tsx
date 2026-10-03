@@ -40,8 +40,8 @@ export default function AcademyPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -107,12 +107,12 @@ export default function AcademyPage() {
         <div
           className={`p-3.5 rounded-2xl border text-xs font-mono flex items-center gap-3 animate-in fade-in ${
             actionFeedback.type === 'success'
-              ? 'bg-[#00F5A0]/10 border-[#00F5A0]/40 text-[#00F5A0]'
+              ? 'bg-[#C7FF38]/10 border-[#C7FF38]/40 text-[#C7FF38]'
               : 'bg-rose-500/10 border-rose-500/40 text-rose-300'
           }`}
         >
           {actionFeedback.type === 'success' ? (
-            <CheckCircle2 className="w-4 h-4 shrink-0 text-[#00F5A0]" />
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-[#C7FF38]" />
           ) : (
             <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
           )}
@@ -312,7 +312,7 @@ export default function AcademyPage() {
       {academyFacilities.intakeHistory && academyFacilities.intakeHistory.length > 0 && (
         <div className="sc-panel rounded-2xl border border-[#182338] shadow-2xl p-5 space-y-3">
           <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-[#00D4FF]" />
+            <Calendar className="w-4 h-4 text-[#4FE4FF]" />
             Geçmiş Yıllık Alım Arşivi
           </h3>
 
@@ -323,7 +323,7 @@ export default function AcademyPage() {
                   <span className="text-xs font-bold text-white uppercase">
                     {batch.seasonYear} Sezonu Genç Alımı ({batch.date})
                   </span>
-                  <span className="text-[11px] font-bold text-[#00F5A0]">
+                  <span className="text-[11px] font-bold text-[#C7FF38]">
                     {batch.players.length} Futbolcu Katıldı
                   </span>
                 </div>

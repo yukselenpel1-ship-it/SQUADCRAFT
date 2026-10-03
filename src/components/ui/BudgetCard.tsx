@@ -55,7 +55,7 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({
         {trend && (
           <div
             className={`flex items-center gap-1 font-bold ml-auto text-[11px] ${
-              trend.isPositive ? 'text-[#00F5A0]' : 'text-rose-400'
+              trend.isPositive ? 'text-[#C7FF38]' : 'text-rose-400'
             }`}
           >
             {trend.isPositive ? (

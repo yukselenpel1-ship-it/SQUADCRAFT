@@ -85,7 +85,7 @@ export function MatchweekReadyBanner({
             ? 'bg-gradient-to-r from-red-500 via-rose-500 to-amber-500 animate-pulse'
             : status === 'COUNTDOWN'
             ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-amber-400 animate-ping'
-            : 'bg-gradient-to-r from-[#00F5A0] via-[#00D4FF] to-[#00F5A0]'
+            : 'bg-gradient-to-r from-[#C7FF38] via-[#4FE4FF] to-[#C7FF38]'
         }`}
       />
 
@@ -98,7 +98,7 @@ export function MatchweekReadyBanner({
             </span>
             <span className="text-zinc-600 hidden sm:inline">|</span>
             <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-[#00D4FF]" />
+              <Zap className="w-3.5 h-3.5 text-[#4FE4FF]" />
               ÇOK OYUNCULU HAZIRLIK SİSTEMİ
             </span>
           </div>
@@ -219,7 +219,7 @@ export function MatchweekReadyBanner({
                   {isBot ? (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-mono font-bold bg-[#00D4FF]/10 border border-[#00D4FF]/40 text-[#00D4FF]">
                       <span>🤖 Bot</span>
-                      <CheckCircle2 className="w-3 h-3 text-[#00F5A0]" />
+                      <CheckCircle2 className="w-3 h-3 text-[#C7FF38]" />
                     </span>
                   ) : isReady ? (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-mono font-black bg-emerald-950/60 border border-emerald-500/50 text-[#00F5A0]">

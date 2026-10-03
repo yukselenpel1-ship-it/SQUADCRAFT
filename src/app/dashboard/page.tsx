@@ -65,8 +65,8 @@ export default function DashboardPage() {
 
   if (!isInitialized || !isCareerHydrated) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -124,7 +124,7 @@ export default function DashboardPage() {
               </h2>
               <p className="text-xs sm:text-sm text-zinc-300 font-medium">
                 Kulübünüz <strong className="text-white">{userClub.name}</strong> sezonu{' '}
-                <strong className="text-[#00F5A0]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
+                <strong className="text-[#C7FF38]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
                 {seasonEndSummary.topScorerGoals > 0 && (
                   <span className="ml-2 text-zinc-400">
                     Gol Kralı: <strong className="text-white">{seasonEndSummary.topScorerName}</strong> ({seasonEndSummary.topScorerGoals} Gol)
@@ -480,7 +480,7 @@ export default function DashboardPage() {
                             ? 'bg-red-600 text-white font-black'
                             : level === 'Hafif'
                             ? 'bg-cyan-500 text-black font-black'
-                            : 'bg-[#00F5A0] text-black font-black'
+                            : 'bg-[#C7FF38] text-black font-black'
                           : 'text-zinc-400 hover:text-white'
                       }`}
                     >
@@ -504,7 +504,7 @@ export default function DashboardPage() {
                 <div className="w-16 h-2 bg-[#182338] rounded-full overflow-hidden">
                   <div
                     className={`h-full ${
-                      avgFitness >= 85 ? 'bg-[#00F5A0]' : avgFitness >= 70 ? 'bg-amber-400' : 'bg-red-500'
+                      avgFitness >= 85 ? 'bg-[#C7FF38]' : avgFitness >= 70 ? 'bg-amber-400' : 'bg-red-500'
                     }`}
                     style={{ width: `${avgFitness}%` }}
                   />
@@ -514,7 +514,7 @@ export default function DashboardPage() {
               <div className="p-3.5 bg-[#070D1A] rounded-xl border border-[#182338] flex items-center justify-between">
                 <div>
                   <span className="text-[10px] font-mono uppercase font-bold text-zinc-400 block">Maç Keskinliği</span>
-                  <span className="text-2xl font-black italic text-[#00D4FF]">%{avgSharpness}</span>
+                  <span className="text-2xl font-black italic text-[#4FE4FF]">%{avgSharpness}</span>
                   <p className="text-[10px] font-mono text-zinc-500 mt-0.5">
                     {avgSharpness >= 75 ? 'Tempolu ve refleksler yerinde' : 'Maç eksiği bulunuyor'}
                   </p>

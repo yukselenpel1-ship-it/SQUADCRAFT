@@ -46,7 +46,7 @@ export const AdvanceProgressModal: React.FC<AdvanceProgressModalProps> = ({ resu
               className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
                 isMatchDay
                   ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40 animate-pulse'
-                  : 'bg-emerald-500/20 text-[#00F5A0] border border-emerald-500/30'
+                  : 'bg-emerald-500/20 text-[#C7FF38] border border-emerald-500/30'
               }`}
             >
               {isMatchDay ? '🔴 MAÇ GÜNÜNE ULAŞILDI' : 'ZAMAN İLERLETİLDİ'}
@@ -87,7 +87,7 @@ export const AdvanceProgressModal: React.FC<AdvanceProgressModalProps> = ({ resu
                   {isMatch ? (
                     <Swords className="w-4 h-4 text-rose-400 shrink-0" />
                   ) : isTransfer ? (
-                    <DollarSign className="w-4 h-4 text-[#00F5A0] shrink-0" />
+                    <DollarSign className="w-4 h-4 text-[#C7FF38] shrink-0" />
                   ) : isInjury ? (
                     <HeartPulse className="w-4 h-4 text-amber-400 shrink-0" />
                   ) : (
@@ -106,7 +106,7 @@ export const AdvanceProgressModal: React.FC<AdvanceProgressModalProps> = ({ resu
             <Link
               href={`/match/${result.userMatchFixtureId}`}
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl font-black text-xs bg-gradient-to-r from-[#00F5A0] to-[#00D68B] text-black shadow-lg shadow-emerald-500/20 flex items-center gap-2 hover:scale-[1.02] transition-all"
+              className="px-5 py-2.5 rounded-xl font-black text-xs bg-gradient-to-r from-[#C7FF38] to-[#D9FF73] text-black shadow-lg shadow-emerald-500/20 flex items-center gap-2 hover:scale-[1.02] transition-all"
             >
               <Swords className="w-4 h-4" />
               <span>Maç Merkezine Git</span>
@@ -115,7 +115,7 @@ export const AdvanceProgressModal: React.FC<AdvanceProgressModalProps> = ({ resu
           ) : (
             <button
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl font-black text-xs bg-[#00F5A0] text-black hover:bg-[#00D68B] transition-colors"
+              className="px-5 py-2.5 rounded-xl font-black text-xs bg-[#C7FF38] text-black hover:bg-[#D9FF73] transition-colors"
             >
               Tamam
             </button>

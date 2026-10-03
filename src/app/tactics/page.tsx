@@ -108,8 +108,8 @@ export default function TacticsPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -126,11 +126,11 @@ export default function TacticsPage() {
             </span>
             <span className="text-[11px] font-mono text-zinc-400">
               FORMASYON: <strong className="text-white">{tactics.formation}</strong> • İLK 11:{' '}
-              <strong className="text-[#00F5A0]">{startingPlayers.filter((s) => s.player).length}/11</strong>
+              <strong className="text-[#C7FF38]">{startingPlayers.filter((s) => s.player).length}/11</strong>
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Swords className="w-7 h-7 text-[#00F5A0]" />
+            <Swords className="w-7 h-7 text-[#C7FF38]" />
             Taktik & Saha Dizilişi
           </h1>
         </div>
@@ -148,11 +148,11 @@ export default function TacticsPage() {
 
           <div className="px-3.5 py-1.5 bg-[#070D1A] border border-[#182338] rounded-lg text-xs font-mono">
             <span className="text-zinc-500 uppercase text-[10px] block">Mentalite</span>
-            <span className="font-bold text-[#00D4FF]">{tactics.settings.mentality}</span>
+            <span className="font-bold text-[#4FE4FF]">{tactics.settings.mentality}</span>
           </div>
           <div className="px-3.5 py-1.5 bg-[#070D1A] border border-[#182338] rounded-lg text-xs font-mono">
             <span className="text-zinc-500 uppercase text-[10px] block">Tempo</span>
-            <span className="font-bold text-[#00F5A0]">{tactics.settings.tempo}</span>
+            <span className="font-bold text-[#C7FF38]">{tactics.settings.tempo}</span>
           </div>
           <div className="px-3.5 py-1.5 bg-[#070D1A] border border-[#182338] rounded-lg text-xs font-mono">
             <span className="text-zinc-500 uppercase text-[10px] block">Pres Şiddeti</span>
@@ -203,7 +203,7 @@ export default function TacticsPage() {
               <div>
                 <span className="text-zinc-400 text-[10px] block uppercase font-bold">// DEĞİŞİKLİK MODU</span>
                 <span className="font-bold text-white">
-                  Seçili: <span className="text-[#00F5A0] font-black">{selectedSlot.role}</span>{' '}
+                  Seçili: <span className="text-[#C7FF38] font-black">{selectedSlot.role}</span>{' '}
                   ({selectedStarterPlayer ? `${selectedStarterPlayer.firstName[0]}. ${selectedStarterPlayer.lastName}` : 'Boş'})
                 </span>
                 <p className="text-[11px] text-zinc-300 mt-0.5">
@@ -267,7 +267,7 @@ export default function TacticsPage() {
                         {player.position}
                       </span>
                       <div>
-                        <div className="text-xs font-bold text-white group-hover:text-[#00F5A0] transition-colors truncate max-w-[130px] sm:max-w-[150px]">
+                        <div className="text-xs font-bold text-white group-hover:text-[#C7FF38] transition-colors truncate max-w-[130px] sm:max-w-[150px]">
                           {player.firstName} {player.lastName}
                         </div>
                         <div className="text-[10px] font-mono text-zinc-500">

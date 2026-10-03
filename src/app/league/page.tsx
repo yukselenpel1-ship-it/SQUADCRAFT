@@ -26,8 +26,8 @@ export default function LeaguePage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -47,7 +47,7 @@ export default function LeaguePage() {
             </h2>
             <p className="text-xs text-zinc-300 font-medium">
               Kulübünüz <strong className="text-white">{userClub.name}</strong> sezonu{' '}
-              <strong className="text-[#00F5A0]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
+              <strong className="text-[#C7FF38]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
             </p>
           </div>
           <button
@@ -71,7 +71,7 @@ export default function LeaguePage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Trophy className="w-7 h-7 text-[#00F5A0]" />
+            <Trophy className="w-7 h-7 text-[#C7FF38]" />
             Alveria Elit Ligi Puan Durumu
           </h1>
         </div>

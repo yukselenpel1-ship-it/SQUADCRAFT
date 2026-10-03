@@ -24,14 +24,14 @@ export const FitnessIndicator: React.FC<FitnessIndicatorProps> = ({
   }
 
   const getColor = (v: number) => {
-    if (v >= 90) return 'text-[#00F5A0] bg-[#00F5A0]';
+    if (v >= 90) return 'text-[#C7FF38] bg-[#C7FF38]';
     if (v >= 75) return 'text-sky-400 bg-sky-400';
     if (v >= 60) return 'text-amber-400 bg-amber-400';
     return 'text-rose-400 bg-rose-400';
   };
 
   const getTextColor = (v: number) => {
-    if (v >= 90) return 'text-[#00F5A0]';
+    if (v >= 90) return 'text-[#C7FF38]';
     if (v >= 75) return 'text-sky-400';
     if (v >= 60) return 'text-amber-400';
     return 'text-rose-400';

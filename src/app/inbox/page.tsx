@@ -42,8 +42,8 @@ export default function InboxPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -65,9 +65,9 @@ export default function InboxPage() {
       case 'INJURY':
         return <HeartPulse className="w-4 h-4 text-rose-400" />;
       case 'TRANSFER':
-        return <DollarSign className="w-4 h-4 text-[#00F5A0]" />;
+        return <DollarSign className="w-4 h-4 text-[#C7FF38]" />;
       case 'SCOUT':
-        return <Search className="w-4 h-4 text-[#00D4FF]" />;
+        return <Search className="w-4 h-4 text-[#4FE4FF]" />;
       case 'MATCH':
         return <Swords className="w-4 h-4 text-blue-400" />;
       case 'CONTRACT':
@@ -117,7 +117,7 @@ export default function InboxPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Inbox className="w-7 h-7 text-[#00F5A0]" />
+            <Inbox className="w-7 h-7 text-[#C7FF38]" />
             Gelen Kutusu
           </h1>
         </div>
@@ -197,7 +197,7 @@ export default function InboxPage() {
                     </span>
                   </div>
 
-                  <h3 className={`text-xs font-bold truncate ${!msg.isRead ? 'text-[#00F5A0]' : 'text-zinc-200'}`}>
+                  <h3 className={`text-xs font-bold truncate ${!msg.isRead ? 'text-[#C7FF38]' : 'text-zinc-200'}`}>
                     {msg.subject}
                   </h3>
 

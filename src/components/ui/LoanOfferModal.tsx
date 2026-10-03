@@ -82,7 +82,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
         </button>
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-[#00F5A0]/20 text-[#00F5A0] flex items-center justify-center border border-[#00F5A0]/30">
+          <div className="w-10 h-10 rounded-xl bg-[#C7FF38]/20 text-[#C7FF38] flex items-center justify-center border border-[#C7FF38]/30">
             <Handshake className="w-5 h-5" />
           </div>
           <div>
@@ -129,7 +129,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
               <select
                 value={duration}
                 onChange={(e) => setDuration(e.target.value as LoanDurationType)}
-                className="w-full bg-[#141A28] border border-[#20293D] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
+                className="w-full bg-[#141A28] border border-[#20293D] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C7FF38]"
               >
                 <option value="3_MONTHS">3 Ay (Kısa Dönem)</option>
                 <option value="6_MONTHS">6 Ay (Devre Arasına Kadar)</option>
@@ -143,7 +143,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
               <select
                 value={playingTimePromise}
                 onChange={(e) => setPlayingTimePromise(e.target.value as SquadRole)}
-                className="w-full bg-[#141A28] border border-[#20293D] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
+                className="w-full bg-[#141A28] border border-[#20293D] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C7FF38]"
               >
                 <option value="Kilit Oyuncu">Kilit Oyuncu (Her maç)</option>
                 <option value="İlk 11">İlk 11 (Düzenli Başlangıç)</option>
@@ -158,7 +158,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
           <div className="p-4 rounded-xl bg-[#141A28] border border-[#20293D] space-y-2">
             <div className="flex justify-between items-center text-xs font-bold">
               <span className="text-zinc-300">Maaş Karşılama Oranı: %{wageShare}</span>
-              <span className="text-[#00F5A0]">Ödeyeceğiniz: €{weeklyWageCost.toLocaleString('tr-TR')}/hf</span>
+              <span className="text-[#C7FF38]">Ödeyeceğiniz: €{weeklyWageCost.toLocaleString('tr-TR')}/hf</span>
             </div>
             <input
               type="range"
@@ -167,7 +167,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
               step="5"
               value={wageShare}
               onChange={(e) => setWageShare(Number(e.target.value))}
-              className="w-full accent-[#00F5A0] cursor-pointer"
+              className="w-full accent-[#C7FF38] cursor-pointer"
             />
             <div className="flex justify-between text-[11px] text-zinc-400">
               <span>%0 (Maaşın tamamı ana kulüpte)</span>
@@ -185,7 +185,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
                 step="5000"
                 value={upfrontFee}
                 onChange={(e) => setUpfrontFee(Math.max(0, Number(e.target.value)))}
-                className="w-full bg-[#141A28] border border-[#20293D] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
+                className="w-full bg-[#141A28] border border-[#20293D] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C7FF38]"
               />
               <span className="text-[10px] text-zinc-500 mt-1 block">
                 Mevcut Transfer Bütçeniz: €{finances.transferBudget.toLocaleString('tr-TR')}
@@ -200,7 +200,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
                 step="5000"
                 value={monthlyFee}
                 onChange={(e) => setMonthlyFee(Math.max(0, Number(e.target.value)))}
-                className="w-full bg-[#141A28] border border-[#20293D] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
+                className="w-full bg-[#141A28] border border-[#20293D] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C7FF38]"
               />
             </div>
           </div>
@@ -213,7 +213,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
                   type="checkbox"
                   checked={hasBuyOption}
                   onChange={(e) => setHasBuyOption(e.target.checked)}
-                  className="rounded bg-zinc-800 border-zinc-700 text-[#00F5A0] focus:ring-0"
+                  className="rounded bg-zinc-800 border-zinc-700 text-[#C7FF38] focus:ring-0"
                 />
                 Satın Alma Maddesi Ekle
               </label>
@@ -226,7 +226,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
                       name="buyType"
                       checked={!isMandatoryBuy}
                       onChange={() => setIsMandatoryBuy(false)}
-                      className="mr-1 accent-[#00F5A0]"
+                      className="mr-1 accent-[#C7FF38]"
                     />
                     Opsiyonel
                   </label>
@@ -236,7 +236,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
                       name="buyType"
                       checked={isMandatoryBuy}
                       onChange={() => setIsMandatoryBuy(true)}
-                      className="mr-1 accent-[#00F5A0]"
+                      className="mr-1 accent-[#C7FF38]"
                     />
                     Zorunlu
                   </label>
@@ -255,7 +255,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
                   step="50000"
                   value={buyFee}
                   onChange={(e) => setBuyFee(Math.max(0, Number(e.target.value)))}
-                  className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#00F5A0]"
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#C7FF38]"
                 />
               </div>
             )}
@@ -266,7 +266,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
                   type="checkbox"
                   checked={canRecall}
                   onChange={(e) => setCanRecall(e.target.checked)}
-                  className="rounded bg-zinc-800 border-zinc-700 text-[#00F5A0] focus:ring-0"
+                  className="rounded bg-zinc-800 border-zinc-700 text-[#C7FF38] focus:ring-0"
                 />
                 Ana kulübün ara transferde geri çağırma hakkı bulunsun (Recall Clause)
               </label>
@@ -285,7 +285,7 @@ export const LoanOfferModal: React.FC<LoanOfferModalProps> = ({
             <button
               type="submit"
               disabled={submitting || result?.decision === 'ACCEPTED'}
-              className="px-5 py-2 rounded-xl text-xs font-black bg-[#00F5A0] text-black hover:bg-[#00D68B] disabled:opacity-50 transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2"
+              className="px-5 py-2 rounded-xl text-xs font-black bg-[#C7FF38] text-black hover:bg-[#D9FF73] disabled:opacity-50 transition-all shadow-lg shadow-emerald-500/20 flex items-center gap-2"
             >
               {submitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Handshake className="w-4 h-4" />}
               Teklifi İlet

@@ -66,8 +66,8 @@ const RenderClubBadge: React.FC<{ club: ClubDisplayInfo; size?: 'xs' | 'sm' | 'm
   return (
     <ClubBadge
       code={club.code}
-      primaryColor={club.primaryColor || '#00F5A0'}
-      secondaryColor={club.secondaryColor || '#00D4FF'}
+      primaryColor={club.primaryColor || '#C7FF38'}
+      secondaryColor={club.secondaryColor || '#4FE4FF'}
       size={size}
     />
   );
@@ -153,7 +153,7 @@ export function FifaMatchReportModal({
   const isDraw = homeScore === awayScore;
 
   const getRatingBadgeColor = (rating: number) => {
-    if (rating >= 8.5) return 'bg-[#00F5A0]/20 text-[#00F5A0] border-[#00F5A0]/50 shadow-[0_0_10px_rgba(0,245,160,0.3)]';
+    if (rating >= 8.5) return 'bg-[#C7FF38]/20 text-[#C7FF38] border-[#C7FF38]/50 shadow-[0_0_10px_rgba(0,245,160,0.3)]';
     if (rating >= 7.5) return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
     if (rating >= 6.8) return 'bg-amber-500/20 text-amber-300 border-amber-500/40';
     if (rating >= 6.0) return 'bg-orange-500/20 text-orange-300 border-orange-500/40';
@@ -161,16 +161,16 @@ export function FifaMatchReportModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 select-none">
+    <div role="dialog" aria-modal="true" className="arena-modal fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 select-none">
       {/* Modal Shell with EA FC / FIFA Stadium Aesthetic */}
       <div className="relative w-full max-w-4xl max-h-[94vh] flex flex-col bg-[#070D1A]/95 border border-[#182338] rounded-3xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl overflow-hidden text-zinc-200">
         {/* Subtle Top Neon Accent Line */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#C7FF38] to-[#4FE4FF]" />
 
         {/* Top Control Bar */}
         <div className="shrink-0 flex items-center justify-between px-4 sm:px-5 py-2.5 bg-[#070D1A] border-b border-[#182338]">
           <div className="flex items-center gap-2.5">
-            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-black bg-[#00F5A0]/15 text-[#00F5A0] border border-[#00F5A0]/30 tracking-widest uppercase">
+            <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-black bg-[#C7FF38]/15 text-[#C7FF38] border border-[#C7FF38]/30 tracking-widest uppercase">
               MAÇ RAPORU // 90' TAM SÜRE
             </span>
             {round && (
@@ -193,8 +193,8 @@ export function FifaMatchReportModal({
         {/* =================================================================== */}
         <div className="shrink-0 relative py-3.5 px-4 sm:px-6 bg-gradient-to-b from-[#0B1323] via-[#070D1A] to-[#040711] border-b border-[#182338]">
           {/* Subtle Stadium Bokeh Glow */}
-          <div className="absolute top-0 left-1/4 w-64 h-64 bg-[#00F5A0]/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-0 right-1/4 w-64 h-64 bg-[#00D4FF]/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 left-1/4 w-64 h-64 bg-[#C7FF38]/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-1/4 w-64 h-64 bg-[#4FE4FF]/5 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 flex items-center justify-between gap-3 sm:gap-4 max-w-2xl mx-auto">
             {/* Home Club */}
@@ -202,7 +202,7 @@ export function FifaMatchReportModal({
               <div className="relative group mb-1.5">
                 <div
                   className={`absolute -inset-2 rounded-full blur-md opacity-40 transition-opacity ${
-                    isHomeWinner ? 'bg-[#00F5A0]' : 'bg-transparent'
+                    isHomeWinner ? 'bg-[#C7FF38]' : 'bg-transparent'
                   }`}
                 />
                 <div className="relative p-1.5 bg-black/40 rounded-full border border-white/10 shadow-lg">
@@ -220,7 +220,7 @@ export function FifaMatchReportModal({
                       key={idx}
                       className="text-[10px] font-mono text-zinc-300 bg-zinc-900/90 px-1.5 py-0.5 rounded border border-zinc-800 flex items-center gap-1"
                     >
-                      <span className="text-[#00F5A0]">⚽</span>
+                      <span className="text-[#C7FF38]">⚽</span>
                       <span className="font-bold truncate max-w-[80px]">{g.playerName || 'Gol'}</span>
                       <span className="text-zinc-500">{g.minute}'</span>
                     </span>
@@ -235,7 +235,7 @@ export function FifaMatchReportModal({
                 <span
                   className={`${
                     isHomeWinner
-                      ? 'text-[#00F5A0] drop-shadow-[0_0_20px_rgba(0,245,160,0.5)]'
+                      ? 'text-[#C7FF38] drop-shadow-[0_0_20px_rgba(0,245,160,0.5)]'
                       : 'text-white'
                   }`}
                 >
@@ -245,7 +245,7 @@ export function FifaMatchReportModal({
                 <span
                   className={`${
                     isAwayWinner
-                      ? 'text-[#00D4FF] drop-shadow-[0_0_20px_rgba(0,212,255,0.5)]'
+                      ? 'text-[#4FE4FF] drop-shadow-[0_0_20px_rgba(0,212,255,0.5)]'
                       : 'text-white'
                   }`}
                 >
@@ -262,7 +262,7 @@ export function FifaMatchReportModal({
               <div className="relative group mb-1.5">
                 <div
                   className={`absolute -inset-2 rounded-full blur-md opacity-40 transition-opacity ${
-                    isAwayWinner ? 'bg-[#00D4FF]' : 'bg-transparent'
+                    isAwayWinner ? 'bg-[#4FE4FF]' : 'bg-transparent'
                   }`}
                 />
                 <div className="relative p-1.5 bg-black/40 rounded-full border border-white/10 shadow-lg">
@@ -280,7 +280,7 @@ export function FifaMatchReportModal({
                       key={idx}
                       className="text-[10px] font-mono text-zinc-300 bg-zinc-900/90 px-1.5 py-0.5 rounded border border-zinc-800 flex items-center gap-1"
                     >
-                      <span className="text-[#00D4FF]">⚽</span>
+                      <span className="text-[#4FE4FF]">⚽</span>
                       <span className="font-bold truncate max-w-[80px]">{g.playerName || 'Gol'}</span>
                       <span className="text-zinc-500">{g.minute}'</span>
                     </span>
@@ -300,7 +300,7 @@ export function FifaMatchReportModal({
               onClick={() => setActiveTab('overview')}
               className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-1.5 sm:px-3 rounded-lg text-xs font-mono font-black uppercase tracking-wider transition-all ${
                 activeTab === 'overview'
-                  ? 'bg-gradient-to-r from-[#00F5A0]/20 to-[#00D4FF]/20 text-[#00F5A0] border border-[#00F5A0]/40 shadow-[0_0_15px_rgba(0,245,160,0.15)]'
+                  ? 'bg-gradient-to-r from-[#C7FF38]/20 to-[#4FE4FF]/20 text-[#C7FF38] border border-[#C7FF38]/40 shadow-[0_0_15px_rgba(0,245,160,0.15)]'
                   : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border border-transparent'
               }`}
             >
@@ -315,7 +315,7 @@ export function FifaMatchReportModal({
               onClick={() => setActiveTab('lineups')}
               className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-1.5 sm:px-3 rounded-lg text-xs font-mono font-black uppercase tracking-wider transition-all ${
                 activeTab === 'lineups'
-                  ? 'bg-gradient-to-r from-[#00F5A0]/20 to-[#00D4FF]/20 text-[#00F5A0] border border-[#00F5A0]/40 shadow-[0_0_15px_rgba(0,245,160,0.15)]'
+                  ? 'bg-gradient-to-r from-[#C7FF38]/20 to-[#4FE4FF]/20 text-[#C7FF38] border border-[#C7FF38]/40 shadow-[0_0_15px_rgba(0,245,160,0.15)]'
                   : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border border-transparent'
               }`}
             >
@@ -330,7 +330,7 @@ export function FifaMatchReportModal({
               onClick={() => setActiveTab('timeline')}
               className={`flex items-center justify-center gap-1.5 sm:gap-2 py-2 px-1.5 sm:px-3 rounded-lg text-xs font-mono font-black uppercase tracking-wider transition-all ${
                 activeTab === 'timeline'
-                  ? 'bg-gradient-to-r from-[#00F5A0]/20 to-[#00D4FF]/20 text-[#00F5A0] border border-[#00F5A0]/40 shadow-[0_0_15px_rgba(0,245,160,0.15)]'
+                  ? 'bg-gradient-to-r from-[#C7FF38]/20 to-[#4FE4FF]/20 text-[#C7FF38] border border-[#C7FF38]/40 shadow-[0_0_15px_rgba(0,245,160,0.15)]'
                   : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50 border border-transparent'
               }`}
             >
@@ -423,30 +423,30 @@ export function FifaMatchReportModal({
               <div className="p-5 rounded-2xl bg-[#090E1D] border border-zinc-800 space-y-4 font-mono">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-zinc-800">
                   <span className="text-xs font-black uppercase tracking-wider text-zinc-300 flex items-center gap-2">
-                    <BarChart2 className="w-4 h-4 text-[#00F5A0]" />
+                    <BarChart2 className="w-4 h-4 text-[#C7FF38]" />
                     RESMİ MAÇ İSTATİSTİKLERİ
                   </span>
                   <div className="flex items-center gap-3 text-xs font-bold truncate">
-                    <span className="text-[#00F5A0] truncate max-w-[130px]">{homeClub.name}</span>
+                    <span className="text-[#C7FF38] truncate max-w-[130px]">{homeClub.name}</span>
                     <span className="text-zinc-600">vs</span>
-                    <span className="text-[#00D4FF] truncate max-w-[130px]">{awayClub.name}</span>
+                    <span className="text-[#4FE4FF] truncate max-w-[130px]">{awayClub.name}</span>
                   </div>
                 </div>
 
                 {/* 1. Possession Bar */}
                 <div className="space-y-1.5">
                   <div className="flex justify-between text-xs font-bold">
-                    <span className="text-[#00F5A0]">%{homePossessionPercent}</span>
+                    <span className="text-[#C7FF38]">%{homePossessionPercent}</span>
                     <span className="text-zinc-400 uppercase text-[10px]">Topa Sahip Olma</span>
-                    <span className="text-[#00D4FF]">%{awayPossessionPercent}</span>
+                    <span className="text-[#4FE4FF]">%{awayPossessionPercent}</span>
                   </div>
                   <div className="w-full h-2.5 bg-zinc-900 rounded-full flex overflow-hidden border border-zinc-800">
                     <div
-                      className="h-full bg-[#00F5A0] transition-all duration-300"
+                      className="h-full bg-[#C7FF38] transition-all duration-300"
                       style={{ width: `${homePossessionPercent}%` }}
                     />
                     <div
-                      className="h-full bg-[#00D4FF] transition-all duration-300"
+                      className="h-full bg-[#4FE4FF] transition-all duration-300"
                       style={{ width: `${awayPossessionPercent}%` }}
                     />
                   </div>
@@ -461,13 +461,13 @@ export function FifaMatchReportModal({
                   </div>
                   <div className="w-full h-2 bg-zinc-900 rounded-full flex overflow-hidden border border-zinc-800">
                     <div
-                      className="h-full bg-[#00F5A0] transition-all duration-300"
+                      className="h-full bg-[#C7FF38] transition-all duration-300"
                       style={{
                         width: `${Math.round((hStats.xG / Math.max(0.1, hStats.xG + aStats.xG)) * 100)}%`,
                       }}
                     />
                     <div
-                      className="h-full bg-[#00D4FF] transition-all duration-300"
+                      className="h-full bg-[#4FE4FF] transition-all duration-300"
                       style={{
                         width: `${Math.round((aStats.xG / Math.max(0.1, hStats.xG + aStats.xG)) * 100)}%`,
                       }}
@@ -486,11 +486,11 @@ export function FifaMatchReportModal({
 
                   {/* Passes Card */}
                   <div className="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800/80 flex items-center justify-between text-xs">
-                    <span className="text-sm font-black text-[#00F5A0]">
+                    <span className="text-sm font-black text-[#C7FF38]">
                       %{Math.round((hStats.completedPasses / Math.max(1, hStats.passes)) * 100)}
                     </span>
                     <span className="text-zinc-400 text-[11px] uppercase">Pas Başarısı</span>
-                    <span className="text-sm font-black text-[#00D4FF]">
+                    <span className="text-sm font-black text-[#4FE4FF]">
                       %{Math.round((aStats.completedPasses / Math.max(1, aStats.passes)) * 100)}
                     </span>
                   </div>
@@ -543,7 +543,7 @@ export function FifaMatchReportModal({
                           <span className="w-6 text-center px-1 py-0.2 rounded text-[10px] font-black bg-zinc-800 text-zinc-300 border border-zinc-700">
                             {pim.currentPosition}
                           </span>
-                          <span className="text-xs font-bold text-white group-hover:text-[#00F5A0] transition-colors truncate">
+                          <span className="text-xs font-bold text-white group-hover:text-[#C7FF38] transition-colors truncate">
                             {pim.player.firstName} {pim.player.lastName}
                           </span>
                           {pim.goals > 0 && (
@@ -588,7 +588,7 @@ export function FifaMatchReportModal({
                           <span className="w-6 text-center px-1 py-0.2 rounded text-[10px] font-black bg-zinc-800 text-zinc-300 border border-zinc-700">
                             {pim.currentPosition}
                           </span>
-                          <span className="text-xs font-bold text-white group-hover:text-[#00D4FF] transition-colors truncate">
+                          <span className="text-xs font-bold text-white group-hover:text-[#4FE4FF] transition-colors truncate">
                             {pim.player.firstName} {pim.player.lastName}
                           </span>
                           {pim.goals > 0 && (
@@ -695,7 +695,7 @@ export function FifaMatchReportModal({
             {onContinue && (
               <button
                 onClick={onContinue}
-                className="justify-center flex items-center gap-1.5 px-4 sm:px-5 py-2.5 rounded-xl font-black font-mono text-xs bg-[#00F5A0] text-black hover:bg-[#00D68B] transition-all shadow-lg shadow-emerald-500/20"
+                className="justify-center flex items-center gap-1.5 px-4 sm:px-5 py-2.5 rounded-xl font-black font-mono text-xs bg-[#C7FF38] text-black hover:bg-[#D9FF73] transition-all shadow-lg shadow-emerald-500/20"
               >
                 <span>Devam Et</span>
                 <ChevronRight className="w-4 h-4 stroke-[3]" />

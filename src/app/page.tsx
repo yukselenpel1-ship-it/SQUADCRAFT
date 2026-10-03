@@ -131,7 +131,7 @@ export default function MainMenuPage() {
   }, [isFeedbackOpen, isNewCareerConfirmOpen, savedData, router, handleContinueCareer, handleNewCareerRequest]);
 
   return (
-    <div className="relative min-h-screen w-full bg-[#04060A] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="arena-landing relative min-h-screen w-full bg-[#070A0F] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. SHARP STADIUM ARENA BACKGROUND (NO BLUR, CRISP GRAPHITE & LIGHTS) */}
       {/* ==================================================================== */}
@@ -140,8 +140,8 @@ export default function MainMenuPage() {
         style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
       >
         {/* High-contrast crisp sports vignette: zero blur */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#070A0F]/85 via-transparent to-[#070A0F]/95" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#070A0F]/40 to-[#070A0F]/90" />
       </div>
 
       {/* ==================================================================== */}
@@ -384,14 +384,14 @@ export default function MainMenuPage() {
           {/* Card 1: Özgün Futbol Evreni */}
           <div className="bg-[#090D14] border border-zinc-800 hover:border-zinc-600 p-4 flex items-center justify-between transition-all group">
             <div className="flex items-center gap-3.5 min-w-0">
-              <div className="w-10 h-10 bg-[#0E1624] border border-[#00F5A0]/80 text-[#00F5A0] flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 bg-[#0E1624] border border-[#C7FF38]/80 text-[#C7FF38] flex items-center justify-center shrink-0">
                 <Globe className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] font-mono font-bold text-[#00F5A0] uppercase tracking-wider">
+                <div className="text-[10px] font-mono font-bold text-[#C7FF38] uppercase tracking-wider">
                   DATABASE 2.0 // 01
                 </div>
-                <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#00F5A0] transition-colors truncate">
+                <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#C7FF38] transition-colors truncate">
                   2000+ Futbolcu Evreni
                 </h3>
                 <p className="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">
@@ -417,10 +417,10 @@ export default function MainMenuPage() {
                 <Users className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] font-mono font-bold text-[#00D4FF] uppercase tracking-wider">
+                <div className="text-[10px] font-mono font-bold text-[#4FE4FF] uppercase tracking-wider">
                   MULTIPLAYER // 02
                 </div>
-                <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#00D4FF] transition-colors truncate">
+                <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#4FE4FF] transition-colors truncate">
                   Draft & Bütçe Ekonomisi
                 </h3>
                 <p className="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">
@@ -446,10 +446,10 @@ export default function MainMenuPage() {
                 <Activity className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-[10px] font-mono font-bold text-[#00F5A0] uppercase tracking-wider">
+                <div className="text-[10px] font-mono font-bold text-[#C7FF38] uppercase tracking-wider">
                   HYPER-SIM // 03
                 </div>
-                <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#00F5A0] transition-colors truncate">
+                <h3 className="text-sm font-black italic uppercase text-white group-hover:text-[#C7FF38] transition-colors truncate">
                   Taktik, Scouting & Haberler
                 </h3>
                 <p className="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">
@@ -485,11 +485,11 @@ export default function MainMenuPage() {
             <span className="mx-3 text-zinc-600">•</span>
             <span>18 KİŞİLİK RESMİ KADRO SİSTEMİ AKTİF</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00D4FF]">ÇOK OYUNCULU SNAKE DRAFT MOTORU HAZIR</span>
+            <span className="text-[#4FE4FF]">ÇOK OYUNCULU SNAKE DRAFT MOTORU HAZIR</span>
             <span className="mx-3 text-zinc-600">•</span>
             <span>SUPABASE GERÇEK ZAMANLI SENKRONİZASYON AKTİF</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00F5A0]">SQUADCRAFT KAPALI ALFA SÜRÜMÜ {APP_VERSION}</span>
+            <span className="text-[#C7FF38]">SQUADCRAFT KAPALI ALFA SÜRÜMÜ {APP_VERSION}</span>
           </div>
         </div>
 
@@ -502,16 +502,16 @@ export default function MainMenuPage() {
               <span>SEÇ</span>
             </div>
             <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#00D4FF] font-bold">D</kbd>
+              <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#4FE4FF] font-bold">D</kbd>
               <span>DRAFT LEAGUE</span>
             </div>
             <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#00F5A0] font-bold">K</kbd>
+              <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#C7FF38] font-bold">K</kbd>
               <span>YENİ KARİYER</span>
             </div>
             {savedData && (
               <div className="flex items-center gap-1">
-                <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#00F5A0] font-bold">C</kbd>
+                <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-700 text-[#C7FF38] font-bold">C</kbd>
                 <span>DEVAM ET</span>
               </div>
             )}
@@ -525,7 +525,7 @@ export default function MainMenuPage() {
           <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
             <span className="text-zinc-300 font-bold">SQUADCRAFT PRO ENGINE</span>
             <span className="text-zinc-600">•</span>
-            <span className="text-[#00F5A0] font-bold">{APP_VERSION}</span>
+            <span className="text-[#C7FF38] font-bold">{APP_VERSION}</span>
             <span className="text-zinc-600">•</span>
             <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

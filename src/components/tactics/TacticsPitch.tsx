@@ -187,7 +187,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
                     <div
                       className={`h-full rounded-full ${
                         player.fitness >= 85
-                          ? 'bg-[#00F5A0]'
+                          ? 'bg-[#C7FF38]'
                           : player.fitness >= 65
                           ? 'bg-amber-400'
                           : 'bg-rose-500'
@@ -213,19 +213,19 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
       {/* Helper Prompt Bar */}
       <div className="mt-3 text-xs text-zinc-400 flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse" />
+        <span className="w-2 h-2 rounded-full bg-[#C7FF38] animate-pulse" />
         <span>Oyuncuları sahada yer değiştirmek için iki mevkiye sırayla tıklayın veya <RefreshCw className="inline w-3 h-3 text-zinc-300 mx-0.5" /> simgesine basıp yedek oyuncu seçin.</span>
       </div>
 
       {/* Bench Substitution Modal */}
       {benchSwapModalOpen && selectedSlot && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 animate-in fade-in">
+        <div role="dialog" aria-modal="true" className="arena-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 animate-in fade-in">
           <div className="relative w-full max-w-xl bg-[#070B14] border-2 border-zinc-700 p-6 shadow-2xl">
             <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
               <div>
                 <h3 className="text-lg font-black text-white">Oyuncu Değişikliği</h3>
                 <p className="text-xs text-zinc-400">
-                  <span className="text-[#00F5A0] font-bold">{selectedSlot.role}</span> mevkisi için yedek veya rezerv oyuncu seçin.
+                  <span className="text-[#C7FF38] font-bold">{selectedSlot.role}</span> mevkisi için yedek veya rezerv oyuncu seçin.
                 </p>
               </div>
               <button
@@ -280,7 +280,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
                     <div className="flex items-center gap-3">
                       <StatBadge value={p.overall} size="md" />
-                      <button className="px-3 py-1.5 rounded-lg bg-[#00F5A0] text-black text-xs font-bold hover:bg-[#00D68B]">
+                      <button className="px-3 py-1.5 rounded-lg bg-[#C7FF38] text-black text-xs font-bold hover:bg-[#D9FF73]">
                         Sahaya Al
                       </button>
                     </div>

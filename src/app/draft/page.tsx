@@ -187,7 +187,7 @@ export default function DraftHomePage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#04060A] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="relative min-h-screen w-full bg-[#070A0F] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. SHARP STADIUM ARENA BACKGROUND (NO BLUR, CRISP GRAPHITE & LIGHTS) */}
       {/* ==================================================================== */}
@@ -196,8 +196,8 @@ export default function DraftHomePage() {
         style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
       >
         {/* High-contrast crisp sports vignette: zero blur */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#070A0F]/85 via-transparent to-[#070A0F]/95" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#070A0F]/40 to-[#070A0F]/90" />
       </div>
 
       {/* ==================================================================== */}
@@ -231,7 +231,7 @@ export default function DraftHomePage() {
               <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-lg sm:text-xl leading-none">
                   <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
-                  <span className="text-[#00F5A0]">26</span>
+                  <span className="text-[#C7FF38]">26</span>
                 </div>
                 <span className="text-[9px] font-mono font-bold tracking-widest text-[#00D4FF] uppercase mt-0.5">
                   DRAFT TOURNAMENT
@@ -273,14 +273,14 @@ export default function DraftHomePage() {
               <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse" />
               <span>SUNUCU: ÇEVRİMİÇİ</span>
               <span className="text-zinc-600">•</span>
-              <span className="text-[#00D4FF]">14ms TR</span>
+              <span className="text-[#4FE4FF]">14ms TR</span>
             </div>
 
             <button
               onClick={() => setIsFeedbackOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0B1323] hover:bg-[#182338] border border-[#182338] text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <MessageSquare className="w-3.5 h-3.5 text-[#C7FF38]" />
               <span className="hidden sm:inline">Geri Bildirim</span>
             </button>
 
@@ -315,7 +315,7 @@ export default function DraftHomePage() {
 
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black italic tracking-tight uppercase text-white mt-1">
             DRAFT LEAGUE{' '}
-            <span className="text-[#00D4FF]">
+            <span className="text-[#4FE4FF]">
               LOBİ MERKEZİ
             </span>
           </h1>
@@ -361,7 +361,7 @@ export default function DraftHomePage() {
               <form onSubmit={handleCreateRoom} className="space-y-4">
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer İsminiz <span className="text-[#00D4FF]">*</span>
+                    Menajer İsminiz <span className="text-[#4FE4FF]">*</span>
                   </label>
                   <input
                     type="text"
@@ -421,16 +421,16 @@ export default function DraftHomePage() {
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-300">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">👥</span> {currentPreset.summaryManagers}
+                      <span className="text-[#4FE4FF]">👥</span> {currentPreset.summaryManagers}
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">⚡</span> 18 Oyuncu Kadro
+                      <span className="text-[#4FE4FF]">⚡</span> 18 Oyuncu Kadro
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">⏱️</span> 60sn Snake Draft
+                      <span className="text-[#4FE4FF]">⏱️</span> 60sn Snake Draft
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">🏆</span> {currentPreset.format}
+                      <span className="text-[#4FE4FF]">🏆</span> {currentPreset.format}
                     </div>
                   </div>
                 </div>
@@ -495,7 +495,7 @@ export default function DraftHomePage() {
               <form onSubmit={handleJoinRoom} className="space-y-4">
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer İsminiz <span className="text-[#00F5A0]">*</span>
+                    Menajer İsminiz <span className="text-[#C7FF38]">*</span>
                   </label>
                   <input
                     type="text"
@@ -511,7 +511,7 @@ export default function DraftHomePage() {
 
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Oda Kodu <span className="text-[#00F5A0]">*</span>
+                    Oda Kodu <span className="text-[#C7FF38]">*</span>
                   </label>
                   <input
                     type="text"
@@ -608,11 +608,11 @@ export default function DraftHomePage() {
             <span className="mx-3 text-zinc-600">•</span>
             <span>{currentPreset.tickerText}</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00F5A0]">18 TURLUK CANLI SNAKE DRAFT MOTORU</span>
+            <span className="text-[#C7FF38]">18 TURLUK CANLI SNAKE DRAFT MOTORU</span>
             <span className="mx-3 text-zinc-600">•</span>
             <span>GERÇEK ZAMANLI SUPABASE SENKRONİZASYONU</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00D4FF]">{APP_VERSION}</span>
+            <span className="text-[#4FE4FF]">{APP_VERSION}</span>
           </div>
         </div>
 
@@ -632,7 +632,7 @@ export default function DraftHomePage() {
           <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
             <span className="text-zinc-300 font-bold">SQUADCRAFT DRAFT ENGINE</span>
             <span className="text-zinc-600">•</span>
-            <span className="text-[#00F5A0] font-bold">{APP_VERSION}</span>
+            <span className="text-[#C7FF38] font-bold">{APP_VERSION}</span>
             <span className="text-zinc-600">•</span>
             <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

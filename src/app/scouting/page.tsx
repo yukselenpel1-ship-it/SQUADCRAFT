@@ -68,8 +68,8 @@ export default function ScoutingPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -89,7 +89,7 @@ export default function ScoutingPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Compass className="w-7 h-7 text-[#00D4FF]" />
+            <Compass className="w-7 h-7 text-[#4FE4FF]" />
             Gözlem Departmanı
           </h1>
         </div>
@@ -102,13 +102,13 @@ export default function ScoutingPage() {
           </div>
           <div className="px-3 text-center border-l border-[#182338]">
             <span className="text-[10px] text-zinc-500 uppercase block font-bold">Aktif Görev</span>
-            <span className="text-base font-black text-[#00D4FF]">
+            <span className="text-base font-black text-[#4FE4FF]">
               {scoutingAssignments.filter((a) => a.status === 'ACTIVE').length}
             </span>
           </div>
           <div className="px-3 text-center border-l border-[#182338]">
             <span className="text-[10px] text-zinc-500 uppercase block font-bold">Rapor Arşivi</span>
-            <span className="text-base font-black text-[#00F5A0]">{scoutingReports.length}</span>
+            <span className="text-base font-black text-[#C7FF38]">{scoutingReports.length}</span>
           </div>
         </div>
       </div>
@@ -195,13 +195,13 @@ export default function ScoutingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 sc-panel rounded-2xl border border-[#182338]">
               <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Haftalık Scout Gideri</span>
-              <span className="text-xl font-mono font-black text-[#00F5A0]">€{totalWeeklyScoutWages.toLocaleString('tr-TR')}/hf</span>
+              <span className="text-xl font-mono font-black text-[#C7FF38]">€{totalWeeklyScoutWages.toLocaleString('tr-TR')}/hf</span>
               <span className="text-[10px] font-mono text-zinc-500 block mt-1">Maaş bütçesinden düşülür</span>
             </div>
 
             <div className="p-4 bg-[#080D1A] border border-zinc-800">
               <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Müsait Gözlemciler</span>
-              <span className="text-xl font-mono font-black text-[#00D4FF]">
+              <span className="text-xl font-mono font-black text-[#4FE4FF]">
                 {scouts.filter((s) => !s.activeAssignmentId).length} / {scouts.length}
               </span>
               <span className="text-[10px] font-mono text-zinc-500 block mt-1">Hemen görevlendirilebilir</span>
@@ -217,7 +217,7 @@ export default function ScoutingPage() {
 
             <div className="p-4 bg-[#080D1A] border border-zinc-800">
               <span className="text-[10px] font-mono text-zinc-500 uppercase block mb-1">Önerilen Hedefler</span>
-              <span className="text-xl font-mono font-black text-[#00F5A0]">
+              <span className="text-xl font-mono font-black text-[#C7FF38]">
                 {scoutingReports.filter((r) => r.recommendation.includes('Önerilir')).length} Oyuncu
               </span>
               <span className="text-[10px] font-mono text-zinc-500 block mt-1">Olumlu scout raporu</span>
@@ -230,12 +230,12 @@ export default function ScoutingPage() {
             <div className="p-5 bg-[#080D1A] border border-zinc-800 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-[#00D4FF]" />
+                  <Clock className="w-4 h-4 text-[#4FE4FF]" />
                   <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300">Devam Eden Görevler</h3>
                 </div>
                 <button
                   onClick={() => setActiveTab('assignments')}
-                  className="text-xs font-mono text-[#00D4FF] hover:underline"
+                  className="text-xs font-mono text-[#4FE4FF] hover:underline"
                 >
                   Tümünü Gör
                 </button>
@@ -247,7 +247,7 @@ export default function ScoutingPage() {
                   <p className="text-xs font-mono text-zinc-400">Şu anda devam eden gözlem görevi yok.</p>
                   <button
                     onClick={() => setActiveTab('search')}
-                    className="mt-3 px-3 py-1.5 text-xs font-mono font-bold bg-[#00F5A0] text-black uppercase border border-white"
+                    className="mt-3 px-3 py-1.5 text-xs font-mono font-bold bg-[#C7FF38] text-black uppercase border border-white"
                   >
                     Oyuncu Ara ve Gözlemci Ata
                   </button>
@@ -266,7 +266,7 @@ export default function ScoutingPage() {
                             <span className="text-xs font-bold text-white uppercase">
                               {assign.targetPlayerName || 'Bölge Taraması'}
                             </span>
-                            <span className="text-[10px] font-mono px-2 py-0.5 bg-[#00D4FF]/20 text-[#00D4FF] border border-[#00D4FF]/30">
+                            <span className="text-[10px] font-mono px-2 py-0.5 bg-[#4FE4FF]/20 text-[#4FE4FF] border border-[#4FE4FF]/30">
                               {assign.scoutName}
                             </span>
                           </div>
@@ -290,12 +290,12 @@ export default function ScoutingPage() {
             <div className="p-5 bg-[#080D1A] border border-zinc-800 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-zinc-800/80">
                 <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-[#00F5A0]" />
+                  <FileText className="w-4 h-4 text-[#C7FF38]" />
                   <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300">Son Gözlem Raporları</h3>
                 </div>
                 <button
                   onClick={() => setActiveTab('reports')}
-                  className="text-xs font-mono text-[#00F5A0] hover:underline"
+                  className="text-xs font-mono text-[#C7FF38] hover:underline"
                 >
                   Tümünü Gör
                 </button>
@@ -319,7 +319,7 @@ export default function ScoutingPage() {
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-bold text-white uppercase">{rep.playerName}</span>
-                            <span className="text-[10px] font-mono px-1.5 py-0.2 bg-[#00F5A0]/20 text-[#00F5A0] font-black border border-[#00F5A0]/30">
+                            <span className="text-[10px] font-mono px-1.5 py-0.2 bg-[#C7FF38]/20 text-[#C7FF38] font-black border border-[#C7FF38]/30">
                               {rep.bestPosition}
                             </span>
                             <span className="text-[10px] font-mono text-zinc-500">({rep.date})</span>
@@ -329,7 +329,7 @@ export default function ScoutingPage() {
                           </p>
                         </div>
                         <div className="text-right font-mono">
-                          <span className="text-xs font-black text-[#00F5A0] block">
+                          <span className="text-xs font-black text-[#C7FF38] block">
                             {rep.estimatedOverallMin}-{rep.estimatedOverallMax} GEN
                           </span>
                         </div>
@@ -355,7 +355,7 @@ export default function ScoutingPage() {
                 placeholder="Futbolcu adı ile ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-[#040711] border border-zinc-800 pl-9 pr-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-[#00F5A0]"
+                className="w-full bg-[#040711] border border-zinc-800 pl-9 pr-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-[#C7FF38]"
               />
             </div>
 
@@ -363,7 +363,7 @@ export default function ScoutingPage() {
               <select
                 value={positionFilter}
                 onChange={(e) => setPositionFilter(e.target.value)}
-                className="bg-[#040711] border border-zinc-800 px-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-[#00F5A0]"
+                className="bg-[#040711] border border-zinc-800 px-3 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-[#C7FF38]"
               >
                 <option value="ALL">Tüm Mevkiler</option>
                 <option value="GK">GK (Kaleci)</option>
@@ -388,7 +388,7 @@ export default function ScoutingPage() {
                   max="40"
                   value={maxAgeFilter}
                   onChange={(e) => setMaxAgeFilter(Number(e.target.value))}
-                  className="w-24 accent-[#00F5A0]"
+                  className="w-24 accent-[#C7FF38]"
                 />
               </div>
             </div>
@@ -437,7 +437,7 @@ export default function ScoutingPage() {
                           {club ? club.name : 'Serbest'}
                         </td>
                         <td className="p-3 text-center">
-                          <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-zinc-900 border border-zinc-700 text-[#00F5A0]">
+                          <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-zinc-900 border border-zinc-700 text-[#C7FF38]">
                             {player.position}
                           </span>
                         </td>
@@ -446,7 +446,7 @@ export default function ScoutingPage() {
                           <div className="flex items-center gap-2 font-mono">
                             <div className="w-16 bg-zinc-900 h-1.5 overflow-hidden border border-zinc-700">
                               <div
-                                className="h-full bg-[#00F5A0]"
+                                className="h-full bg-[#C7FF38]"
                                 style={{ width: `${masked.knowledgePercentage}%` }}
                               />
                             </div>
@@ -463,7 +463,7 @@ export default function ScoutingPage() {
                         <td className="p-3 text-right" onClick={(e) => e.stopPropagation()}>
                           <button
                             onClick={() => setScoutModalPlayer(player)}
-                            className="px-2.5 py-1 text-xs font-mono font-bold uppercase bg-[#00D4FF]/10 text-[#00D4FF] border border-[#00D4FF]/30 hover:bg-[#00D4FF]/20 transition-all flex items-center gap-1 ml-auto"
+                            className="px-2.5 py-1 text-xs font-mono font-bold uppercase bg-[#4FE4FF]/10 text-[#4FE4FF] border border-[#4FE4FF]/30 hover:bg-[#4FE4FF]/20 transition-all flex items-center gap-1 ml-auto"
                           >
                             <Compass className="w-3.5 h-3.5" />
                             Gözlemci Ata
@@ -485,7 +485,7 @@ export default function ScoutingPage() {
           {/* User Club Scouts */}
           <div>
             <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300 mb-3 flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#00F5A0]" />
+              <Users className="w-4 h-4 text-[#C7FF38]" />
               Kulüp Gözlemci Ekibi ({scouts.length})
             </h3>
 
@@ -509,7 +509,7 @@ export default function ScoutingPage() {
                         className={`text-[10px] font-mono px-2 py-0.5 font-bold uppercase border ${
                           isBusy
                             ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                            : 'bg-emerald-500/20 text-[#00F5A0] border-emerald-500/30'
+                            : 'bg-emerald-500/20 text-[#C7FF38] border-emerald-500/30'
                         }`}
                       >
                         {isBusy ? 'Görevde' : 'Müsait'}
@@ -562,7 +562,7 @@ export default function ScoutingPage() {
           {/* Free Agent Scouts Market */}
           <div className="pt-6 border-t border-zinc-800">
             <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300 mb-3 flex items-center gap-2">
-              <UserPlus className="w-4 h-4 text-[#00D4FF]" />
+              <UserPlus className="w-4 h-4 text-[#4FE4FF]" />
               Serbest Gözlemci Pazarı (Transfer Edilebilir)
             </h3>
 
@@ -578,7 +578,7 @@ export default function ScoutingPage() {
                         {faScout.nationality} • {faScout.age} YAŞ • €{faScout.wage.toLocaleString('tr-TR')}/hf
                       </span>
                     </div>
-                    <span className="text-[10px] font-mono px-2 py-0.5 font-bold uppercase bg-[#00D4FF]/20 text-[#00D4FF] border border-[#00D4FF]/30">
+                    <span className="text-[10px] font-mono px-2 py-0.5 font-bold uppercase bg-[#4FE4FF]/20 text-[#4FE4FF] border border-[#4FE4FF]/30">
                       Serbest
                     </span>
                   </div>
@@ -605,7 +605,7 @@ export default function ScoutingPage() {
                   <div className="pt-2 border-t border-zinc-800 flex justify-end">
                     <button
                       onClick={() => hireScout(faScout.id)}
-                      className="px-3 py-1.5 text-xs font-mono font-bold uppercase bg-[#00F5A0] text-black hover:bg-[#00D68B] transition-all flex items-center gap-1.5 border border-white"
+                      className="px-3 py-1.5 text-xs font-mono font-bold uppercase bg-[#C7FF38] text-black hover:bg-[#D9FF73] transition-all flex items-center gap-1.5 border border-white"
                     >
                       <UserPlus className="w-3.5 h-3.5" />
                       İşe Al (€{faScout.wage.toLocaleString('tr-TR')}/hf)
@@ -622,7 +622,7 @@ export default function ScoutingPage() {
       {activeTab === 'assignments' && (
         <div className="space-y-4">
           <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-[#00D4FF]" />
+            <Clock className="w-4 h-4 text-[#4FE4FF]" />
             Tüm Aktif ve Geçmiş Görevler
           </h3>
 
@@ -653,16 +653,16 @@ export default function ScoutingPage() {
                       <td className="p-3 text-zinc-300 font-mono">{a.targetPlayerName || 'Bölgesel Tarama'}</td>
                       <td className="p-3 text-zinc-400 font-mono">{a.startDate}</td>
                       <td className="p-3 text-zinc-300 font-mono">{a.durationDays} Gün</td>
-                      <td className="p-3 font-mono font-bold text-[#00D4FF]">
+                      <td className="p-3 font-mono font-bold text-[#4FE4FF]">
                         {a.status === 'ACTIVE' ? `${a.daysRemaining} Gün` : '-'}
                       </td>
                       <td className="p-3">
                         <span
                           className={`px-2 py-0.5 font-mono text-[10px] font-bold uppercase border ${
                             a.status === 'ACTIVE'
-                              ? 'bg-sky-500/20 text-[#00D4FF] border-sky-500/30'
+                              ? 'bg-sky-500/20 text-[#4FE4FF] border-sky-500/30'
                               : a.status === 'COMPLETED'
-                              ? 'bg-emerald-500/20 text-[#00F5A0] border-emerald-500/30'
+                              ? 'bg-emerald-500/20 text-[#C7FF38] border-emerald-500/30'
                               : 'bg-rose-500/20 text-rose-300 border-rose-500/30'
                           }`}
                         >
@@ -692,7 +692,7 @@ export default function ScoutingPage() {
       {activeTab === 'reports' && (
         <div className="space-y-4">
           <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
-            <FileText className="w-4 h-4 text-[#00F5A0]" />
+            <FileText className="w-4 h-4 text-[#C7FF38]" />
             Gözlemci Raporları Arşivi
           </h3>
 
@@ -715,7 +715,7 @@ export default function ScoutingPage() {
                       <div>
                         <div className="flex items-center gap-2">
                           <h4 className="text-sm font-bold text-white uppercase">{rep.playerName}</h4>
-                          <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#00F5A0]/20 text-[#00F5A0] border border-[#00F5A0]/30">
+                          <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#C7FF38]/20 text-[#C7FF38] border border-[#C7FF38]/30">
                             {rep.bestPosition}
                           </span>
                         </div>
@@ -723,7 +723,7 @@ export default function ScoutingPage() {
                           Gözlemci: {rep.scoutName} • {rep.date}
                         </span>
                       </div>
-                      <span className="text-xs font-mono font-bold px-2 py-0.5 bg-[#00D4FF]/20 text-[#00D4FF] border border-[#00D4FF]/30 uppercase">
+                      <span className="text-xs font-mono font-bold px-2 py-0.5 bg-[#4FE4FF]/20 text-[#4FE4FF] border border-[#4FE4FF]/30 uppercase">
                         {rep.recommendation}
                       </span>
                     </div>
@@ -735,7 +735,7 @@ export default function ScoutingPage() {
                       </div>
                       <div>
                         <span className="text-zinc-500 block text-[10px] uppercase">Potansiyel</span>
-                        <strong className="text-[#00F5A0]">{rep.estimatedPotentialMin} – {rep.estimatedPotentialMax}</strong>
+                        <strong className="text-[#C7FF38]">{rep.estimatedPotentialMin} – {rep.estimatedPotentialMax}</strong>
                       </div>
                       <div>
                         <span className="text-zinc-500 block text-[10px] uppercase">Bonservis</span>
@@ -745,7 +745,7 @@ export default function ScoutingPage() {
                       </div>
                       <div>
                         <span className="text-zinc-500 block text-[10px] uppercase">Güven Oranı</span>
-                        <span className="text-[#00D4FF] font-bold">%{rep.confidence}</span>
+                        <span className="text-[#4FE4FF] font-bold">%{rep.confidence}</span>
                       </div>
                     </div>
 
@@ -762,7 +762,7 @@ export default function ScoutingPage() {
       {activeTab === 'regions' && (
         <div className="space-y-4">
           <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
-            <Globe className="w-4 h-4 text-[#00D4FF]" />
+            <Globe className="w-4 h-4 text-[#4FE4FF]" />
             SquadCraft Fikri Futbol Havzaları & Bölgeleri
           </h3>
 
@@ -771,7 +771,7 @@ export default function ScoutingPage() {
               <div key={region.id} className="p-4 bg-[#080D1A] border border-zinc-800 space-y-3">
                 <div className="flex items-center justify-between">
                   <h4 className="text-sm font-bold text-white uppercase">{region.name}</h4>
-                  <span className="text-[10px] font-mono px-2 py-0.5 bg-[#00F5A0]/20 text-[#00F5A0] font-bold border border-[#00F5A0]/30">
+                  <span className="text-[10px] font-mono px-2 py-0.5 bg-[#C7FF38]/20 text-[#C7FF38] font-bold border border-[#C7FF38]/30">
                     Yoğunluk: %{region.talentDensity}
                   </span>
                 </div>

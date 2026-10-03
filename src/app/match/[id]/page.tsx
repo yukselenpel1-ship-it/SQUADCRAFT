@@ -318,7 +318,7 @@ export default function MatchCenterPage() {
   if (!isCareerHydrated || !isInitialized || !engineState) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer ve maç motoru yükleniyor...</span>
       </div>
     );
@@ -474,7 +474,7 @@ export default function MatchCenterPage() {
             className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-black bg-[#0B1323] hover:bg-[#182338] border border-[#182338] text-zinc-200 transition-colors disabled:opacity-50"
             title="Aynı simülasyon motorunu 90. dakikaya kadar tek seferde çalıştırır."
           >
-            <FastForward className="w-3.5 h-3.5 text-[#00F5A0]" />
+            <FastForward className="w-3.5 h-3.5 text-[#C7FF38]" />
             <span>Hızlı Sonuç</span>
           </button>
 
@@ -707,7 +707,7 @@ export default function MatchCenterPage() {
                   Oyuncu Değişikliği Masası ({userTeamState.substitutionsUsed}/5 Kullanıldı)
                 </h3>
                 {subMessage && (
-                  <span className="text-xs font-bold text-[#00F5A0]">{subMessage}</span>
+                  <span className="text-xs font-bold text-[#C7FF38]">{subMessage}</span>
                 )}
               </div>
 

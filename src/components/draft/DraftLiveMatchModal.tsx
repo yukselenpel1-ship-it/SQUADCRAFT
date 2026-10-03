@@ -343,9 +343,9 @@ export function DraftLiveMatchModal({
         <div
           className={`h-[2.5px] w-full bg-gradient-to-r ${
             isFinished
-              ? 'from-[#FFB800] via-[#00F5A0] to-[#00D4FF]'
-              : 'from-[#00F5A0] via-[#00D4FF] to-[#00F5A0] animate-pulse'
-          } shadow-[0_0_15px_#00F5A0]`}
+              ? 'from-[#FFB800] via-[#C7FF38] to-[#4FE4FF]'
+              : 'from-[#C7FF38] via-[#4FE4FF] to-[#C7FF38] animate-pulse'
+          } shadow-[0_0_15px_#C7FF38]`}
         />
 
         {/* Header Broadcast Scoreboard */}
@@ -382,7 +382,7 @@ export function DraftLiveMatchModal({
                   {isPlaying ? (
                     <Pause className="w-3.5 h-3.5 text-[#FFB800]" />
                   ) : (
-                    <Play className="w-3.5 h-3.5 text-[#00F5A0] fill-current" />
+                    <Play className="w-3.5 h-3.5 text-[#C7FF38] fill-current" />
                   )}
                   <span className="hidden sm:inline">{isPlaying ? 'DURDUR' : 'OYNAT'}</span>
                 </button>
@@ -397,7 +397,7 @@ export function DraftLiveMatchModal({
                     }}
                     className={`px-2 sm:px-2.5 py-1 text-xs font-mono font-black transition border ${
                       speed === s && isPlaying
-                        ? 'bg-[#00F5A0] text-black border-[#00F5A0] shadow-[0_0_10px_#00F5A0]'
+                        ? 'bg-[#C7FF38] text-black border-[#C7FF38] shadow-[0_0_10px_#C7FF38]'
                         : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
                     }`}
                   >
@@ -407,7 +407,7 @@ export function DraftLiveMatchModal({
 
                 <button
                   onClick={handleInstantFinish}
-                  className="px-2 sm:px-3 py-1.5 bg-[#00D4FF] hover:bg-[#00B4E0] text-black text-xs font-black uppercase tracking-wider transition flex items-center gap-1"
+                  className="px-2 sm:px-3 py-1.5 bg-[#4FE4FF] hover:bg-[#00B4E0] text-black text-xs font-black uppercase tracking-wider transition flex items-center gap-1"
                 >
                   <FastForward className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">HIZLI BİTİR</span>
@@ -418,7 +418,7 @@ export function DraftLiveMatchModal({
             {isFinished && (
               <button
                 onClick={handleSaveAndClose}
-                className="px-3 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 flex items-center gap-1.5 active:scale-95"
+                className="px-3 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-[#C7FF38] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#C7FF38]/20 flex items-center gap-1.5 active:scale-95"
               >
                 <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">LİGE DÖN & KAYDET</span>
@@ -443,7 +443,7 @@ export function DraftLiveMatchModal({
               </div>
               <div className="text-[10px] sm:text-[11px] text-zinc-400 font-bold truncate">
                 {homeClub?.managerName} •{' '}
-                <span className="text-[#00F5A0] font-mono">
+                <span className="text-[#C7FF38] font-mono">
                   {engineState?.home?.formation || '4-3-3'}
                 </span>
               </div>
@@ -453,11 +453,11 @@ export function DraftLiveMatchModal({
           {/* Center Score */}
           <div className="text-center px-2 sm:px-4 shrink-0">
             <div className="text-2xl sm:text-4xl font-black text-white font-mono tracking-widest bg-zinc-950 px-3 sm:px-5 py-1 sm:py-1.5 border border-zinc-800 shadow-inner">
-              <span className={homeScore > awayScore ? 'text-[#00F5A0]' : 'text-white'}>
+              <span className={homeScore > awayScore ? 'text-[#C7FF38]' : 'text-white'}>
                 {homeScore}
               </span>
               <span className="text-zinc-600 mx-1.5 sm:mx-2">-</span>
-              <span className={awayScore > homeScore ? 'text-[#00F5A0]' : 'text-white'}>
+              <span className={awayScore > homeScore ? 'text-[#C7FF38]' : 'text-white'}>
                 {awayScore}
               </span>
             </div>
@@ -471,7 +471,7 @@ export function DraftLiveMatchModal({
               </div>
               <div className="text-[10px] sm:text-[11px] text-zinc-400 font-bold truncate">
                 {awayClub?.managerName} •{' '}
-                <span className="text-[#00D4FF] font-mono">
+                <span className="text-[#4FE4FF] font-mono">
                   {engineState?.away?.formation || '4-3-3'}
                 </span>
               </div>
@@ -500,7 +500,7 @@ export function DraftLiveMatchModal({
                 onClick={() => setActiveTab(tab.id as any)}
                 className={`px-3 sm:px-4 py-2 text-xs font-black uppercase tracking-wider transition border-b-2 flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                   isActive
-                    ? 'text-[#00F5A0] border-[#00F5A0] bg-[#00F5A0]/5'
+                    ? 'text-[#C7FF38] border-[#C7FF38] bg-[#C7FF38]/5'
                     : 'text-zinc-400 border-transparent hover:text-white'
                 }`}
               >
@@ -514,14 +514,14 @@ export function DraftLiveMatchModal({
 
         {/* Notification Pill */}
         {subNotification && (
-          <div className="px-4 sm:px-6 py-2 bg-emerald-950 border-b border-emerald-500/50 text-[#00F5A0] text-xs font-bold flex items-center gap-2 shrink-0">
+          <div className="px-4 sm:px-6 py-2 bg-emerald-950 border-b border-emerald-500/50 text-[#C7FF38] text-xs font-bold flex items-center gap-2 shrink-0">
             <CheckCircle className="w-4 h-4" />
             <span>{subNotification}</span>
           </div>
         )}
 
         {/* Tab Contents (Scrollable without horizontal overflow) */}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-[#04060A]">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-[#070A0F]">
           {/* TAB 1: 2D RADAR PITCH */}
           {activeTab === 'RADAR' && engineState && (
             <div className="space-y-3 sm:space-y-4 max-w-4xl mx-auto w-full">
@@ -536,7 +536,7 @@ export function DraftLiveMatchModal({
               {/* Latest Commentary Bar */}
               <div className="bg-zinc-950 p-3 sm:p-3.5 border border-zinc-800 flex items-center justify-between text-xs gap-2">
                 <div className="flex items-center gap-2 truncate flex-1 min-w-0">
-                  <span className="font-mono font-black text-[#00F5A0] px-2 py-0.5 bg-zinc-900 border border-zinc-800 shrink-0">
+                  <span className="font-mono font-black text-[#C7FF38] px-2 py-0.5 bg-zinc-900 border border-zinc-800 shrink-0">
                     {engineState.latestEvent ? `${engineState.latestEvent.minute}'` : `${currentMinute}'`}
                   </span>
                   <span className="font-bold text-white truncate">
@@ -589,11 +589,11 @@ export function DraftLiveMatchModal({
                           : isCard
                           ? 'bg-rose-950/30 border-rose-600 text-rose-200'
                           : isSub
-                          ? 'bg-cyan-950/30 border-[#00D4FF]/40 text-cyan-200'
+                          ? 'bg-cyan-950/30 border-[#4FE4FF]/40 text-cyan-200'
                           : 'bg-zinc-950 border-zinc-800 text-zinc-300'
                       }`}
                     >
-                      <span className="font-mono font-black px-1.5 py-0.5 bg-zinc-900 border border-zinc-800 text-[#00F5A0] text-[10px] sm:text-[11px] shrink-0">
+                      <span className="font-mono font-black px-1.5 py-0.5 bg-zinc-900 border border-zinc-800 text-[#C7FF38] text-[10px] sm:text-[11px] shrink-0">
                         {ev.minute}'
                       </span>
                       <span className="text-base shrink-0">{typeIcon}</span>
@@ -673,15 +673,15 @@ export function DraftLiveMatchModal({
               ].map((stat, i) => (
                 <div key={i} className="space-y-1 text-xs">
                   <div className="flex items-center justify-between font-mono font-bold">
-                    <span className="text-[#00F5A0] font-black text-xs sm:text-sm">{stat.home}</span>
+                    <span className="text-[#C7FF38] font-black text-xs sm:text-sm">{stat.home}</span>
                     <span className="text-zinc-400 uppercase text-[10px] sm:text-[11px] font-sans">
                       {stat.label}
                     </span>
-                    <span className="text-[#00D4FF] font-black text-xs sm:text-sm">{stat.away}</span>
+                    <span className="text-[#4FE4FF] font-black text-xs sm:text-sm">{stat.away}</span>
                   </div>
                   <div className="w-full bg-zinc-950 h-2 border border-zinc-800 flex overflow-hidden">
                     <div
-                      className="bg-[#00F5A0] h-full transition-all duration-300"
+                      className="bg-[#C7FF38] h-full transition-all duration-300"
                       style={{
                         width: `${Math.max(
                           5,
@@ -692,7 +692,7 @@ export function DraftLiveMatchModal({
                       }}
                     />
                     <div
-                      className="bg-[#00D4FF] h-full transition-all duration-300 ml-auto"
+                      className="bg-[#4FE4FF] h-full transition-all duration-300 ml-auto"
                       style={{
                         width: `${Math.max(
                           5,
@@ -720,7 +720,7 @@ export function DraftLiveMatchModal({
                     )}
                     <span className="truncate">{homeClub?.name}</span>
                   </div>
-                  <span className="text-[10px] font-mono text-[#00F5A0] font-bold shrink-0">
+                  <span className="text-[10px] font-mono text-[#C7FF38] font-bold shrink-0">
                     İlk 11 & Yedekler
                   </span>
                 </div>
@@ -736,7 +736,7 @@ export function DraftLiveMatchModal({
                         key={p.player.id}
                         className={`p-2 border flex items-center justify-between text-xs transition ${
                           isSelectedOut || isSelectedIn
-                            ? 'bg-[#00F5A0]/20 border-[#00F5A0]'
+                            ? 'bg-[#C7FF38]/20 border-[#C7FF38]'
                             : isPitch
                             ? 'bg-zinc-950 border-zinc-800'
                             : 'bg-zinc-950/50 border-zinc-900 opacity-70'
@@ -745,7 +745,7 @@ export function DraftLiveMatchModal({
                         <div className="flex items-center gap-2 truncate">
                           <span
                             className={`px-1.5 py-0.5 text-[9px] font-mono font-black ${
-                              isPitch ? 'bg-[#00F5A0] text-black' : 'bg-zinc-800 text-zinc-400'
+                              isPitch ? 'bg-[#C7FF38] text-black' : 'bg-zinc-800 text-zinc-400'
                             }`}
                           >
                             {p.currentPosition || p.player.position}
@@ -782,8 +782,8 @@ export function DraftLiveMatchModal({
                                     ? 'bg-rose-600 text-white'
                                     : 'bg-zinc-800 text-zinc-300 hover:text-white'
                                   : isSelectedIn
-                                  ? 'bg-[#00F5A0] text-black'
-                                  : 'bg-zinc-800 text-[#00F5A0] hover:bg-zinc-700'
+                                  ? 'bg-[#C7FF38] text-black'
+                                  : 'bg-zinc-800 text-[#C7FF38] hover:bg-zinc-700'
                               }`}
                             >
                               {isPitch
@@ -804,7 +804,7 @@ export function DraftLiveMatchModal({
                 {selectedSubOutId && selectedSubInId && (
                   <button
                     onClick={() => handlePerformSubstitution(true)}
-                    className="w-full py-2.5 bg-[#00F5A0] hover:bg-[#00D485] text-black font-black text-xs uppercase tracking-wider transition shadow-lg mt-2"
+                    className="w-full py-2.5 bg-[#C7FF38] hover:bg-[#00D485] text-black font-black text-xs uppercase tracking-wider transition shadow-lg mt-2"
                   >
                     ✓ DEĞİŞİKLİĞİ ONAYLA
                   </button>
@@ -820,7 +820,7 @@ export function DraftLiveMatchModal({
                     )}
                     <span className="truncate">{awayClub?.name}</span>
                   </div>
-                  <span className="text-[10px] font-mono text-[#00D4FF] font-bold shrink-0">
+                  <span className="text-[10px] font-mono text-[#4FE4FF] font-bold shrink-0">
                     İlk 11 & Yedekler
                   </span>
                 </div>
@@ -840,7 +840,7 @@ export function DraftLiveMatchModal({
                         <div className="flex items-center gap-2 truncate">
                           <span
                             className={`px-1.5 py-0.5 text-[9px] font-mono font-black ${
-                              isPitch ? 'bg-[#00D4FF] text-black' : 'bg-zinc-800 text-zinc-400'
+                              isPitch ? 'bg-[#4FE4FF] text-black' : 'bg-zinc-800 text-zinc-400'
                             }`}
                           >
                             {p.currentPosition || p.player.position}
@@ -879,7 +879,7 @@ export function DraftLiveMatchModal({
           {isFinished && (
             <button
               onClick={handleSaveAndClose}
-              className="px-6 py-2.5 bg-gradient-to-r from-[#00F5A0] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#00F5A0]/20 flex items-center gap-2 active:scale-95"
+              className="px-6 py-2.5 bg-gradient-to-r from-[#C7FF38] to-[#00D485] hover:from-[#00E590] text-black font-black text-xs uppercase tracking-wider transition shadow-lg shadow-[#C7FF38]/20 flex items-center gap-2 active:scale-95"
             >
               <span>LİGE DÖN & SONUCU GÜNCELLE</span>
               <ArrowRight className="w-4 h-4" />

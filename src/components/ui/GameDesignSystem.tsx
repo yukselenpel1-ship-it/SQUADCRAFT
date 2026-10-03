@@ -46,7 +46,7 @@ export const GamePanel: React.FC<GamePanelProps> = ({
   return (
     <section className={`p-5 md:p-6 transition-all duration-200 ${variantStyles[variant]} ${className}`}>
       {variant === 'tactical' && (
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#00F5A0_1px,transparent_1px)] [background-size:16px_16px]" />
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#C7FF38_1px,transparent_1px)] [background-size:16px_16px]" />
       )}
       {(title || subtitle || Icon || headerAction || actionText) && (
         <div className="flex items-center justify-between gap-4 pb-4 mb-4 border-b border-[#182338] relative z-10">
@@ -67,7 +67,7 @@ export const GamePanel: React.FC<GamePanelProps> = ({
             {actionText && actionHref && (
               <Link
                 href={actionHref}
-                className="text-xs font-bold text-[#00F5A0] hover:text-[#00D68B] transition-colors flex items-center gap-1 group"
+                className="text-xs font-bold text-[#C7FF38] hover:text-[#D9FF73] transition-colors flex items-center gap-1 group"
               >
                 <span>{actionText}</span>
                 <ChevronRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
@@ -76,7 +76,7 @@ export const GamePanel: React.FC<GamePanelProps> = ({
             {actionText && !actionHref && onAction && (
               <button
                 onClick={onAction}
-                className="text-xs font-bold text-[#00F5A0] hover:text-[#00D68B] transition-colors flex items-center gap-1"
+                className="text-xs font-bold text-[#C7FF38] hover:text-[#D9FF73] transition-colors flex items-center gap-1"
               >
                 <span>{actionText}</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -109,7 +109,7 @@ export const HeroPanel: React.FC<HeroPanelProps> = ({
   badgeVariant = 'emerald',
   title,
   subtitle,
-  glowColor = '#00F5A0',
+  glowColor = '#C7FF38',
   className = '',
 }) => {
   const badgeClasses = {
@@ -204,7 +204,7 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
       {actionText && actionHref && (
         <Link
           href={actionHref}
-          className="text-xs font-bold text-[#00F5A0] hover:text-[#00D68B] transition-colors flex items-center gap-1 group"
+          className="text-xs font-bold text-[#C7FF38] hover:text-[#D9FF73] transition-colors flex items-center gap-1 group"
         >
           <span>{actionText}</span>
           <ChevronRight className="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" />
@@ -500,7 +500,7 @@ export const ClubIdentity: React.FC<ClubIdentityProps> = ({
           {showReputation && (
             <>
               <span>•</span>
-              <span className="text-[#00F5A0] font-bold">%{club.reputation} İtibar</span>
+              <span className="text-[#C7FF38] font-bold">%{club.reputation} İtibar</span>
             </>
           )}
         </div>

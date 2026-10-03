@@ -31,8 +31,8 @@ export default function FixturesPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -51,7 +51,7 @@ export default function FixturesPage() {
               Şampiyon: <span className="text-amber-400">{seasonEndSummary.championClubName}</span> 🏆
             </h2>
             <p className="text-xs text-zinc-300 font-medium">
-              Kulübünüz sezonu <strong className="text-[#00F5A0]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) bitirdi.
+              Kulübünüz sezonu <strong className="text-[#C7FF38]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) bitirdi.
             </p>
           </div>
           <button
@@ -75,7 +75,7 @@ export default function FixturesPage() {
             </span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Calendar className="w-7 h-7 text-[#00F5A0]" />
+            <Calendar className="w-7 h-7 text-[#C7FF38]" />
             Maç Fikstürü & Sonuçlar
           </h1>
         </div>

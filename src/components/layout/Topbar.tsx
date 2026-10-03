@@ -104,7 +104,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
             <Wallet className="w-3.5 h-3.5 text-[#00F5A0]" />
             <div className="flex items-center gap-1 font-mono">
               <span className="text-zinc-400 text-[11px] font-bold">BÜTÇE:</span>
-              <span className="font-black text-[#00F5A0]">
+              <span className="font-black text-[#C7FF38]">
                 €{(userClub.transferBudget / 1000000).toFixed(1)}M
               </span>
             </div>

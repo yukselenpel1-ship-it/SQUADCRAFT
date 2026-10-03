@@ -113,8 +113,8 @@ export default function SquadPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#04060A] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#070A0F] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
+        <div className="w-6 h-6 border-2 border-[#C7FF38] border-t-transparent rounded-full animate-spin" />
         <span>Kariyer yükleniyor...</span>
       </div>
     );
@@ -132,7 +132,7 @@ export default function SquadPage() {
             <span className="text-xs text-zinc-400 font-mono">2026/27 A TAKIM KADRO LİSTESİ</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-black italic uppercase tracking-tight text-white mt-1 flex items-center gap-2.5">
-            <Users className="w-7 h-7 text-[#00F5A0]" />
+            <Users className="w-7 h-7 text-[#C7FF38]" />
             KADRO YÖNETİMİ
           </h1>
         </div>
@@ -151,13 +151,13 @@ export default function SquadPage() {
           </div>
           <div className="px-3 text-center border-l border-[#182338]">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Genel Güç</span>
-            <span className="text-base font-black italic text-[#00F5A0]">
+            <span className="text-base font-black italic text-[#C7FF38]">
               {(userPlayers.reduce((acc, p) => acc + p.overall, 0) / (userPlayers.length || 1)).toFixed(1)}
             </span>
           </div>
           <div className="px-3 text-center border-l border-[#182338]">
             <span className="text-[9px] font-mono text-zinc-400 block font-bold uppercase">Haftalık Maaş</span>
-            <span className="text-base font-black italic text-[#00D4FF]">
+            <span className="text-base font-black italic text-[#4FE4FF]">
               €{(userPlayers.reduce((acc, p) => acc + p.wage, 0) / 1000).toFixed(0)}K
             </span>
           </div>
@@ -342,7 +342,7 @@ export default function SquadPage() {
                           size="sm"
                         />
                         <div>
-                          <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#00F5A0] transition-colors flex items-center gap-1.5">
+                          <div className="font-bold text-white uppercase tracking-tight group-hover:text-[#C7FF38] transition-colors flex items-center gap-1.5">
                             <span>{player.firstName} {player.lastName}</span>
                             {player.isInjured && (
                               <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[9px] font-mono">
@@ -381,7 +381,7 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-2.5 px-3 text-center font-mono">
-                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#00F5A0]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
+                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#C7FF38]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
                         {player.form.toFixed(1)}
                       </span>
                     </td>
@@ -483,7 +483,7 @@ export default function SquadPage() {
                         <StatBadge value={player.overall} size="sm" />
                       </td>
 
-                      <td className="py-3 px-3 text-right font-mono text-[#00F5A0] font-bold">
+                      <td className="py-3 px-3 text-right font-mono text-[#C7FF38] font-bold">
                         €{player.wage.toLocaleString('tr-TR')}/hf
                       </td>
 
@@ -499,7 +499,7 @@ export default function SquadPage() {
                         <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase border ${
                           isExpiringSoon
                             ? 'bg-rose-950/60 text-rose-300 border-rose-700/60'
-                            : 'bg-emerald-950/40 text-[#00F5A0] border-emerald-800/40'
+                            : 'bg-emerald-950/40 text-[#C7FF38] border-emerald-800/40'
                         }`}>
                           {isExpiringSoon ? 'Sözleşme Bitiyor' : 'Güvenli'}
                         </span>
@@ -588,11 +588,11 @@ export default function SquadPage() {
                     </td>
 
                     <td className="py-3 px-3 text-center font-mono">
-                      <span className="font-bold text-[#00D4FF]">%{player.matchSharpness ?? 85}</span>
+                      <span className="font-bold text-[#4FE4FF]">%{player.matchSharpness ?? 85}</span>
                     </td>
 
                     <td className="py-3 px-3 text-center font-mono">
-                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#00F5A0]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
+                      <span className={`font-bold ${player.form >= 7.5 ? 'text-[#C7FF38]' : player.form <= 6.0 ? 'text-rose-400' : 'text-zinc-200'}`}>
                         {player.form.toFixed(1)} / 10
                       </span>
                     </td>

@@ -197,7 +197,7 @@ export default function NewCareerPage() {
   ];
 
   return (
-    <div className="relative min-h-screen w-full bg-[#04060A] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="relative min-h-screen w-full bg-[#070A0F] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. SHARP STADIUM ARENA BACKGROUND (NO BLUR, CRISP GRAPHITE & LIGHTS) */}
       {/* ==================================================================== */}
@@ -206,8 +206,8 @@ export default function NewCareerPage() {
         style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
       >
         {/* High-contrast crisp sports vignette: zero blur */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#070A0F]/85 via-transparent to-[#070A0F]/95" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#070A0F]/40 to-[#070A0F]/90" />
       </div>
 
       {/* ==================================================================== */}
@@ -241,7 +241,7 @@ export default function NewCareerPage() {
               <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-lg sm:text-xl leading-none">
                   <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
-                  <span className="text-[#00F5A0]">26</span>
+                  <span className="text-[#C7FF38]">26</span>
                 </div>
                 <span className="text-[9px] font-mono font-bold tracking-widest text-zinc-400 uppercase mt-0.5">
                   CAREER CREATOR
@@ -288,7 +288,7 @@ export default function NewCareerPage() {
               onClick={() => setIsFeedbackOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0B1323] hover:bg-[#182338] border border-[#182338] text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <MessageSquare className="w-3.5 h-3.5 text-[#C7FF38]" />
               <span className="hidden sm:inline">Geri Bildirim</span>
             </button>
 
@@ -334,7 +334,7 @@ export default function NewCareerPage() {
 
           <div className="hidden md:flex items-center gap-2 text-[11px] font-mono text-zinc-400">
             <span>SEZON:</span>
-            <span className="text-[#00F5A0] font-bold">2026/27</span>
+            <span className="text-[#C7FF38] font-bold">2026/27</span>
             <span className="text-zinc-600">•</span>
             <span>MOD:</span>
             <span className="text-white font-bold">TEK OYUNCULU</span>
@@ -367,7 +367,7 @@ export default function NewCareerPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer Adı & Soyadı <span className="text-[#00F5A0]">*</span>
+                    Menajer Adı & Soyadı <span className="text-[#C7FF38]">*</span>
                   </label>
                   <input
                     type="text"
@@ -381,7 +381,7 @@ export default function NewCareerPage() {
 
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Milliyet <span className="text-[#00F5A0]">*</span>
+                    Milliyet <span className="text-[#C7FF38]">*</span>
                   </label>
                   <select
                     value={nationality}
@@ -398,7 +398,7 @@ export default function NewCareerPage() {
 
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer Yaşı <span className="text-[#00F5A0]">*</span>
+                    Menajer Yaşı <span className="text-[#C7FF38]">*</span>
                   </label>
                   <input
                     type="number"
@@ -419,7 +419,7 @@ export default function NewCareerPage() {
 
                 <div>
                   <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Taktiksel Felsefe <span className="text-[#00F5A0]">*</span>
+                    Taktiksel Felsefe <span className="text-[#C7FF38]">*</span>
                   </label>
                   <select
                     value={tacticalStyle}
@@ -605,7 +605,7 @@ export default function NewCareerPage() {
                           </div>
                           <div className="p-2 bg-[#070D1A] rounded-xl border border-[#182338]">
                             <span className="block text-[9px] font-mono text-zinc-500 uppercase">Kıtasal</span>
-                            <span className="font-bold text-[#00F5A0]">{league.continental}</span>
+                            <span className="font-bold text-[#C7FF38]">{league.continental}</span>
                           </div>
                           <div className="p-2 bg-[#070D1A] rounded-xl border border-[#182338]">
                             <span className="block text-[9px] font-mono text-zinc-500 uppercase">Kulüpler</span>
@@ -704,7 +704,7 @@ export default function NewCareerPage() {
                           </div>
                           <div>
                             <span className="block text-[10px] font-mono text-zinc-500 uppercase">Bütçe</span>
-                            <span className="font-black text-[#00F5A0]">€{(club.transferBudget / 1000000).toFixed(1)}M</span>
+                            <span className="font-black text-[#C7FF38]">€{(club.transferBudget / 1000000).toFixed(1)}M</span>
                           </div>
                           <div>
                             <span className="block text-[10px] font-mono text-zinc-500 uppercase">İtibar</span>
@@ -759,7 +759,7 @@ export default function NewCareerPage() {
                   <div className="grid grid-cols-2 gap-2.5 bg-[#070D1A] p-4 rounded-xl border border-[#182338]">
                     <div>
                       <span className="text-[10px] uppercase font-mono font-bold text-zinc-400 block">Transfer Bütçesi</span>
-                      <span className="text-xl font-black italic text-[#00F5A0]">
+                      <span className="text-xl font-black italic text-[#C7FF38]">
                         €{(highlightedClub.transferBudget / 1000000).toFixed(1)}M
                       </span>
                     </div>
@@ -771,7 +771,7 @@ export default function NewCareerPage() {
                     </div>
                     <div>
                       <span className="text-[10px] uppercase font-mono font-bold text-zinc-400 block">Kadro Gücü</span>
-                      <span className="text-xl font-black italic text-[#00D4FF]">
+                      <span className="text-xl font-black italic text-[#4FE4FF]">
                         {highlightedStats.avgOverall} OVR
                       </span>
                     </div>
@@ -807,7 +807,7 @@ export default function NewCareerPage() {
                           </span>
                         </div>
                       </div>
-                      <span className="text-lg font-black italic text-[#00F5A0]">
+                      <span className="text-lg font-black italic text-[#C7FF38]">
                         {highlightedStats.starPlayer.overall} OVR
                       </span>
                     </div>
@@ -941,7 +941,7 @@ export default function NewCareerPage() {
 
                 <div className="text-right sm:border-l sm:border-[#182338] sm:pl-6 w-full sm:w-auto">
                   <span className="text-[10px] font-mono uppercase font-bold text-zinc-400 block">Teknik Direktör</span>
-                  <div className="text-lg font-black italic text-[#00F5A0]">{managerName}</div>
+                  <div className="text-lg font-black italic text-[#C7FF38]">{managerName}</div>
                   <div className="text-xs text-zinc-400 font-mono">{nationality} • {age} Yaşında</div>
                 </div>
               </div>
@@ -954,11 +954,11 @@ export default function NewCareerPage() {
                 </div>
                 <div className="p-3.5 bg-[#070D1A] rounded-xl border border-[#182338]">
                   <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">Taktik</span>
-                  <span className="text-base font-black italic text-[#00D4FF]">{tacticalStyle}</span>
+                  <span className="text-base font-black italic text-[#4FE4FF]">{tacticalStyle}</span>
                 </div>
                 <div className="p-3.5 bg-[#070D1A] rounded-xl border border-[#182338]">
                   <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">Transfer Bütçesi</span>
-                  <span className="text-base font-black italic text-[#00F5A0]">
+                  <span className="text-base font-black italic text-[#C7FF38]">
                     €{(highlightedClub.transferBudget / 1000000).toFixed(1)}M
                   </span>
                 </div>
@@ -1014,11 +1014,11 @@ export default function NewCareerPage() {
             <span className="mx-3 text-zinc-600">•</span>
             <span>ALVERIA ELİT LİGİ 2026/27 SEZONU</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00F5A0]">10 ÖZGÜN KULÜP SEÇİMİ AÇIK</span>
+            <span className="text-[#C7FF38]">10 ÖZGÜN KULÜP SEÇİMİ AÇIK</span>
             <span className="mx-3 text-zinc-600">•</span>
             <span>RESMİ TAKTİK SİMÜLASYON MOTORU</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00D4FF]">{APP_VERSION}</span>
+            <span className="text-[#4FE4FF]">{APP_VERSION}</span>
           </div>
         </div>
 
@@ -1038,7 +1038,7 @@ export default function NewCareerPage() {
           <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
             <span className="text-zinc-300 font-bold">SQUADCRAFT CAREER ENGINE</span>
             <span className="text-zinc-600">•</span>
-            <span className="text-[#00F5A0] font-bold">{APP_VERSION}</span>
+            <span className="text-[#C7FF38] font-bold">{APP_VERSION}</span>
             <span className="text-zinc-600">•</span>
             <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
