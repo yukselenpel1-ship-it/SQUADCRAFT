@@ -183,6 +183,9 @@
   .navInner { min-height:58px; padding:0 14px; }
   .brandText { font-size:17px; }
   .navActions .ghostButton,.navActions .joinButton { display:none; }
+  .navActions { gap:6px; }
+  .navActions .iconButton,.navActions .langButton { display:none; }
+  .brand img { width:30px; height:30px; }
   .hero { padding:28px 14px 18px; }
   .kicker { font-size:9px; letter-spacing:.34em; }
   .heroTitle { font-size:48px; }

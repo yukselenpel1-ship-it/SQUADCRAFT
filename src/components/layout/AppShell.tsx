@@ -6,6 +6,7 @@ import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { MobileNav } from './MobileNav';
 import { GameProvider } from '@/lib/context/GameContext';
+import { AuthProvider } from '@/lib/auth/AuthContext';
 
 export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -18,6 +19,7 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
     pathname.startsWith('/draft');
 
   return (
+    <AuthProvider>
     <GameProvider>
       <div className="relative min-h-screen w-full bg-[#040814] text-[#F8FAFC] flex flex-col font-sans selection:bg-[#00F5A0] selection:text-black antialiased overflow-x-hidden">
         {isStandalonePage ? (
@@ -54,5 +56,6 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
         )}
       </div>
     </GameProvider>
+    </AuthProvider>
   );
 };

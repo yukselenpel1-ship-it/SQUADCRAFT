@@ -4,6 +4,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./SquadCraftHome.module.css";
+import AuthNavActions from "@/components/auth/AuthNavActions";
 
 type Props = {
   hasCareer?: boolean;
@@ -68,8 +69,7 @@ export default function SquadCraftHome({
           <div className={styles.navActions}>
             <button className={styles.iconButton} onClick={onFeedback} aria-label="Geri bildirim">⌕</button>
             <span className={styles.langButton}>TR⌄</span>
-            <button className={styles.ghostButton} onClick={hasCareer ? onContinueCareer : onNewCareer}>KARİYERİ AÇ</button>
-            <button className={styles.joinButton} onClick={onNewCareer}>HEMEN KAYIT OL</button>
+            <AuthNavActions />
           </div>
         </div>
       </header>
@@ -100,7 +100,7 @@ export default function SquadCraftHome({
             <h2><strong>KARİYER</strong> <em>MODU</em></h2>
             <p>
               Kendi kulübünü yönet, transferlerini yap, taktiğini belirle ve efsane bir kariyer inşa et.
-              Yerel liglerden Avrupa'nın zirvesine uzanan yolculuk senin elinde.
+              Yerel liglerden Avrupa&apos;nın zirvesine uzanan yolculuk senin elinde.
             </p>
 
             <div className={styles.ctaRow}>
