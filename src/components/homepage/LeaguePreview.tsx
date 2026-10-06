@@ -2,8 +2,10 @@
 
 import React from 'react';
 import { Trophy, Calendar } from 'lucide-react';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 export function LeaguePreview() {
+  const { t } = useLanguage();
   const standings = [
     { pos: 1, club: 'NORTHSTAR CITY', p: 12, w: 9, d: 2, l: 1, gd: '+18', pts: 29, isUser: true },
     { pos: 2, club: 'IRONVALE ATHLETIC', p: 12, w: 8, d: 3, l: 1, gd: '+14', pts: 27 },
@@ -26,16 +28,16 @@ export function LeaguePreview() {
         {/* Section Header */}
         <div className="mb-12">
           <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.2em] uppercase font-semibold">
-            BROADCAST DATA
+            {t.leagueBadge}
           </span>
           <h2
             className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"
             style={{ fontSize: 'clamp(44px, 6vw, 92px)' }}
           >
-            LEAGUE TABLE & FIXTURES
+            {t.leagueTitle}
           </h2>
           <p className="font-inter text-[16px] text-[#8b958d] mt-2">
-            Track championship races, continental qualification zones, and weekly fixtures.
+            {t.leagueDesc}
           </p>
         </div>
 
@@ -50,20 +52,20 @@ export function LeaguePreview() {
                   DIVISION ONE TABLE
                 </span>
               </div>
-              <span className="font-ibm text-[11px] text-[#b7ff35]">CHAMPIONSHIP ZONE (1–2)</span>
+              <span className="font-ibm text-[11px] text-[#b7ff35]">{t.leagueChampionshipZone}</span>
             </div>
 
             <table className="w-full text-left font-ibm text-[12px]">
               <thead>
                 <tr className="border-b border-white/10 text-[#8b958d] pb-2">
                   <th className="py-2.5 px-3">#</th>
-                  <th className="py-2.5 px-3">CLUB</th>
+                  <th className="py-2.5 px-3">{t.leagueClub}</th>
                   <th className="py-2.5 px-2 text-center">P</th>
                   <th className="py-2.5 px-2 text-center">W</th>
                   <th className="py-2.5 px-2 text-center">D</th>
                   <th className="py-2.5 px-2 text-center">L</th>
                   <th className="py-2.5 px-2 text-center">GD</th>
-                  <th className="py-2.5 px-3 text-right">PTS</th>
+                  <th className="py-2.5 px-3 text-right">{t.leaguePts}</th>
                 </tr>
               </thead>
               <tbody>

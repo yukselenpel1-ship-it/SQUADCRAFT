@@ -21,15 +21,15 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
 
   const getFormPill = (form: 'W' | 'D' | 'L', index: number) => {
     const config = {
-      W: { label: 'G', bg: 'bg-[#00F5A0]/20 text-[#00F5A0] border-[#00F5A0]/40' },
-      D: { label: 'B', bg: 'bg-amber-500/20 text-amber-400 border-amber-500/40' },
-      L: { label: 'M', bg: 'bg-rose-500/20 text-rose-400 border-rose-500/40' },
-    }[form];
+      W: { label: 'W', bg: 'bg-[#65ff83]/20 text-[#65ff83] border-[#65ff83]/40' },
+      D: { label: 'D', bg: 'bg-[#ffd34f]/20 text-[#ffd34f] border-[#ffd34f]/40' },
+      L: { label: 'L', bg: 'bg-[#ff5365]/20 text-[#ff5365] border-[#ff5365]/40' },
+    }[form] || { label: 'W', bg: 'bg-[#65ff83]/20 text-[#65ff83] border-[#65ff83]/40' };
 
     return (
       <span
         key={index}
-        className={`inline-flex items-center justify-center w-5 h-5 rounded-md font-mono text-[10px] font-black border ${config.bg}`}
+        className={`inline-flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-[2px] font-ibm text-[10px] font-black border ${config.bg}`}
       >
         {config.label}
       </span>
@@ -37,116 +37,111 @@ export const LeagueTable: React.FC<LeagueTableProps> = ({
   };
 
   return (
-    <div className="w-full overflow-x-auto sc-panel rounded-2xl border border-[#14233A] shadow-2xl">
-      <table className="w-full text-left border-collapse min-w-[620px]">
+    <div className="w-full overflow-x-auto rounded-[8px] border border-white/10 bg-[#090d0a] shadow-2xl">
+      <table className="w-full text-left border-collapse min-w-[700px] font-ibm text-[12px]">
         <thead>
-          <tr className="border-b border-[#14233A] bg-[#07101C] text-[10px] font-mono font-black uppercase tracking-widest text-zinc-400">
-            <th className="py-3 px-3 text-center w-12"># POS</th>
-            <th className="py-3 px-4">KULÜP</th>
-            <th className="py-3 px-3 text-center w-10">O</th>
-            <th className="py-3 px-3 text-center w-10">G</th>
-            <th className="py-3 px-3 text-center w-10">B</th>
-            <th className="py-3 px-3 text-center w-10">M</th>
-            <th className="py-3 px-3 text-center w-10">A</th>
-            <th className="py-3 px-3 text-center w-10">Y</th>
-            <th className="py-3 px-3 text-center w-12">AV</th>
-            <th className="py-3 px-4 text-center w-14 text-white bg-[#081325]">P</th>
-            <th className="py-3 px-4 text-center hidden md:table-cell">FORM</th>
+          <tr className="border-b border-white/10 bg-[#0c120e] text-[10px] text-[#8f9a91] font-bold uppercase tracking-widest">
+            <th className="py-3 px-3 text-center w-12">#</th>
+            <th className="py-3 px-4">CLUB</th>
+            <th className="py-3 px-3 text-center w-10">P</th>
+            <th className="py-3 px-3 text-center w-10">W</th>
+            <th className="py-3 px-3 text-center w-10">D</th>
+            <th className="py-3 px-3 text-center w-10">L</th>
+            <th className="py-3 px-3 text-center w-10">GF</th>
+            <th className="py-3 px-3 text-center w-10">GA</th>
+            <th className="py-3 px-3 text-center w-12">GD</th>
+            <th className="py-3 px-4 text-center w-16 text-[#f3f6f3] bg-[#0d130f]">PTS</th>
+            <th className="py-3 px-4 text-center">FORM</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#14233A]/60 text-xs font-semibold">
+        <tbody className="divide-y divide-white/5">
           {displayStandings.map((item, index) => {
             const club = getClub(item.clubId);
             const isUserClub = item.clubId === userClubId;
             const rank = index + 1;
 
-            // Position qualification markers
-            let rankBorder = 'border-l-2 border-transparent';
-            if (rank === 1) rankBorder = 'border-l-4 border-[#00F5A0]'; // Kıtasal Şampiyona
-            else if (rank <= 3) rankBorder = 'border-l-4 border-[#4FE4FF]'; // Kıtasal Eleme
-            else if (rank >= 9) rankBorder = 'border-l-4 border-rose-500'; // Relegation
+            // Subtle highlights & relegation markers
+            let rankBorder = 'border-l-4 border-transparent';
+            if (isUserClub) {
+              rankBorder = 'border-l-4 border-[#b8ff3d] bg-[#b8ff3d]/15 text-[#f3f6f3] font-bold';
+            } else if (rank === 1) {
+              rankBorder = 'border-l-4 border-[#ffd34f] bg-[#ffd34f]/5';
+            } else if (rank <= 3) {
+              rankBorder = 'border-l-4 border-[#21dfbd] bg-[#21dfbd]/5';
+            } else if (rank >= displayStandings.length - 1) {
+              rankBorder = 'border-l-4 border-[#ff5365] bg-[#ff5365]/5';
+            }
 
             return (
               <tr
                 key={item.clubId}
-                className={`transition-colors ${rankBorder} ${
-                  isUserClub
-                    ? 'bg-[#00F5A0]/10 hover:bg-[#00F5A0]/15'
-                    : 'hover:bg-[#0E1A2E]/60'
-                }`}
+                className={`transition-colors hover:bg-white/[0.03] ${rankBorder}`}
               >
-                {/* Rank Number */}
-                <td className="py-3 px-3 text-center font-mono font-black">
+                {/* # Rank */}
+                <td className="py-3 px-3 text-center font-bold">
                   <span
-                    className={`inline-flex items-center justify-center w-6 h-6 rounded-md text-xs font-black ${
-                      rank === 1
-                        ? 'bg-[#00F5A0] text-[#040814] shadow-[0_0_10px_rgba(0,245,160,0.4)]'
+                    className={`inline-flex items-center justify-center w-6 h-6 rounded-[2px] text-[11px] ${
+                      isUserClub
+                        ? 'bg-[#b8ff3d] text-[#050806] font-extrabold shadow-[0_0_8px_#b8ff3d]'
+                        : rank === 1
+                        ? 'text-[#ffd34f] font-bold'
                         : rank <= 3
-                        ? 'bg-[#4FE4FF]/20 text-[#4FE4FF] border border-[#4FE4FF]/40'
-                        : rank >= 9
-                        ? 'bg-rose-500/20 text-rose-400 border border-rose-500/40'
-                        : 'text-zinc-400 font-mono'
+                        ? 'text-[#21dfbd] font-bold'
+                        : rank >= displayStandings.length - 1
+                        ? 'text-[#ff5365] font-bold'
+                        : 'text-[#8f9a91]'
                     }`}
                   >
                     {rank}
                   </span>
                 </td>
 
-                {/* Club Crest & Name */}
+                {/* CLUB */}
                 <td className="py-3 px-4">
                   <div className="flex items-center gap-3">
                     {club && (
                       <ClubBadge
                         code={club.code}
+                        name={club.name}
+                        clubId={club.id}
                         primaryColor={club.primaryColor}
                         secondaryColor={club.secondaryColor}
                         size="xs"
                       />
                     )}
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-white uppercase tracking-tight">
-                          {club ? club.name : item.clubId}
-                        </span>
-                        {isUserClub && (
-                          <span className="text-[9px] font-mono font-black px-1.5 py-0.5 rounded bg-[#00F5A0] text-[#040814]">
-                            KULÜBÜNÜZ
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-[10px] font-mono text-zinc-500 uppercase">{club?.city || 'Şehir'}</span>
-                    </div>
+                    <span
+                      className={`font-barlow font-bold text-[16px] uppercase tracking-wide truncate ${
+                        isUserClub ? 'text-[#b8ff3d]' : 'text-[#f3f6f3]'
+                      }`}
+                    >
+                      {club?.name || item.clubId}
+                    </span>
+                    {isUserClub && (
+                      <span className="px-1.5 py-0.2 rounded bg-[#b8ff3d] text-[#050806] font-ibm font-black text-[9px] uppercase">
+                        SEN
+                      </span>
+                    )}
                   </div>
                 </td>
 
-                {/* Match Stats */}
-                <td className="py-3 px-3 text-center font-mono text-zinc-300">{item.played}</td>
-                <td className="py-3 px-3 text-center font-mono text-zinc-300">{item.won}</td>
-                <td className="py-3 px-3 text-center font-mono text-zinc-300">{item.drawn}</td>
-                <td className="py-3 px-3 text-center font-mono text-zinc-300">{item.lost}</td>
-                <td className="py-3 px-3 text-center font-mono text-zinc-400">{item.goalsFor}</td>
-                <td className="py-3 px-3 text-center font-mono text-zinc-400">{item.goalsAgainst}</td>
-                <td
-                  className={`py-3 px-3 text-center font-mono font-bold ${
-                    item.goalDifference > 0
-                      ? 'text-[#00F5A0]'
-                      : item.goalDifference < 0
-                      ? 'text-rose-400'
-                      : 'text-zinc-400'
-                  }`}
-                >
+                {/* P, W, D, L, GF, GA, GD, PTS */}
+                <td className="py-3 px-3 text-center text-[#8f9a91]">{item.played}</td>
+                <td className="py-3 px-3 text-center text-[#f3f6f3]">{item.won}</td>
+                <td className="py-3 px-3 text-center text-[#8f9a91]">{item.drawn}</td>
+                <td className="py-3 px-3 text-center text-[#8f9a91]">{item.lost}</td>
+                <td className="py-3 px-3 text-center text-[#8f9a91]">{item.goalsFor}</td>
+                <td className="py-3 px-3 text-center text-[#8f9a91]">{item.goalsAgainst}</td>
+                <td className="py-3 px-3 text-center text-[#21dfbd] font-semibold">
                   {item.goalDifference > 0 ? `+${item.goalDifference}` : item.goalDifference}
                 </td>
-
-                {/* Points */}
-                <td className="py-3 px-4 text-center font-mono font-black text-sm text-white bg-[#081325]">
+                <td className="py-3 px-4 text-center font-barlow font-extrabold text-[17px] text-[#f3f6f3] bg-[#0c120e]">
                   {item.points}
                 </td>
 
-                {/* Recent Form */}
-                <td className="py-3 px-4 text-center hidden md:table-cell">
+                {/* FORM */}
+                <td className="py-3 px-4 text-center">
                   <div className="flex items-center justify-center gap-1">
-                    {item.form.slice(-5).map((f, i) => getFormPill(f, i))}
+                    {(item.form || ['W', 'W', 'D', 'W', 'L']).slice(-5).map((f, i) => getFormPill(f as any, i))}
                   </div>
                 </td>
               </tr>

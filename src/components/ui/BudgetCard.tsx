@@ -30,32 +30,32 @@ export const BudgetCard: React.FC<BudgetCardProps> = ({
     <div
       className={`p-4 sm:p-5 rounded-2xl transition-all ${
         highlight
-          ? 'bg-[#081325] border-2 border-[#00F5A0] shadow-[0_0_25px_rgba(0,245,160,0.15)]'
+          ? 'bg-[#090d0a] border-2 border-[#b7ff35] shadow-[0_0_25px_rgba(183, 255, 53,0.15)]'
           : 'sc-panel hover:border-[#1E2E4A]'
       }`}
     >
       <div className="flex items-center justify-between mb-2">
-        <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-zinc-400">
+        <span className="text-[10px] font-ibm font-bold uppercase tracking-widest text-zinc-400">
           {title}
         </span>
         {Icon && (
-          <div className="p-2 rounded-xl bg-[#07101C] text-[#00F5A0] border border-[#14233A]">
+          <div className="p-2 rounded-xl bg-[#0d120f] text-[#b7ff35] border border-white/10">
             <Icon className="w-4 h-4" />
           </div>
         )}
       </div>
 
-      <div className="text-2xl font-mono font-black tracking-tight text-white mb-1">
+      <div className="text-2xl font-ibm font-black tracking-tight text-white mb-1">
         {formattedAmount}
       </div>
 
-      <div className="flex items-center justify-between text-xs font-mono">
+      <div className="flex items-center justify-between text-xs font-ibm">
         {subtitle && <span className="text-[11px] text-zinc-500">{subtitle}</span>}
 
         {trend && (
           <div
             className={`flex items-center gap-1 font-bold ml-auto text-[11px] ${
-              trend.isPositive ? 'text-[#00F5A0]' : 'text-rose-400'
+              trend.isPositive ? 'text-[#b7ff35]' : 'text-rose-400'
             }`}
           >
             {trend.isPositive ? (

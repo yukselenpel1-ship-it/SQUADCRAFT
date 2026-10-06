@@ -1,8 +1,11 @@
 'use client';
 
 import React from 'react';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 export function SquadCraftFooter() {
+  const { t } = useLanguage();
+
   return (
     <footer className="w-full bg-[#050806] border-t border-[#b7ff35]/30 py-12 px-6 sm:px-12 lg:px-16 select-none">
       <div className="max-w-[1500px] mx-auto flex flex-col gap-8">
@@ -19,23 +22,23 @@ export function SquadCraftFooter() {
 
           {/* Center Links */}
           <div className="flex flex-wrap items-center justify-center gap-6 font-ibm text-[12px] text-[#8b958d]">
-            <a href="#career-preview" className="hover:text-[#b7ff35] transition-colors">CAREER</a>
-            <a href="#draft-preview" className="hover:text-[#b7ff35] transition-colors">DRAFT</a>
-            <a href="#tactics" className="hover:text-[#b7ff35] transition-colors">FEATURES</a>
-            <a href="#league" className="hover:text-[#b7ff35] transition-colors">LEAGUE</a>
-            <a href="#manager" className="hover:text-[#b7ff35] transition-colors">COMMUNITY</a>
+            <a href="#career-preview" className="hover:text-[#b7ff35] transition-colors">{t.footerCareer}</a>
+            <a href="#draft-preview" className="hover:text-[#b7ff35] transition-colors">{t.footerDraft}</a>
+            <a href="#tactics" className="hover:text-[#b7ff35] transition-colors">{t.footerFeatures}</a>
+            <a href="#league" className="hover:text-[#b7ff35] transition-colors">{t.footerLeague}</a>
+            <a href="#manager" className="hover:text-[#b7ff35] transition-colors">{t.footerCommunity}</a>
           </div>
 
           {/* Right Slogan */}
           <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest uppercase font-semibold">
-            BUILT FOR FOOTBALL THINKERS.
+            {t.footerSlogan}
           </span>
         </div>
 
         {/* Bottom copyright & disclaimer */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 font-ibm text-[11px] text-[#8b958d]">
-          <span>© 2026 SQUADCRAFT. ALL FICTIONAL CLUB & PLAYER ASSETS RESERVED.</span>
-          <span>NEXT-GEN 3D WEB SPORTS SIMULATION PLATFORM</span>
+          <span>{t.footerRights}</span>
+          <span>{t.footerSub}</span>
         </div>
       </div>
     </footer>

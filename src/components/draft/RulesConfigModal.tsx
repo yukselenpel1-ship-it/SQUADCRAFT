@@ -30,21 +30,21 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 overflow-y-auto">
-      <div className="relative bg-[#07101C]/95 border border-[#14233A] rounded-3xl w-full max-w-xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl p-6 sm:p-8 text-white my-8 overflow-hidden">
+      <div className="relative bg-[#0d120f]/95 border border-white/10 rounded-3xl w-full max-w-xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl p-6 sm:p-8 text-white my-8 overflow-hidden">
         {/* Top neon accent line */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#b7ff35] to-[#17e5c2]" />
 
         {/* Glow ambient */}
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
 
-        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between border-b border-[#14233A] pb-5 mb-6 gap-3">
+        <div className="relative flex flex-col sm:flex-row sm:items-center justify-between border-b border-white/10 pb-5 mb-6 gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold">
               <Settings className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-black text-white uppercase tracking-wide font-display">
+              <h2 className="text-xl font-black text-white uppercase tracking-wide font-barlow">
                 Lig & Draft Kuralları
               </h2>
               <p className="text-xs text-slate-400">
@@ -150,7 +150,7 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
               <select
                 value={current.pickTimerSeconds}
                 onChange={(e) => setCurrent({ ...current, pickTimerSeconds: Number(e.target.value) as PickTimerOption })}
-                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-emerald-400 font-mono font-bold focus:outline-none focus:border-emerald-500"
+                className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-emerald-400 font-ibm font-bold focus:outline-none focus:border-emerald-500"
               >
                 <option value={30}>30 Saniye (Ultra Hızlı)</option>
                 <option value={45}>45 Saniye (Hızlı)</option>
@@ -165,7 +165,7 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
           <div className="pt-2">
             <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
               <span>Kulüp Başlangıç Bütçesi</span>
-              <span className="text-emerald-400 font-mono text-xs font-bold">
+              <span className="text-emerald-400 font-ibm text-xs font-bold">
                 €{((current.draftBudget || DEFAULT_DRAFT_BUDGET) / 1_000_000).toFixed(1)}M
               </span>
             </label>
@@ -177,7 +177,7 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
                     key={b}
                     type="button"
                     onClick={() => setCurrent({ ...current, draftBudget: b })}
-                    className={`py-2 px-1 text-xs font-mono font-bold rounded-xl border transition text-center ${
+                    className={`py-2 px-1 text-xs font-ibm font-bold rounded-xl border transition text-center ${
                       isSelected
                         ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 shadow-sm'
                         : 'bg-slate-900 border-white/10 text-slate-400 hover:border-white/25 hover:text-white'
@@ -219,9 +219,9 @@ export const RulesConfigModal: React.FC<RulesConfigModalProps> = ({
                     const clamped = Math.max(50, Math.min(500, val || 50));
                     setCurrent({ ...current, draftBudget: clamped * 1_000_000 });
                   }}
-                  className="w-24 bg-black border border-white/20 rounded-lg px-2 py-1 text-sm font-mono text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 text-center"
+                  className="w-24 bg-black border border-white/20 rounded-lg px-2 py-1 text-sm font-ibm text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 text-center"
                 />
-                <span className="text-xs font-mono text-zinc-400">Milyon Euro</span>
+                <span className="text-xs font-ibm text-zinc-400">Milyon Euro</span>
               </div>
             )}
           </div>

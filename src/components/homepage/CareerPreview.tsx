@@ -18,8 +18,10 @@ import {
   Activity,
   Shield,
 } from 'lucide-react';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 export function CareerPreview() {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState('Overview');
 
   const navItems = [
@@ -40,16 +42,16 @@ export function CareerPreview() {
         {/* Section Header */}
         <div className="mb-12">
           <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.2em] uppercase font-semibold">
-            MANAGEMENT SUITE
+            {t.careerSuiteBadge}
           </span>
           <h2
             className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"
             style={{ fontSize: 'clamp(44px, 6vw, 92px)' }}
           >
-            CAREER MODE COMMAND
+            {t.careerSuiteTitle}
           </h2>
           <p className="font-inter text-[16px] text-[#8b958d] mt-2">
-            No SaaS dashboard templates. An authentic AAA football management command center.
+            {t.careerSuiteDesc}
           </p>
         </div>
 
@@ -62,22 +64,22 @@ export function CareerPreview() {
                 NORTHSTAR CITY FC
               </span>
               <span className="text-[#8b958d]">
-                SEASON <span className="text-[#f2f5f2] font-semibold">2026/27</span>
+                {t.careerSeason} <span className="text-[#f2f5f2] font-semibold">2026/27</span>
               </span>
               <span className="text-[#8b958d]">
-                MATCHDAY <span className="text-[#f2f5f2] font-semibold">12</span>
+                {t.careerMatchday} <span className="text-[#f2f5f2] font-semibold">12</span>
               </span>
               <span className="text-[#8b958d]">
-                POSITION <span className="text-[#b7ff35] font-bold">3RD</span> (26 PTS)
+                {t.careerPosition} <span className="text-[#b7ff35] font-bold">3RD</span> (26 PTS)
               </span>
             </div>
 
             <div className="flex items-center gap-4">
               <span className="text-[#8b958d]">
-                TRANSFER BUDGET: <span className="text-[#17e5c2] font-semibold">€34.2M</span>
+                {t.careerTransferBudget}: <span className="text-[#17e5c2] font-semibold">€34.2M</span>
               </span>
               <span className="w-2 h-2 rounded-full bg-[#65ff83] animate-pulse" />
-              <span className="text-[#65ff83]">GAME SAVED</span>
+              <span className="text-[#65ff83]">{t.careerGameSaved}</span>
             </div>
           </div>
 
@@ -168,7 +170,7 @@ export function CareerPreview() {
                     className="font-barlow font-bold text-[18px] text-[#050806] bg-[#b7ff35] hover:bg-[#9bea27] px-8 py-3 rounded-[3px] flex items-center gap-2 cursor-pointer shadow-lg hover:translate-y-[-1px] transition-all"
                   >
                     <Play size={16} fill="currentColor" />
-                    ENTER MATCHDAY
+                    {t.careerEnterMatchday}
                   </button>
                 </div>
               </div>
@@ -178,7 +180,7 @@ export function CareerPreview() {
                 <div>
                   <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
                     <span className="font-barlow font-bold text-[18px] text-[#f2f5f2] uppercase tracking-wide">
-                      BOARD CONFIDENCE
+                      {t.careerBoardConfidence}
                     </span>
                     <span className="font-ibm text-[12px] text-[#65ff83] font-bold">
                       88% // A+
@@ -227,7 +229,7 @@ export function CareerPreview() {
               <div className="md:col-span-4 bg-[#0d1410] border border-white/10 rounded-[8px] p-6">
                 <div className="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
                   <span className="font-barlow font-bold text-[18px] text-[#f2f5f2] uppercase tracking-wide">
-                    SQUAD CONDITION
+                    {t.careerSquadCondition}
                   </span>
                   <Activity size={16} className="text-[#b7ff35]" />
                 </div>
@@ -255,7 +257,7 @@ export function CareerPreview() {
               <div className="md:col-span-4 bg-[#0d1410] border border-white/10 rounded-[8px] p-6">
                 <div className="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
                   <span className="font-barlow font-bold text-[18px] text-[#f2f5f2] uppercase tracking-wide">
-                    MANAGER INBOX (3)
+                    {t.careerInbox} (3)
                   </span>
                   <Mail size={16} className="text-[#17e5c2]" />
                 </div>
@@ -276,7 +278,7 @@ export function CareerPreview() {
                 <div>
                   <div className="flex justify-between items-center border-b border-white/10 pb-3 mb-4">
                     <span className="font-barlow font-bold text-[18px] text-[#f2f5f2] uppercase tracking-wide">
-                      FORM TREND
+                      {t.careerFormTrend}
                     </span>
                     <TrendingUp size={16} className="text-[#65ff83]" />
                   </div>

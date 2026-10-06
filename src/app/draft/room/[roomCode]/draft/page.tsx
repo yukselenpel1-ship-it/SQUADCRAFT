@@ -88,26 +88,26 @@ class DraftErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryStat
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#040814] text-[#F3F4F6] flex flex-col items-center justify-center p-4 select-none font-sans">
+        <div className="min-h-screen bg-[#050806] text-[#F3F4F6] flex flex-col items-center justify-center p-4 select-none font-sans">
           <div className="p-8 bg-[#070D14] border-2 border-red-500/60 rounded-3xl max-w-lg w-full text-center space-y-5 shadow-2xl shadow-red-950/40">
             <div className="w-14 h-14 mx-auto rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400">
               <AlertCircle className="w-8 h-8" />
             </div>
-            <h2 className="text-xl font-black uppercase tracking-wide text-white font-display">
+            <h2 className="text-xl font-black uppercase tracking-wide text-white font-barlow">
               Görsel Arayüz Hatası Yakalandı
             </h2>
             <p className="text-xs text-zinc-400">
               Seçim ekranı verisi güvenli şekilde korundu. Sayfayı yenileyerek drafta kaldığınız yerden devam edebilirsiniz.
             </p>
             {this.state.error?.message && (
-              <div className="p-3 bg-red-950/40 border border-red-900/60 rounded-xl text-left font-mono text-[11px] text-red-300 break-words">
+              <div className="p-3 bg-red-950/40 border border-red-900/60 rounded-xl text-left font-ibm text-[11px] text-red-300 break-words">
                 {this.state.error.message}
               </div>
             )}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <button
                 onClick={this.handleRetry}
-                className="w-full sm:w-auto px-6 py-3 bg-[#00F5A0] hover:bg-[#00D485] text-black text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95"
+                className="w-full sm:w-auto px-6 py-3 bg-[#b7ff35] hover:bg-[#00D485] text-black text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-lg active:scale-95"
               >
                 🔄 YENİDEN BAĞLAN
               </button>
@@ -390,13 +390,13 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
   // ==========================================================================
   if (!hasLoadedOnce && hydrationResult.status === 'LOADING' && initialElapsed < 7) {
     return (
-      <div className="min-h-screen bg-[#040814] text-white flex flex-col items-center justify-center p-4 select-none font-sans">
+      <div className="min-h-screen bg-[#050806] text-white flex flex-col items-center justify-center p-4 select-none font-sans">
         <div className="p-8 bg-[#070D14] border border-zinc-800 rounded-3xl max-w-md w-full text-center space-y-5 shadow-2xl relative overflow-hidden">
           <div className="w-16 h-16 mx-auto rounded-2xl bg-[#4FE4FF]/10 border border-[#4FE4FF]/30 flex items-center justify-center text-[#4FE4FF] animate-pulse">
             <Zap className="w-8 h-8" />
           </div>
           <div>
-            <h2 className="text-xl font-black uppercase tracking-wider text-white font-display">
+            <h2 className="text-xl font-black uppercase tracking-wider text-white font-barlow">
               DRAFT ARENASI YÜKLENİYOR
             </h2>
             <p className="text-xs text-zinc-400 mt-1">
@@ -405,7 +405,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
           </div>
           <div className="w-full bg-zinc-900 h-2 rounded-full overflow-hidden border border-zinc-800">
             <div
-              className="bg-gradient-to-r from-[#4FE4FF] to-[#00F5A0] h-full transition-all duration-500 rounded-full"
+              className="bg-gradient-to-r from-[#4FE4FF] to-[#b7ff35] h-full transition-all duration-500 rounded-full"
               style={{ width: `${Math.min(100, (initialElapsed / 5) * 100)}%` }}
             />
           </div>
@@ -419,13 +419,13 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
   // ==========================================================================
   if (!hasLoadedOnce && (hydrationResult.status === 'NOT_FOUND' || hydrationResult.status === 'TIMEOUT' || hydrationResult.status === 'ERROR')) {
     return (
-      <div className="min-h-screen bg-[#040814] text-white flex flex-col items-center justify-center p-4 select-none font-sans">
+      <div className="min-h-screen bg-[#050806] text-white flex flex-col items-center justify-center p-4 select-none font-sans">
         <div className="p-8 bg-[#070D14] border-2 border-zinc-800 rounded-3xl max-w-lg w-full text-center space-y-5 shadow-2xl">
           <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
             <AlertCircle className="w-8 h-8" />
           </div>
           <div>
-            <h2 className="text-xl font-black uppercase tracking-wider text-white font-display">
+            <h2 className="text-xl font-black uppercase tracking-wider text-white font-barlow">
               {hydrationResult.status === 'NOT_FOUND' ? 'Oda Bulunamadı' : 'Bağlantı Kurulamadı'}
             </h2>
             <p className="text-xs text-zinc-400 mt-1">
@@ -438,7 +438,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                 setInitialElapsed(0);
                 hydrate();
               }}
-              className="w-full sm:w-auto px-6 py-2.5 bg-[#00F5A0] hover:bg-[#00D485] text-black text-xs font-black uppercase tracking-wider rounded-xl transition shadow-lg active:scale-95"
+              className="w-full sm:w-auto px-6 py-2.5 bg-[#b7ff35] hover:bg-[#00D485] text-black text-xs font-black uppercase tracking-wider rounded-xl transition shadow-lg active:scale-95"
             >
               🔄 TEKRAR DENE
             </button>
@@ -456,13 +456,13 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
 
   if (!hasLoadedOnce && hydrationResult.status === 'NOT_MEMBER') {
     return (
-      <div className="min-h-screen bg-[#040814] text-white flex flex-col items-center justify-center p-4 select-none font-sans">
+      <div className="min-h-screen bg-[#050806] text-white flex flex-col items-center justify-center p-4 select-none font-sans">
         <div className="p-8 bg-[#070D14] border-2 border-zinc-800 rounded-3xl max-w-md w-full text-center space-y-5 shadow-2xl">
           <div className="w-14 h-14 mx-auto rounded-2xl bg-[#4FE4FF]/10 border border-[#4FE4FF]/30 flex items-center justify-center text-[#4FE4FF]">
             <Users className="w-8 h-8" />
           </div>
           <div>
-            <h2 className="text-xl font-black uppercase tracking-wider text-white font-display">
+            <h2 className="text-xl font-black uppercase tracking-wider text-white font-barlow">
               Bu Odanın Üyesi Değilsiniz
             </h2>
             <p className="text-xs text-zinc-400 mt-1">
@@ -472,7 +472,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
           <div className="flex gap-3 justify-center pt-2">
             <Link
               href={`/draft/room/${roomCode}`}
-              className="px-6 py-2.5 bg-[#00F5A0] hover:bg-[#00D485] text-black text-xs font-black uppercase tracking-wider rounded-xl transition shadow-lg"
+              className="px-6 py-2.5 bg-[#b7ff35] hover:bg-[#00D485] text-black text-xs font-black uppercase tracking-wider rounded-xl transition shadow-lg"
             >
               🚪 ODAYA KATIL
             </Link>
@@ -801,12 +801,12 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
     if (['DC', 'DL', 'DR', 'CB', 'LB', 'RB', 'LWB', 'RWB'].includes(pos))
       return 'bg-blue-500/20 text-blue-400 border-blue-500/40';
     if (['DMC', 'MC', 'AMC', 'ML', 'MR', 'DM', 'CM', 'CAM', 'LM', 'RM'].includes(pos))
-      return 'bg-emerald-500/20 text-[#00F5A0] border-emerald-500/40';
+      return 'bg-emerald-500/20 text-[#b7ff35] border-emerald-500/40';
     return 'bg-rose-500/20 text-rose-400 border-rose-500/40';
   };
 
   const getAttrColor = (val: number) => {
-    if (val >= 85) return 'text-[#00F5A0] font-black';
+    if (val >= 85) return 'text-[#b7ff35] font-black';
     if (val >= 75) return 'text-[#4FE4FF] font-bold';
     if (val >= 65) return 'text-[#FFB800] font-semibold';
     return 'text-zinc-400 font-medium';
@@ -831,14 +831,14 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#040814] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="relative min-h-screen w-full bg-[#050806] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* Background Ambience */}
       <div
         className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
       >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#040814]/85 via-[#040814]/90 to-[#040814]" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#040814]/50 to-[#040814]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#050806]/85 via-[#050806]/90 to-[#050806]" />
+        <div className="absolute inset-0 bg-radial from-transparent via-[#050806]/50 to-[#050806]" />
       </div>
 
       {/* ==================================================================== */}
@@ -862,9 +862,9 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-sm sm:text-base leading-none">
                   <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
-                  <span className="text-[#00F5A0]">26</span>
+                  <span className="text-[#b7ff35]">26</span>
                 </div>
-                <span className="text-[8px] font-mono font-bold tracking-widest text-[#4FE4FF] uppercase mt-0.5">
+                <span className="text-[8px] font-ibm font-bold tracking-widest text-[#4FE4FF] uppercase mt-0.5">
                   DRAFT MERKEZİ 2.0
                 </span>
               </div>
@@ -872,13 +872,13 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
 
             {/* Round Badge */}
             <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-950 border border-zinc-800 rounded">
-              <div className="text-[10px] font-mono font-bold text-zinc-400 uppercase">TUR</div>
-              <div className="text-sm font-black font-mono text-[#00F5A0]">
+              <div className="text-[10px] font-ibm font-bold text-zinc-400 uppercase">TUR</div>
+              <div className="text-sm font-black font-ibm text-[#b7ff35]">
                 {draftState.currentRound} <span className="text-zinc-600">/</span> {targetSquadSize}
               </div>
               <div className="hidden md:block w-16 bg-zinc-900 h-1.5 rounded-full overflow-hidden border border-zinc-800 ml-1">
                 <div
-                  className="bg-[#00F5A0] h-full transition-all duration-300 rounded-full"
+                  className="bg-[#b7ff35] h-full transition-all duration-300 rounded-full"
                   style={{ width: `${(draftState.currentRound / targetSquadSize) * 100}%` }}
                 />
               </div>
@@ -887,19 +887,19 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
             {/* Manager Live Budget Widget */}
             {currentClub && (
               <div className="flex items-center gap-2.5 px-3 py-1 bg-gradient-to-r from-emerald-950/60 to-zinc-950 border border-emerald-500/40 rounded shadow-md">
-                <div className="w-7 h-7 rounded bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-[#00F5A0]">
+                <div className="w-7 h-7 rounded bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-[#b7ff35]">
                   <Coins className="w-4 h-4" />
                 </div>
                 <div className="flex flex-col">
-                  <div className="text-[9px] font-mono text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <div className="text-[9px] font-ibm text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
                     <span>KALAN BÜTÇE</span>
                     <span className="text-emerald-400 font-bold">({remainingPicks} seçim)</span>
                   </div>
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-sm font-black font-mono text-[#00F5A0]">
+                    <span className="text-sm font-black font-ibm text-[#b7ff35]">
                       €{(currentBudget / 1_000_000).toFixed(1)}M
                     </span>
-                    <span className="hidden sm:inline text-[9px] font-mono text-zinc-400">
+                    <span className="hidden sm:inline text-[9px] font-ibm text-zinc-400">
                       • Ort: €{(avgBudgetPerPick / 1_000_000).toFixed(1)}M/seçim
                     </span>
                   </div>
@@ -909,7 +909,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
 
             {/* Background Sync Pill */}
             {isSyncing && (
-              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-[#4FE4FF]/10 border border-[#4FE4FF]/30 text-[#4FE4FF] text-[10px] font-mono font-bold uppercase animate-pulse rounded">
+              <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-[#4FE4FF]/10 border border-[#4FE4FF]/30 text-[#4FE4FF] text-[10px] font-ibm font-bold uppercase animate-pulse rounded">
                 <RefreshCw className="w-3 h-3 animate-spin" />
                 <span>Bağlantı...</span>
               </div>
@@ -922,14 +922,14 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               <BadgePreview badge={activeTurnClub.badge} clubCode={activeTurnClub.code} size={32} />
             )}
             <div className="flex flex-col">
-              <div className="text-[9px] font-mono font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+              <div className="text-[9px] font-ibm font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
                 <span>SEÇİM YAPAN:</span>
                 <span className="text-white font-bold">{activeTurnClub?.name || activeTurnMember?.username}</span>
               </div>
               <div className="flex items-center gap-2">
                 {isMyTurn ? (
-                  <span className="flex items-center gap-1 text-[11px] font-black uppercase text-[#00F5A0] animate-pulse tracking-wide">
-                    <span className="w-2 h-2 rounded-full bg-[#00F5A0]" />
+                  <span className="flex items-center gap-1 text-[11px] font-black uppercase text-[#b7ff35] animate-pulse tracking-wide">
+                    <span className="w-2 h-2 rounded-full bg-[#b7ff35]" />
                     ⚡ SIRA SENDE! OYUNCUNU SEÇ
                   </span>
                 ) : activeTurnMember?.isBot ? (
@@ -949,10 +949,10 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
             {/* Turn Timer */}
             {room.rules.pickTimerSeconds > 0 && (
               <div
-                className={`ml-2 px-2.5 py-1 font-mono font-black text-sm sm:text-base border rounded flex items-center gap-1.5 ${
+                className={`ml-2 px-2.5 py-1 font-ibm font-black text-sm sm:text-base border rounded flex items-center gap-1.5 ${
                   timeLeft <= 10
                     ? 'bg-rose-950/80 border-rose-500 text-rose-400 animate-pulse'
-                    : 'bg-zinc-900 border-zinc-700 text-[#00F5A0]'
+                    : 'bg-zinc-900 border-zinc-700 text-[#b7ff35]'
                 }`}
               >
                 <Clock className="w-3.5 h-3.5" />
@@ -965,13 +965,13 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Next in Snake Draft Ticker (Desktop) */}
             {nextDrafters.length > 0 && (
-              <div className="hidden xl:flex items-center gap-1.5 text-[10px] font-mono text-zinc-400 bg-zinc-950 border border-zinc-800 px-3 py-1 rounded">
+              <div className="hidden xl:flex items-center gap-1.5 text-[10px] font-ibm text-zinc-400 bg-zinc-950 border border-zinc-800 px-3 py-1 rounded">
                 <span className="text-zinc-500">SIRADAKİ:</span>
                 {nextDrafters.map((nxt, idx) => (
                   <span
                     key={idx}
                     className={`font-semibold ${
-                      nxt.member?.id === currentMember?.id ? 'text-[#00F5A0] font-black' : 'text-zinc-300'
+                      nxt.member?.id === currentMember?.id ? 'text-[#b7ff35] font-black' : 'text-zinc-300'
                     }`}
                   >
                     {nxt.club?.code || nxt.member?.username?.slice(0, 3)}
@@ -984,13 +984,13 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
             {/* Room Code Copy Pill */}
             <button
               onClick={copyRoomCode}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 text-[11px] font-mono font-bold text-zinc-300 transition-all active:scale-95 rounded"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-zinc-950 hover:bg-zinc-900 border border-zinc-800 text-[11px] font-ibm font-bold text-zinc-300 transition-all active:scale-95 rounded"
               title="Oda kodunu kopyala"
             >
               {copiedCode ? (
                 <>
-                  <CheckCheck className="w-3.5 h-3.5 text-[#00F5A0]" />
-                  <span className="text-[#00F5A0]">KOPYALANDI</span>
+                  <CheckCheck className="w-3.5 h-3.5 text-[#b7ff35]" />
+                  <span className="text-[#b7ff35]">KOPYALANDI</span>
                 </>
               ) : (
                 <>
@@ -1006,7 +1006,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               className="p-1.5 sm:px-2.5 sm:py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-zinc-700 text-zinc-300 text-xs font-bold uppercase transition rounded"
               title="Geri Bildirim"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <MessageSquare className="w-3.5 h-3.5 text-[#b7ff35]" />
             </button>
 
             {/* Leave Room Button */}
@@ -1015,7 +1015,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-wider transition rounded"
               title="Odadan Ayrıl"
             >
-              <LogOut className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <LogOut className="w-3.5 h-3.5 text-[#b7ff35]" />
               <span className="hidden sm:inline">ODADAN AYRIL</span>
             </button>
           </div>
@@ -1050,7 +1050,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
           onClick={() => setMobileTab('squad')}
           className={`flex-1 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-1.5 ${
             mobileTab === 'squad'
-              ? 'bg-[#00F5A0] text-black font-black'
+              ? 'bg-[#b7ff35] text-black font-black'
               : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
           }`}
         >
@@ -1085,7 +1085,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         {/* COLUMN 1: PLAYER POOL & SMART PRESET FILTERS (5 Cols)              */}
         {/* ================================================================== */}
         <div
-          className={`lg:col-span-5 sc-panel border border-[#14233A] flex flex-col justify-between h-[720px] shadow-2xl rounded-2xl overflow-hidden ${
+          className={`lg:col-span-5 sc-panel border border-white/10 flex flex-col justify-between h-[720px] shadow-2xl rounded-2xl overflow-hidden ${
             mobileTab !== 'pool' ? 'hidden lg:flex' : 'flex'
           }`}
         >
@@ -1150,7 +1150,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                     onClick={() => setSmartPreset(p.id as SmartFilterPreset)}
                     className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-wider rounded whitespace-nowrap transition-all border ${
                       isActive
-                        ? 'bg-[#00F5A0] text-black border-[#00F5A0] shadow-sm'
+                        ? 'bg-[#b7ff35] text-black border-[#b7ff35] shadow-sm'
                         : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white hover:border-zinc-700'
                     }`}
                   >
@@ -1176,7 +1176,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                             : pos === 'DEF'
                             ? 'bg-blue-500 text-black shadow-sm'
                             : pos === 'MID'
-                            ? 'bg-[#00F5A0] text-black shadow-sm'
+                            ? 'bg-[#b7ff35] text-black shadow-sm'
                             : pos === 'ATT'
                             ? 'bg-rose-500 text-black shadow-sm'
                             : 'bg-zinc-200 text-black shadow-sm'
@@ -1194,7 +1194,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                 onClick={() => setOnlyAffordable(!onlyAffordable)}
                 className={`px-2.5 py-1 text-[10px] font-bold border rounded flex items-center gap-1.5 transition-all shrink-0 ${
                   onlyAffordable
-                    ? 'bg-emerald-950/80 border-emerald-500 text-[#00F5A0]'
+                    ? 'bg-emerald-950/80 border-emerald-500 text-[#b7ff35]'
                     : 'bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-white'
                 }`}
               >
@@ -1243,7 +1243,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                       }}
                       className={`p-2 border transition-all cursor-pointer flex items-center justify-between group rounded ${
                         isSelected
-                          ? 'bg-zinc-900/90 border-[#00F5A0] shadow-md shadow-[#00F5A0]/10'
+                          ? 'bg-zinc-900/90 border-[#b7ff35] shadow-md shadow-[#b7ff35]/10'
                           : isExceeded
                           ? 'bg-[#05090F]/50 border-zinc-800/50 opacity-60 hover:opacity-90'
                           : 'bg-[#05090F]/80 border-zinc-800/80 hover:bg-zinc-900/60 hover:border-zinc-700'
@@ -1253,7 +1253,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                       <div className="flex items-center gap-2 min-w-0">
                         <PlayerPortrait player={player} size="xs" />
                         <span
-                          className={`w-7 h-7 rounded border flex items-center justify-center font-mono font-black text-[11px] shrink-0 ${getPosColorClass(
+                          className={`w-7 h-7 rounded border flex items-center justify-center font-ibm font-black text-[11px] shrink-0 ${getPosColorClass(
                             player.position
                           )}`}
                         >
@@ -1262,7 +1262,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
 
                         <div className="truncate">
                           <div className="flex items-center gap-1.5 truncate">
-                            <span className="text-xs font-black text-white group-hover:text-[#00F5A0] transition-colors truncate">
+                            <span className="text-xs font-black text-white group-hover:text-[#b7ff35] transition-colors truncate">
                               {player.firstName} {player.lastName}
                             </span>
                             {player.isRisingTalent && (
@@ -1285,24 +1285,24 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                       <div className="flex items-center gap-2.5 shrink-0 ml-2">
                         {/* Price Tag */}
                         <div className="text-right">
-                          <div className={`text-xs font-black font-mono ${isExceeded ? 'text-rose-400 line-through' : 'text-[#00F5A0]'}`}>
+                          <div className={`text-xs font-black font-ibm ${isExceeded ? 'text-rose-400 line-through' : 'text-[#b7ff35]'}`}>
                             {formatPrice(pVal)}
                           </div>
                           {isExceeded ? (
-                            <div className="text-[8px] font-mono font-bold text-rose-500 uppercase">YETERSİZ</div>
+                            <div className="text-[8px] font-ibm font-bold text-rose-500 uppercase">YETERSİZ</div>
                           ) : isQuotaRisk ? (
-                            <div className="text-[8px] font-mono font-bold text-amber-400 uppercase">KOTA RİSKİ</div>
+                            <div className="text-[8px] font-ibm font-bold text-amber-400 uppercase">KOTA RİSKİ</div>
                           ) : (
-                            <div className="text-[8px] font-mono text-zinc-500 uppercase">BONSERVİS</div>
+                            <div className="text-[8px] font-ibm text-zinc-500 uppercase">BONSERVİS</div>
                           )}
                         </div>
 
                         {/* Overall Badge */}
                         <div className="w-7 text-right">
-                          <div className="text-xs font-black font-mono text-white leading-none">
+                          <div className="text-xs font-black font-ibm text-white leading-none">
                             {player.overall}
                           </div>
-                          <div className="text-[7px] font-mono text-zinc-500 uppercase">OVR</div>
+                          <div className="text-[7px] font-ibm text-zinc-500 uppercase">OVR</div>
                         </div>
 
                         {/* Pick CTA Button */}
@@ -1315,7 +1315,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                             disabled={isSubmittingPick || !canPick}
                             className={`px-2.5 py-1 text-[10px] font-black uppercase tracking-wider transition active:scale-95 rounded shadow-sm ${
                               canPick
-                                ? 'bg-[#00F5A0] hover:bg-[#00D485] text-black shadow-[#00F5A0]/20'
+                                ? 'bg-[#b7ff35] hover:bg-[#00D485] text-black shadow-[#b7ff35]/20'
                                 : 'bg-zinc-800 text-zinc-500 cursor-not-allowed opacity-50'
                             }`}
                           >
@@ -1343,7 +1343,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
           </div>
 
           {/* Footer Pool Stats */}
-          <div className="p-2.5 bg-[#05090F] border-t border-zinc-800 text-[10px] font-mono text-zinc-400 flex items-center justify-between">
+          <div className="p-2.5 bg-[#05090F] border-t border-zinc-800 text-[10px] font-ibm text-zinc-400 flex items-center justify-between">
             <span>{displayedPlayers.length} / {filteredPlayers.length} Futbolcu Listeleniyor</span>
             <span className="text-zinc-500">2,000 Oyuncu Kurgusal SC-2.0 Veritabanı</span>
           </div>
@@ -1360,18 +1360,18 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
           {activeSpotlightPlayer ? (
             <div className="space-y-4 flex-1 flex flex-col justify-between">
               {/* Top Tactical Scouting Card */}
-              <div className="relative p-5 bg-gradient-to-b from-[#1C1605]/95 via-[#081325]/95 to-[#07101C]/95 border-2 border-[#FFB800]/60 shadow-xl overflow-hidden rounded-xl">
+              <div className="relative p-5 bg-gradient-to-b from-[#1C1605]/95 via-[#090d0a]/95 to-[#0d120f]/95 border-2 border-[#FFB800]/60 shadow-xl overflow-hidden rounded-xl">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="relative flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <PlayerPortrait player={activeSpotlightPlayer} size="lg" shape="card" priority={true} />
                     <div>
-                      <div className="text-3xl sm:text-4xl font-black font-mono text-[#00F5A0] leading-none">
+                      <div className="text-3xl sm:text-4xl font-black font-ibm text-[#b7ff35] leading-none">
                         {activeSpotlightPlayer.overall}
                       </div>
                       <div
-                        className={`inline-block px-2 py-0.5 mt-1 text-xs font-mono font-black border rounded ${getPosColorClass(
+                        className={`inline-block px-2 py-0.5 mt-1 text-xs font-ibm font-black border rounded ${getPosColorClass(
                           activeSpotlightPlayer.position
                         )}`}
                       >
@@ -1381,17 +1381,17 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                   </div>
 
                   <div className="text-right">
-                    <div className="text-[10px] font-mono text-zinc-400 uppercase">DRAFT BEDELİ</div>
-                    <div className="text-xl font-mono font-black text-[#00F5A0]">
+                    <div className="text-[10px] font-ibm text-zinc-400 uppercase">DRAFT BEDELİ</div>
+                    <div className="text-xl font-ibm font-black text-[#b7ff35]">
                       {formatPrice(activeSpotlightPrice)}
                     </div>
-                    <div className="text-[10px] font-mono text-zinc-400 mt-1 uppercase">POTANSİYEL: <span className="text-[#4FE4FF] font-bold">{activeSpotlightPlayer.potential || activeSpotlightPlayer.overall}</span></div>
+                    <div className="text-[10px] font-ibm text-zinc-400 mt-1 uppercase">POTANSİYEL: <span className="text-[#4FE4FF] font-bold">{activeSpotlightPlayer.potential || activeSpotlightPlayer.overall}</span></div>
                   </div>
                 </div>
 
                 <div className="mt-3">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-lg sm:text-xl font-black italic tracking-tight text-white uppercase font-display">
+                    <h3 className="text-lg sm:text-xl font-black italic tracking-tight text-white uppercase font-barlow">
                       {activeSpotlightPlayer.firstName} {activeSpotlightPlayer.lastName}
                     </h3>
                     {activeSpotlightPlayer.isRisingTalent && (
@@ -1401,7 +1401,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                     )}
                   </div>
                   <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-300 font-semibold mt-1">
-                    <span className="px-1.5 py-0.5 bg-zinc-800 text-[#4FE4FF] rounded text-[10px] uppercase font-mono">
+                    <span className="px-1.5 py-0.5 bg-zinc-800 text-[#4FE4FF] rounded text-[10px] uppercase font-ibm">
                       {activeSpotlightPlayer.archetype || 'Standart'}
                     </span>
                     <span className="text-zinc-600">•</span>
@@ -1416,9 +1416,9 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
 
               {/* 6 Core FC Attribute Grid */}
               <div className="space-y-1.5">
-                <div className="text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-400 flex items-center justify-between">
+                <div className="text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-400 flex items-center justify-between">
                   <span>TEMEL YETENEK PROFİLİ</span>
-                  <span className="text-[10px] text-zinc-500 font-mono">Gelişim: {activeSpotlightPlayer.hiddenAttributes?.developmentCurve === 'EARLY_PEAK' ? 'Hızlı Zirve' : activeSpotlightPlayer.hiddenAttributes?.developmentCurve === 'LATE_BLOOMER' ? 'Geç Açılan' : 'Dengeli'}</span>
+                  <span className="text-[10px] text-zinc-500 font-ibm">Gelişim: {activeSpotlightPlayer.hiddenAttributes?.developmentCurve === 'EARLY_PEAK' ? 'Hızlı Zirve' : activeSpotlightPlayer.hiddenAttributes?.developmentCurve === 'LATE_BLOOMER' ? 'Geç Açılan' : 'Dengeli'}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   {(() => {
@@ -1438,14 +1438,14 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                         className="p-2 bg-zinc-950 border border-zinc-800/90 rounded flex flex-col justify-between"
                       >
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-[10px] font-mono text-zinc-400">{st.label}</span>
-                          <span className={`text-xs font-mono ${getAttrColor(st.val)}`}>{st.val}</span>
+                          <span className="text-[10px] font-ibm text-zinc-400">{st.label}</span>
+                          <span className={`text-xs font-ibm ${getAttrColor(st.val)}`}>{st.val}</span>
                         </div>
                         <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden border border-zinc-800">
                           <div
                             className={`h-full rounded-full ${
                               st.val >= 85
-                                ? 'bg-[#00F5A0]'
+                                ? 'bg-[#b7ff35]'
                                 : st.val >= 75
                                 ? 'bg-[#4FE4FF]'
                                 : st.val >= 65
@@ -1465,21 +1465,21 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               <div className="p-3 bg-zinc-950 border border-zinc-800 rounded text-[11px] text-zinc-300 space-y-2">
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div>
-                    <span className="text-zinc-500 font-mono text-[9px] block uppercase">AYAK</span>
+                    <span className="text-zinc-500 font-ibm text-[9px] block uppercase">AYAK</span>
                     <span className="font-bold text-white">{activeSpotlightPlayer.preferredFoot}</span>
                   </div>
                   <div>
-                    <span className="text-zinc-500 font-mono text-[9px] block uppercase">İSTİKRAR</span>
+                    <span className="text-zinc-500 font-ibm text-[9px] block uppercase">İSTİKRAR</span>
                     <span className="font-bold text-white">{activeSpotlightPlayer.hiddenAttributes?.consistency ?? 70}/99</span>
                   </div>
                   <div>
-                    <span className="text-zinc-500 font-mono text-[9px] block uppercase">BÜYÜK MAÇ</span>
+                    <span className="text-zinc-500 font-ibm text-[9px] block uppercase">BÜYÜK MAÇ</span>
                     <span className="font-bold text-white">{activeSpotlightPlayer.hiddenAttributes?.bigMatchPerformance ?? 70}/99</span>
                   </div>
                 </div>
 
                 {/* Affordability Status Box */}
-                <div className={`p-2 border rounded text-[10px] font-mono flex items-center justify-between ${
+                <div className={`p-2 border rounded text-[10px] font-ibm flex items-center justify-between ${
                   spotlightCanDraft
                     ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
                     : !spotlightAffordable
@@ -1488,7 +1488,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                 }`}>
                   <div className="flex items-center gap-1.5">
                     {spotlightCanDraft ? (
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#00F5A0]" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#b7ff35]" />
                     ) : (
                       <AlertCircle className="w-3.5 h-3.5 text-amber-400" />
                     )}
@@ -1510,7 +1510,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                   disabled={isSubmittingPick || !spotlightCanDraft}
                   className={`w-full py-3.5 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider transition-all shadow-xl flex items-center justify-center gap-2 active:scale-98 ${
                     spotlightCanDraft
-                      ? 'bg-[#00F5A0] hover:bg-[#00E590] text-black shadow-[0_0_20px_rgba(0,245,160,0.4)]'
+                      ? 'bg-[#b7ff35] hover:bg-[#9bea27] text-black shadow-[0_0_20px_rgba(183, 255, 53,0.4)]'
                       : 'bg-zinc-800 text-zinc-500 cursor-not-allowed opacity-60'
                   }`}
                 >
@@ -1532,7 +1532,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                   )}
                 </button>
               ) : (
-                <div className="p-3 bg-zinc-950 border border-zinc-800 rounded text-center text-xs font-mono text-zinc-400">
+                <div className="p-3 bg-zinc-950 border border-zinc-800 rounded text-center text-xs font-ibm text-zinc-400">
                   {draftState.isCompleted ? 'Draft tamamlandı.' : 'Sıranız geldiğinde transfer butonu aktifleşecektir.'}
                 </div>
               )}
@@ -1555,25 +1555,25 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         >
           {/* My Club Live Quota & Budget Breakdown Card */}
           {currentMember && currentClub && (
-            <div className="sc-panel border border-[#14233A] p-4 shadow-xl space-y-3 rounded-2xl">
+            <div className="sc-panel border border-white/10 p-4 shadow-xl space-y-3 rounded-2xl">
               <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
                 <div className="flex items-center gap-2.5">
                   <BadgePreview badge={currentClub.badge} clubCode={currentClub.code} size={28} />
                   <div>
                     <div className="text-xs font-black text-white uppercase">{currentClub.name}</div>
-                    <div className="text-[10px] font-mono text-zinc-400">{currentMember.username}</div>
+                    <div className="text-[10px] font-ibm text-zinc-400">{currentMember.username}</div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs font-mono font-black text-[#00F5A0]">
+                  <div className="text-xs font-ibm font-black text-[#b7ff35]">
                     {mySquadLength} <span className="text-zinc-600">/</span> {targetSquadSize}
                   </div>
-                  <div className="text-[8px] font-mono text-zinc-500 uppercase">KADRO</div>
+                  <div className="text-[8px] font-ibm text-zinc-500 uppercase">KADRO</div>
                 </div>
               </div>
 
               {/* Financial Summary */}
-              <div className="p-2.5 bg-zinc-950 border border-zinc-800 rounded text-[11px] font-mono space-y-1">
+              <div className="p-2.5 bg-zinc-950 border border-zinc-800 rounded text-[11px] font-ibm space-y-1">
                 <div className="flex justify-between">
                   <span className="text-zinc-400">BAŞLANGIÇ BÜTÇESİ:</span>
                   <span className="text-zinc-300 font-bold">€{(initialBudget / 1_000_000).toFixed(1)}M</span>
@@ -1584,7 +1584,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">KALAN BÜTÇE:</span>
-                  <span className="text-[#00F5A0] font-black">€{(currentBudget / 1_000_000).toFixed(1)}M</span>
+                  <span className="text-[#b7ff35] font-black">€{(currentBudget / 1_000_000).toFixed(1)}M</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-zinc-400">KALAN SEÇİM:</span>
@@ -1599,40 +1599,40 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               {/* Position Quotas Matrix */}
               <div className="grid grid-cols-4 gap-1.5 text-center">
                 <div className="p-2 bg-zinc-950 border border-zinc-800 rounded">
-                  <div className="text-[9px] font-mono font-bold text-zinc-400 uppercase">GK</div>
+                  <div className="text-[9px] font-ibm font-bold text-zinc-400 uppercase">GK</div>
                   <div
-                    className={`text-xs font-mono font-black ${
-                      mySquadCounts.gk >= 2 ? 'text-[#00F5A0]' : 'text-amber-400'
+                    className={`text-xs font-ibm font-black ${
+                      mySquadCounts.gk >= 2 ? 'text-[#b7ff35]' : 'text-amber-400'
                     }`}
                   >
                     {mySquadCounts.gk}/2
                   </div>
                 </div>
                 <div className="p-2 bg-zinc-950 border border-zinc-800 rounded">
-                  <div className="text-[9px] font-mono font-bold text-zinc-400 uppercase">DEF</div>
+                  <div className="text-[9px] font-ibm font-bold text-zinc-400 uppercase">DEF</div>
                   <div
-                    className={`text-xs font-mono font-black ${
-                      mySquadCounts.def >= 5 ? 'text-[#00F5A0]' : 'text-amber-400'
+                    className={`text-xs font-ibm font-black ${
+                      mySquadCounts.def >= 5 ? 'text-[#b7ff35]' : 'text-amber-400'
                     }`}
                   >
                     {mySquadCounts.def}/5
                   </div>
                 </div>
                 <div className="p-2 bg-zinc-950 border border-zinc-800 rounded">
-                  <div className="text-[9px] font-mono font-bold text-zinc-400 uppercase">MID</div>
+                  <div className="text-[9px] font-ibm font-bold text-zinc-400 uppercase">MID</div>
                   <div
-                    className={`text-xs font-mono font-black ${
-                      mySquadCounts.mid >= 5 ? 'text-[#00F5A0]' : 'text-amber-400'
+                    className={`text-xs font-ibm font-black ${
+                      mySquadCounts.mid >= 5 ? 'text-[#b7ff35]' : 'text-amber-400'
                     }`}
                   >
                     {mySquadCounts.mid}/5
                   </div>
                 </div>
                 <div className="p-2 bg-zinc-950 border border-zinc-800 rounded">
-                  <div className="text-[9px] font-mono font-bold text-zinc-400 uppercase">ATT</div>
+                  <div className="text-[9px] font-ibm font-bold text-zinc-400 uppercase">ATT</div>
                   <div
-                    className={`text-xs font-mono font-black ${
-                      mySquadCounts.att >= 3 ? 'text-[#00F5A0]' : 'text-amber-400'
+                    className={`text-xs font-ibm font-black ${
+                      mySquadCounts.att >= 3 ? 'text-[#b7ff35]' : 'text-amber-400'
                     }`}
                   >
                     {mySquadCounts.att}/3
@@ -1653,7 +1653,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               <div className="text-xs font-black uppercase tracking-wider text-white">
                 SON SEÇİMLER ({(draftState.picks || []).length})
               </div>
-              <span className="text-[10px] font-mono text-[#4FE4FF]">CANLI AKIŞ</span>
+              <span className="text-[10px] font-ibm text-[#4FE4FF]">CANLI AKIŞ</span>
             </div>
 
             <div className="overflow-y-auto space-y-1.5 my-2 pr-1 flex-1 custom-scrollbar">
@@ -1680,20 +1680,20 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                           <div className="font-black text-zinc-200 truncate flex items-center gap-1.5">
                             <span>{p ? `${p.firstName} ${p.lastName}` : pick.playerId}</span>
                             {p?.isRisingTalent && (
-                              <span className="text-[8px] text-amber-400 font-mono">⭐</span>
+                              <span className="text-[8px] text-amber-400 font-ibm">⭐</span>
                             )}
                           </div>
-                          <div className="text-[9px] font-mono text-zinc-400 truncate">
+                          <div className="text-[9px] font-ibm text-zinc-400 truncate">
                             {m?.username} • Tur {pick.round} (#{pick.globalPickNumber || pick.round})
                           </div>
                         </div>
                       </div>
 
                       <div className="text-right shrink-0 ml-2">
-                        <span className="text-xs font-mono font-black text-[#00F5A0] block">
+                        <span className="text-xs font-ibm font-black text-[#b7ff35] block">
                           {p?.overall || 75} OVR
                         </span>
-                        <span className="text-[9px] font-mono text-zinc-400 block">
+                        <span className="text-[9px] font-ibm text-zinc-400 block">
                           {formatPrice(price)}
                         </span>
                       </div>
@@ -1703,7 +1703,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
               )}
             </div>
 
-            <div className="pt-2 border-t border-zinc-800 text-[10px] font-mono text-zinc-500 text-center">
+            <div className="pt-2 border-t border-zinc-800 text-[10px] font-ibm text-zinc-500 text-center">
               Snake Draft Formatı • Bütçe Tavanı €{(initialBudget / 1_000_000).toFixed(1)}M
             </div>
           </div>

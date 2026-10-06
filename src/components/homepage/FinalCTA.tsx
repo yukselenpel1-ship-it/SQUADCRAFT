@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Trophy } from 'lucide-react';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 interface FinalCTAProps {
   onStartCareer: () => void;
@@ -10,6 +11,8 @@ interface FinalCTAProps {
 }
 
 export function FinalCTA({ onStartCareer, onEnterDraft }: FinalCTAProps) {
+  const { language } = useLanguage();
+
   return (
     <section className="relative w-full bg-[#050806] py-32 px-6 sm:px-12 lg:px-16 border-t border-white/10 select-none overflow-hidden text-center">
       {/* 3D Tunnel Light Atmosphere Background */}
@@ -23,7 +26,7 @@ export function FinalCTA({ onStartCareer, onEnterDraft }: FinalCTAProps) {
 
       <div className="relative z-10 max-w-4xl mx-auto flex flex-col items-center">
         <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.25em] uppercase font-semibold mb-4">
-          MATCHDAY READY
+          {language === 'tr' ? 'MAÇ GÜNÜNE HAZIR' : 'MATCHDAY READY'}
         </span>
 
         {/* Headline */}
@@ -31,12 +34,17 @@ export function FinalCTA({ onStartCareer, onEnterDraft }: FinalCTAProps) {
           className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.84] tracking-tight uppercase"
           style={{ fontSize: 'clamp(58px, 9vw, 140px)' }}
         >
-          YOUR SEASON <span className="text-outline-lime">STARTS HERE.</span>
+          {language === 'tr' ? 'SENİN SEZONUN ' : 'YOUR SEASON '}
+          <span className="text-outline-lime">
+            {language === 'tr' ? 'BURADA BAŞLIYOR.' : 'STARTS HERE.'}
+          </span>
         </h2>
 
         {/* Sub */}
         <p className="font-inter text-[18px] sm:text-[20px] text-[#99a39c] mt-6 max-w-lg mx-auto">
-          One club. Eighteen players. Endless decisions.
+          {language === 'tr'
+            ? 'Tek bir kulüp. On sekiz oyuncu. Sonsuz taktiksel ihtimal.'
+            : 'One club. Eighteen players. Endless decisions.'}
         </p>
 
         {/* CTAs */}
@@ -44,18 +52,18 @@ export function FinalCTA({ onStartCareer, onEnterDraft }: FinalCTAProps) {
           <button
             type="button"
             onClick={onStartCareer}
-            className="group font-barlow font-bold text-[18px] tracking-wider text-[#050806] bg-[#b7ff35] hover:bg-[#9bea27] h-[54px] px-10 rounded-[3px] flex items-center gap-2.5 transition-all duration-200 cursor-pointer shadow-[0_4px_28px_rgba(183,255,53,0.4)] hover:translate-y-[-2px]"
+            className="group font-barlow font-bold text-[18px] tracking-wider text-[#050806] bg-[#b7ff35] hover:bg-[#9bea27] h-[54px] px-10 rounded-[3px] flex items-center gap-2.5 transition-all duration-200 cursor-pointer shadow-[0_4px_28px_rgba(183,255,53,0.4)] hover:translate-y-[-2px] uppercase"
           >
-            START SQUADCRAFT
+            {language === 'tr' ? 'SQUADCRAFT\'A BAŞLA' : 'START SQUADCRAFT'}
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
 
           <button
             type="button"
             onClick={onEnterDraft}
-            className="font-barlow font-bold text-[18px] tracking-wider text-[#f2f5f2] bg-transparent border border-white/25 hover:border-[#17e5c2] hover:text-[#17e5c2] h-[54px] px-8 rounded-[3px] flex items-center transition-all duration-200 cursor-pointer hover:bg-white/5"
+            className="font-barlow font-bold text-[18px] tracking-wider text-[#f2f5f2] bg-transparent border border-white/25 hover:border-[#17e5c2] hover:text-[#17e5c2] h-[54px] px-8 rounded-[3px] flex items-center transition-all duration-200 cursor-pointer hover:bg-white/5 uppercase"
           >
-            PLAY DRAFT LEAGUE
+            {language === 'tr' ? 'DRAFT LİGİNE KATIL' : 'PLAY DRAFT LEAGUE'}
           </button>
         </div>
       </div>

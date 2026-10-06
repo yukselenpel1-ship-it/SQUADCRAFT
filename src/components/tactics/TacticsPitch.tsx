@@ -66,7 +66,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
   return (
     <div className="relative w-full flex flex-col items-center">
       {/* Pitch Outer Shell */}
-      <div className="relative w-full max-w-[620px] aspect-[3/4] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-4 border-[#14233A] football-pitch-bg select-none">
+      <div className="relative w-full max-w-[620px] aspect-[3/4] sm:aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10 football-pitch-bg select-none">
         {/* Pitch Lines (SVG Layer) */}
         <svg
           viewBox="0 0 1000 1300"
@@ -83,7 +83,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
           {/* Center Circle */}
           <circle cx="500" cy="650" r="140" />
-          <circle cx="500" cy="650" r="12" fill="#00F5A0" fillOpacity="0.6" />
+          <circle cx="500" cy="650" r="12" fill="#b7ff35" fillOpacity="0.6" />
 
           {/* Top Penalty Box (Opponent Side) */}
           <rect x="250" y="52" width="500" height="234" />
@@ -122,23 +122,23 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
             >
               {/* Pulse ring when selected */}
               {isSelected && (
-                <span className="absolute -inset-2 rounded-full border-2 border-[#00F5A0] animate-ping opacity-75 shadow-[0_0_12px_#00F5A0]" />
+                <span className="absolute -inset-2 rounded-full border-2 border-[#b7ff35] animate-ping opacity-75 shadow-[0_0_12px_#b7ff35]" />
               )}
 
               {/* Player Jersey / Crest Node */}
               <div
                 className={`relative flex items-center justify-center w-11 h-11 sm:w-13 sm:h-13 rounded-full border-2 shadow-2xl transition-all ${
                   isSelected
-                    ? 'bg-[#00F5A0] border-white text-black shadow-[0_0_20px_#00F5A0]'
+                    ? 'bg-[#b7ff35] border-white text-black shadow-[0_0_20px_#b7ff35]'
                     : player?.isInjured
                     ? 'bg-rose-950 border-rose-500 text-white'
-                    : 'bg-[#081325] hover:bg-[#0E1B33] border-[#14233A] hover:border-[#00F5A0] text-white'
+                    : 'bg-[#090d0a] hover:bg-[#0E1B33] border-white/10 hover:border-[#b7ff35] text-white'
                 }`}
               >
                 {/* Role indicator pill */}
                 <span
                   className={`text-[10px] sm:text-xs font-black tracking-wider ${
-                    isSelected ? 'text-black' : 'text-[#00F5A0]'
+                    isSelected ? 'text-black' : 'text-[#b7ff35]'
                   }`}
                 >
                   {slot.role}
@@ -149,9 +149,9 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
                   <span
                     className={`absolute -top-1.5 -right-1.5 text-[9px] font-extrabold px-1.5 py-0.2 rounded-full border shadow-sm ${
                       player.overall >= 80
-                        ? 'bg-[#00F5A0] text-black border-emerald-300 shadow-[0_0_6px_rgba(0,245,160,0.5)]'
+                        ? 'bg-[#b7ff35] text-black border-emerald-300 shadow-[0_0_6px_rgba(183, 255, 53,0.5)]'
                         : player.overall >= 74
-                        ? 'bg-[#00D4FF] text-black border-sky-300'
+                        ? 'bg-[#17e5c2] text-black border-sky-300'
                         : 'bg-amber-400 text-black border-amber-200'
                     }`}
                   >
@@ -163,7 +163,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
                 <button
                   onClick={(e) => handleOpenBenchSwap(slot.slotId, e)}
                   title="Yedeklerle Değiştir"
-                  className="absolute -bottom-1 -left-1 p-1 rounded-full bg-[#081325] border border-[#14233A] hover:border-[#00F5A0] text-zinc-400 hover:text-[#00F5A0] transition-colors"
+                  className="absolute -bottom-1 -left-1 p-1 rounded-full bg-[#090d0a] border border-white/10 hover:border-[#b7ff35] text-zinc-400 hover:text-[#b7ff35] transition-colors"
                 >
                   <RefreshCw className="w-2.5 h-2.5" />
                 </button>
@@ -173,8 +173,8 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
               <div
                 className={`mt-1 px-2.5 py-0.5 rounded-md text-[10px] sm:text-[11px] font-bold tracking-tight shadow-md border truncate max-w-[110px] text-center transition-all ${
                   isSelected
-                    ? 'bg-[#00F5A0] text-black border-white'
-                    : 'bg-[#081325]/95 text-white border-[#14233A] group-hover:border-[#00F5A0]/60'
+                    ? 'bg-[#b7ff35] text-black border-white'
+                    : 'bg-[#090d0a]/95 text-white border-white/10 group-hover:border-[#b7ff35]/60'
                 }`}
               >
                 {player ? `${player.firstName[0]}. ${player.lastName}` : 'Boş'}
@@ -187,7 +187,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
                     <div
                       className={`h-full rounded-full ${
                         player.fitness >= 85
-                          ? 'bg-[#00F5A0]'
+                          ? 'bg-[#b7ff35]'
                           : player.fitness >= 65
                           ? 'bg-amber-400'
                           : 'bg-rose-500'
@@ -195,7 +195,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
                       style={{ width: `${Math.max(5, Math.min(100, player.fitness))}%` }}
                     />
                   </div>
-                  <span className="text-[7.5px] font-mono font-bold text-zinc-400">
+                  <span className="text-[7.5px] font-ibm font-bold text-zinc-400">
                     %{player.fitness}
                   </span>
                   {player.isInjured && (
@@ -213,7 +213,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
       {/* Helper Prompt Bar */}
       <div className="mt-3 text-xs text-zinc-400 flex items-center gap-2">
-        <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse" />
+        <span className="w-2 h-2 rounded-full bg-[#b7ff35] animate-pulse" />
         <span>Oyuncuları sahada yer değiştirmek için iki mevkiye sırayla tıklayın veya <RefreshCw className="inline w-3 h-3 text-zinc-300 mx-0.5" /> simgesine basıp yedek oyuncu seçin.</span>
       </div>
 
@@ -225,7 +225,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
               <div>
                 <h3 className="text-lg font-black text-white">Oyuncu Değişikliği</h3>
                 <p className="text-xs text-zinc-400">
-                  <span className="text-[#00F5A0] font-bold">{selectedSlot.role}</span> mevkisi için yedek veya rezerv oyuncu seçin.
+                  <span className="text-[#b7ff35] font-bold">{selectedSlot.role}</span> mevkisi için yedek veya rezerv oyuncu seçin.
                 </p>
               </div>
               <button
@@ -280,7 +280,7 @@ export const TacticsPitch: React.FC<TacticsPitchProps> = ({
 
                     <div className="flex items-center gap-3">
                       <StatBadge value={p.overall} size="md" />
-                      <button className="px-3 py-1.5 rounded-lg bg-[#00F5A0] text-black text-xs font-bold hover:bg-[#00E590]">
+                      <button className="px-3 py-1.5 rounded-lg bg-[#b7ff35] text-black text-xs font-bold hover:bg-[#9bea27]">
                         Sahaya Al
                       </button>
                     </div>

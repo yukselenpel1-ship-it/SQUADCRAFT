@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Bell, Settings, User, Menu, X, Shield } from 'lucide-react';
 import Link from 'next/link';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 interface SquadCraftNavbarProps {
   activeTab?: string;
@@ -13,20 +14,21 @@ interface SquadCraftNavbarProps {
 }
 
 export function SquadCraftNavbar({
-  activeTab = 'Home',
+  activeTab,
   onTabChange,
   onOpenSettings,
   onOpenProfile,
 }: SquadCraftNavbarProps) {
+  const { t } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
-    { label: 'Home', href: '#hero' },
-    { label: 'Career', href: '#career-preview' },
-    { label: 'Draft League', href: '#draft-preview' },
-    { label: 'Club', href: '#tactics' },
-    { label: 'Transfers', href: '#transfers' },
-    { label: 'Competition', href: '#league' },
+    { key: 'home', label: t.navHome, href: '#hero' },
+    { key: 'career', label: t.navCareer, href: '#career-preview' },
+    { key: 'draft', label: t.navDraft, href: '#draft-preview' },
+    { key: 'club', label: t.navClub, href: '#tactics' },
+    { key: 'transfers', label: t.navTransfers, href: '#transfers' },
+    { key: 'competition', label: t.navCompetition, href: '#league' },
   ];
 
   return (
@@ -57,10 +59,10 @@ export function SquadCraftNavbar({
         {/* Center: Desktop Navigation Links */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => {
-            const isActive = activeTab === link.label;
+            const isActive = activeTab === link.label || activeTab === link.key;
             return (
               <a
-                key={link.label}
+                key={link.key}
                 href={link.href}
                 onClick={() => onTabChange?.(link.label)}
                 className={`relative font-inter text-[13px] tracking-wide py-2 transition-colors duration-150 ${
@@ -87,7 +89,7 @@ export function SquadCraftNavbar({
           <button
             type="button"
             className="relative p-2 rounded-[4px] text-[#8b958d] hover:text-[#f2f5f2] hover:bg-white/5 transition-colors cursor-pointer"
-            title="Notifications"
+            title={t.navNotifications}
           >
             <Bell size={18} />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#b7ff35] shadow-[0_0_6px_#b7ff35]" />
@@ -98,22 +100,22 @@ export function SquadCraftNavbar({
             type="button"
             onClick={onOpenSettings}
             className="p-2 rounded-[4px] text-[#8b958d] hover:text-[#f2f5f2] hover:bg-white/5 transition-colors cursor-pointer"
-            title="Graphics & Gameplay Settings"
+            title={t.navSettings}
           >
             <Settings size={18} />
           </button>
 
-          {/* Manager Profile */}
+          {/* Manager Profile (Steve) */}
           <button
             type="button"
             onClick={onOpenProfile}
             className="flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-[#0c1410] border border-white/10 hover:border-[#b7ff35]/40 transition-colors cursor-pointer"
           >
             <div className="w-6 h-6 rounded-full bg-[#b7ff35]/20 text-[#b7ff35] flex items-center justify-center font-ibm text-[11px] font-bold">
-              OG
+              ST
             </div>
             <span className="font-barlow font-bold text-[15px] text-[#f2f5f2] tracking-wide">
-              OGUZHAN
+              STEVE
             </span>
           </button>
         </div>
@@ -141,7 +143,7 @@ export function SquadCraftNavbar({
         >
           {navLinks.map((link) => (
             <a
-              key={link.label}
+              key={link.key}
               href={link.href}
               onClick={() => {
                 setMobileMenuOpen(false);
@@ -161,7 +163,7 @@ export function SquadCraftNavbar({
               }}
               className="flex-1 py-2.5 rounded bg-white/5 border border-white/10 text-center font-ibm text-[12px] text-[#f2f5f2]"
             >
-              SETTINGS
+              {t.settingsTitle}
             </button>
             <button
               type="button"
@@ -171,7 +173,7 @@ export function SquadCraftNavbar({
               }}
               className="flex-1 py-2.5 rounded bg-[#b7ff35] text-[#050806] font-barlow font-bold text-[16px] tracking-wider text-center"
             >
-              OGUZHAN (MANAGER)
+              STEVE ({t.navManagerTitle})
             </button>
           </div>
         </div>

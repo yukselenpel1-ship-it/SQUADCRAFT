@@ -91,19 +91,19 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 overflow-y-auto">
-      <div className="relative bg-[#07101C]/95 border border-[#14233A] rounded-3xl w-full max-w-2xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl p-6 text-white my-8 max-h-[90vh] overflow-y-auto">
+      <div className="relative bg-[#0d120f]/95 border border-white/10 rounded-3xl w-full max-w-2xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl p-6 text-white my-8 max-h-[90vh] overflow-y-auto">
         {/* Top neon accent line */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#b7ff35] to-[#17e5c2]" />
 
         {/* Header & Tabs */}
-        <div className="flex items-center justify-between border-b border-[#14233A] pb-4 mb-4">
+        <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setMode('feedback')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
                 mode === 'feedback'
-                  ? 'bg-[#00F5A0] text-black shadow-md font-black'
-                  : 'bg-[#081325] text-zinc-400 hover:text-white border border-[#14233A]'
+                  ? 'bg-[#b7ff35] text-black shadow-md font-black'
+                  : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10'
               }`}
             >
               ⭐ Kapalı Alfa Anketi
@@ -113,7 +113,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 mode === 'bug_report'
                   ? 'bg-rose-500 text-white shadow-md font-black'
-                  : 'bg-[#081325] text-zinc-400 hover:text-white border border-[#14233A]'
+                  : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10'
               }`}
             >
               <span>🐛</span> Hızlı Hata Bildir
@@ -242,7 +242,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
           <form onSubmit={handleSubmitBug} className="space-y-4">
             <div className="p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs space-y-1">
               <div className="font-semibold text-slate-300">Otomatik Eklenen Teşhis Bilgileri:</div>
-              <div className="text-[11px] text-slate-500 font-mono">
+              <div className="text-[11px] text-slate-500 font-ibm">
                 Sürüm: {APP_VERSION} • Sayfa: {route} • Faz: {gamePhase} • Durum: v{stateVersion}
               </div>
               <div className="text-[10px] text-emerald-400">

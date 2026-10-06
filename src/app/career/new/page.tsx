@@ -2,14 +2,12 @@
 
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useGame } from '@/lib/context/GameContext';
 import { MOCK_CLUBS, MOCK_PLAYERS } from '@/lib/data/mockData';
 import { ClubBadge } from '@/components/ui/ClubBadge';
 import { CareerDifficulty, CareerSetupConfig } from '@/lib/career/types';
 import { APP_VERSION } from '@/lib/version';
-import { FeedbackModal } from '@/components/draft/FeedbackModal';
 import {
   Trophy,
   Shield,
@@ -18,11 +16,16 @@ import {
   Sparkles,
   Target,
   Settings,
-  MessageSquare,
-  Radio,
   Check,
   Zap,
   AlertTriangle,
+  User,
+  Compass,
+  Radio,
+  Layers,
+  Flame,
+  Award,
+  Wallet,
 } from 'lucide-react';
 
 const FICTIONAL_NATIONALITIES = [
@@ -37,10 +40,10 @@ const FICTIONAL_NATIONALITIES = [
 ];
 
 const TACTICAL_STYLES = [
-  { id: 'Gegenpress', name: 'Gegenpress', desc: 'Yoğun ön alan baskısı ve topu kaybeder kaybetmez hızlı geri kazanma.' },
+  { id: 'Gegenpress', name: 'Gegenpress', desc: 'Yoğun ön alan baskısı ve topu kaybeder kaybetmez şok geri kazanım.' },
   { id: 'Tiki-Taka', name: 'Tiki-Taka', desc: 'Kısa paslarla oyuna hükmetme, sabırlı hücum ve alan kontrolü.' },
-  { id: 'Kontratak', name: 'Hızlı Kontratak', desc: 'Kati savunma disiplini ve savunma arkasına hızlı geçiş hücumları.' },
-  { id: 'Dengeli', name: 'Dengeli & Esnek', desc: 'Rakibe ve maçın durumuna göre taktiksel uyum sağlayan esnek anlayış.' },
+  { id: 'Kontratak', name: 'Hızlı Kontratak', desc: 'Kati savunma disiplini ve savunma arkasına hızlı geçiş akınları.' },
+  { id: 'Dengeli', name: 'Dengeli & Esnek', desc: 'Rakibe ve maçın gidişatına göre taktiksel uyum sağlayan esnek anlayış.' },
   { id: 'Kanat Hücumu', name: 'Kanat Hücumu', desc: 'Geniş alan kullanımı, kanat bindirmeleri ve ceza sahasına kilit ortalar.' },
 ];
 
@@ -69,10 +72,9 @@ export default function NewCareerPage() {
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4 | 5>(1);
-  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   // Step 1: Manager Profile
-  const [managerName, setManagerName] = useState('Oğuzhan Kaya');
+  const [managerName, setManagerName] = useState('Steve');
   const [nationality, setNationality] = useState('Alveria');
   const [age, setAge] = useState<number | string>(34);
   const [tacticalStyle, setTacticalStyle] = useState('Gegenpress');
@@ -80,7 +82,7 @@ export default function NewCareerPage() {
 
   // Step 2: League & Size
   const [leagueSize, setLeagueSize] = useState<10 | 14 | 18>(10);
-  const [selectedLeague, setSelectedLeague] = useState('alveria-elit-ligi');
+  const [selectedLeague] = useState('alveria-elit-ligi');
 
   // Step 3: Club Selection
   const [selectedClubId, setSelectedClubId] = useState<string>('kalyon-doruk');
@@ -99,7 +101,6 @@ export default function NewCareerPage() {
 
   // Step 4: Settings
   const [startingDate] = useState('2026-08-01');
-  const [transferWindowOpen] = useState(true);
 
   // Compute club statistics helper
   const clubStatsMap = useMemo(() => {
@@ -132,7 +133,7 @@ export default function NewCareerPage() {
       const finalAge = typeof age === 'number' ? age : Number(age) || 35;
       const setup: CareerSetupConfig = {
         managerProfile: {
-          name: managerName.trim() || 'Menajer',
+          name: managerName.trim() || 'Steve',
           nationality,
           age: Math.min(75, Math.max(21, finalAge)),
           tacticalStyle,
@@ -162,944 +163,661 @@ export default function NewCareerPage() {
     executeCareerCreation();
   }, [hasCareerSave, executeCareerCreation]);
 
-  // Keyboard navigation for step progression
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isFeedbackOpen || e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) {
-        return;
-      }
-
-      if (e.key === 'Enter') {
-        if (currentStep < 5) {
-          setCurrentStep((prev) => (prev + 1) as any);
-        } else if (currentStep === 5) {
-          handleStartCareer();
-        }
-      } else if (e.key === 'Escape') {
-        if (currentStep > 1) {
-          setCurrentStep((prev) => (prev - 1) as any);
-        } else {
-          router.push('/');
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentStep, isFeedbackOpen, handleStartCareer, router]);
-
   const stepLabels = [
-    { num: 1, label: 'PROFİL' },
-    { num: 2, label: 'LİG' },
-    { num: 3, label: 'KULÜP SEÇİMİ' },
-    { num: 4, label: 'AYARLAR' },
-    { num: 5, label: 'ONAY & BAŞLAT' },
+    { num: 1, id: '01', title: 'PROFILE', desc: 'Menajer Kimliği' },
+    { num: 2, id: '02', title: 'LEAGUE', desc: 'Format & Boyut' },
+    { num: 3, id: '03', title: 'CLUB', desc: 'Kulüp Seçimi' },
+    { num: 4, id: '04', title: 'SETTINGS', desc: 'Sezon Ayarları' },
+    { num: 5, id: '05', title: 'CONFIRM', desc: 'Kariyeri Başlat' },
   ];
 
   return (
-    <div className="relative min-h-screen w-full bg-[#040814] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
-      {/* ==================================================================== */}
-      {/* 1. SHARP STADIUM ARENA BACKGROUND (NO BLUR, CRISP GRAPHITE & LIGHTS) */}
-      {/* ==================================================================== */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
-      >
-        {/* High-contrast crisp sports vignette: zero blur */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#040814]/85 via-transparent to-[#040814]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#040814]/40 to-[#040814]/90" />
+    <div className="relative min-h-screen w-full bg-[#050706] text-[#f3f6f3] flex flex-col justify-between overflow-x-hidden select-none font-inter antialiased">
+      {/* Dynamic Stadium Tunnel Lighting Ambience */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div
+          className="absolute inset-0 transition-opacity duration-1000"
+          style={{
+            background: `radial-gradient(ellipse at 50% 10%, rgba(184, 255, 61, ${0.04 * currentStep}), transparent 70%),
+                         radial-gradient(ellipse at 15% 40%, rgba(33, 223, 189, ${0.03 * currentStep}), transparent 60%),
+                         #050706`,
+          }}
+        />
+
+        {/* Stadium Tunnel Floodlights Activation Bar (1 to 5 lights) */}
+        <div className="absolute top-0 left-0 right-0 h-1 flex gap-1 px-8 opacity-75">
+          {[1, 2, 3, 4, 5].map((light) => (
+            <div
+              key={light}
+              className={`flex-1 h-full transition-all duration-700 ${
+                light <= currentStep
+                  ? 'bg-[#b8ff3d] shadow-[0_0_12px_#b8ff3d]'
+                  : 'bg-white/10'
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* ==================================================================== */}
-      {/* 2. SQUADCRAFT BROADCAST TOP NAVIGATION BAR                           */}
-      {/* ==================================================================== */}
-      <header className="relative z-20 w-full border-b border-[#14233A] bg-[#07101C]/95 backdrop-blur-md px-4 sm:px-8 py-3">
+      {/* Top Terminal Header */}
+      <header className="relative z-20 w-full border-b border-white/10 bg-[#090d0a]/90 backdrop-blur-md px-6 lg:px-12 py-3.5">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
-          {/* Left: Brand Plate & Back Button */}
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-4">
             <Link
               href="/"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-[#0d130f] hover:bg-white/5 border border-white/10 text-[#8f9a91] hover:text-[#f3f6f3] text-xs font-ibm font-bold uppercase transition-all"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>ANA MENÜ</span>
             </Link>
 
-            <div className="h-6 w-px bg-[#14233A] hidden sm:block" />
-
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="relative h-8 sm:h-9 w-11 sm:w-13 flex items-center justify-center">
-                <Image
-                  src="/images/sc-emblem-official-hd.png"
-                  alt="SquadCraft SC"
-                  width={52}
-                  height={36}
-                  className="object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform"
-                  priority
-                />
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-[3px] bg-[#0d1611] border border-[#b8ff3d]/60 flex items-center justify-center shadow-[0_0_10px_rgba(184,255,61,0.3)]">
+                <span className="font-barlow font-extrabold text-[15px] text-[#b8ff3d]">SC</span>
               </div>
-              <div className="flex flex-col justify-center">
-                <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-lg sm:text-xl leading-none">
-                  <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
-                  <span className="text-[#00F5A0]">26</span>
-                </div>
-                <span className="text-[9px] font-mono font-bold tracking-widest text-zinc-400 uppercase mt-0.5">
-                  CAREER CREATOR
+              <div>
+                <span className="font-barlow font-extrabold text-[18px] text-[#f3f6f3] tracking-wider uppercase leading-none block">
+                  MANAGER CREATION TERMINAL
+                </span>
+                <span className="font-ibm text-[10px] text-[#8f9a91] tracking-widest uppercase">
+                  CAREER ENGINE // STEP {currentStep} OF 5
                 </span>
               </div>
-            </Link>
+            </div>
           </div>
 
-          {/* Center: Tactical Category Switcher Tabs */}
-          <nav className="hidden lg:flex items-center gap-1.5 bg-[#081325] p-1 rounded-2xl border border-[#14233A]">
-            <Link
-              href="/"
-              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-white hover:bg-[#07101C] transition-all"
-            >
-              ANA MERKEZ
-            </Link>
-            <button
-              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl bg-[#00F5A0] text-[#040814] shadow-[0_0_15px_rgba(0,245,160,0.3)]"
-            >
-              KARİYER MODU
-            </button>
-            <Link
-              href="/draft"
-              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-[#00D4FF] hover:bg-[#07101C] transition-all"
-            >
-              DRAFT LEAGUE
-            </Link>
-            <Link
-              href="/settings"
-              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-white hover:bg-[#07101C] transition-all"
-            >
-              AYARLAR
-            </Link>
-          </nav>
-
-          {/* Right: Telemetry & Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-[#081325] rounded-xl border border-[#14233A] text-[10px] font-mono font-bold text-zinc-300">
-              <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse" />
-              <span>SİSTEM: ÇEVRİMİÇİ</span>
+          <div className="hidden sm:flex items-center gap-3 font-ibm text-[11px] text-[#8f9a91]">
+            <span className="text-[#8f9a91]">TUNNEL STATUS:</span>
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <span
+                  key={i}
+                  className={`w-2 h-2 rounded-full ${
+                    i <= currentStep ? 'bg-[#b8ff3d] shadow-[0_0_6px_#b8ff3d]' : 'bg-white/10'
+                  }`}
+                />
+              ))}
             </div>
-
-            <button
-              onClick={() => setIsFeedbackOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
-            >
-              <MessageSquare className="w-3.5 h-3.5 text-[#00F5A0]" />
-              <span className="hidden sm:inline">Geri Bildirim</span>
-            </button>
-
-            <Link
-              href="/settings"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
-            >
-              <Settings className="w-3.5 h-3.5 text-zinc-400" />
-              <span className="hidden sm:inline">Ayarlar</span>
-            </Link>
+            <span className="text-[#b8ff3d] font-bold">LIGHT {currentStep}/5 ON</span>
           </div>
         </div>
       </header>
 
-      {/* ==================================================================== */}
-      {/* 3. SQUADCRAFT CAREER SETUP STEPPER (ATHLETIC HORIZONTAL BAR)         */}
-      {/* ==================================================================== */}
-      <div className="relative z-20 w-full bg-[#07101C]/90 border-b border-[#14233A] px-4 sm:px-8 py-2.5">
-        <div className="max-w-[1520px] mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-1.5 sm:gap-2.5 overflow-x-auto py-1">
-            {stepLabels.map((s) => {
-              const isActive = currentStep === s.num;
-              const isPassed = currentStep > s.num;
-              return (
-                <button
-                  key={s.num}
-                  onClick={() => setCurrentStep(s.num as any)}
-                  className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold uppercase tracking-wider transition-all ${
-                    isActive
-                      ? 'bg-[#00F5A0] text-[#040814] font-black shadow-[0_0_15px_rgba(0,245,160,0.3)]'
-                      : isPassed
-                      ? 'bg-[#081325] text-[#00F5A0] border border-[#14233A] hover:border-[#00F5A0]/40'
-                      : 'bg-[#07101C] text-zinc-500 border border-[#14233A]'
-                  }`}
-                >
-                  <span>{s.num < 10 ? `0${s.num}` : s.num}</span>
-                  <span className="hidden sm:inline">//</span>
-                  <span>{s.label}</span>
-                </button>
-              );
-            })}
+      {/* Main 3-Column Terminal Layout */}
+      <main className="relative z-10 flex-1 max-w-[1600px] w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column (3 cols): Step Navigator */}
+        <div className="lg:col-span-3 bg-[#090d0a]/95 border border-white/10 rounded-[8px] p-4 space-y-2 shadow-xl">
+          <div className="px-3 py-2 font-ibm text-[10px] text-[#8f9a91] uppercase tracking-widest border-b border-white/5">
+            TERMINAL SEQUENCE
           </div>
 
-          <div className="hidden md:flex items-center gap-2 text-[11px] font-mono text-zinc-400">
-            <span>SEZON:</span>
-            <span className="text-[#00F5A0] font-bold">2026/27</span>
-            <span className="text-zinc-600">•</span>
-            <span>MOD:</span>
-            <span className="text-white font-bold">TEK OYUNCULU</span>
-          </div>
+          {stepLabels.map((s) => {
+            const isCurrent = currentStep === s.num;
+            const isCompleted = currentStep > s.num;
+
+            return (
+              <button
+                key={s.num}
+                type="button"
+                onClick={() => {
+                  if (isCompleted || s.num <= currentStep) {
+                    setCurrentStep(s.num as any);
+                  }
+                }}
+                className={`w-full text-left p-3 rounded-[4px] border transition-all cursor-pointer flex items-center justify-between ${
+                  isCurrent
+                    ? 'bg-[#b8ff3d]/15 border-[#b8ff3d] text-[#f3f6f3] shadow-[0_0_15px_rgba(184,255,61,0.2)]'
+                    : isCompleted
+                    ? 'bg-white/[0.03] border-white/10 text-[#f3f6f3] hover:border-white/20'
+                    : 'bg-transparent border-transparent text-[#8f9a91]/50 cursor-not-allowed'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`font-ibm font-bold text-[11px] px-2 py-0.5 rounded ${
+                      isCurrent
+                        ? 'bg-[#b8ff3d] text-[#050706]'
+                        : isCompleted
+                        ? 'bg-[#21dfbd]/20 text-[#21dfbd]'
+                        : 'bg-white/5 text-[#8f9a91]'
+                    }`}
+                  >
+                    {s.id}
+                  </span>
+                  <div>
+                    <div className="font-barlow font-extrabold text-[15px] uppercase tracking-wide leading-none">
+                      {s.title}
+                    </div>
+                    <div className="font-ibm text-[10px] text-[#8f9a91] mt-1">{s.desc}</div>
+                  </div>
+                </div>
+
+                {isCompleted && <Check size={16} className="text-[#21dfbd] stroke-[3]" />}
+              </button>
+            );
+          })}
         </div>
-      </div>
 
-      {/* ==================================================================== */}
-      {/* 4. MAIN STEP CONTENT CONTAINER                                      */}
-      {/* ==================================================================== */}
-      <main className="relative z-20 max-w-[1520px] w-full mx-auto px-4 sm:px-8 py-4 sm:py-6 my-auto flex flex-col items-center">
-        {/* =================================================================== */}
-        {/* STEP 1: MENAJER PROFİLİ                                             */}
-        {/* =================================================================== */}
-        {currentStep === 1 && (
-          <div className="w-full max-w-4xl space-y-6">
-            <div className="text-center space-y-1.5">
-              <span className="px-2.5 py-0.5 bg-[#00F5A0] text-[#040814] text-[10px] font-black uppercase tracking-widest rounded-lg">
-                STEP 01 // MANAGER CREATION
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tight text-white">
-                MENAJER PROFİLİNİ OLUŞTUR
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 font-medium max-w-xl mx-auto">
-                Teknik direktör kimliğini, taktiksel felsefeni ve kariyer zorluk seviyeni belirle.
-              </p>
-            </div>
-
-            <div className="sc-panel rounded-2xl border border-[#14233A] p-6 sm:p-8 space-y-6 shadow-2xl">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+        {/* Center Column (6 cols): Current Configuration Module */}
+        <div className="lg:col-span-6 bg-[#090d0a]/95 border border-white/10 rounded-[8px] p-6 shadow-2xl min-h-[560px] flex flex-col justify-between">
+          <div>
+            {/* Step 1: Manager Identity */}
+            {currentStep === 1 && (
+              <div className="space-y-6">
                 <div>
-                  <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer Adı & Soyadı <span className="text-[#00F5A0]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={managerName}
-                    onChange={(e) => setManagerName(e.target.value)}
-                    placeholder="Örn: Oğuzhan Kaya"
-                    maxLength={30}
-                    className="w-full bg-[#07101C] border border-[#14233A] rounded-xl focus:border-[#00F5A0] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors"
-                  />
+                  <span className="font-ibm text-[11px] text-[#b8ff3d] tracking-widest uppercase font-semibold">
+                    STEP 01 // MANAGER IDENTITY
+                  </span>
+                  <h2 className="font-barlow font-extrabold text-[32px] sm:text-[40px] text-[#f3f6f3] tracking-tight leading-none mt-1 uppercase">
+                    CREATE YOUR MANAGER IDENTITY
+                  </h2>
+                  <p className="font-inter text-[13px] text-[#8f9a91] mt-2">
+                    Menajer kimliğini, taktiksel vizyonunu ve kariyer mücadele seviyeni belirle.
+                  </p>
                 </div>
 
-                <div>
-                  <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Milliyet <span className="text-[#00F5A0]">*</span>
-                  </label>
-                  <select
-                    value={nationality}
-                    onChange={(e) => setNationality(e.target.value)}
-                    className="w-full bg-[#07101C] border border-[#14233A] rounded-xl focus:border-[#00F5A0] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors cursor-pointer"
-                  >
-                    {FICTIONAL_NATIONALITIES.map((n) => (
-                      <option key={n} value={n}>
-                        {n}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                <div className="space-y-4 font-ibm text-[12px]">
+                  <div>
+                    <label className="text-[#8f9a91] uppercase block mb-1.5 font-bold">MENAJER ADI</label>
+                    <input
+                      type="text"
+                      value={managerName}
+                      onChange={(e) => setManagerName(e.target.value)}
+                      placeholder="Örn: Steve"
+                      className="w-full bg-[#0d130f] border border-white/10 focus:border-[#b8ff3d] px-4 py-2.5 rounded-[4px] text-[#f3f6f3] font-inter text-[14px] outline-none transition-all"
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer Yaşı <span className="text-[#00F5A0]">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    onBlur={() => {
-                      const num = Number(age);
-                      if (!num || isNaN(num) || num < 21) setAge(21);
-                      else if (num > 75) setAge(75);
-                      else setAge(num);
-                    }}
-                    min={21}
-                    max={75}
-                    placeholder="34"
-                    className="w-full bg-[#07101C] border border-[#14233A] rounded-xl focus:border-[#00F5A0] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors"
-                  />
-                </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="text-[#8f9a91] uppercase block mb-1.5 font-bold">UYRUK</label>
+                      <select
+                        value={nationality}
+                        onChange={(e) => setNationality(e.target.value)}
+                        className="w-full bg-[#0d130f] border border-white/10 focus:border-[#b8ff3d] px-3 py-2.5 rounded-[4px] text-[#f3f6f3] font-inter text-[13px] outline-none transition-all cursor-pointer"
+                      >
+                        {FICTIONAL_NATIONALITIES.map((n) => (
+                          <option key={n} value={n} className="bg-[#090d0a]">
+                            {n}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                <div>
-                  <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Taktiksel Felsefe <span className="text-[#00F5A0]">*</span>
-                  </label>
-                  <select
-                    value={tacticalStyle}
-                    onChange={(e) => setTacticalStyle(e.target.value)}
-                    className="w-full bg-[#07101C] border border-[#14233A] rounded-xl focus:border-[#00F5A0] px-4 py-3 text-sm text-white font-medium focus:outline-none transition-colors cursor-pointer"
-                  >
-                    {TACTICAL_STYLES.map((t) => (
-                      <option key={t.id} value={t.id}>
-                        {t.name}
-                      </option>
-                    ))}
-                  </select>
+                    <div>
+                      <label className="text-[#8f9a91] uppercase block mb-1.5 font-bold">YAŞ</label>
+                      <input
+                        type="number"
+                        min={21}
+                        max={75}
+                        value={age}
+                        onChange={(e) => setAge(e.target.value)}
+                        className="w-full bg-[#0d130f] border border-white/10 focus:border-[#b8ff3d] px-3 py-2.5 rounded-[4px] text-[#f3f6f3] font-inter text-[14px] outline-none transition-all"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="text-[#8f9a91] uppercase block mb-1.5 font-bold">
+                      TAKTIKSEL FELSEFE
+                    </label>
+                    <select
+                      value={tacticalStyle}
+                      onChange={(e) => setTacticalStyle(e.target.value)}
+                      className="w-full bg-[#0d130f] border border-white/10 focus:border-[#b8ff3d] px-3 py-2.5 rounded-[4px] text-[#f3f6f3] font-inter text-[13px] outline-none transition-all cursor-pointer"
+                    >
+                      {TACTICAL_STYLES.map((t) => (
+                        <option key={t.id} value={t.id} className="bg-[#090d0a]">
+                          {t.name} — {t.desc}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* 3 Large Selectable Difficulty Modules */}
+                  <div className="pt-2">
+                    <label className="text-[#8f9a91] uppercase block mb-2 font-bold">
+                      KARİYER ZORLUĞU (DIFFICULTY MODULE)
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      {[
+                        {
+                          id: 'Rahat' as CareerDifficulty,
+                          label: 'RELAXED',
+                          sub: 'Rahat & Hızlı',
+                          desc: 'Bonus bütçe +%25, sabırlı yönetim kurulu, hızlı oyuncu gelişimi.',
+                          color: 'text-[#21dfbd]',
+                          border: 'border-[#21dfbd]',
+                          bg: 'bg-[#21dfbd]/15',
+                        },
+                        {
+                          id: 'Standart' as CareerDifficulty,
+                          label: 'STANDARD',
+                          sub: 'Dengeli & Gerçekçi',
+                          desc: 'Resmi Alveria lig standartları, dengeli transfer pazarı.',
+                          color: 'text-[#b8ff3d]',
+                          border: 'border-[#b8ff3d]',
+                          bg: 'bg-[#b8ff3d]/15',
+                        },
+                        {
+                          id: 'Zorlu' as CareerDifficulty,
+                          label: 'HARDCORE',
+                          sub: 'Kıran Kırana',
+                          desc: 'Kısıtlı bütçe, katı yönetim beklentisi, agresif rakip yapay zeka.',
+                          color: 'text-[#ff5365]',
+                          border: 'border-[#ff5365]',
+                          bg: 'bg-[#ff5365]/15',
+                        },
+                      ].map((item) => {
+                        const isSelected = difficulty === item.id;
+                        return (
+                          <div
+                            key={item.id}
+                            onClick={() => setDifficulty(item.id)}
+                            className={`p-3.5 rounded-[6px] border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                              isSelected
+                                ? `${item.border} ${item.bg} shadow-lg shadow-black/50`
+                                : 'border-white/10 bg-[#0d130f] hover:border-white/20'
+                            }`}
+                          >
+                            <div>
+                              <div className="flex items-center justify-between mb-1">
+                                <span className={`font-barlow font-extrabold text-[17px] ${item.color}`}>
+                                  {item.label}
+                                </span>
+                                {isSelected && <Check size={14} className={item.color} />}
+                              </div>
+                              <div className="font-ibm text-[10px] text-[#8f9a91] uppercase">
+                                {item.sub}
+                              </div>
+                              <p className="font-inter text-[11px] text-[#8f9a91] mt-2 leading-tight">
+                                {item.desc}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
+            )}
 
-              {/* Difficulty Options */}
-              <div>
-                <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-2">
-                  Kariyer Zorluk Seviyesi
-                </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* Step 2: League & Size */}
+            {currentStep === 2 && (
+              <div className="space-y-6">
+                <div>
+                  <span className="font-ibm text-[11px] text-[#21dfbd] tracking-widest uppercase font-semibold">
+                    STEP 02 // LEAGUE CONFIGURATION
+                  </span>
+                  <h2 className="font-barlow font-extrabold text-[32px] sm:text-[40px] text-[#f3f6f3] tracking-tight leading-none mt-1 uppercase">
+                    SELECT LEAGUE STRUCTURE
+                  </h2>
+                  <p className="font-inter text-[13px] text-[#8f9a91] mt-2">
+                    SquadCraft evreninin lig boyutunu ve sezon maraton uzunluğunu belirleyin.
+                  </p>
+                </div>
+
+                <div className="space-y-3 font-ibm text-[12px]">
                   {[
                     {
-                      id: 'Rahat',
-                      title: 'RAHAT',
-                      desc: '+%25 Transfer bütçesi, hoşgörülü yönetim ve hızlı gözlemleme.',
-                      badge: 'bg-cyan-950/80 text-[#00D4FF] border border-cyan-700/60',
+                      size: 10 as const,
+                      name: 'ALVERIA ELİT LİGİ',
+                      weeks: '18 Hafta',
+                      clubsCount: '10 Kulüp',
+                      desc: 'Yüksek tempolu lig maratonu ve ilk 3 sıra kıtasal kupa hakkı.',
                     },
                     {
-                      id: 'Standart',
-                      title: 'STANDART',
-                      desc: 'Dengeli gerçekçi simülasyon deneyimi ve standart bütçe dengesi.',
-                      badge: 'bg-emerald-950/80 text-[#00F5A0] border border-emerald-700/60',
+                      size: 14 as const,
+                      name: 'ALVERIA PREMIER LİGİ',
+                      weeks: '26 Hafta',
+                      clubsCount: '14 Kulüp',
+                      desc: 'Dengeli klasik lig maratonu ve ilk 4 sıra kıtasal kontenjan.',
+                      badge: 'POPÜLER',
                     },
                     {
-                      id: 'Zorlu',
-                      title: 'ZORLU',
-                      desc: '-%15 Transfer bütçesi, yüksek yönetim baskısı ve katı gözlem.',
-                      badge: 'bg-red-950/80 text-red-400 border border-red-700/60',
+                      size: 18 as const,
+                      name: 'ALVERIA SÜPER LİGİ',
+                      weeks: '34 Hafta',
+                      clubsCount: '18 Kulüp',
+                      desc: '34 haftalık büyük maraton ve ilk 5 sıra kıtasal kontenjan.',
                     },
-                  ].map((diff) => {
-                    const isSelected = difficulty === diff.id;
+                  ].map((l) => {
+                    const isSelected = leagueSize === l.size;
                     return (
                       <div
-                        key={diff.id}
-                        onClick={() => setDifficulty(diff.id as CareerDifficulty)}
-                        className={`p-4 rounded-xl border cursor-pointer transition-all ${
+                        key={l.size}
+                        onClick={() => setLeagueSize(l.size)}
+                        className={`p-4 rounded-[6px] border-2 cursor-pointer transition-all flex items-center justify-between ${
                           isSelected
-                            ? 'bg-[#081325] border-2 border-[#00F5A0] shadow-[0_0_20px_rgba(0,245,160,0.2)]'
-                            : 'bg-[#07101C] border-[#14233A] hover:border-zinc-600 opacity-80 hover:opacity-100'
+                            ? 'bg-[#b8ff3d]/10 border-[#b8ff3d] shadow-[0_0_15px_rgba(184,255,61,0.2)]'
+                            : 'bg-[#0d130f] border-white/10 hover:border-white/20'
                         }`}
                       >
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="text-sm font-black italic uppercase text-white">{diff.title}</h4>
-                          <span className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase rounded ${diff.badge}`}>
-                            {diff.id}
-                          </span>
+                        <div className="flex items-center gap-3">
+                          <Trophy size={20} className={isSelected ? 'text-[#b8ff3d]' : 'text-[#8f9a91]'} />
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-barlow font-extrabold text-[18px] text-[#f3f6f3]">
+                                {l.name}
+                              </span>
+                              {l.badge && (
+                                <span className="px-1.5 py-0.2 rounded bg-[#21dfbd] text-[#050706] font-bold text-[9px]">
+                                  {l.badge}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[11px] text-[#8f9a91] font-inter block">{l.desc}</span>
+                          </div>
                         </div>
-                        <p className="text-xs text-zinc-400 leading-relaxed">{diff.desc}</p>
+
+                        <div className="text-right">
+                          <span className="font-bold text-[#f3f6f3] block">{l.clubsCount}</span>
+                          <span className="text-[11px] text-[#8f9a91]">{l.weeks}</span>
+                        </div>
                       </div>
                     );
                   })}
                 </div>
               </div>
+            )}
 
-              <div className="flex items-center justify-between pt-4 border-t border-[#14233A]">
-                <Link
-                  href="/"
-                  className="px-5 py-2.5 rounded-xl bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-xs font-bold uppercase text-zinc-300 hover:text-white transition-all"
-                >
-                  ← İptal Et
-                </Link>
+            {/* Step 3: Club Selection */}
+            {currentStep === 3 && (
+              <div className="space-y-5">
+                <div>
+                  <span className="font-ibm text-[11px] text-[#b8ff3d] tracking-widest uppercase font-semibold">
+                    STEP 03 // CLUB SELECTION ({leagueSize} KULÜP)
+                  </span>
+                  <h2 className="font-barlow font-extrabold text-[32px] sm:text-[40px] text-[#f3f6f3] tracking-tight leading-none mt-1 uppercase">
+                    CHOOSE YOUR CLUB
+                  </h2>
+                  <p className="font-inter text-[13px] text-[#8f9a91] mt-1">
+                    Ligdeki kulüpleri incele ve yönetmek istediğin armayı seç.
+                  </p>
+                </div>
 
-                <button
-                  onClick={() => setCurrentStep(2)}
-                  className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-[#00F5A0] hover:bg-[#00F5A0]/90 text-[#040814] font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-[0_0_20px_rgba(0,245,160,0.3)]"
-                >
-                  <span>LİG SEÇİMİNE GEÇ</span>
-                  <ArrowRight className="w-4 h-4 stroke-[3]" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+                {/* Club Grid Tiles */}
+                <div className="grid grid-cols-2 gap-2.5 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
+                  {clubsInLeague.map((club) => {
+                    const isSelected = selectedClubId === club.id;
+                    const stats = clubStatsMap[club.id] || { avgOverall: 75, avgAge: 25 };
 
-        {/* =================================================================== */}
-        {/* STEP 2: LİG SEÇİMİ (10, 14 & 18 KULÜP SEÇENEKLERİ)                  */}
-        {/* =================================================================== */}
-        {currentStep === 2 && (
-          <div className="w-full max-w-4xl space-y-6">
-            <div className="text-center space-y-1.5">
-              <span className="px-2.5 py-0.5 bg-[#00F5A0] text-[#040814] text-[10px] font-black uppercase tracking-widest rounded-lg">
-                STEP 02 // LEAGUE SELECTION
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tight text-white">
-                LİG VE FORMAT SEÇİNİZ
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 font-medium max-w-xl mx-auto">
-                SquadCraft evreninin resmi lig formatını ve kulüp sayısını belirleyin.
-              </p>
-            </div>
-
-            <div className="space-y-4">
-              {[
-                {
-                  size: 10 as const,
-                  name: 'ALVERIA ELİT LİGİ',
-                  tier: 'KADEME 1 // KOMPAKT FORMAT',
-                  desc: '10 seçkin kulüp, 18 haftalık yüksek tempolu lig maratonu ve ilk 3 sıra kıtasal kupa hakkı.',
-                  weeks: '18 Hafta',
-                  clubsCount: '10 Kulüp',
-                  continental: 'İlk 3 Sıra',
-                  recommended: false,
-                },
-                {
-                  size: 14 as const,
-                  name: 'ALVERIA PREMIER LİGİ',
-                  tier: 'KADEME 1 // KLASİK FORMAT',
-                  desc: '14 iddialı kulüp, 26 haftalık dengeli lig maratonu ve ilk 4 sıra kıtasal kupa kontenjanı.',
-                  weeks: '26 Hafta',
-                  clubsCount: '14 Kulüp',
-                  continental: 'İlk 4 Sıra',
-                  recommended: true,
-                },
-                {
-                  size: 18 as const,
-                  name: 'ALVERIA SÜPER LİGİ',
-                  tier: 'KADEME 1 // BÜYÜK MARATON',
-                  desc: '18 profesyonel kulüp, 34 haftalık tam sezonluk dev maraton ve ilk 5 sıra kıtasal kupa kontenjanı.',
-                  weeks: '34 Hafta',
-                  clubsCount: '18 Kulüp',
-                  continental: 'İlk 5 Sıra',
-                  recommended: false,
-                },
-              ].map((league) => {
-                const isSelected = leagueSize === league.size;
-                return (
-                  <div
-                    key={league.size}
-                    onClick={() => setLeagueSize(league.size)}
-                    className={`p-5 rounded-2xl border-2 cursor-pointer transition-all ${
-                      isSelected
-                        ? 'sc-panel border-[#00F5A0] shadow-[0_0_25px_rgba(0,245,160,0.2)]'
-                        : 'bg-[#07101C]/90 border-[#14233A] hover:border-zinc-600 opacity-80 hover:opacity-100'
-                    }`}
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                        <div
-                          className={`w-12 h-12 rounded-xl flex items-center justify-center border font-black text-sm ${
-                            isSelected
-                              ? 'bg-[#00F5A0]/10 border-[#00F5A0]/40 text-[#00F5A0]'
-                              : 'bg-[#07101C] border-[#14233A] text-zinc-400'
-                          }`}
-                        >
-                          <Trophy className="w-6 h-6" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-xl font-black italic uppercase text-white">{league.name}</h3>
-                            <span
-                              className={`px-2 py-0.5 text-[9px] font-mono font-bold uppercase rounded ${
-                                isSelected ? 'bg-[#00F5A0] text-[#040814] font-black' : 'bg-[#081325] text-zinc-300 border border-[#14233A]'
-                              }`}
-                            >
-                              {league.size} KULÜP
-                            </span>
-                            {league.recommended && (
-                              <span className="px-2 py-0.5 bg-[#00D4FF] text-[#040814] text-[9px] font-black uppercase rounded">
-                                POPÜLER
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-xs text-zinc-400 mt-1">{league.desc}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3 self-end sm:self-center shrink-0">
-                        <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                          <div className="p-2 bg-[#07101C] rounded-xl border border-[#14233A]">
-                            <span className="block text-[9px] font-mono text-zinc-500 uppercase">Fikstür</span>
-                            <span className="font-bold text-white">{league.weeks}</span>
-                          </div>
-                          <div className="p-2 bg-[#07101C] rounded-xl border border-[#14233A]">
-                            <span className="block text-[9px] font-mono text-zinc-500 uppercase">Kıtasal</span>
-                            <span className="font-bold text-[#00F5A0]">{league.continental}</span>
-                          </div>
-                          <div className="p-2 bg-[#07101C] rounded-xl border border-[#14233A]">
-                            <span className="block text-[9px] font-mono text-zinc-500 uppercase">Kulüpler</span>
-                            <span className="font-bold text-white">{league.clubsCount}</span>
-                          </div>
-                        </div>
-
-                        <span
-                          className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all ${
-                            isSelected ? 'bg-[#00F5A0] text-[#040814] shadow-[0_0_15px_rgba(0,245,160,0.3)]' : 'bg-[#081325] text-zinc-400 border border-[#14233A]'
-                          }`}
-                        >
-                          {isSelected ? '✓ SEÇİLDİ' : 'SEÇ'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-
-              <div className="flex items-center justify-between pt-4 border-t border-[#14233A]">
-                <button
-                  onClick={() => setCurrentStep(1)}
-                  className="px-5 py-2.5 rounded-xl bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-xs font-bold uppercase text-zinc-300 hover:text-white transition-all"
-                >
-                  ← Geri
-                </button>
-
-                <button
-                  onClick={() => setCurrentStep(3)}
-                  className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-[#00F5A0] hover:bg-[#00F5A0]/90 text-[#040814] font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-[0_0_20px_rgba(0,245,160,0.3)]"
-                >
-                  <span>KULÜP SEÇİMİNE GEÇ ({leagueSize} KULÜP)</span>
-                  <ArrowRight className="w-4 h-4 stroke-[3]" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* =================================================================== */}
-        {/* STEP 3: KULÜP SEÇİMİ (ATHLETIC SELECTOR)                            */}
-        {/* =================================================================== */}
-        {currentStep === 3 && (
-          <div className="w-full max-w-6xl space-y-5">
-            <div className="text-center space-y-1.5">
-              <span className="px-2.5 py-0.5 bg-[#00F5A0] text-[#040814] text-[10px] font-black uppercase tracking-widest rounded-lg">
-                STEP 03 // CLUB SELECTION ({leagueSize} KULÜP)
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tight text-white">
-                YÖNETECEĞİNİZ KULÜBÜ SEÇİN
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 font-medium max-w-xl mx-auto">
-                Seçtiğiniz {leagueSize} kulüplü lig içerisinden takımınızı belirleyin.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-              {/* Club Selection List (7 Cols) */}
-              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[580px] overflow-y-auto pr-1">
-                {clubsInLeague.map((club) => {
-                  const isSelected = selectedClubId === club.id;
-                  const stats = clubStatsMap[club.id] || { avgOverall: 75, avgAge: 25 };
-                  const exp = BOARD_EXPECTATIONS[club.id] || { target: 'İlk 4' };
-
-                  return (
-                    <div
-                      key={club.id}
-                      onClick={() => setSelectedClubId(club.id)}
-                      className={`p-4 rounded-2xl border cursor-pointer transition-all flex flex-col justify-between ${
-                        isSelected
-                          ? 'bg-[#0E1728] border-2 border-[#00F5A0] shadow-[0_0_20px_rgba(0,245,160,0.2)] ring-1 ring-[#00F5A0]/40'
-                          : 'sc-panel border-[#14233A] hover:border-zinc-500'
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center gap-3 mb-3">
+                    return (
+                      <div
+                        key={club.id}
+                        onClick={() => setSelectedClubId(club.id)}
+                        className={`p-3 rounded-[6px] border cursor-pointer transition-all flex flex-col justify-between ${
+                          isSelected
+                            ? 'bg-[#b8ff3d]/15 border-2 border-[#b8ff3d] shadow-[0_0_15px_rgba(184,255,61,0.25)]'
+                            : 'bg-[#0d130f] border-white/10 hover:border-white/20'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 mb-2">
                           <ClubBadge
                             code={club.code}
                             name={club.name}
                             clubId={club.id}
                             primaryColor={club.primaryColor}
                             secondaryColor={club.secondaryColor}
-                            size="md"
+                            size="sm"
                           />
                           <div className="truncate">
-                            <h4 className="text-sm font-black italic uppercase text-white truncate">{club.name}</h4>
-                            <span className="text-xs text-zinc-400 font-mono">{club.city}</span>
+                            <span className="font-barlow font-bold text-[14px] text-[#f3f6f3] uppercase block truncate leading-none">
+                              {club.name}
+                            </span>
+                            <span className="font-ibm text-[10px] text-[#8f9a91]">{club.city}</span>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-1.5 py-2 border-t border-b border-[#14233A] text-center text-xs">
-                          <div>
-                            <span className="block text-[10px] font-mono text-zinc-500 uppercase">Kadro</span>
-                            <span className="font-black text-white">{stats.avgOverall} OVR</span>
-                          </div>
-                          <div>
-                            <span className="block text-[10px] font-mono text-zinc-500 uppercase">Bütçe</span>
-                            <span className="font-black text-[#00F5A0]">€{(club.transferBudget / 1000000).toFixed(1)}M</span>
-                          </div>
-                          <div>
-                            <span className="block text-[10px] font-mono text-zinc-500 uppercase">İtibar</span>
-                            <span className="font-black text-amber-400">%{club.reputation}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="mt-3 flex items-center justify-between text-[11px]">
-                        <span className="text-zinc-400 truncate">Hedef: <strong className="text-zinc-200">{exp.target}</strong></span>
-                        <span
-                          className={`px-2.5 py-1 text-[9px] font-black uppercase rounded-lg transition-all ${
-                            isSelected ? 'bg-[#00F5A0] text-[#040814]' : 'bg-[#07101C] text-zinc-400 border border-[#14233A]'
-                          }`}
-                        >
-                          {isSelected ? 'SEÇİLDİ' : 'SEÇ'}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Large Featured SquadCraft Club Card (5 Cols) */}
-              <div className="lg:col-span-5 sc-panel rounded-2xl border-2 border-[#00F5A0]/60 p-6 flex flex-col justify-between shadow-[0_0_30px_rgba(0,245,160,0.15)] relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
-
-                <div className="space-y-5">
-                  <div className="flex items-center gap-4">
-                    <ClubBadge
-                      code={highlightedClub.code}
-                      name={highlightedClub.name}
-                      clubId={highlightedClub.id}
-                      primaryColor={highlightedClub.primaryColor}
-                      secondaryColor={highlightedClub.secondaryColor}
-                      size="xl"
-                    />
-                    <div>
-                      <span className="px-2 py-0.5 bg-[#00F5A0] text-[#040814] text-[9px] font-black uppercase rounded">
-                        {highlightedClub.foundedYear} KURULUŞ
-                      </span>
-                      <h3 className="text-2xl font-black italic uppercase text-white mt-1 leading-tight">
-                        {highlightedClub.name}
-                      </h3>
-                      <p className="text-xs text-zinc-400 font-mono mt-0.5">
-                        {highlightedClub.city} • Stadyum: {highlightedClub.stadium} ({highlightedClub.stadiumCapacity.toLocaleString('tr-TR')} Kişilik)
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Key Metrics */}
-                  <div className="grid grid-cols-2 gap-2.5 bg-[#07101C] p-4 rounded-xl border border-[#14233A]">
-                    <div>
-                      <span className="text-[10px] uppercase font-mono font-bold text-zinc-400 block">Transfer Bütçesi</span>
-                      <span className="text-xl font-black italic text-[#00F5A0]">
-                        €{(highlightedClub.transferBudget / 1000000).toFixed(1)}M
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] uppercase font-mono font-bold text-zinc-400 block">Haftalık Maaş</span>
-                      <span className="text-xl font-black italic text-white">
-                        €{(highlightedClub.wageBudget / 1000).toFixed(0)}k/hf
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] uppercase font-mono font-bold text-zinc-400 block">Kadro Gücü</span>
-                      <span className="text-xl font-black italic text-[#4FE4FF]">
-                        {highlightedStats.avgOverall} OVR
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-[10px] uppercase font-mono font-bold text-zinc-400 block">Kulüp İtibarı</span>
-                      <span className="text-xl font-black italic text-amber-400">
-                        %{highlightedClub.reputation}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Board Expectation */}
-                  <div className="p-4 bg-amber-400/5 rounded-xl border border-amber-400/30 space-y-1">
-                    <div className="flex items-center gap-1.5 text-xs font-black text-amber-300">
-                      <Target className="w-4 h-4 text-amber-400" />
-                      <span>YÖNETİM BEKLENTİSİ</span>
-                    </div>
-                    <div className="text-sm font-black text-white">{highlightedExpectation.target}</div>
-                    <p className="text-xs text-amber-200/80">{highlightedExpectation.desc}</p>
-                  </div>
-
-                  {/* Star Player */}
-                  {highlightedStats.starPlayer && (
-                    <div className="p-3.5 bg-[#07101C] rounded-xl border border-[#14233A] flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-lg bg-[#00F5A0]/10 border border-[#00F5A0]/40 flex items-center justify-center font-black text-xs text-[#00F5A0]">
-                          {highlightedStats.starPlayer.position}
-                        </div>
-                        <div>
-                          <span className="text-[9px] uppercase font-mono font-bold text-zinc-400 block">Yıldız Oyuncu</span>
-                          <span className="text-xs font-black text-white">
-                            {highlightedStats.starPlayer.firstName} {highlightedStats.starPlayer.lastName}
+                        <div className="flex items-center justify-between font-ibm text-[11px] pt-1.5 border-t border-white/5">
+                          <span className="text-[#8f9a91]">{stats.avgOverall} OVR</span>
+                          <span className="text-[#b8ff3d] font-semibold">
+                            €{(club.transferBudget / 1_000_000).toFixed(1)}M
                           </span>
                         </div>
                       </div>
-                      <span className="text-lg font-black italic text-[#00F5A0]">
-                        {highlightedStats.starPlayer.overall} OVR
-                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Step 4: Settings */}
+            {currentStep === 4 && (
+              <div className="space-y-6">
+                <div>
+                  <span className="font-ibm text-[11px] text-[#21dfbd] tracking-widest uppercase font-semibold">
+                    STEP 04 // SEASON SETTINGS
+                  </span>
+                  <h2 className="font-barlow font-extrabold text-[32px] sm:text-[40px] text-[#f3f6f3] tracking-tight leading-none mt-1 uppercase">
+                    SIMULATION & CALENDAR
+                  </h2>
+                  <p className="font-inter text-[13px] text-[#8f9a91] mt-2">
+                    Kariyer başlangıç tarihi ve transfer penceresi parametreleri.
+                  </p>
+                </div>
+
+                <div className="space-y-3 font-ibm text-[12px]">
+                  <div className="p-3.5 rounded-[4px] bg-[#0d130f] border border-white/10 flex items-center justify-between">
+                    <div>
+                      <span className="font-bold text-[#f3f6f3] block">BAŞLANGIÇ TARİHİ</span>
+                      <span className="text-[11px] text-[#8f9a91]">Resmi sezon öncesi kampı</span>
                     </div>
-                  )}
-                </div>
+                    <span className="font-bold text-[#b8ff3d]">1 AĞUSTOS 2026</span>
+                  </div>
 
-                <div className="pt-4 mt-4 border-t border-[#14233A] flex justify-between items-center">
-                  <button
-                    onClick={() => setCurrentStep(2)}
-                    className="px-4 py-2 bg-[#07101C] border border-[#14233A] rounded-xl text-zinc-300 hover:text-white font-bold text-xs uppercase transition-all"
-                  >
-                    ← Geri
-                  </button>
+                  <div className="p-3.5 rounded-[4px] bg-[#0d130f] border border-white/10 flex items-center justify-between">
+                    <div>
+                      <span className="font-bold text-[#f3f6f3] block">YAZ TRANSFER DÖNEMİ</span>
+                      <span className="text-[11px] text-[#8f9a91]">1 Ağustos — 1 Eylül arası açık</span>
+                    </div>
+                    <span className="text-[#21dfbd] font-bold">AKTİF & AÇIK</span>
+                  </div>
 
-                  <button
-                    onClick={() => setCurrentStep(4)}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#00F5A0] hover:bg-[#00F5A0]/90 text-[#040814] font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 rounded-xl shadow-[0_0_20px_rgba(0,245,160,0.3)]"
-                  >
-                    <span>KULÜBÜ SEÇ & İLERLE</span>
-                    <ArrowRight className="w-4 h-4 stroke-[3]" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* =================================================================== */}
-        {/* STEP 4: KARİYER AYARLARI                                            */}
-        {/* =================================================================== */}
-        {currentStep === 4 && (
-          <div className="w-full max-w-4xl space-y-6">
-            <div className="text-center space-y-1.5">
-              <span className="px-2.5 py-0.5 bg-[#00F5A0] text-[#040814] text-[10px] font-black uppercase tracking-widest rounded-lg">
-                STEP 04 // SEASON CONFIGURATION
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tight text-white">
-                KARİYER AYARLARI
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 font-medium max-w-xl mx-auto">
-                Başlangıç takvimini, transfer penceresi durumunu ve kayıt tercihlerini doğrula.
-              </p>
-            </div>
-
-            <div className="sc-panel rounded-2xl border border-[#14233A] p-6 sm:p-8 space-y-4 shadow-2xl">
-              <div className="flex items-center justify-between p-4 bg-[#07101C] rounded-xl border border-[#14233A]">
-                <div>
-                  <h4 className="text-sm font-black italic uppercase text-white">Başlangıç Tarihi</h4>
-                  <p className="text-xs text-zinc-400 font-mono">Sezon Öncesi Hazırlık Kampı (Transfer dönemi aktif)</p>
-                </div>
-                <span className="px-3 py-1 bg-[#040814] border border-[#14233A] rounded-lg text-xs font-mono font-bold text-[#00F5A0]">
-                  1 Ağustos 2026
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-[#07101C] rounded-xl border border-[#14233A]">
-                <div>
-                  <h4 className="text-sm font-black italic uppercase text-white">Yaz Transfer Dönemi</h4>
-                  <p className="text-xs text-zinc-400 font-mono">1 Temmuz – 31 Ağustos arası serbest transfer ve kiralama açık</p>
-                </div>
-                <span className="px-3 py-1 bg-[#00F5A0]/10 border border-[#00F5A0]/40 rounded-lg text-xs font-mono font-bold text-[#00F5A0]">
-                  AÇIK
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between p-4 bg-[#07101C] rounded-xl border border-[#14233A]">
-                <div>
-                  <h4 className="text-sm font-black italic uppercase text-white">Otomatik Kayıt (Auto-Save)</h4>
-                  <p className="text-xs text-zinc-400 font-mono">Her maç ve takvim günü ilerlemesinde tarayıcıya kaydedilir</p>
-                </div>
-                <span className="px-3 py-1 bg-[#00F5A0]/10 border border-[#00F5A0]/40 rounded-lg text-xs font-mono font-bold text-[#00F5A0]">
-                  AKTİF
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between pt-4 border-t border-[#14233A]">
-                <button
-                  onClick={() => setCurrentStep(3)}
-                  className="px-5 py-2.5 rounded-xl bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-xs font-bold uppercase text-zinc-300 hover:text-white transition-all"
-                >
-                  ← Geri
-                </button>
-
-                <button
-                  onClick={() => setCurrentStep(5)}
-                  className="inline-flex items-center gap-2 px-7 py-3 rounded-xl bg-[#00F5A0] hover:bg-[#00F5A0]/90 text-[#040814] font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-[0_0_20px_rgba(0,245,160,0.3)]"
-                >
-                  <span>ÖZET & ONAY AŞAMASINA GEÇ</span>
-                  <ArrowRight className="w-4 h-4 stroke-[3]" />
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* =================================================================== */}
-        {/* STEP 5: KARİYERİ BAŞLAT (OFFICIAL CONTRACT & LAUNCH)                */}
-        {/* =================================================================== */}
-        {currentStep === 5 && (
-          <div className="w-full max-w-4xl space-y-6">
-            <div className="text-center space-y-1.5">
-              <span className="px-2.5 py-0.5 bg-[#00F5A0] text-[#040814] text-[10px] font-black uppercase tracking-widest rounded-lg">
-                STEP 05 // OFFICIAL CONFIRMATION
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black italic uppercase tracking-tight text-white">
-                KARİYERİ BAŞLATMAYA HAZIRSINIZ!
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 font-medium max-w-xl mx-auto">
-                Aşağıdaki detayları kontrol et ve Alveria Elit Ligi maceranı resmen başlat.
-              </p>
-            </div>
-
-            <div className="sc-panel rounded-2xl border border-[#14233A] p-6 sm:p-8 space-y-6 shadow-2xl">
-              {/* Selected Club & Manager Card */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 bg-[#07101C] rounded-xl border border-[#14233A]">
-                <div className="flex items-center gap-4">
-                  <ClubBadge
-                    code={highlightedClub.code}
-                    primaryColor={highlightedClub.primaryColor}
-                    secondaryColor={highlightedClub.secondaryColor}
-                    size="xl"
-                  />
-                  <div>
-                    <span className="text-[10px] font-mono uppercase font-bold text-zinc-400">Seçilen Kulüp</span>
-                    <h3 className="text-2xl font-black italic uppercase text-white">{highlightedClub.name}</h3>
-                    <p className="text-xs text-zinc-400 font-mono">
-                      {leagueSize === 18 ? 'Alveria Süper Ligi (18 Kulüp)' : leagueSize === 14 ? 'Alveria Premier Ligi (14 Kulüp)' : 'Alveria Elit Ligi (10 Kulüp)'} • {highlightedClub.city}
-                    </p>
+                  <div className="p-3.5 rounded-[4px] bg-[#0d130f] border border-white/10 flex items-center justify-between">
+                    <div>
+                      <span className="font-bold text-[#f3f6f3] block">MAÇ SİMÜLASYON MOTORU</span>
+                      <span className="text-[11px] text-[#8f9a91]">3D radar & anlık taktik müdahale</span>
+                    </div>
+                    <span className="text-[#b8ff3d] font-bold">PRO V2.4</span>
                   </div>
                 </div>
-
-                <div className="text-right sm:border-l sm:border-[#14233A] sm:pl-6 w-full sm:w-auto">
-                  <span className="text-[10px] font-mono uppercase font-bold text-zinc-400 block">Teknik Direktör</span>
-                  <div className="text-lg font-black italic text-[#00F5A0]">{managerName}</div>
-                  <div className="text-xs text-zinc-400 font-mono">{nationality} • {age} Yaşında</div>
-                </div>
               </div>
+            )}
 
-              {/* Summary Parameters Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                <div className="p-3.5 bg-[#07101C] rounded-xl border border-[#14233A]">
-                  <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">Zorluk</span>
-                  <span className="text-base font-black italic text-white">{difficulty}</span>
-                </div>
-                <div className="p-3.5 bg-[#07101C] rounded-xl border border-[#14233A]">
-                  <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">Taktik</span>
-                  <span className="text-base font-black italic text-[#4FE4FF]">{tacticalStyle}</span>
-                </div>
-                <div className="p-3.5 bg-[#07101C] rounded-xl border border-[#14233A]">
-                  <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">Transfer Bütçesi</span>
-                  <span className="text-base font-black italic text-[#00F5A0]">
-                    €{(highlightedClub.transferBudget / 1000000).toFixed(1)}M
+            {/* Step 5: Confirm & Start */}
+            {currentStep === 5 && (
+              <div className="space-y-6">
+                <div>
+                  <span className="font-ibm text-[11px] text-[#b8ff3d] tracking-widest uppercase font-semibold">
+                    STEP 05 // FINAL CONFIRMATION
                   </span>
+                  <h2 className="font-barlow font-extrabold text-[32px] sm:text-[40px] text-[#f3f6f3] tracking-tight leading-none mt-1 uppercase">
+                    READY FOR LAUNCH
+                  </h2>
+                  <p className="font-inter text-[13px] text-[#8f9a91] mt-2">
+                    Kariyer dosyasını gözden geçir ve resmi menajerlik sözleşmeni imzala.
+                  </p>
                 </div>
-                <div className="p-3.5 bg-[#07101C] rounded-xl border border-[#14233A]">
-                  <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase block">Hedef</span>
-                  <span className="text-base font-black italic text-amber-400">{highlightedExpectation.target}</span>
+
+                <div className="p-4 rounded-[6px] bg-[#0d130f] border border-white/10 space-y-3 font-ibm text-[12px]">
+                  <div className="flex justify-between pb-2 border-b border-white/5">
+                    <span className="text-[#8f9a91]">KULÜP:</span>
+                    <span className="font-bold text-[#f3f6f3]">{highlightedClub.name}</span>
+                  </div>
+                  <div className="flex justify-between pb-2 border-b border-white/5">
+                    <span className="text-[#8f9a91]">MENAJER:</span>
+                    <span className="font-bold text-[#b8ff3d]">{managerName} ({nationality}, {age})</span>
+                  </div>
+                  <div className="flex justify-between pb-2 border-b border-white/5">
+                    <span className="text-[#8f9a91]">LİG FORMATI:</span>
+                    <span className="font-bold text-[#f3f6f3]">{leagueSize} KULÜPLÜ FORMAT</span>
+                  </div>
+                  <div className="flex justify-between pb-2 border-b border-white/5">
+                    <span className="text-[#8f9a91]">ZORLUK DÜZEYİ:</span>
+                    <span className="font-bold text-[#21dfbd]">{difficulty.toUpperCase()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-[#8f9a91]">TRANSFER BÜTÇESİ:</span>
+                    <span className="font-bold text-[#b8ff3d]">
+                      €{(highlightedClub.transferBudget / 1_000_000).toFixed(1)}M
+                    </span>
+                  </div>
                 </div>
               </div>
+            )}
+          </div>
 
-              <div className="flex items-center justify-between pt-4 border-t border-[#14233A]">
-                <button
-                  onClick={() => setCurrentStep(4)}
-                  className="px-5 py-2.5 rounded-xl bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-xs font-bold uppercase text-zinc-300 hover:text-white transition-all"
-                >
-                  ← Geri
-                </button>
+          {/* Bottom Actions Bar */}
+          <div className="flex items-center justify-between pt-6 border-t border-white/10 mt-6">
+            <button
+              type="button"
+              onClick={() => {
+                if (currentStep > 1) setCurrentStep((prev) => (prev - 1) as any);
+                else router.push('/');
+              }}
+              className="px-4 py-2 rounded-[3px] bg-white/5 hover:bg-white/10 border border-white/10 font-barlow font-bold text-[14px] uppercase tracking-wider text-[#8f9a91] hover:text-[#f3f6f3] transition-colors cursor-pointer"
+            >
+              {currentStep === 1 ? 'İPTAL' : '← GERİ'}
+            </button>
 
-                <button
-                  onClick={handleStartCareer}
-                  disabled={isSubmitting}
-                  className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl bg-[#00F5A0] hover:bg-[#00F5A0]/90 disabled:opacity-50 disabled:cursor-not-allowed text-[#040814] font-black text-sm uppercase tracking-wider transition-all active:scale-95 shadow-[0_0_25px_rgba(0,245,160,0.3)]"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-4 h-4 border-2 border-[#040814] border-t-transparent rounded-full animate-spin" />
-                      <span>KAYDEDİLİYOR...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4 fill-current" />
-                      <span>KARİYERİ RESMEN BAŞLAT</span>
-                    </>
-                  )}
-                </button>
-              </div>
+            {currentStep < 5 ? (
+              <button
+                type="button"
+                onClick={() => setCurrentStep((prev) => (prev + 1) as any)}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-[3px] bg-[#b8ff3d] hover:bg-[#9bea27] text-[#050706] font-barlow font-extrabold text-[16px] uppercase tracking-wider transition-all cursor-pointer shadow-[0_0_15px_rgba(184,255,61,0.3)] hover:translate-y-[-1px]"
+              >
+                <span>DEVAM ET</span>
+                <ArrowRight size={16} className="stroke-[3]" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleStartCareer}
+                disabled={isSubmitting}
+                className="flex items-center gap-2 px-8 py-2.5 rounded-[3px] bg-[#b8ff3d] hover:bg-[#9bea27] text-[#050806] font-barlow font-extrabold text-[16px] uppercase tracking-wider transition-all cursor-pointer shadow-[0_0_25px_rgba(184,255,61,0.4)] hover:translate-y-[-1px]"
+              >
+                {isSubmitting ? (
+                  <span>KAYDEDİLİYOR...</span>
+                ) : (
+                  <>
+                    <Sparkles size={16} fill="currentColor" />
+                    <span>KARİYERİ BAŞLAT</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Right Column (3 cols): Live 3D Manager / Career Dossier Environment */}
+        <div className="lg:col-span-3 bg-[#090d0a]/95 border border-white/10 rounded-[8px] p-5 space-y-5 shadow-xl">
+          <div className="flex items-center justify-between border-b border-white/5 pb-3">
+            <span className="font-ibm text-[10px] text-[#8f9a91] tracking-widest uppercase">
+              CAREER DOSSIER
+            </span>
+            <span className="w-2 h-2 rounded-full bg-[#b8ff3d] animate-pulse" />
+          </div>
+
+          {/* Club Crest 3D Depth Card */}
+          <div className="flex flex-col items-center justify-center p-6 bg-[#0d130f] rounded-[6px] border border-white/10 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-radial from-[#b8ff3d]/10 via-transparent to-transparent pointer-events-none" />
+            <div className="transform transition-transform duration-300 group-hover:scale-105">
+              <ClubBadge
+                code={highlightedClub.code}
+                name={highlightedClub.name}
+                clubId={highlightedClub.id}
+                primaryColor={highlightedClub.primaryColor}
+                secondaryColor={highlightedClub.secondaryColor}
+                size="xl"
+              />
+            </div>
+            <span className="font-barlow font-extrabold text-[22px] text-[#f3f6f3] uppercase tracking-wider mt-3 text-center leading-tight">
+              {highlightedClub.name}
+            </span>
+            <span className="font-ibm text-[11px] text-[#8f9a91] mt-1">{highlightedClub.city}</span>
+          </div>
+
+          {/* Key Metrics */}
+          <div className="space-y-2.5 font-ibm text-[11px]">
+            <div className="flex justify-between py-1.5 border-b border-white/5">
+              <span className="text-[#8f9a91]">YÖNETİM HEDEFİ:</span>
+              <span className="font-bold text-[#b8ff3d]">{highlightedExpectation.target}</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-white/5">
+              <span className="text-[#8f9a91]">ORTALAMA GÜÇ:</span>
+              <span className="font-bold text-[#f3f6f3]">{highlightedStats.avgOverall} OVR</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-white/5">
+              <span className="text-[#8f9a91]">TRANSFER BÜTÇESİ:</span>
+              <span className="font-bold text-[#21dfbd]">
+                €{(highlightedClub.transferBudget / 1_000_000).toFixed(1)}M
+              </span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-white/5">
+              <span className="text-[#8f9a91]">KULÜP İTİBARI:</span>
+              <span className="font-bold text-[#ffd34f]">%{highlightedClub.reputation}</span>
             </div>
           </div>
-        )}
+
+          {/* Board Quote */}
+          <div className="p-3 bg-white/[0.02] border border-white/5 rounded-[4px] font-inter text-[11px] text-[#8f9a91] italic">
+            &ldquo;{highlightedExpectation.desc}&rdquo;
+          </div>
+        </div>
       </main>
 
-      {/* ==================================================================== */}
-      {/* 5. SQUADCRAFT BROADCAST TICKER & CONTROLLER PROMPT FOOTER             */}
-      {/* ==================================================================== */}
-      <footer className="relative z-20 w-full border-t border-[#14233A] bg-[#07101C] text-xs">
-        {/* Broadcast Live News Ticker Strip */}
-        <div className="w-full bg-[#040814] border-b border-[#14233A] px-4 py-1.5 flex items-center overflow-hidden">
-          <div className="flex items-center gap-2 shrink-0 pr-4 border-r border-[#14233A] text-[10px] font-black uppercase text-[#00F5A0]">
-            <Radio className="w-3 h-3 text-[#00F5A0] animate-pulse" />
-            <span>CANLI BÜLTEN</span>
-          </div>
-          <div className="overflow-hidden whitespace-nowrap text-[11px] font-mono text-zinc-400 pl-4">
-            <span className="text-zinc-200 font-bold">// YENİ KARİYER KURULUMU AKTİF</span>
-            <span className="mx-3 text-zinc-600">•</span>
-            <span>ALVERIA ELİT LİGİ 2026/27 SEZONU</span>
-            <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00F5A0]">10 ÖZGÜN KULÜP SEÇİMİ AÇIK</span>
-            <span className="mx-3 text-zinc-600">•</span>
-            <span>RESMİ TAKTİK SİMÜLASYON MOTORU</span>
-            <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#4FE4FF]">{APP_VERSION}</span>
-          </div>
-        </div>
-
-        {/* Shortcuts & Status HUD */}
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-          <div className="hidden md:flex items-center gap-3 text-[11px] font-mono text-zinc-400">
-            <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-[#081325] border border-[#14233A] rounded text-white font-bold">↵ ENTER</kbd>
-              <span>İLERLE / BAŞLAT</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-[#081325] border border-[#14233A] rounded text-white font-bold">ESC</kbd>
-              <span>GERİ / ANA MENÜ</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
-            <span className="text-zinc-300 font-bold">SQUADCRAFT CAREER ENGINE</span>
-            <span className="text-zinc-600">•</span>
-            <span className="text-[#00F5A0] font-bold">{APP_VERSION}</span>
-            <span className="text-zinc-600">•</span>
-            <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>SİSTEM HAZIR</span>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      {/* Existing Save Overwrite Confirmation Modal */}
+      {/* Confirmation Overwrite Modal */}
       {isConfirmModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 select-none animate-in fade-in backdrop-blur-md">
-          <div className="relative w-full max-w-md bg-[#07101C]/95 border border-amber-500/50 rounded-3xl p-6 sm:p-7 shadow-[0_0_60px_rgba(0,0,0,0.95)] text-zinc-200 overflow-hidden">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500" />
-
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="w-full max-w-md bg-[#090d0a] border border-[#ff5365]/50 rounded-[8px] p-6 shadow-2xl">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/40 text-amber-400 flex items-center justify-center shrink-0">
-                <AlertTriangle className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="text-[10px] font-mono font-bold uppercase tracking-widest text-amber-400">
-                  DİKKAT // MEVCUT KAYIT
-                </div>
-                <h3 className="text-base font-black text-white uppercase">
-                  Yeni Kariyer Başlatılsın mı?
-                </h3>
-              </div>
+              <AlertTriangle className="text-[#ff5365]" size={24} />
+              <h3 className="font-barlow font-extrabold text-[20px] text-[#f3f6f3] uppercase">
+                MEVCUT KAYITIN ÜZERİNE YAZILSIN MI?
+              </h3>
             </div>
-
-            <p className="text-xs font-mono text-zinc-300 leading-relaxed mb-6">
-              Mevcut kariyer kaydınız silinecek. Yeni kariyer başlatmak istiyor musunuz?
+            <p className="font-inter text-[13px] text-[#8f9a91] mb-6">
+              Mevcut kariyer kaydınız sıfırlanacak ve yeni kariyer başlatılacak. Devam etmek istiyor musunuz?
             </p>
-
-            <div className="flex items-center justify-end gap-3 font-mono">
+            <div className="flex items-center justify-end gap-3 font-barlow font-bold text-[14px]">
               <button
+                type="button"
                 onClick={() => setIsConfirmModalOpen(false)}
-                className="px-4 py-2 rounded-xl bg-[#081325] hover:bg-[#14233A] text-zinc-300 hover:text-white border border-[#14233A] text-xs font-bold uppercase transition-colors"
+                className="px-4 py-2 rounded bg-white/5 hover:bg-white/10 text-[#8f9a91] uppercase cursor-pointer"
               >
                 İPTAL
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setIsConfirmModalOpen(false);
                   executeCareerCreation();
                 }}
-                className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-black uppercase transition-colors shadow-[0_0_15px_rgba(244,63,94,0.4)]"
+                className="px-5 py-2 rounded bg-[#ff5365] hover:bg-[#ff3d52] text-white uppercase cursor-pointer"
               >
-                YENİ KARİYER BAŞLAT
+                YENİ KARİYERİ BAŞLAT
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Feedback Modal */}
-      <FeedbackModal
-        isOpen={isFeedbackOpen}
-        onClose={() => setIsFeedbackOpen(false)}
-        route="/career/new"
-        gamePhase="Kariyer Kurulumu"
-      />
+      {/* Footer Status Bar */}
+      <footer className="relative z-20 w-full border-t border-white/10 bg-[#090d0a] px-6 py-2.5 font-ibm text-[11px] text-[#8f9a91]">
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <span className="text-[#f3f6f3] font-bold">SQUADCRAFT 2026</span>
+            <span>·</span>
+            <span>PRO CAREER TERMINAL</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#65ff83] animate-pulse" />
+            <span className="text-[#65ff83] font-bold">ENGINE READY</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

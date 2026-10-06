@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Users, Shield, Zap, Sparkles, ChevronRight } from 'lucide-react';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 interface ModeSelectorProps {
   onSelectCareer: () => void;
@@ -10,6 +11,7 @@ interface ModeSelectorProps {
 }
 
 export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProps) {
+  const { language } = useLanguage();
   const [draftHovered, setDraftHovered] = useState(false);
   const [careerHovered, setCareerHovered] = useState(false);
 
@@ -19,16 +21,16 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
         {/* Section Header */}
         <div className="mb-12">
           <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.2em] uppercase font-medium">
-            SEASON ARCHITECTURE
+            {language === 'tr' ? 'SEZON MİMARİSİ' : 'SEASON ARCHITECTURE'}
           </span>
           <h2
-            className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"
+            className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1 uppercase"
             style={{ fontSize: 'clamp(44px, 6vw, 92px)' }}
           >
-            CHOOSE YOUR PATH
+            {language === 'tr' ? 'YOLUNU SEÇ' : 'CHOOSE YOUR PATH'}
           </h2>
           <p className="font-inter text-[16px] text-[#8b958d] mt-2">
-            Every season begins with a decision.
+            {language === 'tr' ? 'Her efsanevi sezon tek bir kararla başlar.' : 'Every season begins with a decision.'}
           </p>
         </div>
 
@@ -65,34 +67,36 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
               />
             </div>
 
-            {/* Content (35% information / 65% atmosphere) */}
+            {/* Content */}
             <div className="relative z-10 flex flex-col items-start">
               {/* Badge */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[2px] bg-[#b7ff35]/15 border border-[#b7ff35]/35 text-[#b7ff35] font-ibm text-[11px] font-semibold mb-4 tracking-wider">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[2px] bg-[#b7ff35]/15 border border-[#b7ff35]/35 text-[#b7ff35] font-ibm text-[11px] font-semibold mb-4 tracking-wider uppercase">
                 <Shield size={12} />
-                FULL CLUB TOUCHLINE
+                {language === 'tr' ? 'TAM KULÜP YÖNETİMİ' : 'FULL CLUB TOUCHLINE'}
               </div>
 
               {/* Title & Sub */}
-              <h3 className="font-barlow font-extrabold text-[48px] sm:text-[60px] text-[#f2f5f2] leading-none tracking-tight group-hover:text-[#b7ff35] transition-colors">
-                CAREER MODE
+              <h3 className="font-barlow font-extrabold text-[48px] sm:text-[60px] text-[#f2f5f2] leading-none tracking-tight group-hover:text-[#b7ff35] transition-colors uppercase">
+                {language === 'tr' ? 'KARİYER MODU' : 'CAREER MODE'}
               </h3>
               <p className="font-inter text-[15px] sm:text-[16px] text-[#99a39c] mt-2 max-w-md">
-                Build a dynasty from the touchline. Multi-season depth with total tactical and transfer sovereignty.
+                {language === 'tr'
+                  ? 'Saha kenarından bir hanedanlık kur. Çok sezonlu derinlik, tam taktiksel egemenlik ve transfer hakimiyeti.'
+                  : 'Build a dynasty from the touchline. Multi-season depth with total tactical and transfer sovereignty.'}
               </p>
 
               {/* Stats badges */}
-              <div className="flex flex-wrap gap-2 my-6 font-ibm text-[11px] text-[#8b958d]">
-                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">MULTI-SEASON</span>
-                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">TRANSFERS</span>
-                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">SCOUTING</span>
-                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">YOUTH ACADEMY</span>
-                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">TACTICAL CONTROL</span>
+              <div className="flex flex-wrap gap-2 my-6 font-ibm text-[11px] text-[#8b958d] uppercase">
+                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">{language === 'tr' ? 'ÇOK SEZONLU' : 'MULTI-SEASON'}</span>
+                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">{language === 'tr' ? 'TRANSFERLER' : 'TRANSFERS'}</span>
+                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">{language === 'tr' ? 'GÖZLEMCİLİK' : 'SCOUTING'}</span>
+                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">{language === 'tr' ? 'ALTYAPI' : 'YOUTH ACADEMY'}</span>
+                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">{language === 'tr' ? '3D TAKTİK' : 'TACTICAL CONTROL'}</span>
               </div>
 
               {/* CTA Button */}
-              <div className="font-barlow font-bold text-[18px] text-[#050806] bg-[#b7ff35] group-hover:bg-[#9bea27] px-7 py-3.5 rounded-[3px] flex items-center gap-2 shadow-lg transition-transform group-hover:translate-x-1">
-                BEGIN CAREER →
+              <div className="font-barlow font-bold text-[18px] text-[#050806] bg-[#b7ff35] group-hover:bg-[#9bea27] px-7 py-3.5 rounded-[3px] flex items-center gap-2 shadow-lg transition-transform group-hover:translate-x-1 uppercase">
+                {language === 'tr' ? 'KARİYERE GİR →' : 'BEGIN CAREER →'}
               </div>
             </div>
           </motion.div>
@@ -110,7 +114,7 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
                 : '0 10px 30px rgba(0,0,0,0.6)',
             }}
           >
-            {/* Visual Environment: Esports Draft Stage with 3 Floating Cards fanning out */}
+            {/* Visual Environment */}
             <div className="absolute inset-0 z-0 overflow-hidden flex items-center justify-center">
               <div
                 className="absolute inset-0"
@@ -120,7 +124,7 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
                 }}
               />
 
-              {/* Floating Draft Player Cards that Fan Outward on Hover */}
+              {/* Floating Draft Player Cards */}
               <div className="absolute top-12 flex items-center justify-center">
                 {/* Left Card */}
                 <motion.div
@@ -153,7 +157,7 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
                   <span className="font-barlow text-[16px] text-[#f2f5f2] uppercase font-bold text-center">KIMURA</span>
                   <div className="flex justify-between font-ibm text-[10px] text-[#8b958d]">
                     <span>CM</span>
-                    <span className="text-[#b7ff35]">ROUND 1</span>
+                    <span className="text-[#b7ff35]">{language === 'tr' ? '1. TUR' : 'ROUND 1'}</span>
                   </div>
                 </motion.div>
 
@@ -186,31 +190,33 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
             {/* Information */}
             <div className="relative z-10 flex flex-col items-start">
               {/* Badge */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[2px] bg-[#17e5c2]/15 border border-[#17e5c2]/35 text-[#17e5c2] font-ibm text-[11px] font-semibold mb-4 tracking-wider">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[2px] bg-[#17e5c2]/15 border border-[#17e5c2]/35 text-[#17e5c2] font-ibm text-[11px] font-semibold mb-4 tracking-wider uppercase">
                 <Trophy size={12} />
-                LIVE MULTIPLAYER COMPETITION
+                {language === 'tr' ? 'CANLI ÇOK OYUNCULU REKABET' : 'LIVE MULTIPLAYER COMPETITION'}
               </div>
 
               {/* Title & Sub */}
-              <h3 className="font-barlow font-extrabold text-[48px] sm:text-[60px] text-[#f2f5f2] leading-none tracking-tight group-hover:text-[#17e5c2] transition-colors">
-                DRAFT LEAGUE
+              <h3 className="font-barlow font-extrabold text-[48px] sm:text-[60px] text-[#f2f5f2] leading-none tracking-tight group-hover:text-[#17e5c2] transition-colors uppercase">
+                {language === 'tr' ? 'DRAFT LİGİ' : 'DRAFT LEAGUE'}
               </h3>
               <p className="font-inter text-[15px] sm:text-[16px] text-[#99a39c] mt-2 max-w-md">
-                Build your squad before your rivals do. Real-time snake drafts with friends and intelligent AI managers.
+                {language === 'tr'
+                  ? 'Rakiplerinden önce hayalindeki 11\'i kur. Arkadaşlarınla veya yapay zeka menajerlerle gerçek zamanlı snake draft heyecanı.'
+                  : 'Build your squad before your rivals do. Real-time snake drafts with friends and intelligent AI managers.'}
               </p>
 
               {/* Stats badges */}
-              <div className="flex flex-wrap gap-2 my-6 font-ibm text-[11px] text-[#8b958d]">
-                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">2–4 MANAGERS</span>
+              <div className="flex flex-wrap gap-2 my-6 font-ibm text-[11px] text-[#8b958d] uppercase">
+                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">{language === 'tr' ? '2–4 MENAJER' : '2–4 MANAGERS'}</span>
                 <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">SNAKE DRAFT</span>
-                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">LIVE PICKS</span>
-                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">AI BOTS</span>
-                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">LEAGUE SEASON</span>
+                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">{language === 'tr' ? 'CANLI SEÇİMLER' : 'LIVE PICKS'}</span>
+                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">{language === 'tr' ? 'YAPAY ZEKA' : 'AI BOTS'}</span>
+                <span className="px-2.5 py-1 bg-white/5 rounded border border-white/10">{language === 'tr' ? 'LİG SEZONU' : 'LEAGUE SEASON'}</span>
               </div>
 
               {/* CTA Button */}
-              <div className="font-barlow font-bold text-[18px] text-[#050806] bg-[#17e5c2] group-hover:bg-[#34eed0] px-7 py-3.5 rounded-[3px] flex items-center gap-2 shadow-lg transition-transform group-hover:translate-x-1">
-                ENTER DRAFT →
+              <div className="font-barlow font-bold text-[18px] text-[#050806] bg-[#17e5c2] group-hover:bg-[#34eed0] px-7 py-3.5 rounded-[3px] flex items-center gap-2 shadow-lg transition-transform group-hover:translate-x-1 uppercase">
+                {language === 'tr' ? 'DRAFT\'A GİR →' : 'ENTER DRAFT →'}
               </div>
             </div>
           </motion.div>

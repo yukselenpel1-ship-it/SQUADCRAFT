@@ -7,6 +7,7 @@ import { Topbar } from './Topbar';
 import { MobileNav } from './MobileNav';
 import { GameProvider } from '@/lib/context/GameContext';
 import { AuthProvider } from '@/lib/auth/AuthContext';
+import { LanguageProvider } from '@/lib/context/LanguageContext';
 import '@/styles/squadcraft-career-theme.css';
 
 export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
@@ -23,15 +24,22 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <AuthProvider>
     <GameProvider>
-      <div className={`relative min-h-screen w-full bg-[#040814] text-[#F8FAFC] flex flex-col font-sans selection:bg-[#00F5A0] selection:text-black antialiased overflow-x-hidden ${isStandalonePage ? '' : 'sc-career-theme'}`}>
+    <LanguageProvider>
+      <div className={`relative min-h-screen w-full bg-[#050806] text-[#f2f5f2] flex flex-col font-inter selection:bg-[#b7ff35] selection:text-[#050806] antialiased overflow-x-hidden ${isStandalonePage ? '' : 'sc-career-theme'}`}>
         {isStandalonePage ? (
           <main className="flex-1 w-full min-h-screen">
             {children}
           </main>
         ) : (
           <>
-            {/* Stadium floodlight ambience in bottom left, faithful to mockup */}
-            <div className="sc-career-stadium fixed inset-0 pointer-events-none z-0" />
+            {/* Stadium floodlight ambience in SQUADCRAFT Lime identity */}
+            <div
+              className="sc-career-stadium fixed inset-0 pointer-events-none z-0"
+              style={{
+                background:
+                  'radial-gradient(circle at 50% -20%, rgba(183, 255, 53, 0.06), transparent 45%), radial-gradient(circle at 0% 100%, rgba(23, 229, 194, 0.04), transparent 35%), #050806',
+              }}
+            />
 
             {/* Sidebar */}
             <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
@@ -52,6 +60,7 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
           </>
         )}
       </div>
+    </LanguageProvider>
     </GameProvider>
     </AuthProvider>
   );

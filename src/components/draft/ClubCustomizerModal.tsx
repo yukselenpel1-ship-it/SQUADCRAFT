@@ -74,9 +74,9 @@ export const ClubCustomizerModal: React.FC<ClubCustomizerModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl p-4 overflow-y-auto">
-      <div className="relative bg-[#07101C]/95 border border-[#14233A] rounded-3xl w-full max-w-2xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl p-6 sm:p-8 text-white my-8 overflow-hidden">
+      <div className="relative bg-[#0d120f]/95 border border-white/10 rounded-3xl w-full max-w-2xl shadow-[0_0_60px_rgba(0,0,0,0.95)] backdrop-blur-2xl p-6 sm:p-8 text-white my-8 overflow-hidden">
         {/* Top neon accent line */}
-        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#00F5A0] to-[#00D4FF]" />
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#b7ff35] to-[#17e5c2]" />
 
         {/* Decorative ambient lighting */}
         <div
@@ -89,17 +89,17 @@ export const ClubCustomizerModal: React.FC<ClubCustomizerModalProps> = ({
         />
 
         {/* Modal Header */}
-        <div className="relative flex items-center justify-between border-b border-[#14233A] pb-5 mb-6">
+        <div className="relative flex items-center justify-between border-b border-white/10 pb-5 mb-6">
           <div className="flex items-center gap-3.5">
             <div className="p-1.5 rounded-2xl bg-black/50 border border-white/10 shadow-inner">
               <BadgePreview badge={currentBadge} clubCode={code} size={48} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-black text-white uppercase tracking-wide font-display">
+                <h2 className="text-xl font-black text-white uppercase tracking-wide font-barlow">
                   Kulüp & Arma Düzenleyici
                 </h2>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-[#00F5A0] border border-emerald-500/40 uppercase">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/20 text-[#b7ff35] border border-emerald-500/40 uppercase">
                   SQUADCRAFT HD
                 </span>
               </div>
@@ -159,7 +159,7 @@ export const ClubCustomizerModal: React.FC<ClubCustomizerModalProps> = ({
                   value={code}
                   onChange={(e) => setCode(e.target.value.toUpperCase())}
                   maxLength={4}
-                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-emerald-400 font-mono font-black uppercase tracking-widest focus:outline-none focus:border-emerald-500 transition"
+                  className="w-full bg-slate-900 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-emerald-400 font-ibm font-black uppercase tracking-widest focus:outline-none focus:border-emerald-500 transition"
                   placeholder="KZF"
                 />
               </div>
@@ -220,7 +220,7 @@ export const ClubCustomizerModal: React.FC<ClubCustomizerModalProps> = ({
               <div className="p-2 rounded-2xl bg-black/60 border border-white/10 shadow-xl">
                 <BadgePreview badge={currentBadge} clubCode={code} size={84} />
               </div>
-              <span className="text-[11px] font-mono font-bold text-slate-400 uppercase">
+              <span className="text-[11px] font-ibm font-bold text-slate-400 uppercase">
                 {name || 'Kulüp Arması'} ({code})
               </span>
             </div>

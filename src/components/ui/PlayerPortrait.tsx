@@ -65,7 +65,7 @@ export const PlayerPortrait: React.FC<PlayerPortraitProps> = ({
       return 'bg-blue-500/20 text-blue-300 border-blue-500/40';
     }
     if (['DMC', 'MC', 'MR', 'ML', 'AMC', 'DM', 'CM', 'CAM'].includes(pos || '')) {
-      return 'bg-[#00F5A0]/20 text-[#00F5A0] border-[#00F5A0]/40';
+      return 'bg-[#b7ff35]/20 text-[#b7ff35] border-[#b7ff35]/40';
     }
     return 'bg-rose-500/20 text-rose-300 border-rose-500/40';
   };
@@ -91,7 +91,7 @@ export const PlayerPortrait: React.FC<PlayerPortraitProps> = ({
           />
         ) : (
           /* High-aesthetic initials avatar fallback */
-          <div className="w-full h-full bg-gradient-to-br from-[#0D1829] to-[#060A14] flex items-center justify-center font-mono font-black text-zinc-300 border border-zinc-800">
+          <div className="w-full h-full bg-gradient-to-br from-[#0D1829] to-[#060A14] flex items-center justify-center font-ibm font-black text-zinc-300 border border-zinc-800">
             <span>{initials}</span>
           </div>
         )}
@@ -107,7 +107,7 @@ export const PlayerPortrait: React.FC<PlayerPortraitProps> = ({
       {/* Position Badge overlay if requested */}
       {showPositionBadge && player.position && (
         <span
-          className={`absolute -bottom-1 -right-1 text-[9px] px-1 font-mono font-black border uppercase shadow-sm ${getPositionBadgeBg(
+          className={`absolute -bottom-1 -right-1 text-[9px] px-1 font-ibm font-black border uppercase shadow-sm ${getPositionBadgeBg(
             player.position
           )} rounded`}
         >

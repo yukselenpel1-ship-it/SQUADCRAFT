@@ -91,7 +91,7 @@ const EYE_COLORS = [
 ];
 
 // Jersey Neon Accent Lines (SquadCraft Identity)
-const ACCENT_COLORS = ['#00F5A0', '#00D4FF', '#FFB800', '#A855F7', '#F43F5E'];
+const ACCENT_COLORS = ['#b7ff35', '#17e5c2', '#FFB800', '#A855F7', '#F43F5E'];
 
 // Background Atmosphere Tones
 const BG_GLOWS = ['#0A2540', '#08281E', '#1F1735', '#241B08', '#0F1A2E'];
@@ -398,7 +398,7 @@ export function generatePlayerPortraitSvg(config: PortraitConfig): string {
       <!-- 1. STUDIO BACKGROUND & BOKEH -->
       <rect width="256" height="256" fill="url(#bgGlow-${config.seed})" />
       <!-- Subtle Stadium Floodlight Bokeh -->
-      <circle cx="50" cy="50" r="32" fill="#00D4FF" opacity="0.04" filter="blur(8px)" />
+      <circle cx="50" cy="50" r="32" fill="#17e5c2" opacity="0.04" filter="blur(8px)" />
       <circle cx="210" cy="65" r="40" fill="${jerseyAccent}" opacity="0.05" filter="blur(10px)" />
 
       <!-- 2. ATHLETIC NECK & TRAPEZIUS -->

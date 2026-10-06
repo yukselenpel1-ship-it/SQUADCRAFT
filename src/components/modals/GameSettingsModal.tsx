@@ -1,8 +1,7 @@
-'use client';
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Settings, Monitor, Volume2, Shield, Eye } from 'lucide-react';
+import { X, Settings, Globe, Monitor, Volume2, Shield, Eye, Check } from 'lucide-react';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 interface GameSettingsModalProps {
   isOpen: boolean;
@@ -10,9 +9,9 @@ interface GameSettingsModalProps {
 }
 
 export function GameSettingsModal({ isOpen, onClose }: GameSettingsModalProps) {
+  const { language, setLanguage, t } = useLanguage();
   const [graphics3D, setGraphics3D] = useState('High');
   const [particles, setParticles] = useState(true);
-  const [motionEffects, setMotionEffects] = useState('Full');
   const [stadiumBg, setStadiumBg] = useState(true);
   const [reducedMotion, setReducedMotion] = useState(false);
 
@@ -41,27 +40,87 @@ export function GameSettingsModal({ isOpen, onClose }: GameSettingsModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="absolute top-4 right-4 text-[#8b958d] hover:text-[#f2f5f2] p-1 rounded"
+            className="absolute top-4 right-4 text-[#8b958d] hover:text-[#f2f5f2] p-1 rounded cursor-pointer"
           >
             <X size={20} />
           </button>
 
           <div className="flex items-center gap-2.5 mb-6 border-b border-white/10 pb-4">
-            <Settings size={20} className="text-[#b7ff35]" />
-            <h3 className="font-barlow font-extrabold text-[28px] text-[#f2f5f2] tracking-wider uppercase leading-none">
-              SYSTEM SETTINGS
+            <Settings size={22} className="text-[#b7ff35]" />
+            <h3 className="font-barlow font-extrabold text-[26px] sm:text-[28px] text-[#f2f5f2] tracking-wider uppercase leading-none">
+              {t.settingsTitle}
             </h3>
           </div>
 
           <div className="space-y-6 font-ibm text-[12px]">
-            {/* Graphics Options */}
+            {/* 1. Language Switcher Section (TR & EN) */}
+            <div className="p-4 rounded-xl bg-[#0d140f] border border-[#b7ff35]/30 shadow-md">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[#b7ff35] font-bold uppercase tracking-wider flex items-center gap-1.5 text-[12px]">
+                  <Globe size={15} />
+                  {t.languageSection}
+                </span>
+                <span className="text-[10px] text-[#8b958d]">
+                  {language === 'tr' ? 'Seçili: Türkçe' : 'Selected: English'}
+                </span>
+              </div>
+              <p className="text-[11px] text-[#8b958d] mb-3">
+                {t.languageDesc}
+              </p>
+
+              <div className="grid grid-cols-2 gap-2.5">
+                {/* TR Button */}
+                <button
+                  type="button"
+                  onClick={() => setLanguage('tr')}
+                  className={`flex items-center gap-2.5 py-2.5 px-3.5 rounded-lg border font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${
+                    language === 'tr'
+                      ? 'bg-[#b7ff35] text-[#050806] border-[#b7ff35] shadow-[0_0_15px_rgba(183,255,53,0.4)]'
+                      : 'bg-white/5 border-white/10 text-[#8b958d] hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <span
+                    className={`px-1.5 py-0.5 rounded text-[10px] font-black font-ibm ${
+                      language === 'tr' ? 'bg-[#050806] text-[#b7ff35]' : 'bg-white/10 text-[#8b958d]'
+                    }`}
+                  >
+                    TR
+                  </span>
+                  <span className="font-barlow font-bold text-[14px]">TÜRKÇE</span>
+                  {language === 'tr' && <Check size={15} className="stroke-[3] ml-auto text-[#050806]" />}
+                </button>
+
+                {/* EN Button */}
+                <button
+                  type="button"
+                  onClick={() => setLanguage('en')}
+                  className={`flex items-center gap-2.5 py-2.5 px-3.5 rounded-lg border font-bold text-xs uppercase tracking-wider transition-all cursor-pointer ${
+                    language === 'en'
+                      ? 'bg-[#b7ff35] text-[#050806] border-[#b7ff35] shadow-[0_0_15px_rgba(183,255,53,0.4)]'
+                      : 'bg-white/5 border-white/10 text-[#8b958d] hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  <span
+                    className={`px-1.5 py-0.5 rounded text-[10px] font-black font-ibm ${
+                      language === 'en' ? 'bg-[#050806] text-[#b7ff35]' : 'bg-white/10 text-[#8b958d]'
+                    }`}
+                  >
+                    EN
+                  </span>
+                  <span className="font-barlow font-bold text-[14px]">ENGLISH</span>
+                  {language === 'en' && <Check size={15} className="stroke-[3] ml-auto text-[#050806]" />}
+                </button>
+              </div>
+            </div>
+
+            {/* 2. Graphics Options */}
             <div>
               <span className="text-[#b7ff35] font-bold block mb-3 uppercase tracking-wider">
-                GRAPHICS & 3D ENGINE
+                {t.graphicsSection}
               </span>
               <div className="space-y-3">
                 <div className="flex justify-between items-center py-2 border-b border-white/5">
-                  <span className="text-[#8b958d]">3D Quality</span>
+                  <span className="text-[#8b958d]">{t.quality3D}</span>
                   <div className="flex gap-1.5">
                     {['Low', 'Medium', 'High'].map((lvl) => (
                       <button
@@ -81,7 +140,7 @@ export function GameSettingsModal({ isOpen, onClose }: GameSettingsModalProps) {
                 </div>
 
                 <div className="flex justify-between items-center py-2 border-b border-white/5">
-                  <span className="text-[#8b958d]">Atmospheric Particles</span>
+                  <span className="text-[#8b958d]">{t.particles}</span>
                   <button
                     type="button"
                     onClick={() => setParticles(!particles)}
@@ -91,12 +150,12 @@ export function GameSettingsModal({ isOpen, onClose }: GameSettingsModalProps) {
                         : 'bg-white/5 text-[#8b958d] border-white/10'
                     }`}
                   >
-                    {particles ? 'ENABLED' : 'DISABLED'}
+                    {particles ? t.enabled : t.disabled}
                   </button>
                 </div>
 
                 <div className="flex justify-between items-center py-2 border-b border-white/5">
-                  <span className="text-[#8b958d]">Stadium Background 3D</span>
+                  <span className="text-[#8b958d]">{t.stadiumBg}</span>
                   <button
                     type="button"
                     onClick={() => setStadiumBg(!stadiumBg)}
@@ -106,22 +165,22 @@ export function GameSettingsModal({ isOpen, onClose }: GameSettingsModalProps) {
                         : 'bg-white/5 text-[#8b958d] border-white/10'
                     }`}
                   >
-                    {stadiumBg ? 'ENABLED' : 'STATIC PITCH'}
+                    {stadiumBg ? t.enabled : t.disabled}
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Accessibility & Motion */}
+            {/* 3. Accessibility & Motion */}
             <div>
               <span className="text-[#17e5c2] font-bold block mb-3 uppercase tracking-wider">
-                ACCESSIBILITY & MOTION
+                {t.accessibilitySection}
               </span>
               <div className="flex justify-between items-center py-2">
                 <div className="flex flex-col">
-                  <span className="text-[#f2f5f2]">Reduce Motion Mode</span>
+                  <span className="text-[#f2f5f2]">{t.reduceMotion}</span>
                   <span className="text-[#8b958d] text-[10px]">
-                    Disables camera cursor tracking and floating parallax
+                    {t.reduceMotionDesc}
                   </span>
                 </div>
                 <button
@@ -133,7 +192,7 @@ export function GameSettingsModal({ isOpen, onClose }: GameSettingsModalProps) {
                       : 'bg-white/5 text-[#8b958d] border-white/10'
                   }`}
                 >
-                  {reducedMotion ? 'ACTIVE' : 'OFF'}
+                  {reducedMotion ? t.active : t.off}
                 </button>
               </div>
             </div>
@@ -144,7 +203,7 @@ export function GameSettingsModal({ isOpen, onClose }: GameSettingsModalProps) {
             onClick={onClose}
             className="w-full mt-6 py-3 rounded-[3px] bg-[#b7ff35] hover:bg-[#9bea27] text-[#050806] font-barlow font-bold text-[16px] tracking-wider uppercase transition-colors cursor-pointer"
           >
-            APPLY CONFIGURATION
+            {t.applySettings}
           </button>
         </motion.div>
       </div>

@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Trophy, Users, Check, Sparkles } from 'lucide-react';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 export function DraftPreview() {
+  const { t } = useLanguage();
   const [timerSeconds, setTimerSeconds] = useState(26);
   const [selectedPlayer, setSelectedPlayer] = useState<string | null>(null);
   const [pickAnnounced, setPickAnnounced] = useState<string | null>(null);
@@ -37,16 +39,16 @@ export function DraftPreview() {
         {/* Section Header */}
         <div className="mb-12">
           <span className="font-ibm text-[11px] text-[#17e5c2] tracking-[0.2em] uppercase font-semibold">
-            ESPORTS DRAFT STAGE
+            {t.draftStageBadge}
           </span>
           <h2
             className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"
             style={{ fontSize: 'clamp(44px, 6vw, 92px)' }}
           >
-            LIVE DRAFT ROOM
+            {t.draftStageTitle}
           </h2>
           <p className="font-inter text-[16px] text-[#8b958d] mt-2">
-            Build your team round-by-round against live rivals and adaptive bots.
+            {t.draftStageDesc}
           </p>
         </div>
 
@@ -79,7 +81,7 @@ export function DraftPreview() {
                 className={timerSeconds < 10 ? 'text-[#ff4d5f] animate-spin' : 'text-[#b7ff35]'}
               />
               <div className="flex flex-col items-end leading-none">
-                <span className="text-[10px] text-[#8b958d] uppercase tracking-wider">ON THE CLOCK</span>
+                <span className="text-[10px] text-[#8b958d] uppercase tracking-wider">{t.draftOnTheClock}</span>
                 <span
                   className={`font-barlow font-extrabold text-[32px] tracking-wider ${
                     timerSeconds < 10 ? 'text-[#ff4d5f] animate-pulse' : 'text-[#b7ff35]'
@@ -162,7 +164,7 @@ export function DraftPreview() {
                             : 'bg-white/10 text-[#f2f5f2] hover:bg-white/20'
                         }`}
                       >
-                        {isPicked ? 'SELECTED ✓' : 'SELECT PICK →'}
+                        {isPicked ? `${t.draftSelected} ✓` : `${t.draftSelectPlayer} →`}
                       </button>
                     </motion.div>
                   );

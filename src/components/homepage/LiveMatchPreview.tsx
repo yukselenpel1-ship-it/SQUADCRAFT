@@ -3,8 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Pause, RotateCcw, AlertTriangle, ShieldCheck, Flame } from 'lucide-react';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 export function LiveMatchPreview() {
+  const { t } = useLanguage();
   const [matchMinute, setMatchMinute] = useState(67);
   const [matchSecond, setMatchSecond] = useState(24);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -39,16 +41,16 @@ export function LiveMatchPreview() {
         {/* Section Header */}
         <div className="mb-12">
           <span className="font-ibm text-[11px] text-[#ff4d5f] tracking-[0.2em] uppercase font-semibold">
-            LIVE SIMULATION ENGINE
+            {t.liveSimBadge}
           </span>
           <h2
             className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"
             style={{ fontSize: 'clamp(44px, 6vw, 92px)' }}
           >
-            MATCHDAY COMMAND
+            {t.liveSimTitle}
           </h2>
           <p className="font-inter text-[16px] text-[#8b958d] mt-2">
-            Dynamic tactical radar, real-time momentum graphing, and instant tactical intervention.
+            {t.liveSimDesc}
           </p>
         </div>
 
@@ -69,7 +71,7 @@ export function LiveMatchPreview() {
                   exit={{ scale: 0.8, opacity: 0 }}
                   className="font-barlow font-extrabold text-[120px] text-[#b7ff35] tracking-widest drop-shadow-[0_0_40px_#b7ff35]"
                 >
-                  GOAL!
+                  {t.liveSimGoal}
                 </motion.span>
               </motion.div>
             )}

@@ -44,9 +44,9 @@ export const SquadCraftLogo: React.FC<SquadCraftLogoProps> = ({
         <div className="flex flex-col tracking-tight justify-center leading-none">
           <div className={`font-black uppercase italic tracking-tighter flex items-center gap-1 ${textSizes[size]}`}>
             <span className="text-white">SQUADCRAFT</span>
-            <span className="text-[#00F5A0]">26</span>
+            <span className="text-[#b7ff35]">26</span>
           </div>
-          <span className="text-[9px] font-mono font-bold tracking-widest text-zinc-400 uppercase mt-0.5">
+          <span className="text-[9px] font-ibm font-bold tracking-widest text-zinc-400 uppercase mt-0.5">
             PRO SIMULATION
           </span>
         </div>

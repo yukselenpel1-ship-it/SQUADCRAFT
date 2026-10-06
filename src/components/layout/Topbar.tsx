@@ -17,6 +17,9 @@ import {
   ChevronDown,
   ArrowRight,
   Swords,
+  ChevronRight,
+  Clock,
+  Sparkles,
 } from 'lucide-react';
 
 interface TopbarProps {
@@ -33,7 +36,9 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
     smartAdvance,
     isMatchDay,
     nextMatch,
+    daysUntilNextMatch,
     seasonNumber,
+    finances,
   } = useGame();
 
   const [progressResult, setProgressResult] = useState<DailyProcessingResult | null>(null);
@@ -64,110 +69,124 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
     }
   };
 
+  const formattedBudget = finances?.transferBudget
+    ? `€${(finances.transferBudget / 1_000_000).toFixed(1)}M`
+    : '€42.8M';
+
   return (
     <>
-      <header className="sc-career-topbar sticky top-0 z-30 h-[58px] bg-[#050B14]/95 backdrop-blur-xl border-b border-[#14233A] px-4 lg:px-5 flex items-center justify-between gap-4">
-        {/* Left: Mobile Toggle & Date Indicator (Exact to Mockup) */}
+      <header className="sc-career-topbar sticky top-0 z-30 h-[64px] bg-[#090d0a]/98 backdrop-blur-xl border-b border-white/10 px-4 lg:px-6 flex items-center justify-between gap-3 select-none">
+        {/* Left: Mobile Menu + Date / Season Status Module */}
         <div className="flex items-center gap-3">
           <button
             onClick={onMenuToggle}
-            className="p-1.5 bg-[#07101C] border border-[#14233A] text-zinc-300 hover:text-white rounded-lg lg:hidden active:scale-95 transition"
+            className="p-2 bg-[#0d130f] border border-white/10 text-[#8f9a91] hover:text-[#f3f6f3] rounded-[4px] lg:hidden active:scale-95 transition"
             aria-label="Menüyü Aç"
           >
             <Menu className="w-5 h-5" />
           </button>
 
-          {/* Current Date Display Pill */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 bg-[#07101C] border border-[#14233A] rounded-xl text-xs">
-            <Calendar className="w-3.5 h-3.5 text-[#00F5A0]" />
-            <span className="font-black italic uppercase text-white tracking-wide text-[11px] sm:text-xs">
-              {formatDateTurkish(currentDate)}
-            </span>
-            <span className="text-[10px] text-[#8E9EB5] font-mono">
-              / Süper Lig • {seasonNumber || 1}. Sezon
-            </span>
+          {/* Date & Season Capsule */}
+          <div className="flex items-center gap-3 py-1.5 px-3 rounded-[4px] bg-[#0d130f] border border-white/10">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-3.5 h-3.5 text-[#b7ff35]" />
+              <span className="font-barlow font-extrabold text-[15px] uppercase text-[#f3f6f3] tracking-wider leading-none">
+                {formatDateTurkish(currentDate)}
+              </span>
+            </div>
+
+            <span className="hidden sm:inline w-[1px] h-3.5 bg-white/10" />
+
+            <div className="hidden sm:flex items-center gap-1.5 font-ibm text-[11px] text-[#8f9a91]">
+              <span className="text-[#f3f6f3] font-bold">SEZON {seasonNumber || 1}</span>
+              <span>·</span>
+              <span className="text-[#b7ff35] font-semibold">MATCHDAY</span>
+            </div>
           </div>
 
-          {/* Match Day Alert Pill */}
-          {isMatchDay && nextMatch && (
+          {/* Next Match Alert Strip */}
+          {nextMatch && (
             <Link
-              href={`/match/${nextMatch.id}`}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-red-950/80 border border-red-500 text-red-200 text-xs font-black italic uppercase rounded-lg animate-pulse shadow-md"
+              href={isMatchDay ? `/match/${nextMatch.id}` : '/fixtures'}
+              className={`hidden md:flex items-center gap-2 py-1.5 px-3 rounded-[4px] border font-ibm text-[11px] transition-all ${
+                isMatchDay
+                  ? 'bg-[#ff5365]/20 border-[#ff5365] text-[#ff5365] animate-pulse font-bold'
+                  : 'bg-[#0d130f] border-white/10 text-[#8f9a91] hover:border-[#b7ff35]/40 hover:text-[#f3f6f3]'
+              }`}
             >
               <Swords className="w-3.5 h-3.5" />
-              <span>BUGÜN MAÇ GÜNÜ</span>
+              <span>
+                {isMatchDay
+                  ? 'BUGÜN MAÇ GÜNÜ!'
+                  : `NEXT MATCH · ${daysUntilNextMatch ?? 3} GÜN`}
+              </span>
             </Link>
           )}
         </div>
 
-        {/* Right Info Bars, Search & Manager Profile (Exact to Mockup) */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Search Input Bar */}
-          <form onSubmit={handleSearchSubmit} className="hidden md:flex items-center relative">
+        {/* Right: Inbox, Budget, Search & Continue Actions */}
+        <div className="flex items-center gap-2 sm:gap-4">
+          {/* Quick Player Search */}
+          <form onSubmit={handleSearchSubmit} className="hidden xl:flex items-center relative">
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Oyuncu ara..."
-              className="w-44 lg:w-56 bg-[#07101C] border border-[#14233A] focus:border-[#00D4FF] rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-[#51647E] focus:outline-none transition-all"
+              className="w-40 lg:w-48 bg-[#0d130f] border border-white/10 focus:border-[#b7ff35]/60 rounded-[4px] pl-7 pr-2.5 py-1 text-[11px] text-[#f3f6f3] placeholder-[#8f9a91]/60 focus:outline-none transition-all font-inter"
             />
-            <Search className="w-3.5 h-3.5 text-[#51647E] absolute left-2.5 pointer-events-none" />
+            <Search className="w-3 h-3 text-[#8f9a91] absolute left-2 pointer-events-none" />
           </form>
 
-          {/* Mail Button */}
+          {/* Inbox Counter Module */}
           <Link
             href="/inbox"
-            className="p-2 bg-[#07101C] hover:bg-[#0E1E38] border border-[#14233A] text-zinc-300 hover:text-white rounded-xl transition-colors"
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] bg-[#0d130f] border border-white/10 hover:border-[#b7ff35]/40 transition-colors"
             title="Gelen Kutusu"
           >
-            <Mail className="w-4 h-4 text-[#8E9EB5]" />
-          </Link>
-
-          {/* Notification Bell */}
-          <Link
-            href="/inbox"
-            className="relative p-2 bg-[#07101C] hover:bg-[#0E1E38] border border-[#14233A] text-zinc-300 hover:text-white rounded-xl transition-colors"
-            title="Bildirimler"
-          >
-            <Bell className="w-4 h-4 text-[#8E9EB5]" />
-            <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[16px] h-[16px] px-1 text-[9px] font-black bg-rose-600 text-white rounded-full">
-              {unreadMessageCount > 0 ? unreadMessageCount : 23}
+            <Mail className="w-3.5 h-3.5 text-[#8f9a91]" />
+            <span className="font-ibm text-[11px] text-[#8f9a91] hidden sm:inline">INBOX</span>
+            <span className="font-barlow font-bold text-[13px] text-[#b7ff35]">
+              {unreadMessageCount > 0 ? unreadMessageCount : 2}
             </span>
           </Link>
 
-          {/* Manager Profile Pill */}
-          <div className="flex items-center gap-2 pl-1 sm:pl-2">
-            <div className="w-8 h-8 rounded-full border border-[#00F5A0]/40 overflow-hidden bg-[#07101C] flex items-center justify-center text-xs font-black text-[#00F5A0]">
-              <span>{userClub.managerName?.[0] || 'O'}</span>
-            </div>
-            <div className="hidden sm:flex items-center gap-1 cursor-pointer">
-              <span className="text-xs font-bold text-white tracking-tight">
-                {userClub.managerName || 'Oğuzhan K.'}
+          {/* Budget Display Module */}
+          <Link
+            href="/finances"
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-[#0d130f] border border-white/10 hover:border-[#b7ff35]/40 transition-colors"
+            title="Transfer & Maaş Bütçesi"
+          >
+            <Wallet className="w-3.5 h-3.5 text-[#17e5c2]" />
+            <div className="flex items-center gap-1.5 font-ibm text-[11px]">
+              <span className="text-[#8f9a91]">BUDGET:</span>
+              <span className="font-barlow font-bold text-[14px] text-[#17e5c2]">
+                {formattedBudget}
               </span>
-              <ChevronDown className="w-3.5 h-3.5 text-[#51647E]" />
             </div>
-          </div>
+          </Link>
 
-          {/* Quick Day Advance Buttons */}
-          <div className="flex items-center gap-1.5 pl-2 border-l border-[#14233A]">
+          {/* Actions: +1 Day & Big Continue > */}
+          <div className="flex items-center gap-2 pl-1 border-l border-white/10">
             <button
               onClick={handleSingleDayAdvance}
+              type="button"
               title="1 Gün İlerle"
-              className="px-2.5 py-1.5 font-bold text-[11px] bg-[#07101C] hover:bg-[#0E1E38] text-zinc-300 border border-[#14233A] rounded-xl transition-colors hidden xl:flex items-center gap-1 active:scale-95 uppercase font-mono"
+              className="hidden lg:flex items-center gap-1 px-2.5 py-2 font-ibm text-[11px] font-bold text-[#8f9a91] hover:text-[#f3f6f3] bg-[#0d130f] hover:bg-white/5 border border-white/10 rounded-[3px] transition-colors cursor-pointer active:scale-95 uppercase"
             >
-              <span>+1 GÜN</span>
+              +1 GÜN
             </button>
 
             <button
               onClick={handleSmartAdvance}
-              className={`flex items-center gap-1 px-3.5 py-1.5 font-black text-xs uppercase tracking-wider rounded-xl shadow-md active:scale-95 transition-all ${
+              type="button"
+              className={`flex items-center gap-2 px-4 sm:px-5 py-2 rounded-[3px] font-barlow font-extrabold text-[14px] sm:text-[15px] tracking-wider uppercase transition-all cursor-pointer shadow-lg active:scale-95 ${
                 isMatchDay
-                  ? 'bg-rose-600 hover:bg-rose-500 text-white shadow-rose-950/40 animate-pulse'
-                  : 'bg-[#00F5A0] hover:bg-[#00E590] text-[#050B14] shadow-[0_0_12px_rgba(0,245,160,0.3)]'
+                  ? 'bg-[#ff5365] hover:bg-[#ff3d52] text-white shadow-[0_0_20px_rgba(255,83,101,0.4)] animate-pulse'
+                  : 'bg-[#b7ff35] hover:bg-[#9bea27] text-[#050806] shadow-[0_0_20px_rgba(183,255,53,0.35)] hover:translate-y-[-1px]'
               }`}
             >
-              <span>{isMatchDay ? 'MAÇ' : 'İLERLE'}</span>
-              <ArrowRight className="w-3.5 h-3.5 stroke-[3]" />
+              <span>{isMatchDay ? 'MAÇA GİR' : 'CONTINUE >'}</span>
             </button>
           </div>
         </div>

@@ -187,7 +187,7 @@ export default function DraftRoomHubPage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#040814] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="relative min-h-screen w-full bg-[#050806] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. SHARP STADIUM ARENA BACKGROUND (NO BLUR, CRISP GRAPHITE & LIGHTS) */}
       {/* ==================================================================== */}
@@ -202,19 +202,19 @@ export default function DraftRoomHubPage() {
       {/* ==================================================================== */}
       {/* 2. SQUADCRAFT BROADCAST TOP NAVIGATION BAR                           */}
       {/* ==================================================================== */}
-      <header className="relative z-20 w-full border-b border-[#14233A] bg-[#07101C]/95 backdrop-blur-md px-4 sm:px-8 py-3">
+      <header className="relative z-20 w-full border-b border-white/10 bg-[#0d120f]/95 backdrop-blur-md px-4 sm:px-8 py-3">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
           {/* Left: Brand Plate & Back Button */}
           <div className="flex items-center gap-3.5">
             <Link
               href="/"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
+              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#090d0a] hover:bg-[#141b16] border border-white/10 text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>ANA MENÜ</span>
             </Link>
 
-            <div className="h-6 w-px bg-[#14233A] hidden sm:block" />
+            <div className="h-6 w-px bg-[#141b16] hidden sm:block" />
 
             <Link href="/" className="flex items-center gap-2.5 group">
               <div className="relative h-8 sm:h-9 w-11 sm:w-13 flex items-center justify-center">
@@ -230,9 +230,9 @@ export default function DraftRoomHubPage() {
               <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-lg sm:text-xl leading-none">
                   <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
-                  <span className="text-[#00F5A0]">26</span>
+                  <span className="text-[#b7ff35]">26</span>
                 </div>
-                <span className="text-[9px] font-mono font-bold tracking-widest text-[#00D4FF] uppercase mt-0.5">
+                <span className="text-[9px] font-ibm font-bold tracking-widest text-[#17e5c2] uppercase mt-0.5">
                   LOBİ & ODA MERKEZİ
                 </span>
               </div>
@@ -240,28 +240,28 @@ export default function DraftRoomHubPage() {
           </div>
 
           {/* Center: Tactical Category Switcher Tabs */}
-          <nav className="hidden lg:flex items-center gap-1.5 bg-[#081325] p-1 rounded-2xl border border-[#14233A]">
+          <nav className="hidden lg:flex items-center gap-1.5 bg-[#090d0a] p-1 rounded-2xl border border-white/10">
             <Link
               href="/"
-              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-white hover:bg-[#07101C] transition-all"
+              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-white hover:bg-[#0d120f] transition-all"
             >
               ANA MERKEZ
             </Link>
             <Link
               href="/career/new"
-              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-[#00F5A0] hover:bg-[#07101C] transition-all"
+              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-[#b7ff35] hover:bg-[#0d120f] transition-all"
             >
               KARİYER MODU
             </Link>
             <Link
               href="/draft"
-              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl bg-[#00D4FF] text-[#040814] shadow-[0_0_15px_rgba(0,212,255,0.3)]"
+              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl bg-[#17e5c2] text-[#050806] shadow-[0_0_15px_rgba(23, 229, 194,0.3)]"
             >
               DRAFT LEAGUE
             </Link>
             <Link
               href="/settings"
-              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-white hover:bg-[#07101C] transition-all"
+              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-white hover:bg-[#0d120f] transition-all"
             >
               AYARLAR
             </Link>
@@ -269,8 +269,8 @@ export default function DraftRoomHubPage() {
 
           {/* Right: Telemetry & Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-[#081325] rounded-xl border border-[#14233A] text-[10px] font-mono font-bold text-zinc-300">
-              <span className="w-2 h-2 rounded-full bg-[#00F5A0] animate-pulse" />
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-[#090d0a] rounded-xl border border-white/10 text-[10px] font-ibm font-bold text-zinc-300">
+              <span className="w-2 h-2 rounded-full bg-[#b7ff35] animate-pulse" />
               <span>SUNUCU: ÇEVRİMİÇİ</span>
               <span className="text-zinc-600">•</span>
               <span className="text-[#4FE4FF]">14ms TR</span>
@@ -278,15 +278,15 @@ export default function DraftRoomHubPage() {
 
             <button
               onClick={() => setIsFeedbackOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#090d0a] hover:bg-[#141b16] border border-white/10 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-[#00F5A0]" />
+              <MessageSquare className="w-3.5 h-3.5 text-[#b7ff35]" />
               <span className="hidden sm:inline">Geri Bildirim</span>
             </button>
 
             <Link
               href="/settings"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#081325] hover:bg-[#14233A] border border-[#14233A] text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#090d0a] hover:bg-[#141b16] border border-white/10 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
             >
               <Settings className="w-3.5 h-3.5 text-zinc-400" />
               <span className="hidden sm:inline">Ayarlar</span>
@@ -302,20 +302,20 @@ export default function DraftRoomHubPage() {
         {/* Header HUD Badges & Title */}
         <div className="w-full flex flex-col items-center text-center mb-6">
           <div className="flex items-center gap-2 mb-2">
-            <span className="px-2.5 py-0.5 bg-[#00D4FF] text-[#040814] text-[10px] font-black uppercase tracking-widest rounded-lg">
+            <span className="px-2.5 py-0.5 bg-[#17e5c2] text-[#050806] text-[10px] font-black uppercase tracking-widest rounded-lg">
               LIVE MULTIPLAYER
             </span>
-            <span className="px-2.5 py-0.5 bg-[#081325] text-zinc-300 border border-[#14233A] text-[10px] font-mono font-bold uppercase tracking-wider rounded-lg">
+            <span className="px-2.5 py-0.5 bg-[#090d0a] text-zinc-300 border border-white/10 text-[10px] font-ibm font-bold uppercase tracking-wider rounded-lg">
               {APP_VERSION}
             </span>
-            <span className="px-2.5 py-0.5 bg-emerald-950/80 text-[#00F5A0] border border-emerald-800/80 text-[10px] font-black uppercase tracking-wider rounded-lg">
+            <span className="px-2.5 py-0.5 bg-emerald-950/80 text-[#b7ff35] border border-emerald-800/80 text-[10px] font-black uppercase tracking-wider rounded-lg">
               {currentPreset.badge}
             </span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black italic tracking-tight uppercase text-white mt-1">
             DRAFT LEAGUE{' '}
-            <span className="text-[#00D4FF]">
+            <span className="text-[#17e5c2]">
               LOBİ MERKEZİ
             </span>
           </h1>
@@ -332,26 +332,26 @@ export default function DraftRoomHubPage() {
           {/* ------------------------------------------------------------------ */}
           {/* CARD 1: YENİ LİG OLUŞTUR (HOST)                                    */}
           {/* ------------------------------------------------------------------ */}
-          <div className="relative overflow-hidden sc-panel rounded-2xl border-2 border-[#00D4FF]/60 flex flex-col justify-between p-6 sm:p-7 shadow-[0_0_30px_rgba(0,212,255,0.15)]">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00D4FF] to-transparent" />
+          <div className="relative overflow-hidden sc-panel rounded-2xl border-2 border-[#17e5c2]/60 flex flex-col justify-between p-6 sm:p-7 shadow-[0_0_30px_rgba(23, 229, 194,0.15)]">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#17e5c2] to-transparent" />
 
             {/* Top Badge & Header */}
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 bg-[#00D4FF] text-[#040814] font-black text-[10px] uppercase tracking-wider rounded-lg">
+                  <span className="px-2.5 py-0.5 bg-[#17e5c2] text-[#050806] font-black text-[10px] uppercase tracking-wider rounded-lg">
                     HOST // ODA KURUCUSU
                   </span>
-                  <span className="text-zinc-400 font-mono text-[11px] font-bold">
+                  <span className="text-zinc-400 font-ibm text-[11px] font-bold">
                     MODE // 02-A
                   </span>
                 </div>
-                <div className="w-8 h-8 rounded-xl bg-[#00D4FF]/10 border border-[#00D4FF]/40 text-[#00D4FF] flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-xl bg-[#17e5c2]/10 border border-[#17e5c2]/40 text-[#17e5c2] flex items-center justify-center font-bold">
                   <Plus className="w-5 h-5 stroke-[3]" />
                 </div>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-black italic tracking-tighter uppercase text-white mb-1.5 font-display">
+              <h2 className="text-2xl sm:text-3xl font-black italic tracking-tighter uppercase text-white mb-1.5 font-barlow">
                 YENİ LİG OLUŞTUR
               </h2>
               <p className="text-xs sm:text-sm text-zinc-400 font-medium mb-5">
@@ -360,7 +360,7 @@ export default function DraftRoomHubPage() {
 
               <form onSubmit={handleCreateRoom} className="space-y-4">
                 <div>
-                  <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
+                  <label className="block text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
                     Menajer İsminiz <span className="text-[#4FE4FF]">*</span>
                   </label>
                   <input
@@ -371,12 +371,12 @@ export default function DraftRoomHubPage() {
                     maxLength={20}
                     required
                     disabled={isCreating}
-                    className="w-full bg-[#07101C] border border-[#14233A] rounded-xl focus:border-[#00D4FF] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
+                    className="w-full bg-[#0d120f] border border-white/10 rounded-xl focus:border-[#17e5c2] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
+                  <label className="block text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
                     Lig / Oda Adı <span className="text-zinc-500">(İsteğe Bağlı)</span>
                   </label>
                   <input
@@ -386,12 +386,12 @@ export default function DraftRoomHubPage() {
                     placeholder="Örn: Alveria Premier Ligi"
                     maxLength={30}
                     disabled={isCreating}
-                    className="w-full bg-[#07101C] border border-[#14233A] rounded-xl focus:border-[#00D4FF] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
+                    className="w-full bg-[#0d120f] border border-white/10 rounded-xl focus:border-[#17e5c2] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
+                  <label className="block text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
                     Menajer Sayısı (Takım Kotası)
                   </label>
                   <div className="grid grid-cols-3 gap-2">
@@ -402,8 +402,8 @@ export default function DraftRoomHubPage() {
                         onClick={() => setManagerCount(count)}
                         className={`py-2 px-3 text-xs font-black uppercase tracking-wider rounded-xl border transition-all flex items-center justify-center gap-1.5 ${
                           managerCount === count
-                            ? 'bg-[#00D4FF] text-[#040814] border-[#00D4FF] shadow-[0_0_15px_rgba(0,212,255,0.3)] font-black'
-                            : 'bg-[#07101C] text-zinc-400 border-[#14233A] hover:border-zinc-600 hover:text-white'
+                            ? 'bg-[#17e5c2] text-[#050806] border-[#17e5c2] shadow-[0_0_15px_rgba(23, 229, 194,0.3)] font-black'
+                            : 'bg-[#0d120f] text-zinc-400 border-white/10 hover:border-zinc-600 hover:text-white'
                         }`}
                       >
                         <Users className="w-3.5 h-3.5" />
@@ -414,14 +414,14 @@ export default function DraftRoomHubPage() {
                 </div>
 
                 {/* Preset Specs Box */}
-                <div className="p-4 bg-[#07101C] rounded-xl border border-[#14233A] space-y-2">
-                  <div className="text-[11px] font-mono font-bold text-[#00D4FF] uppercase flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-[#00D4FF]" />
+                <div className="p-4 bg-[#0d120f] rounded-xl border border-white/10 space-y-2">
+                  <div className="text-[11px] font-ibm font-bold text-[#17e5c2] uppercase flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-[#17e5c2]" />
                     <span>{currentPreset.summaryTitle}</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-300">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">👥</span> {currentPreset.summaryManagers}
+                      <span className="text-[#17e5c2]">👥</span> {currentPreset.summaryManagers}
                     </div>
                     <div className="flex items-center gap-1.5">
                       <span className="text-[#4FE4FF]">⚡</span> 18 Oyuncu Kadro
@@ -430,13 +430,13 @@ export default function DraftRoomHubPage() {
                       <span className="text-[#4FE4FF]">⏱️</span> 60sn Snake Draft
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[#00D4FF]">🏆</span> {currentPreset.format}
+                      <span className="text-[#17e5c2]">🏆</span> {currentPreset.format}
                     </div>
                   </div>
                 </div>
 
                 {createError && (
-                  <div className="p-3 bg-red-950/90 border border-red-600 rounded-xl text-red-200 text-xs font-mono flex items-start gap-2">
+                  <div className="p-3 bg-red-950/90 border border-red-600 rounded-xl text-red-200 text-xs font-ibm flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                     <span>{createError}</span>
                   </div>
@@ -445,11 +445,11 @@ export default function DraftRoomHubPage() {
                 <button
                   type="submit"
                   disabled={isCreating}
-                  className="w-full py-3.5 rounded-xl bg-[#00D4FF] hover:bg-[#00B8E6] text-[#040814] font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-[0_0_20px_rgba(0,212,255,0.3)] flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full py-3.5 rounded-xl bg-[#17e5c2] hover:bg-[#12bda0] text-[#050806] font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-[0_0_20px_rgba(23, 229, 194,0.3)] flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {isCreating ? (
                     <div className="flex items-center gap-2">
-                      <span className="w-4 h-4 border-2 border-[#040814] border-t-transparent rounded-full animate-spin" />
+                      <span className="w-4 h-4 border-2 border-[#050806] border-t-transparent rounded-full animate-spin" />
                       <span>{createProgressText || 'ODA KURULUYOR...'}</span>
                     </div>
                   ) : (
@@ -466,26 +466,26 @@ export default function DraftRoomHubPage() {
           {/* ------------------------------------------------------------------ */}
           {/* CARD 2: MEVCUT ODAYA KATIL (GUEST)                                  */}
           {/* ------------------------------------------------------------------ */}
-          <div className="relative overflow-hidden sc-panel rounded-2xl border-2 border-[#00F5A0]/60 flex flex-col justify-between p-6 sm:p-7 shadow-[0_0_30px_rgba(0,245,160,0.15)]">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00F5A0] to-transparent" />
+          <div className="relative overflow-hidden sc-panel rounded-2xl border-2 border-[#b7ff35]/60 flex flex-col justify-between p-6 sm:p-7 shadow-[0_0_30px_rgba(183, 255, 53,0.15)]">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#b7ff35] to-transparent" />
 
             {/* Top Badge & Header */}
             <div>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 bg-[#00F5A0] text-[#040814] font-black text-[10px] uppercase tracking-wider rounded-lg">
+                  <span className="px-2.5 py-0.5 bg-[#b7ff35] text-[#050806] font-black text-[10px] uppercase tracking-wider rounded-lg">
                     GUEST // KATILIMCI
                   </span>
-                  <span className="text-zinc-400 font-mono text-[11px] font-bold">
+                  <span className="text-zinc-400 font-ibm text-[11px] font-bold">
                     MODE // 02-B
                   </span>
                 </div>
-                <div className="w-8 h-8 rounded-xl bg-[#00F5A0]/10 border border-[#00F5A0]/40 text-[#00F5A0] flex items-center justify-center font-bold">
+                <div className="w-8 h-8 rounded-xl bg-[#b7ff35]/10 border border-[#b7ff35]/40 text-[#b7ff35] flex items-center justify-center font-bold">
                   <KeyRound className="w-4 h-4 stroke-[2.5]" />
                 </div>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-black italic tracking-tighter uppercase text-white mb-1.5 font-display">
+              <h2 className="text-2xl sm:text-3xl font-black italic tracking-tighter uppercase text-white mb-1.5 font-barlow">
                 KODLA ODAYA KATIL
               </h2>
               <p className="text-xs sm:text-sm text-zinc-400 font-medium mb-5">
@@ -494,8 +494,8 @@ export default function DraftRoomHubPage() {
 
               <form onSubmit={handleJoinRoom} className="space-y-4">
                 <div>
-                  <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer İsminiz <span className="text-[#00F5A0]">*</span>
+                  <label className="block text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
+                    Menajer İsminiz <span className="text-[#b7ff35]">*</span>
                   </label>
                   <input
                     type="text"
@@ -505,13 +505,13 @@ export default function DraftRoomHubPage() {
                     maxLength={20}
                     required
                     disabled={isJoining}
-                    className="w-full bg-[#07101C] border border-[#14233A] rounded-xl focus:border-[#00F5A0] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
+                    className="w-full bg-[#0d120f] border border-white/10 rounded-xl focus:border-[#b7ff35] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Oda Kodu <span className="text-[#00F5A0]">*</span>
+                  <label className="block text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
+                    Oda Kodu <span className="text-[#b7ff35]">*</span>
                   </label>
                   <input
                     type="text"
@@ -521,7 +521,7 @@ export default function DraftRoomHubPage() {
                     maxLength={10}
                     required
                     disabled={isJoining}
-                    className="w-full bg-[#07101C] border border-[#14233A] rounded-xl focus:border-[#00F5A0] px-3.5 py-2.5 text-base text-white font-mono uppercase tracking-widest focus:outline-none transition-colors disabled:opacity-50"
+                    className="w-full bg-[#0d120f] border border-white/10 rounded-xl focus:border-[#b7ff35] px-3.5 py-2.5 text-base text-white font-ibm uppercase tracking-widest focus:outline-none transition-colors disabled:opacity-50"
                   />
                 </div>
 
@@ -533,7 +533,7 @@ export default function DraftRoomHubPage() {
                     checked={isSpectator}
                     onChange={(e) => setIsSpectator(e.target.checked)}
                     disabled={isJoining}
-                    className="w-4 h-4 rounded text-[#00F5A0] bg-[#07101C] border-[#14233A] focus:ring-0 cursor-pointer"
+                    className="w-4 h-4 rounded text-[#b7ff35] bg-[#0d120f] border-white/10 focus:ring-0 cursor-pointer"
                   />
                   <label
                     htmlFor="spectator"
@@ -544,7 +544,7 @@ export default function DraftRoomHubPage() {
                 </div>
 
                 {joinError && (
-                  <div className="p-3 bg-red-950/90 border border-red-600 rounded-xl text-red-200 text-xs font-mono flex items-start gap-2">
+                  <div className="p-3 bg-red-950/90 border border-red-600 rounded-xl text-red-200 text-xs font-ibm flex items-start gap-2">
                     <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                     <span>{joinError}</span>
                   </div>
@@ -553,11 +553,11 @@ export default function DraftRoomHubPage() {
                 <button
                   type="submit"
                   disabled={isJoining}
-                  className="w-full py-3.5 rounded-xl bg-[#00F5A0] hover:bg-[#00D68B] text-[#040814] font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-[0_0_20px_rgba(0,245,160,0.3)] flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full py-3.5 rounded-xl bg-[#b7ff35] hover:bg-[#9bea27] text-[#050806] font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-[0_0_20px_rgba(183, 255, 53,0.3)] flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {isJoining ? (
                     <div className="flex items-center gap-2">
-                      <span className="w-4 h-4 border-2 border-[#040814] border-t-transparent rounded-full animate-spin" />
+                      <span className="w-4 h-4 border-2 border-[#050806] border-t-transparent rounded-full animate-spin" />
                       <span>ODAYA BAĞLANILIYOR...</span>
                     </div>
                   ) : (
@@ -572,8 +572,8 @@ export default function DraftRoomHubPage() {
 
             {/* Recent Rooms Strip */}
             {recentRooms.length > 0 && (
-              <div className="mt-5 pt-4 border-t border-[#14233A]">
-                <div className="text-[10px] font-mono font-bold text-zinc-400 uppercase tracking-wider mb-2">
+              <div className="mt-5 pt-4 border-t border-white/10">
+                <div className="text-[10px] font-ibm font-bold text-zinc-400 uppercase tracking-wider mb-2">
                   SON KATILDIĞINIZ ODALAR
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -581,7 +581,7 @@ export default function DraftRoomHubPage() {
                     <button
                       key={code}
                       onClick={() => handleJoinRecent(code)}
-                      className="px-3.5 py-1.5 rounded-xl bg-[#07101C] hover:bg-[#14233A] border border-[#14233A] hover:border-[#00F5A0] text-xs font-mono font-bold text-[#00F5A0] transition-colors"
+                      className="px-3.5 py-1.5 rounded-xl bg-[#0d120f] hover:bg-[#141b16] border border-white/10 hover:border-[#b7ff35] text-xs font-ibm font-bold text-[#b7ff35] transition-colors"
                     >
                       {code}
                     </button>
@@ -596,43 +596,43 @@ export default function DraftRoomHubPage() {
       {/* ==================================================================== */}
       {/* 5. SQUADCRAFT BROADCAST TICKER & CONTROLLER PROMPT FOOTER             */}
       {/* ==================================================================== */}
-      <footer className="relative z-20 w-full border-t border-[#14233A] bg-[#07101C] text-xs">
+      <footer className="relative z-20 w-full border-t border-white/10 bg-[#0d120f] text-xs">
         {/* Broadcast Live News Ticker Strip */}
-        <div className="w-full bg-[#040814] border-b border-[#14233A] px-4 py-1.5 flex items-center overflow-hidden">
-          <div className="flex items-center gap-2 shrink-0 pr-4 border-r border-[#14233A] text-[10px] font-black uppercase text-[#00D4FF]">
-            <Radio className="w-3 h-3 text-[#00D4FF] animate-pulse" />
+        <div className="w-full bg-[#050806] border-b border-white/10 px-4 py-1.5 flex items-center overflow-hidden">
+          <div className="flex items-center gap-2 shrink-0 pr-4 border-r border-white/10 text-[10px] font-black uppercase text-[#17e5c2]">
+            <Radio className="w-3 h-3 text-[#17e5c2] animate-pulse" />
             <span>CANLI LOBİ</span>
           </div>
-          <div className="overflow-hidden whitespace-nowrap text-[11px] font-mono text-zinc-400 pl-4">
+          <div className="overflow-hidden whitespace-nowrap text-[11px] font-ibm text-zinc-400 pl-4">
             <span className="text-zinc-200 font-bold">// DRAFT ODASI SUNUCUSU AKTİF</span>
             <span className="mx-3 text-zinc-600">•</span>
             <span>{currentPreset.tickerText}</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00F5A0]">18 TURLUK CANLI SNAKE DRAFT MOTORU</span>
+            <span className="text-[#b7ff35]">18 TURLUK CANLI SNAKE DRAFT MOTORU</span>
             <span className="mx-3 text-zinc-600">•</span>
             <span>GERÇEK ZAMANLI SUPABASE SENKRONİZASYONU</span>
             <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#00D4FF]">{APP_VERSION}</span>
+            <span className="text-[#17e5c2]">{APP_VERSION}</span>
           </div>
         </div>
 
         {/* Shortcuts & Status HUD */}
         <div className="max-w-[1600px] mx-auto px-4 sm:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-          <div className="hidden md:flex items-center gap-3 text-[11px] font-mono text-zinc-400">
+          <div className="hidden md:flex items-center gap-3 text-[11px] font-ibm text-zinc-400">
             <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-[#081325] border border-[#14233A] rounded text-white font-bold">↵ ENTER</kbd>
+              <kbd className="px-1.5 py-0.5 bg-[#090d0a] border border-white/10 rounded text-white font-bold">↵ ENTER</kbd>
               <span>ODAYA GİR / OLUŞTUR</span>
             </div>
             <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-[#081325] border border-[#14233A] rounded text-white font-bold">ESC</kbd>
+              <kbd className="px-1.5 py-0.5 bg-[#090d0a] border border-white/10 rounded text-white font-bold">ESC</kbd>
               <span>ANA MENÜ</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 text-[11px] font-mono text-zinc-400">
+          <div className="flex items-center gap-3 text-[11px] font-ibm text-zinc-400">
             <span className="text-zinc-300 font-bold">SQUADCRAFT DRAFT ENGINE</span>
             <span className="text-zinc-600">•</span>
-            <span className="text-[#00F5A0] font-bold">{APP_VERSION}</span>
+            <span className="text-[#b7ff35] font-bold">{APP_VERSION}</span>
             <span className="text-zinc-600">•</span>
             <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />

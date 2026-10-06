@@ -30,10 +30,10 @@ export const MOCK_CLUBS: Club[] = [
     transferBudget: 25000000,
     wageBudget: 380000,
     weeklyWageExpense: 315000,
-    primaryColor: '#00F5A0',
+    primaryColor: '#b7ff35',
     secondaryColor: '#0F172A',
     accentColor: '#38BDF8',
-    managerName: 'Oğuzhan Kaya',
+    managerName: 'Steve',
     foundedYear: 1934,
   },
   {

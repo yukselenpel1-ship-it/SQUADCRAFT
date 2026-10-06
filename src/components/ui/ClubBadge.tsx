@@ -94,7 +94,7 @@ export const ClubBadge: React.FC<ClubBadgeProps> = ({
   code = 'SC',
   name,
   clubId,
-  primaryColor = '#00F5A0',
+  primaryColor = '#b7ff35',
   secondaryColor = '#0F172A',
   accentColor,
   emblem: manualEmblem,

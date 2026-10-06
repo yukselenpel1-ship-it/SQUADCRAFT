@@ -2,25 +2,23 @@
 
 import React, { useState } from 'react';
 import { useGame } from '@/lib/context/GameContext';
-import { TacticsPitch } from '@/components/tactics/TacticsPitch';
-import { TacticalSliders } from '@/components/tactics/TacticalSliders';
 import { PlayerModal } from '@/components/ui/PlayerModal';
-import { StatBadge } from '@/components/ui/StatBadge';
-import { FitnessIndicator } from '@/components/ui/FitnessIndicator';
-import { Player } from '@/types/game';
+import { Player, Formation, Mentality, Tempo, Pressing, PassingStyle, DefensiveLine, Width } from '@/types/game';
 import {
   Swords,
   Shield,
   Zap,
   Users,
-  Info,
   CheckCircle2,
   RefreshCw,
   Sliders,
   ChevronRight,
   Sparkles,
   ArrowRightLeft,
-  UserCheck,
+  Flame,
+  Layers,
+  Activity,
+  Compass,
 } from 'lucide-react';
 
 export default function TacticsPage() {
@@ -31,7 +29,6 @@ export default function TacticsPage() {
     setFormation,
     updateTacticalSettings,
     swapLineupPlayer,
-    swapPitchSlots,
     autoAssignTactics,
     isCareerHydrated,
     isInitialized,
@@ -39,29 +36,22 @@ export default function TacticsPage() {
 
   const [inspectedPlayer, setInspectedPlayer] = useState<Player | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<number | null>(null);
-  const [activeSquadTab, setActiveSquadTab] = useState<'BENCH' | 'RESERVES'>('BENCH');
   const [actionNotice, setActionNotice] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'SHAPE' | 'HEATMAP' | 'TRANSITION'>('SHAPE');
 
   const getPlayer = (id: string | null) => {
     if (!id) return null;
     return userPlayers.find((p) => p.id === id) || null;
   };
 
-  const startingPlayers = tactics.lineup.map((s) => ({
+  const startingPlayers = (tactics?.lineup || []).map((s) => ({
     slot: s,
     player: getPlayer(s.playerId),
   }));
 
-  const benchPlayers = tactics.substitutes
+  const benchPlayers = (tactics?.substitutes || [])
     .map((id) => getPlayer(id))
     .filter(Boolean) as Player[];
-
-  const reservePlayers = tactics.reserves
-    .map((id) => getPlayer(id))
-    .filter(Boolean) as Player[];
-
-  const selectedSlot = selectedSlotId !== null ? tactics.lineup.find((s) => s.slotId === selectedSlotId) : null;
-  const selectedStarterPlayer = selectedSlot ? getPlayer(selectedSlot.playerId) : null;
 
   const handleAutoAssign = () => {
     autoAssignTactics();
@@ -81,226 +71,404 @@ export default function TacticsPage() {
     }
   };
 
-  const handleDirectPutOnPitch = (player: Player, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (selectedSlotId !== null) {
-      swapLineupPlayer(selectedSlotId, player.id);
-      setSelectedSlotId(null);
-      setActionNotice(`${player.firstName[0]}. ${player.lastName} ilk 11'e yerleştirildi.`);
-      setTimeout(() => setActionNotice(null), 3000);
-      return;
-    }
-
-    // Find best slot matching position
-    const matchingSlot =
-      tactics.lineup.find((s) => s.role === player.position) ||
-      tactics.lineup.find((s) => player.secondaryPositions?.includes(s.role)) ||
-      tactics.lineup[0];
-
-    if (matchingSlot) {
-      swapLineupPlayer(matchingSlot.slotId, player.id);
-      setActionNotice(`${player.firstName[0]}. ${player.lastName}, ${matchingSlot.role} mevkisine yerleştirildi.`);
-      setTimeout(() => setActionNotice(null), 3000);
-    }
+  const settings = tactics?.settings || {
+    mentality: 'Dengeli',
+    tempo: 'Standart',
+    pressing: 'Orta',
+    passingStyle: 'Kısa',
+    defensiveLine: 'Standart',
+    width: 'Dengeli',
   };
 
-  const activeRoster = activeSquadTab === 'BENCH' ? benchPlayers : reservePlayers;
+  const handleSettingChange = (key: string, val: any) => {
+    updateTacticalSettings({
+      ...settings,
+      [key]: val,
+    });
+  };
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#040814] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
-        <span>Kariyer yükleniyor...</span>
+      <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center gap-3 text-[#8f9a91] font-ibm text-xs">
+        <div className="w-8 h-8 border-2 border-[#b8ff3d] border-t-transparent rounded-full animate-spin" />
+        <span>Taktik tahtası yükleniyor...</span>
       </div>
     );
   }
 
+  // Visual offsets based on Width and Defensive Line
+  const widthFactor = settings.width === 'Geniş' ? 1.15 : settings.width === 'Dar' ? 0.85 : 1.0;
+  const defLineOffset =
+    settings.defensiveLine === 'Çok Yüksek'
+      ? -10
+      : settings.defensiveLine === 'Yüksek'
+      ? -6
+      : settings.defensiveLine === 'Derin'
+      ? 6
+      : settings.defensiveLine === 'Çok Derin'
+      ? 10
+      : 0;
+
   return (
-    <div className="space-y-6 animate-in fade-in duration-300 pb-12">
-      {/* Broadcast Header HUD */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-[#14233A]">
+    <div className="space-y-6 pb-12 select-none animate-in fade-in duration-300">
+      {/* Header HUD */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30 rounded-full">
-              // TACTICAL HEADQUARTERS
+          <div className="flex items-center gap-2">
+            <span className="font-ibm text-[11px] text-[#b8ff3d] tracking-widest uppercase font-semibold">
+              TACTICAL SYSTEM // COMMAND CENTER
             </span>
-            <span className="text-[11px] font-mono text-zinc-400">
-              FORMASYON: <strong className="text-white">{tactics.formation}</strong> • İLK 11:{' '}
-              <strong className="text-[#00F5A0]">{startingPlayers.filter((s) => s.player).length}/11</strong>
-            </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#65ff83] animate-pulse" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Swords className="w-7 h-7 text-[#00F5A0]" />
-            Taktik & Saha Dizilişi
+          <h1 className="font-barlow font-extrabold text-[36px] sm:text-[46px] text-[#f3f6f3] uppercase tracking-tight leading-none mt-1">
+            TACTICAL COMMAND CENTER
           </h1>
         </div>
 
-        {/* Action Controls & Telemetry */}
-        <div className="flex flex-wrap items-center gap-2">
+        {/* Action Controls */}
+        <div className="flex items-center gap-3">
           <button
+            type="button"
             onClick={handleAutoAssign}
-            className="px-5 py-2.5 bg-[#00F5A0] hover:bg-[#00E590] text-black font-black text-xs uppercase tracking-wider rounded-xl transition-all flex items-center gap-2 shadow-[0_0_16px_rgba(0,245,160,0.3)] active:scale-95"
-            title="En yüksek genel reyting ve formdaki oyuncuları mevkilerine göre otomatik dizer"
+            className="flex items-center gap-2 px-4 py-2 rounded-[3px] bg-white/5 hover:bg-white/10 border border-white/10 font-barlow font-bold text-[13px] uppercase tracking-wider text-[#f3f6f3] transition-colors cursor-pointer"
           >
-            <Sparkles className="w-4 h-4" />
-            <span>OTOMATİK 11 DİZ</span>
+            <Sparkles size={14} className="text-[#b8ff3d]" />
+            <span>KADROYU DİZ (AUTO-ASSIGN)</span>
           </button>
-
-          <div className="px-3.5 py-1.5 bg-[#07101C] border border-[#14233A] rounded-lg text-xs font-mono">
-            <span className="text-zinc-500 uppercase text-[10px] block">Mentalite</span>
-            <span className="font-bold text-[#4FE4FF]">{tactics.settings.mentality}</span>
-          </div>
-          <div className="px-3.5 py-1.5 bg-[#07101C] border border-[#14233A] rounded-lg text-xs font-mono">
-            <span className="text-zinc-500 uppercase text-[10px] block">Tempo</span>
-            <span className="font-bold text-[#00F5A0]">{tactics.settings.tempo}</span>
-          </div>
-          <div className="px-3.5 py-1.5 bg-[#07101C] border border-[#14233A] rounded-lg text-xs font-mono">
-            <span className="text-zinc-500 uppercase text-[10px] block">Pres Şiddeti</span>
-            <span className="font-bold text-amber-400">{tactics.settings.pressing}</span>
-          </div>
         </div>
       </div>
 
-      {/* Action Notification Toast */}
+      {/* Action Notice Banner */}
       {actionNotice && (
-        <div className="p-3 bg-emerald-950/80 border border-[#00F5A0] text-[#00F5A0] text-xs font-mono font-bold flex items-center gap-2 rounded-xl animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 shrink-0" />
+        <div className="p-3 rounded-[4px] bg-[#b8ff3d]/15 border border-[#b8ff3d] text-[#b8ff3d] font-ibm text-[12px] flex items-center gap-2 animate-in fade-in">
+          <CheckCircle2 size={16} />
           <span>{actionNotice}</span>
         </div>
       )}
 
-      {/* Main Grid: Tactical Pitch (Left) + Sliders & Bench (Right) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column (7 Cols on desktop): Interactive Pitch */}
-        <div className="lg:col-span-7 flex flex-col items-center">
-          <TacticsPitch
-            formation={tactics.formation}
-            lineup={tactics.lineup}
-            allPlayers={userPlayers}
-            substitutes={tactics.substitutes}
-            reserves={tactics.reserves}
-            selectedSlotId={selectedSlotId}
-            onSelectSlot={setSelectedSlotId}
-            onSwapPlayer={swapLineupPlayer}
-            onSwapSlots={swapPitchSlots}
-            onPlayerClick={(p) => setInspectedPlayer(p)}
-          />
-        </div>
-
-        {/* Right Column (5 Cols on desktop): Tactical Sliders & Bench */}
-        <div className="lg:col-span-5 space-y-5">
-          {/* Tactical Sliders */}
-          <TacticalSliders
-            formation={tactics.formation}
-            settings={tactics.settings}
-            onFormationChange={setFormation}
-            onSettingsChange={updateTacticalSettings}
-          />
-
-          {/* Active Slot Selection Banner */}
-          {selectedSlot && (
-            <div className="p-3.5 bg-[#00F5A0]/10 border border-[#00F5A0] text-xs font-mono flex items-center justify-between gap-3 rounded-xl animate-in fade-in">
-              <div>
-                <span className="text-zinc-400 text-[10px] block uppercase font-bold">// DEĞİŞİKLİK MODU</span>
-                <span className="font-bold text-white">
-                  Seçili: <span className="text-[#00F5A0] font-black">{selectedSlot.role}</span>{' '}
-                  ({selectedStarterPlayer ? `${selectedStarterPlayer.firstName[0]}. ${selectedStarterPlayer.lastName}` : 'Boş'})
-                </span>
-                <p className="text-[11px] text-zinc-300 mt-0.5">
-                  Yer değiştirmek için aşağıdaki oyuncuya veya sahada başka bir mevkiye tıklayın.
-                </p>
+      {/* Main Grid: Left Large Tactical Pitch + Right Tactical Philosophy */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column (8 cols): Pitch and Tactical Visualization */}
+        <div className="lg:col-span-8 space-y-6">
+          <div className="rounded-[10px] border border-white/15 bg-[#090d0a] shadow-2xl p-6 sm:p-8 overflow-hidden relative">
+            {/* Tactical Display Sub-tabs & Formation Selector */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4 mb-6 font-ibm text-[11px]">
+              <div className="flex items-center gap-3">
+                <span className="text-[#8f9a91]">DİZİLİŞ:</span>
+                <select
+                  value={tactics.formation}
+                  onChange={(e) => setFormation(e.target.value as Formation)}
+                  className="bg-[#0d130f] border border-white/10 focus:border-[#b8ff3d] px-3 py-1.5 rounded-[4px] font-barlow font-extrabold text-[16px] text-[#b8ff3d] outline-none cursor-pointer"
+                >
+                  {[
+                    '4-3-3',
+                    '4-2-3-1',
+                    '4-4-2',
+                    '3-5-2',
+                    '3-4-3',
+                    '5-3-2',
+                    '4-1-4-1',
+                    '4-2-4',
+                  ].map((f) => (
+                    <option key={f} value={f} className="bg-[#090d0a]">
+                      {f}
+                    </option>
+                  ))}
+                </select>
               </div>
-              <button
-                onClick={() => setSelectedSlotId(null)}
-                className="px-2.5 py-1 bg-[#081325] hover:bg-[#0E1B33] text-zinc-300 text-[10px] font-mono border border-[#14233A] uppercase rounded"
-              >
-                İptal
-              </button>
+
+              {/* View Modes */}
+              <div className="flex items-center gap-1.5 bg-[#0d130f] border border-white/10 p-1 rounded-[4px]">
+                {[
+                  { id: 'SHAPE', label: 'TAKTIK DİZİLİŞ' },
+                  { id: 'HEATMAP', label: 'PRES & BASKI ALANI' },
+                  { id: 'TRANSITION', label: 'GEÇİŞ HATTI' },
+                ].map((mode) => (
+                  <button
+                    key={mode.id}
+                    type="button"
+                    onClick={() => setActiveTab(mode.id as any)}
+                    className={`px-3 py-1 rounded-[2px] font-barlow font-bold text-[12px] uppercase tracking-wider transition-colors cursor-pointer ${
+                      activeTab === mode.id
+                        ? 'bg-[#b8ff3d] text-[#050806]'
+                        : 'text-[#8f9a91] hover:text-[#f3f6f3]'
+                    }`}
+                  >
+                    {mode.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
 
-          {/* Bench & Reserve Roster */}
-          <div className="sc-panel p-4 sm:p-5 rounded-2xl border border-[#14233A] shadow-xl space-y-3">
-            <div className="flex items-center justify-between border-b border-[#14233A] pb-2.5">
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() => setActiveSquadTab('BENCH')}
-                  className={`px-3 py-1 text-xs font-mono font-bold uppercase rounded-lg transition-all ${
-                    activeSquadTab === 'BENCH'
-                      ? 'bg-[#00F5A0] text-black'
-                      : 'text-zinc-400 hover:text-white bg-[#07101C] border border-[#14233A]'
-                  }`}
-                >
-                  Yedekler ({benchPlayers.length})
-                </button>
-                <button
-                  onClick={() => setActiveSquadTab('RESERVES')}
-                  className={`px-3 py-1 text-xs font-mono font-bold uppercase rounded-lg transition-all ${
-                    activeSquadTab === 'RESERVES'
-                      ? 'bg-[#00F5A0] text-black'
-                      : 'text-zinc-400 hover:text-white bg-[#07101C] border border-[#14233A]'
-                  }`}
-                >
-                  Rezervler ({reservePlayers.length})
-                </button>
-              </div>
+            {/* Tactical Pitch Console */}
+            <div
+              className="relative w-full max-w-2xl mx-auto h-[560px] rounded-[10px] border-2 border-[#b8ff3d]/30 overflow-hidden shadow-inner flex flex-col justify-between p-4"
+              style={{
+                background:
+                  'radial-gradient(circle at 50% 50%, #0a170f 0%, #050b07 80%, #040805 100%)',
+                boxShadow: 'inset 0 0 100px rgba(0,0,0,0.9), 0 0 30px rgba(184,255,61,0.1)',
+              }}
+            >
+              {/* Pitch Marking Geometry */}
+              <div className="absolute inset-x-8 top-1/2 -translate-y-1/2 h-[1px] bg-[#b8ff3d]/20" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border border-[#b8ff3d]/20" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-20 border-b border-x border-[#b8ff3d]/20" />
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-48 h-20 border-t border-x border-[#b8ff3d]/20" />
 
-              <span className="text-[11px] font-mono text-zinc-500">
-                TOPLAM: {benchPlayers.length + reservePlayers.length} OYUNCU
+              {/* Pressing Heatmap Overlay Mode */}
+              {activeTab === 'HEATMAP' && (
+                <div
+                  className="absolute inset-x-0 pointer-events-none transition-all duration-700"
+                  style={{
+                    top: settings.pressing === 'Aşırı' ? '15%' : settings.pressing === 'Yoğun' ? '25%' : '40%',
+                    bottom: '20%',
+                    background:
+                      'radial-gradient(ellipse at 50% 50%, rgba(255, 83, 101, 0.35) 0%, rgba(255, 211, 79, 0.2) 60%, transparent 100%)',
+                  }}
+                />
+              )}
+
+              {/* Dynamic Tactical Pitch Players */}
+              {startingPlayers.map(({ slot, player }) => {
+                const isSelected = selectedSlotId === slot.slotId;
+                const isDef = ['GK', 'DC', 'DR', 'DL'].includes(slot.role);
+
+                // Apply width & def line vertical/horizontal factor
+                const posX = Math.min(92, Math.max(8, 50 + (slot.x - 50) * widthFactor));
+                const posY = isDef ? Math.max(10, slot.y + defLineOffset) : slot.y;
+
+                return (
+                  <div
+                    key={slot.slotId}
+                    onClick={() => {
+                      if (selectedSlotId === slot.slotId) setSelectedSlotId(null);
+                      else setSelectedSlotId(slot.slotId);
+                    }}
+                    className="absolute transform -translate-x-1/2 -translate-y-1/2 transition-all duration-700 ease-out cursor-pointer group"
+                    style={{
+                      left: `${posX}%`,
+                      top: `${posY}%`,
+                    }}
+                  >
+                    <div
+                      className={`flex flex-col items-center transition-transform duration-200 group-hover:scale-110 ${
+                        isSelected ? 'scale-110 drop-shadow-[0_0_20px_#b8ff3d]' : ''
+                      }`}
+                    >
+                      {/* Tactical Role Token */}
+                      <div
+                        className={`w-11 h-11 rounded-full flex items-center justify-center font-barlow font-extrabold text-[15px] border-2 shadow-xl transition-all ${
+                          isSelected
+                            ? 'bg-[#b8ff3d] text-[#050806] border-[#b8ff3d]'
+                            : 'bg-[#0d130f] text-[#f3f6f3] border-white/20 group-hover:border-[#b8ff3d]'
+                        }`}
+                      >
+                        <span>{player?.overall || 75}</span>
+                      </div>
+
+                      <div className="mt-1 px-2.5 py-0.5 rounded bg-[#050806]/95 border border-white/10 text-center whitespace-nowrap shadow">
+                        <span className="font-barlow font-bold text-[11px] text-[#f3f6f3] uppercase block leading-none">
+                          {player?.lastName || 'BOŞ MEVKİ'}
+                        </span>
+                        <span className="font-ibm text-[9px] text-[#b8ff3d] font-bold">
+                          {slot.role}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Tactical Bench Strip */}
+            <div className="mt-6 pt-4 border-t border-white/10">
+              <span className="font-ibm text-[11px] text-[#8f9a91] uppercase tracking-wider block mb-3">
+                YEDEK KULÜBESİ (SAHAYA ALMAK İÇİN ÖNCE MEVKİYE SONRA OYUNCUYA TIKLAYIN)
               </span>
-            </div>
-
-            <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1">
-              {activeRoster.length === 0 ? (
-                <div className="p-6 text-center text-xs font-mono text-zinc-500 border border-dashed border-[#14233A] rounded-xl">
-                  Bu kategoride oyuncu bulunmuyor.
-                </div>
-              ) : (
-                activeRoster.map((player) => (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-ibm text-[11px]">
+                {benchPlayers.map((player) => (
                   <div
                     key={player.id}
                     onClick={() => handleBenchPlayerClick(player)}
-                    className="flex items-center justify-between p-2.5 bg-[#07101C] hover:bg-[#0E1B33] border border-[#14233A] hover:border-[#00F5A0]/60 rounded-xl cursor-pointer transition-all group"
+                    className="p-2.5 rounded bg-[#0d130f] border border-white/10 hover:border-[#b8ff3d] cursor-pointer flex items-center justify-between transition-colors"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <span className="w-7 h-6 flex items-center justify-center text-[10px] font-mono font-black bg-[#081325] text-zinc-300 rounded border border-[#14233A]">
-                        {player.position}
+                    <div>
+                      <span className="text-[#8f9a91] text-[9px] block">{player.position}</span>
+                      <span className="font-bold text-[#f3f6f3] truncate">
+                        {player.firstName[0]}. {player.lastName}
                       </span>
-                      <div>
-                        <div className="text-xs font-bold text-white group-hover:text-[#00F5A0] transition-colors truncate max-w-[130px] sm:max-w-[150px]">
-                          {player.firstName} {player.lastName}
-                        </div>
-                        <div className="text-[10px] font-mono text-zinc-500">
-                          {player.age} YAŞ • FORM: {player.form}
-                        </div>
-                      </div>
                     </div>
-
-                    <div className="flex items-center gap-2">
-                      <FitnessIndicator value={player.fitness} isInjured={player.isInjured} compact={true} />
-                      <StatBadge value={player.overall} size="sm" />
-                      <button
-                        onClick={(e) => handleDirectPutOnPitch(player, e)}
-                        title="İlk 11'e yerleştir"
-                        className="px-2.5 py-1 text-[10px] font-mono font-bold uppercase bg-[#081325] hover:bg-[#00F5A0] text-zinc-300 hover:text-black rounded border border-[#14233A] hover:border-white transition-all flex items-center gap-1"
-                      >
-                        <ArrowRightLeft className="w-2.5 h-2.5" />
-                        <span>Sahaya Al</span>
-                      </button>
-                    </div>
+                    <span className="font-bold text-[#b8ff3d]">{player.overall}</span>
                   </div>
-                ))
-              )}
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column (4 cols): Tactical Philosophy Sliders */}
+        <div className="lg:col-span-4 p-6 rounded-[8px] bg-[#0d130f] border border-white/10 space-y-6 shadow-2xl">
+          <div className="border-b border-white/10 pb-3">
+            <span className="font-ibm text-[11px] text-[#b8ff3d] uppercase tracking-widest font-semibold block">
+              TACTICAL PHILOSOPHY
+            </span>
+            <h3 className="font-barlow font-extrabold text-[24px] text-[#f3f6f3] uppercase leading-none mt-1">
+              OYUN ANLAYIŞI & TALİMATLAR
+            </h3>
+          </div>
+
+          <div className="space-y-4 font-ibm text-[12px]">
+            {/* 1. Mentality */}
+            <div>
+              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+                <span>MENTALİTE (MENTALITY)</span>
+                <span className="text-[#b8ff3d]">{settings.mentality}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {(['Savunmacı', 'Dengeli', 'Hücum'] as Mentality[]).map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleSettingChange('mentality', val)}
+                    className={`py-1.5 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
+                      settings.mentality === val
+                        ? 'bg-[#b8ff3d] text-[#050806]'
+                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                    }`}
+                  >
+                    {val}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 2. Tempo */}
+            <div>
+              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+                <span>TEMPO</span>
+                <span className="text-[#21dfbd]">{settings.tempo}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {(['Düşük', 'Standart', 'Yüksek'] as Tempo[]).map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleSettingChange('tempo', val)}
+                    className={`py-1.5 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
+                      settings.tempo === val
+                        ? 'bg-[#21dfbd] text-[#050806]'
+                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                    }`}
+                  >
+                    {val}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 3. Pressing */}
+            <div>
+              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+                <span>PRES YOĞUNLUĞU (PRESSING)</span>
+                <span className="text-[#ff5365]">{settings.pressing}</span>
+              </div>
+              <div className="grid grid-cols-4 gap-1">
+                {(['Hafif', 'Orta', 'Yoğun', 'Aşırı'] as Pressing[]).map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleSettingChange('pressing', val)}
+                    className={`py-1.5 rounded text-[10px] font-bold uppercase transition-all cursor-pointer ${
+                      settings.pressing === val
+                        ? 'bg-[#ff5365] text-white'
+                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                    }`}
+                  >
+                    {val}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 4. Width */}
+            <div>
+              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+                <span>GENİŞLİK (WIDTH)</span>
+                <span className="text-[#ffd34f]">{settings.width}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {(['Dar', 'Dengeli', 'Geniş'] as Width[]).map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleSettingChange('width', val)}
+                    className={`py-1.5 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
+                      settings.width === val
+                        ? 'bg-[#ffd34f] text-[#050806]'
+                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                    }`}
+                  >
+                    {val}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 5. Defensive Line */}
+            <div>
+              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+                <span>SAVUNMA ÇİZGİSİ (DEFENSIVE LINE)</span>
+                <span className="text-[#b8ff3d]">{settings.defensiveLine}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {(['Derin', 'Standart', 'Yüksek'] as DefensiveLine[]).map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleSettingChange('defensiveLine', val)}
+                    className={`py-1.5 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
+                      settings.defensiveLine === val
+                        ? 'bg-[#b8ff3d] text-[#050806]'
+                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                    }`}
+                  >
+                    {val}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 6. Passing Style / Build-up */}
+            <div>
+              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+                <span>PAS STİLİ (BUILD-UP)</span>
+                <span className="text-[#21dfbd]">{settings.passingStyle}</span>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {(['Kısa', 'Doğrudan', 'Uzun'] as PassingStyle[]).map((val) => (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleSettingChange('passingStyle', val)}
+                    className={`py-1.5 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
+                      settings.passingStyle === val
+                        ? 'bg-[#21dfbd] text-[#050806]'
+                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                    }`}
+                  >
+                    {val}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Inspect Player Modal */}
+      {/* Player Modal */}
       {inspectedPlayer && (
         <PlayerModal
           player={inspectedPlayer}
-          club={userClub}
           onClose={() => setInspectedPlayer(null)}
         />
       )}

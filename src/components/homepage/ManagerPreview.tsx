@@ -2,13 +2,16 @@
 
 import React from 'react';
 import { Trophy, Award, Star, ShieldCheck } from 'lucide-react';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 export function ManagerPreview() {
+  const { language } = useLanguage();
+
   const trophies = [
-    { title: 'LEAGUE CHAMPION', season: '2027/28', club: 'NORTHSTAR FC', tier: 'GOLD' },
-    { title: 'CONTINENTAL CUP', season: '2026/27', club: 'NORTHSTAR FC', tier: 'PLATINUM' },
-    { title: 'DOMESTIC SUPER CUP', season: '2027/28', club: 'NORTHSTAR FC', tier: 'SILVER' },
-    { title: 'DRAFT INVITATIONAL', season: 'SEASON 01', club: 'NORTHSTAR FC', tier: 'LIME' },
+    { title: language === 'tr' ? 'LİG ŞAMPİYONLUĞU' : 'LEAGUE CHAMPION', season: '2027/28', club: 'KALYON DORUK SK', tier: 'GOLD' },
+    { title: language === 'tr' ? 'KITASAL KUPA' : 'CONTINENTAL CUP', season: '2026/27', club: 'KALYON DORUK SK', tier: 'PLATINUM' },
+    { title: language === 'tr' ? 'SÜPER KUPA' : 'DOMESTIC SUPER CUP', season: '2027/28', club: 'KALYON DORUK SK', tier: 'SILVER' },
+    { title: language === 'tr' ? 'DRAFT ŞAMPİYONU' : 'DRAFT INVITATIONAL', season: 'SEZON 01', club: 'KALYON DORUK SK', tier: 'LIME' },
   ];
 
   return (
@@ -17,16 +20,18 @@ export function ManagerPreview() {
         {/* Section Header */}
         <div className="mb-12">
           <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.2em] uppercase font-semibold">
-            LEGACY & HONOURS
+            {language === 'tr' ? 'MİRAS & BAŞARILAR' : 'LEGACY & HONOURS'}
           </span>
           <h2
-            className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"
+            className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1 uppercase"
             style={{ fontSize: 'clamp(44px, 6vw, 92px)' }}
           >
-            MANAGER PROFILE & TROPHY ROOM
+            {language === 'tr' ? 'MENAJER PROFİLİ & KUPA ODASI' : 'MANAGER PROFILE & TROPHY ROOM'}
           </h2>
           <p className="font-inter text-[16px] text-[#8b958d] mt-2">
-            Track tactical milestones, personal career accolades, and silverware cabinet.
+            {language === 'tr'
+              ? 'Taktiksel kilometre taşlarını, kişisel kariyer ödüllerini ve kupa vitrinini incele.'
+              : 'Track tactical milestones, personal career accolades, and silverware cabinet.'}
           </p>
         </div>
 
@@ -40,14 +45,14 @@ export function ManagerPreview() {
             <div>
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-14 h-14 rounded-full bg-[#b7ff35]/20 border border-[#b7ff35] flex items-center justify-center font-barlow font-extrabold text-[24px] text-[#b7ff35]">
-                  OG
+                  ST
                 </div>
                 <div>
                   <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest block uppercase">
-                    HEAD COACH // CONTRACTED
+                    {language === 'tr' ? 'TEKNİK DİREKTÖR // SÖZLEŞMELİ' : 'HEAD COACH // CONTRACTED'}
                   </span>
                   <h3 className="font-barlow font-extrabold text-[32px] text-[#f2f5f2] leading-none">
-                    OGUZHAN
+                    STEVE
                   </h3>
                 </div>
               </div>
@@ -55,42 +60,50 @@ export function ManagerPreview() {
               {/* Stats Grid */}
               <div className="grid grid-cols-2 gap-4 font-ibm my-6">
                 <div className="p-4 bg-white/5 rounded-[4px] border border-white/5">
-                  <span className="text-[#8b958d] text-[11px] block">SEASONS MANAGED</span>
+                  <span className="text-[#8b958d] text-[11px] block uppercase">
+                    {language === 'tr' ? 'YÖNETİLEN SEZON' : 'SEASONS MANAGED'}
+                  </span>
                   <span className="font-barlow font-extrabold text-[32px] text-[#f2f5f2]">
                     3
                   </span>
                 </div>
                 <div className="p-4 bg-white/5 rounded-[4px] border border-white/5">
-                  <span className="text-[#8b958d] text-[11px] block">TROPHIES WON</span>
+                  <span className="text-[#8b958d] text-[11px] block uppercase">
+                    {language === 'tr' ? 'KAZANILAN KUPA' : 'TROPHIES WON'}
+                  </span>
                   <span className="font-barlow font-extrabold text-[32px] text-[#b7ff35]">
                     4
                   </span>
                 </div>
                 <div className="p-4 bg-white/5 rounded-[4px] border border-white/5">
-                  <span className="text-[#8b958d] text-[11px] block">CAREER WIN RATE</span>
+                  <span className="text-[#8b958d] text-[11px] block uppercase">
+                    {language === 'tr' ? 'GALİBİYET ORANI' : 'CAREER WIN RATE'}
+                  </span>
                   <span className="font-barlow font-extrabold text-[32px] text-[#17e5c2]">
                     68%
                   </span>
                 </div>
                 <div className="p-4 bg-white/5 rounded-[4px] border border-white/5">
-                  <span className="text-[#8b958d] text-[11px] block">REPUTATION</span>
+                  <span className="text-[#8b958d] text-[11px] block uppercase">
+                    {language === 'tr' ? 'İTİBAR' : 'REPUTATION'}
+                  </span>
                   <span className="font-barlow font-extrabold text-[28px] text-[#65ff83]">
-                    ELITE
+                    ELİTE
                   </span>
                 </div>
               </div>
             </div>
 
             <div className="border-t border-white/10 pt-4 font-ibm text-[12px] text-[#8b958d] flex justify-between items-center">
-              <span>PHILOSOPHY: POSSESSION PRESS</span>
-              <span className="text-[#b7ff35] font-semibold">96 MATCHES TOTAL</span>
+              <span>{language === 'tr' ? 'FELSEFE: TOPA SAHİP OLMA & PRES' : 'PHILOSOPHY: POSSESSION PRESS'}</span>
+              <span className="text-[#b7ff35] font-semibold">{language === 'tr' ? 'TOPLAM 96 MAÇ' : '96 MATCHES TOTAL'}</span>
             </div>
           </div>
 
           {/* Trophy Pedestals Showcase (7 cols) */}
           <div className="lg:col-span-7 bg-[#090d0a] border border-white/10 rounded-[8px] p-8 shadow-xl">
             <span className="font-ibm text-[11px] text-[#8b958d] uppercase tracking-wider block mb-6">
-              CABINET // PEDESTAL EXHIBITION
+              {language === 'tr' ? 'VİTRİN // KUPA KOLEKSİYONU' : 'CABINET // PEDESTAL EXHIBITION'}
             </span>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

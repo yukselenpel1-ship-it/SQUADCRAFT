@@ -11,12 +11,12 @@ export const MoraleIndicator: React.FC<MoraleIndicatorProps> = ({
   showText = false,
 }) => {
   let label = 'Mükemmel';
-  let color = 'text-[#00F5A0] bg-[#00F5A0]/10 border-[#00F5A0]/30';
+  let color = 'text-[#b7ff35] bg-[#b7ff35]/10 border-[#b7ff35]/30';
   let Icon = Sparkles;
 
   if (value >= 88) {
     label = 'Çok Yüksek';
-    color = 'text-[#00F5A0] bg-[#00F5A0]/10 border-[#00F5A0]/30';
+    color = 'text-[#b7ff35] bg-[#b7ff35]/10 border-[#b7ff35]/30';
     Icon = Sparkles;
   } else if (value >= 75) {
     label = 'İyi';

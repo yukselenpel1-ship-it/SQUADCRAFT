@@ -1,216 +1,256 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useGame } from '@/lib/context/GameContext';
 import { LeagueTable } from '@/components/league/LeagueTable';
-import { StatBadge } from '@/components/ui/StatBadge';
 import { ClubBadge } from '@/components/ui/ClubBadge';
-import { Trophy, Award, Flame, Shield, Users, ChevronRight } from 'lucide-react';
+import { Trophy, Award, Flame, Shield, Users, ChevronRight, Swords, Sparkles, TrendingUp } from 'lucide-react';
 
 export default function LeaguePage() {
-  const { standings, allClubs, allPlayers, userClub, seasonEndSummary, startNextSeasonRoll, isCareerHydrated, isInitialized } = useGame();
+  const {
+    standings,
+    allClubs,
+    allPlayers,
+    userClub,
+    fixtures,
+    nextMatch,
+    seasonYear,
+    seasonEndSummary,
+    startNextSeasonRoll,
+    isCareerHydrated,
+    isInitialized,
+  } = useGame();
 
-  const getClub = (id: string) => allClubs.find((c) => c.id === id);
+  const getClub = (id: string) => allClubs.find((c) => c.id === id) || allClubs[0];
 
-  // Top Scorers Fictional Leaderboard
-  const topScorers = [...allPlayers]
-    .filter((p) => p.seasonStats && p.seasonStats.goals > 0)
-    .sort((a, b) => (b.seasonStats?.goals || 0) - (a.seasonStats?.goals || 0))
-    .slice(0, 5);
+  // Top Scorers Leaderboard
+  const topScorers = useMemo(() => {
+    return [...allPlayers]
+      .filter((p) => p.seasonStats && p.seasonStats.goals > 0)
+      .sort((a, b) => (b.seasonStats?.goals || 0) - (a.seasonStats?.goals || 0))
+      .slice(0, 4);
+  }, [allPlayers]);
 
   // Top Assists Leaderboard
-  const topAssists = [...allPlayers]
-    .filter((p) => p.seasonStats && p.seasonStats.assists > 0)
-    .sort((a, b) => (b.seasonStats?.assists || 0) - (a.seasonStats?.assists || 0))
-    .slice(0, 5);
+  const topAssists = useMemo(() => {
+    return [...allPlayers]
+      .filter((p) => p.seasonStats && p.seasonStats.assists > 0)
+      .sort((a, b) => (b.seasonStats?.assists || 0) - (a.seasonStats?.assists || 0))
+      .slice(0, 4);
+  }, [allPlayers]);
+
+  // Next Matchday upcoming fixtures
+  const upcomingRoundFixtures = useMemo(() => {
+    const round = nextMatch?.round || 1;
+    return fixtures.filter((f) => f.round === round).slice(0, 4);
+  }, [fixtures, nextMatch]);
+
+  // Best form club
+  const bestFormClub = useMemo(() => {
+    return [...standings].sort((a, b) => {
+      const aWins = (a.form || []).filter((r) => r === 'W').length;
+      const bWins = (b.form || []).filter((r) => r === 'W').length;
+      return bWins - aWins;
+    })[0];
+  }, [standings]);
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#040814] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#00F5A0] border-t-transparent rounded-full animate-spin" />
-        <span>Kariyer yükleniyor...</span>
+      <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center gap-3 text-[#8f9a91] font-ibm text-xs">
+        <div className="w-8 h-8 border-2 border-[#b8ff3d] border-t-transparent rounded-full animate-spin" />
+        <span>Lig verileri yükleniyor...</span>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300 pb-12">
-      {/* Season End Summary Banner */}
-      {seasonEndSummary && (
-        <div className="sc-panel rounded-2xl border-2 border-amber-500 p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="space-y-1">
-            <span className="px-2.5 py-0.5 rounded-md bg-amber-500 text-black text-[10px] font-black uppercase tracking-widest font-mono">
-              SEZON TAMAMLANDI
-            </span>
-            <h2 className="text-xl sm:text-2xl font-black italic uppercase text-white">
-              Şampiyon: <span className="text-amber-400">{seasonEndSummary.championClubName}</span> 🏆
-            </h2>
-            <p className="text-xs text-zinc-300 font-medium">
-              Kulübünüz <strong className="text-white">{userClub.name}</strong> sezonu{' '}
-              <strong className="text-[#00F5A0]">{seasonEndSummary.userClubRank}. sırada</strong> ({seasonEndSummary.userClubPoints} Puan) tamamladı.
-            </p>
-          </div>
-          <button
-            onClick={startNextSeasonRoll}
-            className="px-6 py-3 rounded-xl bg-[#00F5A0] hover:bg-[#00D68B] text-[#040814] font-black text-xs uppercase tracking-wider transition-all shadow-lg shrink-0"
-          >
-            YENİ SEZONA BAŞLA
-          </button>
-        </div>
-      )}
-
+    <div className="space-y-6 pb-12 select-none animate-in fade-in duration-300">
       {/* Broadcast Header HUD */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-[#14233A]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-black uppercase tracking-widest bg-[#00F5A0]/10 text-[#00F5A0] border border-[#00F5A0]/30">
-              // OFFICIAL STANDINGS
+          <div className="flex items-center gap-2">
+            <span className="font-ibm text-[11px] text-[#b8ff3d] tracking-widest uppercase font-semibold">
+              COMPETITION CENTER // ALVERIA ELİT LİGİ
             </span>
-            <span className="text-[11px] font-mono text-zinc-400">
-              1. KADEME ULUSAL LİG • 10 KULÜP • 18 HAFTA
-            </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#65ff83] animate-pulse" />
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight flex items-center gap-3">
-            <Trophy className="w-7 h-7 text-[#00F5A0]" />
-            Alveria Elit Ligi Puan Durumu
+          <h1 className="font-barlow font-extrabold text-[36px] sm:text-[46px] text-[#f3f6f3] uppercase tracking-tight leading-none mt-1">
+            SEASON {seasonYear || '2026/27'} · MATCHDAY {nextMatch?.round || 12}
           </h1>
         </div>
 
-        {/* Legend */}
-        <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl sc-panel border border-[#14233A]">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00F5A0] shadow-[0_0_8px_rgba(0,245,160,0.5)]" />
-            <span className="text-zinc-300 text-[11px] uppercase">Kıtasal Şampiyona (1.)</span>
+        {/* Qualification Legend */}
+        <div className="flex flex-wrap items-center gap-2 font-ibm text-[11px]">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0d130f] border border-white/10">
+            <span className="w-2 h-2 rounded-full bg-[#ffd34f]" />
+            <span className="text-[#8f9a91]">Şampiyon (1.)</span>
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl sc-panel border border-[#14233A]">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00D4FF] shadow-[0_0_8px_rgba(0,212,255,0.5)]" />
-            <span className="text-zinc-300 text-[11px] uppercase">Kıtasal Eleme (2-3.)</span>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0d130f] border border-white/10">
+            <span className="w-2 h-2 rounded-full bg-[#21dfbd]" />
+            <span className="text-[#8f9a91]">Kıtasal Kupa (2-3.)</span>
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl sc-panel border border-[#14233A]">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]" />
-            <span className="text-zinc-300 text-[11px] uppercase">Düşme Hattı (9-10.)</span>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0d130f] border border-white/10">
+            <span className="w-2 h-2 rounded-full bg-[#ff5365]" />
+            <span className="text-[#8f9a91]">Düşme Hattı (9-10.)</span>
           </div>
         </div>
       </div>
 
-      {/* Main Standings Table */}
-      <div className="space-y-2">
-        <LeagueTable
-          standings={standings}
-          clubs={allClubs}
-          userClubId={userClub.id}
-        />
-      </div>
-
-      {/* Stats Leaders Section (Top Scorers & Assists) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-        {/* Top Scorers */}
-        <div className="p-5 sc-panel rounded-2xl border border-[#14233A] shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-[#14233A]">
-            <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
-              <Flame className="w-4 h-4 text-amber-400" />
-              Gol Krallığı <span className="text-[10px] text-zinc-500">// TOP SCORERS</span>
-            </h3>
-            <span className="text-[10px] font-mono text-zinc-400 uppercase">GOL</span>
-          </div>
-
-          <div className="space-y-2">
-            {topScorers.length === 0 ? (
-              <div className="text-xs text-zinc-500 font-mono py-4 text-center">Henüz gol istatistiği kaydedilmedi.</div>
-            ) : (
-              topScorers.map((player, idx) => {
-                const club = getClub(player.clubId);
-                return (
-                  <div
-                    key={player.id}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-[#07101C] border border-[#14233A] hover:border-amber-400/50 transition-all"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="w-5 font-mono font-black text-xs text-amber-400">
-                        #{idx + 1}
-                      </span>
-                      {club && (
-                        <ClubBadge
-                          code={club.code}
-                          primaryColor={club.primaryColor}
-                          secondaryColor={club.secondaryColor}
-                          size="xs"
-                        />
-                      )}
-                      <div>
-                        <div className="text-xs font-bold text-white uppercase tracking-tight">
-                          {player.firstName} {player.lastName}
-                        </div>
-                        <div className="text-[10px] font-mono text-zinc-500">
-                          {player.position} • {club?.name}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-mono font-black text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
-                        {player.seasonStats?.goals} GOL
-                      </span>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
+      {/* Main Grid: Standings (8 cols) + Varied Side Modules (4 cols) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Left Column (8 cols): Official Standings Table */}
+        <div className="lg:col-span-8 space-y-4">
+          <LeagueTable
+            standings={standings}
+            clubs={allClubs}
+            userClubId={userClub.id}
+          />
         </div>
 
-        {/* Top Assists */}
-        <div className="p-5 sc-panel rounded-2xl border border-[#14233A] shadow-xl space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-[#14233A]">
-            <h3 className="text-xs font-mono font-black uppercase tracking-widest text-zinc-300 flex items-center gap-2">
-              <Award className="w-4 h-4 text-sky-400" />
-              Asist Krallığı <span className="text-[10px] text-zinc-500">// TOP ASSISTS</span>
-            </h3>
-            <span className="text-[10px] font-mono text-zinc-400 uppercase">ASİST</span>
-          </div>
+        {/* Right Column (4 cols): Varied Side Modules */}
+        <div className="lg:col-span-4 space-y-5">
+          {/* Module 1: Top Scorers (Golden Boot) */}
+          <div className="p-5 rounded-[8px] bg-[#0d130f] border border-white/10 space-y-3 shadow-xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+              <span className="font-barlow font-extrabold text-[17px] text-[#ffd34f] uppercase tracking-wide flex items-center gap-2">
+                <Flame size={16} />
+                TOP SCORERS
+              </span>
+              <span className="font-ibm text-[10px] text-[#8f9a91] uppercase">GOL</span>
+            </div>
 
-          <div className="space-y-2">
-            {topAssists.length === 0 ? (
-              <div className="text-xs text-zinc-500 font-mono py-4 text-center">Henüz asist istatistiği kaydedilmedi.</div>
-            ) : (
-              topAssists.map((player, idx) => {
-                const club = getClub(player.clubId);
-                return (
-                  <div
-                    key={player.id}
-                    className="flex items-center justify-between p-2.5 rounded-xl bg-[#07101C] border border-[#14233A] hover:border-sky-400/50 transition-all"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="w-5 font-mono font-black text-xs text-sky-400">
-                        #{idx + 1}
-                      </span>
-                      {club && (
-                        <ClubBadge
-                          code={club.code}
-                          primaryColor={club.primaryColor}
-                          secondaryColor={club.secondaryColor}
-                          size="xs"
-                        />
-                      )}
-                      <div>
-                        <div className="text-xs font-bold text-white uppercase tracking-tight">
-                          {player.firstName} {player.lastName}
-                        </div>
-                        <div className="text-[10px] font-mono text-zinc-500">
-                          {player.position} • {club?.name}
+            <div className="space-y-2 font-ibm text-[12px]">
+              {topScorers.length === 0 ? (
+                <span className="text-[#8f9a91] text-[11px] block py-2">Henüz gol kaydı bulunmuyor.</span>
+              ) : (
+                topScorers.map((p, idx) => {
+                  const club = getClub(p.clubId);
+                  return (
+                    <div
+                      key={p.id}
+                      className="flex items-center justify-between p-2 rounded bg-white/[0.02] border border-white/5"
+                    >
+                      <div className="flex items-center gap-2.5 truncate">
+                        <span className="w-4 font-bold text-[#ffd34f] text-[11px]">#{idx + 1}</span>
+                        <div className="truncate">
+                          <span className="font-bold text-[#f3f6f3] truncate block leading-none">
+                            {p.firstName[0]}. {p.lastName}
+                          </span>
+                          <span className="text-[10px] text-[#8f9a91] truncate block mt-0.5">
+                            {club.name}
+                          </span>
                         </div>
                       </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-mono font-black text-sky-400 bg-sky-400/10 px-2 py-0.5 rounded border border-sky-400/30">
-                        {player.seasonStats?.assists} AST
+                      <span className="px-2 py-0.5 rounded bg-[#ffd34f]/15 text-[#ffd34f] font-bold text-[12px]">
+                        {p.seasonStats?.goals}
                       </span>
                     </div>
-                  </div>
-                );
-              })
-            )}
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Module 2: Top Assists */}
+          <div className="p-5 rounded-[8px] bg-[#0d130f] border border-white/10 space-y-3 shadow-xl">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2.5">
+              <span className="font-barlow font-extrabold text-[17px] text-[#21dfbd] uppercase tracking-wide flex items-center gap-2">
+                <Award size={16} />
+                TOP ASSISTS
+              </span>
+              <span className="font-ibm text-[10px] text-[#8f9a91] uppercase">ASİST</span>
+            </div>
+
+            <div className="space-y-2 font-ibm text-[12px]">
+              {topAssists.length === 0 ? (
+                <span className="text-[#8f9a91] text-[11px] block py-2">Henüz asist kaydı bulunmuyor.</span>
+              ) : (
+                topAssists.map((p, idx) => {
+                  const club = getClub(p.clubId);
+                  return (
+                    <div
+                      key={p.id}
+                      className="flex items-center justify-between p-2 rounded bg-white/[0.02] border border-white/5"
+                    >
+                      <div className="flex items-center gap-2.5 truncate">
+                        <span className="w-4 font-bold text-[#21dfbd] text-[11px]">#{idx + 1}</span>
+                        <div className="truncate">
+                          <span className="font-bold text-[#f3f6f3] truncate block leading-none">
+                            {p.firstName[0]}. {p.lastName}
+                          </span>
+                          <span className="text-[10px] text-[#8f9a91] truncate block mt-0.5">
+                            {club.name}
+                          </span>
+                        </div>
+                      </div>
+                      <span className="px-2 py-0.5 rounded bg-[#21dfbd]/15 text-[#21dfbd] font-bold text-[12px]">
+                        {p.seasonStats?.assists}
+                      </span>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+
+          {/* Module 3: Best Form Club */}
+          {bestFormClub && (
+            <div className="p-4 rounded-[8px] bg-[#0d130f] border border-white/10 space-y-2">
+              <div className="flex items-center justify-between border-b border-white/10 pb-2 font-ibm text-[10px] text-[#8f9a91] uppercase">
+                <span className="flex items-center gap-1.5 text-[#b8ff3d] font-bold">
+                  <TrendingUp size={14} />
+                  BEST FORM CLUB
+                </span>
+                <span>ZİRVE TRENDİ</span>
+              </div>
+              <div className="flex items-center justify-between pt-1">
+                <div className="flex items-center gap-2">
+                  <ClubBadge
+                    code={getClub(bestFormClub.clubId).code}
+                    name={getClub(bestFormClub.clubId).name}
+                    clubId={bestFormClub.clubId}
+                    primaryColor={getClub(bestFormClub.clubId).primaryColor}
+                    secondaryColor={getClub(bestFormClub.clubId).secondaryColor}
+                    size="xs"
+                  />
+                  <span className="font-barlow font-bold text-[15px] text-[#f3f6f3] uppercase">
+                    {getClub(bestFormClub.clubId).name}
+                  </span>
+                </div>
+                <div className="flex gap-1 font-ibm text-[10px] font-bold">
+                  {(bestFormClub.form || ['W', 'W', 'W']).slice(-4).map((r, i) => (
+                    <span
+                      key={i}
+                      className={`px-1 rounded ${
+                        r === 'W' ? 'bg-[#65ff83]/20 text-[#65ff83]' : 'bg-[#ffd34f]/20 text-[#ffd34f]'
+                      }`}
+                    >
+                      {r}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Module 4: Next Matchday Preview */}
+          <div className="p-4 rounded-[8px] bg-[#0d130f] border border-white/10 space-y-2">
+            <div className="flex items-center justify-between border-b border-white/10 pb-2 font-ibm text-[10px] text-[#8f9a91] uppercase">
+              <span className="flex items-center gap-1.5 text-[#f3f6f3] font-bold">
+                <Swords size={14} className="text-[#b8ff3d]" />
+                NEXT MATCHDAY CLASHES
+              </span>
+              <span>HAFTA {nextMatch?.round || 1}</span>
+            </div>
+            <div className="space-y-1.5 font-ibm text-[11px]">
+              {upcomingRoundFixtures.map((f) => (
+                <div key={f.id} className="flex justify-between p-1.5 rounded bg-white/[0.02] text-[#8f9a91]">
+                  <span className="truncate max-w-[120px] text-[#f3f6f3]">{getClub(f.homeClubId).name}</span>
+                  <span className="text-[#b8ff3d] font-bold">vs</span>
+                  <span className="truncate max-w-[120px] text-[#f3f6f3]">{getClub(f.awayClubId).name}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>

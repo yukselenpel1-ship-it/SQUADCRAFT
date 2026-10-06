@@ -4,6 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { ArrowRight, Activity, ShieldAlert, Award } from 'lucide-react';
+import { useLanguage } from '@/lib/context/LanguageContext';
 
 // Dynamic import with SSR: false for 3D R3F Canvas
 const SquadCraftEnvironment = dynamic(
@@ -22,6 +23,8 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
+  const { language, t } = useLanguage();
+
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-[#050806] flex flex-col justify-between pt-24 pb-8 select-none">
       {/* 3D Stadium Environment Canvas behind UI */}
@@ -58,7 +61,7 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
               className="font-ibm text-[11px] text-[#b7ff35] uppercase font-medium tracking-[0.22em]"
               style={{ letterSpacing: '0.22em' }}
             >
-              BUILD. MANAGE. DOMINATE.
+              {t.heroKicker}
             </span>
           </motion.div>
 
@@ -69,10 +72,10 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
               initial={{ y: 70, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.75, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal"
+              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal uppercase"
               style={{ fontSize: 'clamp(68px, 9.5vw, 150px)' }}
             >
-              YOUR CLUB.
+              {t.heroLine1}
             </motion.div>
 
             {/* Line 2 (Outlined Typography) */}
@@ -80,10 +83,10 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
               initial={{ y: 70, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.75, delay: 0.17, ease: [0.16, 1, 0.3, 1] }}
-              className="font-barlow font-extrabold text-outline leading-[0.82] tracking-normal"
+              className="font-barlow font-extrabold text-outline leading-[0.82] tracking-normal uppercase"
               style={{ fontSize: 'clamp(68px, 9.5vw, 150px)' }}
             >
-              YOUR SYSTEM.
+              {t.heroLine2}
             </motion.div>
 
             {/* Line 3 */}
@@ -91,10 +94,10 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
               initial={{ y: 70, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.75, delay: 0.26, ease: [0.16, 1, 0.3, 1] }}
-              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal"
+              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal uppercase"
               style={{ fontSize: 'clamp(68px, 9.5vw, 150px)' }}
             >
-              YOUR LEGACY.
+              {t.heroLine3}
             </motion.div>
           </div>
 
@@ -105,7 +108,7 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
             transition={{ duration: 0.55, delay: 0.36, ease: 'easeOut' }}
             className="font-inter text-[16px] sm:text-[18px] text-[#99a39c] max-w-[560px] leading-[1.7] mb-8"
           >
-            Build your squad. Shape your tactics. Control every decision from the transfer market to the final whistle.
+            {t.heroDescription}
           </motion.p>
 
           {/* Hero CTAs */}
@@ -119,9 +122,9 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
             <button
               type="button"
               onClick={onStartCareer}
-              className="group font-barlow font-bold text-[18px] tracking-wider text-[#050806] bg-[#b7ff35] hover:bg-[#9bea27] h-[54px] px-8 rounded-[3px] flex items-center gap-2.5 transition-all duration-200 cursor-pointer shadow-[0_4px_24px_rgba(183,255,53,0.35)] hover:translate-y-[-2px]"
+              className="group font-barlow font-bold text-[18px] tracking-wider text-[#050806] bg-[#b7ff35] hover:bg-[#9bea27] h-[54px] px-8 rounded-[3px] flex items-center gap-2.5 transition-all duration-200 cursor-pointer shadow-[0_4px_24px_rgba(183,255,53,0.35)] hover:translate-y-[-2px] uppercase"
             >
-              START YOUR CAREER
+              {t.heroStartCareer}
               <ArrowRight
                 size={18}
                 className="group-hover:translate-x-1 transition-transform"
@@ -132,9 +135,9 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
             <button
               type="button"
               onClick={onEnterDraft}
-              className="font-barlow font-bold text-[18px] tracking-wider text-[#f2f5f2] bg-transparent border border-white/25 hover:border-[#b7ff35] hover:text-[#b7ff35] h-[54px] px-8 rounded-[3px] flex items-center transition-all duration-200 cursor-pointer hover:bg-white/5"
+              className="font-barlow font-bold text-[18px] tracking-wider text-[#f2f5f2] bg-transparent border border-white/25 hover:border-[#b7ff35] hover:text-[#b7ff35] h-[54px] px-8 rounded-[3px] flex items-center transition-all duration-200 cursor-pointer hover:bg-white/5 uppercase"
             >
-              ENTER DRAFT LEAGUE
+              {t.heroEnterDraft}
             </button>
           </motion.div>
         </div>
@@ -155,18 +158,18 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
           >
             {/* HUD Header */}
             <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
-              <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest font-semibold">
-                SC // LIVE SYSTEM
+              <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest font-semibold uppercase">
+                {t.heroLiveSystem}
               </span>
-              <span className="font-ibm text-[11px] text-[#8b958d]">
-                SEASON 26/27
+              <span className="font-ibm text-[11px] text-[#8b958d] uppercase">
+                {t.heroSeason}
               </span>
             </div>
 
             {/* Tactical Metrics */}
             <div className="space-y-3 font-ibm text-[12px]">
               <div className="flex justify-between items-center">
-                <span className="text-[#8b958d]">POSSESSION</span>
+                <span className="text-[#8b958d] uppercase">{t.heroPossession}</span>
                 <span className="text-[#b7ff35] font-bold">58%</span>
               </div>
               <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
@@ -174,26 +177,36 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
               </div>
 
               <div className="flex justify-between items-center pt-1">
-                <span className="text-[#8b958d]">EXPECTED GOALS (xG)</span>
+                <span className="text-[#8b958d] uppercase">{t.heroXG}</span>
                 <span className="text-[#f2f5f2] font-bold">2.41</span>
               </div>
 
               <div className="flex justify-between items-center pt-1">
-                <span className="text-[#8b958d]">PRESS INTENSITY</span>
-                <span className="text-[#17e5c2] font-bold">74 // HIGH</span>
+                <span className="text-[#8b958d] uppercase">{t.heroPress}</span>
+                <span className="text-[#17e5c2] font-bold">74 // {t.heroHigh}</span>
               </div>
               <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
                 <div className="w-[74%] h-full bg-[#17e5c2]" />
               </div>
 
               <div className="flex justify-between items-center pt-2 border-t border-white/10">
-                <span className="text-[#8b958d]">TEAM FORM</span>
+                <span className="text-[#8b958d] uppercase">{t.heroTeamForm}</span>
                 <div className="flex gap-1.5 font-bold">
-                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">W</span>
-                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">W</span>
-                  <span className="w-5 h-5 rounded-[2px] bg-[#ffc84a]/20 text-[#ffc84a] flex items-center justify-center text-[10px]">D</span>
-                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">W</span>
-                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">W</span>
+                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
+                    {language === 'tr' ? 'G' : 'W'}
+                  </span>
+                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
+                    {language === 'tr' ? 'G' : 'W'}
+                  </span>
+                  <span className="w-5 h-5 rounded-[2px] bg-[#ffc84a]/20 text-[#ffc84a] flex items-center justify-center text-[10px]">
+                    {language === 'tr' ? 'B' : 'D'}
+                  </span>
+                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
+                    {language === 'tr' ? 'G' : 'W'}
+                  </span>
+                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
+                    {language === 'tr' ? 'G' : 'W'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -210,18 +223,18 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
       >
         <div className="max-w-[1500px] w-full mx-auto flex items-center justify-between font-ibm text-[12px]">
           <div className="flex items-center gap-3">
-            <span className="text-[#8b958d]">MATCHDAY 08</span>
+            <span className="text-[#8b958d] uppercase">{t.tickerMatchday}</span>
             <span className="text-white/20">|</span>
-            <span className="font-barlow text-[16px] font-bold text-[#f2f5f2] tracking-wider">
-              NORTHSTAR <span className="text-[#b7ff35]">2 — 1</span> IRONVALE
+            <span className="font-barlow text-[16px] font-bold text-[#f2f5f2] tracking-wider uppercase">
+              KALYON DORUK <span className="text-[#b7ff35]">2 — 1</span> IRONVALE
             </span>
             <span className="font-ibm text-[11px] text-[#8b958d]">84&apos;</span>
           </div>
 
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[#ff4d5f] animate-ping" />
-            <span className="font-ibm text-[11px] text-[#ff4d5f] font-bold tracking-wider">
-              LIVE SIMULATION
+            <span className="font-ibm text-[11px] text-[#ff4d5f] font-bold tracking-wider uppercase">
+              {t.tickerLiveSim}
             </span>
           </div>
         </div>

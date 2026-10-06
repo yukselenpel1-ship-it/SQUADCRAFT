@@ -223,19 +223,19 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
 
         {/* Center Circle & Spot */}
         <circle cx="500" cy="300" r="84" />
-        <circle cx="500" cy="300" r="9" fill="#00F5A0" fillOpacity="0.8" />
+        <circle cx="500" cy="300" r="9" fill="#b7ff35" fillOpacity="0.8" />
 
         {/* Left Goal Area (Home Defense Box) */}
         <rect x="40" y="144" width="150" height="312" />
         <rect x="40" y="216" width="55" height="168" />
         <path d="M 190 240 A 60 60 0 0 1 190 360" />
-        <circle cx="150" cy="300" r="6" fill="#00F5A0" fillOpacity="0.6" />
+        <circle cx="150" cy="300" r="6" fill="#b7ff35" fillOpacity="0.6" />
 
         {/* Right Goal Area (Away Defense Box) */}
         <rect x="810" y="144" width="150" height="312" />
         <rect x="905" y="216" width="55" height="168" />
         <path d="M 810 240 A 60 60 0 0 0 810 360" />
-        <circle cx="850" cy="300" r="6" fill="#00F5A0" fillOpacity="0.6" />
+        <circle cx="850" cy="300" r="6" fill="#b7ff35" fillOpacity="0.6" />
 
         {/* Corner Arcs */}
         <path d="M 40 51 A 15 15 0 0 1 55 36" />
@@ -250,15 +250,15 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
         <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/85 backdrop-blur border border-zinc-700/80 rounded-md">
           <span
             className="w-2.5 h-2.5 rounded-full inline-block border border-white/60"
-            style={{ backgroundColor: state.home.club.primaryColor || '#00F5A0' }}
+            style={{ backgroundColor: state.home.club.primaryColor || '#b7ff35' }}
           />
-          <span className="font-mono font-black text-white">{state.home.club.code}</span>
-          <span className="font-mono font-bold text-zinc-400">({state.home.formation})</span>
+          <span className="font-ibm font-black text-white">{state.home.club.code}</span>
+          <span className="font-ibm font-bold text-zinc-400">({state.home.formation})</span>
         </div>
 
         {/* Center: Live Action / Possession Phase Pill */}
-        <div className="flex items-center gap-1.5 px-3 py-1 bg-black/90 backdrop-blur border border-[#00F5A0]/60 rounded-full text-[#00F5A0] font-mono font-black tracking-wider uppercase shadow-[0_0_12px_rgba(0,245,160,0.25)]">
-          <Radio className="w-3 h-3 animate-pulse text-[#00F5A0]" />
+        <div className="flex items-center gap-1.5 px-3 py-1 bg-black/90 backdrop-blur border border-[#b7ff35]/60 rounded-full text-[#b7ff35] font-ibm font-black tracking-wider uppercase shadow-[0_0_12px_rgba(183, 255, 53,0.25)]">
+          <Radio className="w-3 h-3 animate-pulse text-[#b7ff35]" />
           <span>
             {activePhase === 'GOAL_CELEBRATION'
               ? '⚽ GOL KUTLAMASI'
@@ -280,8 +280,8 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
 
         {/* Right: Away Team State */}
         <div className="flex items-center gap-1.5 px-2.5 py-1 bg-black/85 backdrop-blur border border-zinc-700/80 rounded-md">
-          <span className="font-mono font-bold text-zinc-400">({state.away.formation})</span>
-          <span className="font-mono font-black text-white">{state.away.club.code}</span>
+          <span className="font-ibm font-bold text-zinc-400">({state.away.formation})</span>
+          <span className="font-ibm font-black text-white">{state.away.club.code}</span>
           <span
             className="w-2.5 h-2.5 rounded-full inline-block border border-white/60"
             style={{ backgroundColor: state.away.club.primaryColor || '#3B82F6' }}
@@ -299,8 +299,8 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
         }}
         className="absolute z-25 pointer-events-none transition-[left,top] duration-75 ease-out"
       >
-        <span className="absolute -inset-2 rounded-full bg-[#00F5A0]/40 animate-ping pointer-events-none" />
-        <div className="relative flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white border border-black shadow-[0_0_16px_#00F5A0] text-[11px] sm:text-[12px] font-bold">
+        <span className="absolute -inset-2 rounded-full bg-[#b7ff35]/40 animate-ping pointer-events-none" />
+        <div className="relative flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white border border-black shadow-[0_0_16px_#b7ff35] text-[11px] sm:text-[12px] font-bold">
           ⚽
         </div>
       </div>
@@ -315,8 +315,8 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
           }}
           className="absolute z-30 pointer-events-none"
         >
-          <span className="absolute -inset-3 rounded-full bg-[#00F5A0]/30 animate-ping" />
-          <div className="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black border-2 border-[#00F5A0] shadow-[0_0_20px_#00F5A0] text-xs sm:text-sm font-black text-[#00F5A0]">
+          <span className="absolute -inset-3 rounded-full bg-[#b7ff35]/30 animate-ping" />
+          <div className="relative flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-black border-2 border-[#b7ff35] shadow-[0_0_20px_#b7ff35] text-xs sm:text-sm font-black text-[#b7ff35]">
             {lastAction.type === 'GOAL' ? '⚽' : lastAction.type === 'SAVE' ? '🧤' : lastAction.type === 'POST' ? '🥅' : '⚡'}
           </div>
         </div>
@@ -325,8 +325,8 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
       {/* 6. Goal Celebration Broadcast Banner Overlay */}
       {isRecentGoal && latestEvent && (
         <div className="absolute inset-x-0 top-1/3 z-40 flex flex-col items-center justify-center pointer-events-none animate-in zoom-in-90 duration-300">
-          <div className="px-6 py-2.5 sm:py-3 bg-black/95 border-2 border-[#00F5A0] shadow-[0_0_30px_#00F5A0] rounded-xl flex flex-col items-center gap-1 text-center">
-            <div className="flex items-center gap-2 text-[#00F5A0] font-black text-base sm:text-lg tracking-widest uppercase animate-bounce">
+          <div className="px-6 py-2.5 sm:py-3 bg-black/95 border-2 border-[#b7ff35] shadow-[0_0_30px_#b7ff35] rounded-xl flex flex-col items-center gap-1 text-center">
+            <div className="flex items-center gap-2 text-[#b7ff35] font-black text-base sm:text-lg tracking-widest uppercase animate-bounce">
               <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
               <span>⚽ GOOOOOOOL!</span>
               <Flame className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
@@ -335,11 +335,11 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
               {latestEvent.playerName || 'Oyuncu'} ({latestEvent.minute}&apos;)
             </div>
             {latestEvent.secondaryPlayerName && (
-              <div className="text-zinc-400 font-mono text-[9px] sm:text-[10px]">
+              <div className="text-zinc-400 font-ibm text-[9px] sm:text-[10px]">
                 Asist: {latestEvent.secondaryPlayerName}
               </div>
             )}
-            <div className="mt-1 px-3 py-0.5 bg-[#00F5A0]/20 border border-[#00F5A0]/40 text-[#00F5A0] font-mono text-xs font-black">
+            <div className="mt-1 px-3 py-0.5 bg-[#b7ff35]/20 border border-[#b7ff35]/40 text-[#b7ff35] font-ibm text-xs font-black">
               {state.home.club.code} {state.homeScore} - {state.awayScore} {state.away.club.code}
             </div>
           </div>
@@ -372,13 +372,13 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
             <div
               className={`relative w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[8px] sm:text-[9px] font-black text-black border-2 border-white shadow-lg ${
                 isScorer ? 'ring-4 ring-amber-400 animate-pulse' : ''
-              } ${pos.isBallCarrier ? 'ring-2 ring-[#00F5A0] shadow-[0_0_12px_#00F5A0]' : ''}`}
-              style={{ backgroundColor: state.home.club.primaryColor || '#00F5A0' }}
+              } ${pos.isBallCarrier ? 'ring-2 ring-[#b7ff35] shadow-[0_0_12px_#b7ff35]' : ''}`}
+              style={{ backgroundColor: state.home.club.primaryColor || '#b7ff35' }}
             >
               <span>{pim.currentPosition}</span>
 
               {/* Match Rating Badge */}
-              <span className="absolute -top-1.5 -right-1.5 px-0.5 py-0.2 rounded text-[7px] font-black bg-black border border-zinc-700 text-[#00F5A0]">
+              <span className="absolute -top-1.5 -right-1.5 px-0.5 py-0.2 rounded text-[7px] font-black bg-black border border-zinc-700 text-[#b7ff35]">
                 {pim.matchRating.toFixed(1)}
               </span>
 
@@ -399,7 +399,7 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
                 <div
                   className={`h-full rounded-full ${
                     pim.currentFitness >= 75
-                      ? 'bg-[#00F5A0]'
+                      ? 'bg-[#b7ff35]'
                       : pim.currentFitness >= 50
                       ? 'bg-amber-400'
                       : 'bg-rose-500'
@@ -474,7 +474,7 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
                 <div
                   className={`h-full rounded-full ${
                     pim.currentFitness >= 75
-                      ? 'bg-[#00F5A0]'
+                      ? 'bg-[#b7ff35]'
                       : pim.currentFitness >= 50
                       ? 'bg-amber-400'
                       : 'bg-rose-500'
@@ -498,9 +498,9 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
 
       {/* 9. Bottom Match Timeline Progress Bar with Event Icons */}
       <div className="relative z-30 w-full px-4 pb-2.5 pt-1.5 bg-black/85 backdrop-blur border-t border-zinc-800">
-        <div className="flex items-center justify-between text-[9px] font-mono font-bold text-zinc-400 mb-1">
+        <div className="flex items-center justify-between text-[9px] font-ibm font-bold text-zinc-400 mb-1">
           <span className="flex items-center gap-1">
-            <Clock className="w-3 h-3 text-[#00F5A0]" />
+            <Clock className="w-3 h-3 text-[#b7ff35]" />
             <span>0&apos;</span>
           </span>
           <span className="text-white font-black bg-zinc-900 px-2 py-0.5 rounded border border-zinc-800">
@@ -513,13 +513,13 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
         <div className="relative w-full h-1.5 bg-zinc-900 rounded-full overflow-visible border border-zinc-800">
           {/* Progress fill */}
           <div
-            className="h-full bg-gradient-to-r from-emerald-500 to-[#00F5A0] rounded-full transition-all duration-300"
+            className="h-full bg-gradient-to-r from-emerald-500 to-[#b7ff35] rounded-full transition-all duration-300"
             style={{ width: `${timelineProgressPercent}%` }}
           />
 
           {/* Current minute thumb */}
           <div
-            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white border-2 border-[#00F5A0] rounded-full shadow-[0_0_8px_#00F5A0]"
+            className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-white border-2 border-[#b7ff35] rounded-full shadow-[0_0_8px_#b7ff35]"
             style={{ left: `${timelineProgressPercent}%` }}
           />
 
