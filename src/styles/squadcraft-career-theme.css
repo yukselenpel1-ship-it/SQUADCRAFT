@@ -81,11 +81,14 @@
   width: 246px;
   background: rgba(9, 13, 10, 0.98);
   border-color: var(--sc-line);
+  height: 100vh !important;
+  max-height: 100vh !important;
+  overflow: hidden !important;
 }
 
 .sc-career-theme .sc-career-sidebar nav a {
-  min-height: 42px;
-  border-radius: 9px;
+  min-height: 28px !important;
+  border-radius: 4px;
 }
 
 .sc-career-theme .sc-career-sidebar nav a[aria-current="page"] {

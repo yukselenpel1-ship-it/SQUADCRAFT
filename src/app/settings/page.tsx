@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useGame } from '@/lib/context/GameContext';
+import { useLanguage } from '@/lib/context/LanguageContext';
 import { formatDateTurkish, daysBetween } from '@/lib/career';
 import {
   Settings,
@@ -35,6 +36,7 @@ export default function SettingsPage() {
     isCareerHydrated,
     isInitialized,
   } = useGame();
+  const { language, setLanguage } = useLanguage();
 
   // Settings State
   const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
@@ -44,7 +46,6 @@ export default function SettingsPage() {
   const [particlesEnabled, setParticlesEnabled] = useState(true);
   const [fpsCap, setFpsCap] = useState<'30' | '60' | 'UNCAPPED'>('60');
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [selectedLanguage, setSelectedLanguage] = useState<'TR' | 'EN'>('TR');
   const [highContrastTactics, setHighContrastTactics] = useState(false);
   const [injuryRate, setInjuryRate] = useState<'NORMAL' | 'LOW' | 'REALISTIC'>('NORMAL');
 
@@ -141,29 +142,31 @@ export default function SettingsPage() {
             {/* Language Pill Selector */}
             <div className="flex items-center gap-1.5 bg-[#050706] p-1.5 rounded-xl border border-white/10">
               <button
-                onClick={() => setSelectedLanguage('TR')}
-                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 ${
-                  selectedLanguage === 'TR'
+                type="button"
+                onClick={() => setLanguage('tr')}
+                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                  language === 'tr'
                     ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_12px_rgba(184,255,61,0.3)]'
                     : 'text-zinc-400 hover:text-white'
                 }`}
               >
                 <span>TR</span>
                 <span className="text-[11px] font-normal">Türkçe</span>
-                {selectedLanguage === 'TR' && <Check className="w-3.5 h-3.5" />}
+                {language === 'tr' && <Check className="w-3.5 h-3.5" />}
               </button>
 
               <button
-                onClick={() => setSelectedLanguage('EN')}
-                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 ${
-                  selectedLanguage === 'EN'
+                type="button"
+                onClick={() => setLanguage('en')}
+                className={`px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                  language === 'en'
                     ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_12px_rgba(184,255,61,0.3)]'
                     : 'text-zinc-400 hover:text-white'
                 }`}
               >
                 <span>EN</span>
                 <span className="text-[11px] font-normal">English</span>
-                {selectedLanguage === 'EN' && <Check className="w-3.5 h-3.5" />}
+                {language === 'en' && <Check className="w-3.5 h-3.5" />}
               </button>
             </div>
           </div>

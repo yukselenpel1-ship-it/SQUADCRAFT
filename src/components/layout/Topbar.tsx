@@ -7,6 +7,7 @@ import { useGame } from '@/lib/context/GameContext';
 import { AdvanceProgressModal } from '@/components/career/AdvanceProgressModal';
 import { formatDateTurkish } from '@/lib/career/calendar';
 import { DailyProcessingResult } from '@/lib/career/types';
+import { useLanguage } from '@/lib/context/LanguageContext';
 import {
   Menu,
   Calendar,
@@ -73,6 +74,9 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
     ? `€${(finances.transferBudget / 1_000_000).toFixed(1)}M`
     : '€42.8M';
 
+  const { language } = useLanguage();
+  const isTR = language === 'tr';
+
   return (
     <>
       <header className="sc-career-topbar sticky top-0 z-30 h-[64px] bg-[#090d0a]/98 backdrop-blur-xl border-b border-white/10 px-4 lg:px-6 flex items-center justify-between gap-3 select-none">
@@ -97,10 +101,10 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
 
             <span className="hidden sm:inline w-[1px] h-3.5 bg-white/10" />
 
-            <div className="hidden sm:flex items-center gap-1.5 font-ibm text-[11px] text-[#8f9a91]">
+            <div className="hidden sm:flex items-center gap-1.5 font-mono text-[11px] text-[#8f9a91]">
               <span className="text-[#f3f6f3] font-bold">SEZON {seasonNumber || 1}</span>
               <span>·</span>
-              <span className="text-[#b7ff35] font-semibold">MATCHDAY</span>
+              <span className="text-[#b7ff35] font-semibold">{isTR ? 'MAÇ GÜNÜ' : 'MATCHDAY'}</span>
             </div>
           </div>
 
@@ -108,7 +112,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
           {nextMatch && (
             <Link
               href={isMatchDay ? `/match/${nextMatch.id}` : '/fixtures'}
-              className={`hidden md:flex items-center gap-2 py-1.5 px-3 rounded-[4px] border font-ibm text-[11px] transition-all ${
+              className={`hidden md:flex items-center gap-2 py-1.5 px-3 rounded-[4px] border font-mono text-[11px] transition-all ${
                 isMatchDay
                   ? 'bg-[#ff5365]/20 border-[#ff5365] text-[#ff5365] animate-pulse font-bold'
                   : 'bg-[#0d130f] border-white/10 text-[#8f9a91] hover:border-[#b7ff35]/40 hover:text-[#f3f6f3]'
@@ -117,8 +121,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
               <Swords className="w-3.5 h-3.5" />
               <span>
                 {isMatchDay
-                  ? 'BUGÜN MAÇ GÜNÜ!'
-                  : `NEXT MATCH · ${daysUntilNextMatch ?? 3} GÜN`}
+                  ? (isTR ? 'BUGÜN MAÇ GÜNÜ!' : 'MATCHDAY TODAY!')
+                  : (isTR ? `SIRADAKİ MAÇ · ${daysUntilNextMatch ?? 3} GÜN` : `NEXT MATCH · ${daysUntilNextMatch ?? 3} DAYS`)}
               </span>
             </Link>
           )}
@@ -132,7 +136,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Oyuncu ara..."
+              placeholder={isTR ? 'Oyuncu ara...' : 'Search player...'}
               className="w-40 lg:w-48 bg-[#0d130f] border border-white/10 focus:border-[#b7ff35]/60 rounded-[4px] pl-7 pr-2.5 py-1 text-[11px] text-[#f3f6f3] placeholder-[#8f9a91]/60 focus:outline-none transition-all font-inter"
             />
             <Search className="w-3 h-3 text-[#8f9a91] absolute left-2 pointer-events-none" />
@@ -142,10 +146,10 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
           <Link
             href="/inbox"
             className="flex items-center gap-2 px-2.5 py-1.5 rounded-[4px] bg-[#0d130f] border border-white/10 hover:border-[#b7ff35]/40 transition-colors"
-            title="Gelen Kutusu"
+            title={isTR ? 'Gelen Kutusu' : 'Inbox'}
           >
             <Mail className="w-3.5 h-3.5 text-[#8f9a91]" />
-            <span className="font-ibm text-[11px] text-[#8f9a91] hidden sm:inline">INBOX</span>
+            <span className="font-mono text-[11px] text-[#8f9a91] hidden sm:inline">{isTR ? 'GELEN' : 'INBOX'}</span>
             <span className="font-barlow font-bold text-[13px] text-[#b7ff35]">
               {unreadMessageCount > 0 ? unreadMessageCount : 2}
             </span>
@@ -155,11 +159,11 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
           <Link
             href="/finances"
             className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-[#0d130f] border border-white/10 hover:border-[#b7ff35]/40 transition-colors"
-            title="Transfer & Maaş Bütçesi"
+            title={isTR ? 'Transfer & Maaş Bütçesi' : 'Transfer & Wage Budget'}
           >
             <Wallet className="w-3.5 h-3.5 text-[#17e5c2]" />
-            <div className="flex items-center gap-1.5 font-ibm text-[11px]">
-              <span className="text-[#8f9a91]">BUDGET:</span>
+            <div className="flex items-center gap-1.5 font-mono text-[11px]">
+              <span className="text-[#8f9a91]">{isTR ? 'BÜTÇE:' : 'BUDGET:'}</span>
               <span className="font-barlow font-bold text-[14px] text-[#17e5c2]">
                 {formattedBudget}
               </span>
@@ -171,8 +175,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
             <button
               onClick={handleSingleDayAdvance}
               type="button"
-              title="1 Gün İlerle"
-              className="hidden lg:flex items-center gap-1 px-2.5 py-2 font-ibm text-[11px] font-bold text-[#8f9a91] hover:text-[#f3f6f3] bg-[#0d130f] hover:bg-white/5 border border-white/10 rounded-[3px] transition-colors cursor-pointer active:scale-95 uppercase"
+              title={isTR ? '1 Gün İlerle' : '+1 Day'}
+              className="hidden lg:flex items-center gap-1 px-2.5 py-2 font-mono text-[11px] font-bold text-[#8f9a91] hover:text-[#f3f6f3] bg-[#0d130f] hover:bg-white/5 border border-white/10 rounded-[3px] transition-colors cursor-pointer active:scale-95 uppercase"
             >
               +1 GÜN
             </button>
@@ -186,7 +190,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle }) => {
                   : 'bg-[#b7ff35] hover:bg-[#9bea27] text-[#050806] shadow-[0_0_20px_rgba(183,255,53,0.35)] hover:translate-y-[-1px]'
               }`}
             >
-              <span>{isMatchDay ? 'MAÇA GİR' : 'CONTINUE >'}</span>
+              <span>{isMatchDay ? (isTR ? 'MAÇA GİR' : 'ENTER MATCH') : (isTR ? 'DEVAM ET >' : 'CONTINUE >')}</span>
             </button>
           </div>
         </div>
