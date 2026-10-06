@@ -17,7 +17,8 @@ export const AppShell: React.FC<{ children: ReactNode }> = ({ children }) => {
   const isStandalonePage =
     pathname === '/' ||
     pathname === '/career/new' ||
-    pathname.startsWith('/draft');
+    pathname.startsWith('/draft') ||
+    pathname.startsWith('/vault');
 
   return (
     <AuthProvider>

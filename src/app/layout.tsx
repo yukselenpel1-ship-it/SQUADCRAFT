@@ -3,9 +3,9 @@ import './globals.css';
 import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = {
-  title: 'SquadCraft — Özgün Futbol Menajerlik Simülasyonu',
-  description: 'Kendi kulübünüzü yönetin, taktiklerinizi geliştirin ve şampiyonluk yolunda SquadCraft evrenine hükmedin.',
-  keywords: ['futbol menajerlik', 'football manager', 'squadcraft', 'simülasyon', 'taktik', 'transfer'],
+  title: 'SQUADCRAFT — Premium 3D Football Manager Web Experience',
+  description: 'Next-generation cinematic football management web application. Career Mode, Draft League, 3D tactical radar, and live simulation.',
+  keywords: ['football manager', 'squadcraft', '3d simulation', 'tactics', 'draft league', 'career mode'],
   authors: [{ name: 'SquadCraft Team' }],
   icons: {
     icon: '/favicon.ico',

@@ -1,21 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #040814;
-  --bg-surface: #07101D;
-  --bg-card: #081325;
-  --bg-card-hover: #0E1E38;
-  --border-subtle: #14233A;
-  --border-focus: #00F5A0;
-  --text-primary: #FFFFFF;
-  --text-secondary: #8E9EB5;
-  --text-muted: #51647E;
-  --accent-primary: #00F5A0;
-  --accent-primary-hover: #00E590;
-  --accent-secondary: #00D4FF;
-  --accent-purple: #A855F7;
-  --accent-warning: #FFB800;
-  --accent-danger: #EF4444;
+  --background: #050806;
+  --background-elevated: #090d0a;
+  --surface: #0d120f;
+  --surface-light: #141b16;
+
+  --foreground: #f2f5f2;
+  --muted: #8b958d;
+
+  --primary: #b7ff35;
+  --primary-hover: #9bea27;
+
+  --secondary: #17e5c2;
+  --secondary-muted: #0b8070;
+
+  --danger: #ff4d5f;
+  --warning: #ffc84a;
+  --success: #65ff83;
+
+  --border: rgba(255, 255, 255, 0.09);
+  --border-highlight: rgba(183, 255, 53, 0.34);
+
+  --pitch-dark: #07120b;
+  --pitch-line: rgba(183, 255, 53, 0.18);
+
+  /* Legacy aliases preserved */
+  --bg-primary: #050806;
+  --bg-surface: #0d120f;
+  --bg-card: #090d0a;
+  --accent-primary: #b7ff35;
+  --accent-secondary: #17e5c2;
 }
 
 body {
@@ -191,3 +207,60 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
 }
+
+/* SQUADCRAFT AAA Typography & Utility Classes */
+.font-barlow {
+  font-family: 'Barlow Condensed', sans-serif;
+}
+.font-ibm {
+  font-family: 'IBM Plex Mono', monospace;
+}
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Global Stadium Background */
+.sc-stadium-bg {
+  background: radial-gradient(circle at 50% -20%, rgba(183, 255, 53, 0.08), transparent 38%), #050806;
+}
+
+/* Outlined typography */
+.text-outline {
+  -webkit-text-stroke: 1px rgba(242, 245, 242, 0.55);
+  color: transparent;
+}
+
+.text-outline-lime {
+  -webkit-text-stroke: 1px rgba(183, 255, 53, 0.65);
+  color: transparent;
+}
+
+/* Fictional sports UI corner clip */
+.sc-clip-corner {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% 100%,
+    12px 100%,
+    0 calc(100% - 12px)
+  );
+}
+
+.sc-clip-corner-sm {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 8px) 0,
+    100% 8px,
+    100% 100%,
+    8px 100%,
+    0 calc(100% - 8px)
+  );
+}
+
+/* Luminous lime border highlight */
+.border-lime-highlight {
+  border-color: rgba(183, 255, 53, 0.34);
+}
+
+
