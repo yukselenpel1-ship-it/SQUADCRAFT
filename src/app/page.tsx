@@ -16,11 +16,14 @@ import { ManagerPreview } from '@/components/homepage/ManagerPreview';
 import { FinalCTA } from '@/components/homepage/FinalCTA';
 import { SquadCraftFooter } from '@/components/layout/SquadCraftFooter';
 import { GameSettingsModal } from '@/components/modals/GameSettingsModal';
+import AuthModal from '@/components/auth/AuthModal';
 
 export default function SquadCraftHomePage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('Home');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
 
   const handleStartCareer = () => {
     // Navigate smoothly to career route or career new
@@ -46,7 +49,14 @@ export default function SquadCraftHomePage() {
         activeTab={activeTab}
         onTabChange={(tab) => setActiveTab(tab)}
         onOpenSettings={() => setSettingsOpen(true)}
-        onOpenProfile={() => handleScrollTo('manager')}
+        onOpenProfile={() => {
+          setAuthMode('signin');
+          setAuthModalOpen(true);
+        }}
+        onOpenAuth={() => {
+          setAuthMode('signin');
+          setAuthModalOpen(true);
+        }}
       />
 
       {/* 2. Hero Section with 3D Stadium Environment & Floating Football */}
@@ -112,6 +122,13 @@ export default function SquadCraftHomePage() {
       <GameSettingsModal
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
+      />
+
+      {/* Auth Modal (Giriş Yap / Kayıt Ol) */}
+      <AuthModal
+        open={authModalOpen}
+        initialMode={authMode}
+        onClose={() => setAuthModalOpen(false)}
       />
     </div>
   );

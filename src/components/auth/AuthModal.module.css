@@ -216,6 +216,95 @@
 }
 .footer button:hover { text-decoration: underline; }
 
+.bottomBar {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.bottomBarContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bottomBarText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.bottomBarPrompt {
+  font-size: 12px;
+  font-weight: 700;
+  color: #f2f5f2;
+}
+
+.bottomBarHint {
+  font-size: 10.5px;
+  color: #8b958d;
+}
+
+.bottomBarAction {
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(183, 255, 53, 0.4);
+  background: rgba(183, 255, 53, 0.12);
+  color: #b7ff35;
+  font-size: 11.5px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.bottomBarAction:hover {
+  background: #b7ff35;
+  color: #050806;
+  box-shadow: 0 0 16px rgba(183, 255, 53, 0.35);
+  transform: translateY(-1px);
+}
+
+.bottomBarActionSecondary {
+  padding: 7px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: #f2f5f2;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.bottomBarActionSecondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.bottomBarBack {
+  border: 0;
+  background: transparent;
+  color: var(--sc-cyan);
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bottomBarBack:hover {
+  text-decoration: underline;
+}
+
 .legal { margin: 10px 0 0; text-align: center; font-size: 10px; color: #5d6f7d; line-height: 1.4; }
 
 .notice {

@@ -2,15 +2,17 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bell, Settings, User, Menu, X, Shield } from 'lucide-react';
+import { Bell, Settings, User, Menu, X, Shield, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 interface SquadCraftNavbarProps {
   activeTab?: string;
   onTabChange?: (tab: string) => void;
   onOpenSettings?: () => void;
   onOpenProfile?: () => void;
+  onOpenAuth?: () => void;
 }
 
 export function SquadCraftNavbar({
@@ -18,8 +20,10 @@ export function SquadCraftNavbar({
   onTabChange,
   onOpenSettings,
   onOpenProfile,
+  onOpenAuth,
 }: SquadCraftNavbarProps) {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -105,17 +109,22 @@ export function SquadCraftNavbar({
             <Settings size={18} />
           </button>
 
-          {/* Manager Profile (Steve) */}
+          {/* Auth Giriş / Profile Button */}
           <button
             type="button"
-            onClick={onOpenProfile}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-[4px] bg-[#0c1410] border border-white/10 hover:border-[#b7ff35]/40 transition-colors cursor-pointer"
+            onClick={onOpenAuth || onOpenProfile}
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-[4px] bg-[#0c1410] border border-white/10 hover:border-[#b7ff35]/60 hover:bg-[#b7ff35]/10 text-[#f2f5f2] hover:text-[#b7ff35] transition-all cursor-pointer shadow-sm active:scale-95"
+            title={user ? `Menajer: ${user.username}` : 'Giriş Yap / Kayıt Ol'}
           >
             <div className="w-6 h-6 rounded-full bg-[#b7ff35]/20 text-[#b7ff35] flex items-center justify-center font-ibm text-[11px] font-bold">
-              ST
+              {user ? (
+                user.username.slice(0, 2).toUpperCase()
+              ) : (
+                <LogIn size={13} className="text-[#b7ff35]" />
+              )}
             </div>
-            <span className="font-barlow font-bold text-[15px] text-[#f2f5f2] tracking-wide">
-              STEVE
+            <span className="font-barlow font-bold text-[15px] tracking-wide uppercase">
+              {user ? user.username : 'GİRİŞ'}
             </span>
           </button>
         </div>
@@ -169,11 +178,12 @@ export function SquadCraftNavbar({
               type="button"
               onClick={() => {
                 setMobileMenuOpen(false);
-                onOpenProfile?.();
+                if (onOpenAuth) onOpenAuth();
+                else onOpenProfile?.();
               }}
-              className="flex-1 py-2.5 rounded bg-[#b7ff35] text-[#050806] font-barlow font-bold text-[16px] tracking-wider text-center"
+              className="flex-1 py-2.5 rounded bg-[#b7ff35] text-[#050806] font-barlow font-bold text-[16px] tracking-wider text-center cursor-pointer shadow-md"
             >
-              STEVE ({t.navManagerTitle})
+              {user ? user.username.toUpperCase() : 'GİRİŞ YAP'}
             </button>
           </div>
         </div>

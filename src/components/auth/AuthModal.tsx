@@ -47,6 +47,15 @@ export default function AuthModal({ open, initialMode, onClose }: Props) {
   }, [mode, clearPasswordRecovery, onClose]);
 
   useEffect(() => {
+    if (open) {
+      setMode(initialMode);
+      setErrors({});
+      setFormError(null);
+      setNotice(null);
+    }
+  }, [open, initialMode]);
+
+  useEffect(() => {
     if (!open || !isClient) return;
     const timer = window.setTimeout(() => firstFieldRef.current?.focus(), 30);
     return () => window.clearTimeout(timer);
@@ -144,14 +153,14 @@ export default function AuthModal({ open, initialMode, onClose }: Props) {
 
   const titles: Record<AuthMode, { kicker: string; title: string; sub: string }> = {
     signin: { kicker: 'TEKRAR HOŞ GELDİN', title: 'GİRİŞ YAP', sub: 'Menajer hesabınla devam et.' },
-    signup: { kicker: 'MENAJER KAYDI', title: 'ÜYE OL', sub: 'Ücretsiz hesap oluştur, kulübünü ve liglerini kaydet.' },
+    signup: { kicker: 'MENAJER KAYDI', title: 'KAYIT OL', sub: 'Ücretsiz hesap oluştur, kulübünü ve liglerini kaydet.' },
     forgot: { kicker: 'HESAP KURTARMA', title: 'ŞİFREMİ UNUTTUM', sub: 'E-posta adresine sıfırlama bağlantısı gönderelim.' },
     reset: { kicker: 'HESAP KURTARMA', title: 'YENİ ŞİFRE', sub: 'Hesabın için yeni bir şifre belirle.' },
   };
   const heading = titles[mode];
   const submitLabel: Record<AuthMode, string> = {
     signin: 'GİRİŞ YAP',
-    signup: 'HESAP OLUŞTUR',
+    signup: 'KAYIT OL',
     forgot: 'BAĞLANTI GÖNDER',
     reset: 'ŞİFREYİ GÜNCELLE',
   };
@@ -194,7 +203,7 @@ export default function AuthModal({ open, initialMode, onClose }: Props) {
               onClick={() => switchMode('signup')}
               data-testid="auth-tab-signup"
             >
-              ÜYE OL
+              KAYIT OL
             </button>
           </div>
         )}
@@ -316,15 +325,49 @@ export default function AuthModal({ open, initialMode, onClose }: Props) {
               </button>
             </form>
 
-            <div className={styles.footer}>
+            {/* Alt Bar: Kayıt Olmayanlar İçin Kayıt Ol / Giriş Yap */}
+            <div className={styles.bottomBar}>
               {mode === 'signin' && (
-                <>Hesabın yok mu? <button type="button" onClick={() => switchMode('signup')}>Hemen üye ol</button></>
+                <div className={styles.bottomBarContent}>
+                  <div className={styles.bottomBarText}>
+                    <span className={styles.bottomBarPrompt}>Hesabın yok mu?</span>
+                    <span className={styles.bottomBarHint}>Hemen ücretsiz menajer kaydı oluştur</span>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.bottomBarAction}
+                    onClick={() => switchMode('signup')}
+                    data-testid="auth-switch-signup"
+                  >
+                    KAYIT OL →
+                  </button>
+                </div>
               )}
               {mode === 'signup' && (
-                <>Zaten üye misin? <button type="button" onClick={() => switchMode('signin')}>Giriş yap</button></>
+                <div className={styles.bottomBarContent}>
+                  <div className={styles.bottomBarText}>
+                    <span className={styles.bottomBarPrompt}>Zaten hesabın var mı?</span>
+                    <span className={styles.bottomBarHint}>Mevcut menajer oturumunu aç</span>
+                  </div>
+                  <button
+                    type="button"
+                    className={styles.bottomBarActionSecondary}
+                    onClick={() => switchMode('signin')}
+                    data-testid="auth-switch-signin"
+                  >
+                    GİRİŞ YAP →
+                  </button>
+                </div>
               )}
               {mode === 'forgot' && (
-                <button type="button" onClick={() => switchMode('signin')} data-testid="auth-back-signin">← Giriş ekranına dön</button>
+                <button
+                  type="button"
+                  className={styles.bottomBarBack}
+                  onClick={() => switchMode('signin')}
+                  data-testid="auth-back-signin"
+                >
+                  ← Giriş ekranına dön
+                </button>
               )}
             </div>
             {mode === 'signup' && (
