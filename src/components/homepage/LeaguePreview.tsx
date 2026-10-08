@@ -3,6 +3,7 @@
 import React from 'react';
 import { Trophy, Calendar } from 'lucide-react';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import { DecryptedText } from '@/components/ui/react-bits';
 
 export function LeaguePreview() {
   const { t } = useLanguage();
@@ -28,7 +29,12 @@ export function LeaguePreview() {
         {/* Section Header */}
         <div className="mb-12">
           <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.2em] uppercase font-semibold">
-            {t.leagueBadge}
+            <DecryptedText
+              text={t.leagueBadge}
+              speed={28}
+              maxIterations={10}
+              animateOn="view"
+            />
           </span>
           <h2
             className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"

@@ -3,6 +3,7 @@
 import React from 'react';
 import { PlayerCard3D } from '@/components/three/PlayerCard3D';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import { DecryptedText } from '@/components/ui/react-bits';
 
 export function PlayerShowcase() {
   const { t } = useLanguage();
@@ -11,7 +12,12 @@ export function PlayerShowcase() {
     <section className="relative w-full bg-[#050806] py-24 px-6 sm:px-12 lg:px-16 border-t border-white/5 overflow-hidden select-none">
       <div className="max-w-[1500px] mx-auto text-center mb-8">
         <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.25em] uppercase font-semibold">
-          {t.playerShowcaseBadge}
+          <DecryptedText
+            text={t.playerShowcaseBadge}
+            speed={30}
+            maxIterations={10}
+            animateOn="view"
+          />
         </span>
         <h2
           className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"

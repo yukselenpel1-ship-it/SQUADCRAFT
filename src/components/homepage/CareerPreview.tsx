@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
   Users,
@@ -16,9 +15,13 @@ import {
   Mail,
   TrendingUp,
   Activity,
-  Shield,
 } from 'lucide-react';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import {
+  DecryptedText,
+  AnimatedCounter,
+  MagneticButton,
+} from '@/components/ui/react-bits';
 
 export function CareerPreview() {
   const { t } = useLanguage();
@@ -42,7 +45,12 @@ export function CareerPreview() {
         {/* Section Header */}
         <div className="mb-12">
           <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.2em] uppercase font-semibold">
-            {t.careerSuiteBadge}
+            <DecryptedText
+              text={t.careerSuiteBadge}
+              speed={30}
+              maxIterations={10}
+              animateOn="view"
+            />
           </span>
           <h2
             className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"
@@ -76,7 +84,10 @@ export function CareerPreview() {
 
             <div className="flex items-center gap-4">
               <span className="text-[#8b958d]">
-                {t.careerTransferBudget}: <span className="text-[#17e5c2] font-semibold">€34.2M</span>
+                {t.careerTransferBudget}:{' '}
+                <span className="text-[#17e5c2] font-semibold">
+                  €<AnimatedCounter value={34.2} decimals={1} duration={1.2} />M
+                </span>
               </span>
               <span className="w-2 h-2 rounded-full bg-[#65ff83] animate-pulse" />
               <span className="text-[#65ff83]">{t.careerGameSaved}</span>
@@ -165,13 +176,15 @@ export function CareerPreview() {
                   <div className="font-ibm text-[11px] text-[#8b958d]">
                     PROJECTED xG: <span className="text-[#b7ff35]">1.84</span> vs <span className="text-[#17e5c2]">1.22</span>
                   </div>
-                  <button
-                    type="button"
-                    className="font-barlow font-bold text-[18px] text-[#050806] bg-[#b7ff35] hover:bg-[#9bea27] px-8 py-3 rounded-[3px] flex items-center gap-2 cursor-pointer shadow-lg hover:translate-y-[-1px] transition-all"
-                  >
-                    <Play size={16} fill="currentColor" />
-                    {t.careerEnterMatchday}
-                  </button>
+                  <MagneticButton strength={0.16}>
+                    <button
+                      type="button"
+                      className="font-barlow font-bold text-[18px] text-[#050806] bg-[#b7ff35] hover:bg-[#a6f028] px-8 py-3 rounded-[3px] flex items-center gap-2 cursor-pointer shadow-lg transition-colors"
+                    >
+                      <Play size={16} fill="currentColor" />
+                      {t.careerEnterMatchday}
+                    </button>
+                  </MagneticButton>
                 </div>
               </div>
 
@@ -183,7 +196,7 @@ export function CareerPreview() {
                       {t.careerBoardConfidence}
                     </span>
                     <span className="font-ibm text-[12px] text-[#65ff83] font-bold">
-                      88% // A+
+                      <AnimatedCounter value={88} suffix="%" duration={1.2} /> // A+
                     </span>
                   </div>
 
@@ -236,11 +249,15 @@ export function CareerPreview() {
                 <div className="space-y-2.5 font-ibm text-[12px]">
                   <div className="flex justify-between">
                     <span className="text-[#8b958d]">AVERAGE FITNESS</span>
-                    <span className="text-[#b7ff35] font-bold">94%</span>
+                    <span className="text-[#b7ff35] font-bold">
+                      <AnimatedCounter value={94} suffix="%" duration={1.2} />
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#8b958d]">MATCH SHARPNESS</span>
-                    <span className="text-[#f2f5f2] font-bold">89%</span>
+                    <span className="text-[#f2f5f2] font-bold">
+                      <AnimatedCounter value={89} suffix="%" duration={1.2} />
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#8b958d]">SQUAD MORALE</span>

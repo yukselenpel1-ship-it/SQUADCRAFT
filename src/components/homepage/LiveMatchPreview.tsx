@@ -2,8 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, RotateCcw, AlertTriangle, ShieldCheck, Flame } from 'lucide-react';
+import { Play, Pause, Flame } from 'lucide-react';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import {
+  DecryptedText,
+  AnimatedCounter,
+  MagneticButton,
+} from '@/components/ui/react-bits';
 
 export function LiveMatchPreview() {
   const { t } = useLanguage();
@@ -11,7 +16,7 @@ export function LiveMatchPreview() {
   const [matchSecond, setMatchSecond] = useState(24);
   const [isPlaying, setIsPlaying] = useState(true);
   const [homeScore, setHomeScore] = useState(2);
-  const [awayScore, setAwayScore] = useState(1);
+  const [awayScore] = useState(1);
   const [goalFlash, setGoalFlash] = useState(false);
 
   // Live match clock simulation
@@ -41,7 +46,12 @@ export function LiveMatchPreview() {
         {/* Section Header */}
         <div className="mb-12">
           <span className="font-ibm text-[11px] text-[#ff4d5f] tracking-[0.2em] uppercase font-semibold">
-            {t.liveSimBadge}
+            <DecryptedText
+              text={t.liveSimBadge}
+              speed={28}
+              maxIterations={10}
+              animateOn="view"
+            />
           </span>
           <h2
             className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"
@@ -94,7 +104,7 @@ export function LiveMatchPreview() {
                 <span className="font-ibm text-[11px] text-[#b7ff35]">HOME TACTICS: 4-3-3 HIGH PRESS</span>
               </div>
 
-              {/* Big Score Typography (Barlow Condensed 700 64px) */}
+              {/* Big Score Typography */}
               <div className="flex flex-col items-center">
                 <div className="font-barlow font-extrabold text-[54px] sm:text-[72px] text-[#f2f5f2] leading-none tracking-tight flex items-center gap-3">
                   <motion.span
@@ -134,18 +144,21 @@ export function LiveMatchPreview() {
                 {isPlaying ? <Pause size={12} /> : <Play size={12} />}
                 {isPlaying ? 'PAUSE CLOCK' : 'RESUME CLOCK'}
               </button>
-              <button
-                type="button"
-                onClick={triggerGoal}
-                className="px-3.5 py-1.5 rounded-[3px] bg-[#b7ff35] hover:bg-[#9bea27] font-ibm text-[11px] text-[#050806] font-bold flex items-center gap-1.5 cursor-pointer shadow-[0_0_12px_rgba(183,255,53,0.3)]"
-              >
-                <Flame size={12} />
-                SIMULATE HOME GOAL
-              </button>
+
+              <MagneticButton strength={0.16}>
+                <button
+                  type="button"
+                  onClick={triggerGoal}
+                  className="px-3.5 py-1.5 rounded-[3px] bg-[#b7ff35] hover:bg-[#a6f028] font-ibm text-[11px] text-[#050806] font-bold flex items-center gap-1.5 cursor-pointer shadow-[0_0_12px_rgba(183,255,53,0.3)]"
+                >
+                  <Flame size={12} />
+                  SIMULATE HOME GOAL
+                </button>
+              </MagneticButton>
             </div>
           </div>
 
-          {/* Match Momentum Bar Under Scoreboard (0 -> 90 mins timeline) */}
+          {/* Match Momentum Bar Under Scoreboard */}
           <div className="mb-8 p-4 bg-[#0c120e] border border-white/10 rounded-[6px]">
             <div className="flex justify-between items-center font-ibm text-[11px] text-[#8b958d] mb-2">
               <span>MATCH MOMENTUM // HOME PRESSURE (+) VS AWAY (-)</span>
@@ -178,7 +191,7 @@ export function LiveMatchPreview() {
             </div>
           </div>
 
-          {/* 3 Columns: Event Feed (3 cols) | Live Pitch Simulation (5 cols) | Match Stats & Ratings (4 cols) */}
+          {/* 3 Columns: Event Feed | Tactical Pitch | Match Stats */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             {/* 1. EVENT FEED (3 cols) */}
             <div className="lg:col-span-3 bg-[#0d1410] border border-white/10 rounded-[8px] p-5">
@@ -218,59 +231,80 @@ export function LiveMatchPreview() {
 
               {/* Pitch Canvas Graphic */}
               <div className="relative w-full aspect-[4/3] rounded-[6px] border border-[#b7ff35]/30 bg-[#061009] p-3 shadow-inner overflow-hidden">
-                {/* Halfway line & penalty areas */}
-                <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-[#b7ff35]/20" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-[#b7ff35]/20" />
-                <div className="absolute top-1/4 bottom-1/4 left-0 w-12 border-r border-y border-[#b7ff35]/20" />
-                <div className="absolute top-1/4 bottom-1/4 right-0 w-12 border-l border-y border-[#b7ff35]/20" />
+                {/* Grass lines */}
+                <div className="absolute inset-0 border-2 border-white/10 m-2 pointer-events-none" />
+                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-white/10" />
+                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-full border border-white/10" />
+                <div className="absolute left-0 top-1/4 bottom-1/4 w-12 border-r border-y border-white/10" />
+                <div className="absolute right-0 top-1/4 bottom-1/4 w-12 border-l border-y border-white/10" />
 
-                {/* Simulated Moving Player Dots */}
-                {/* Home Attackers (Lime dots) */}
+                {/* Live Animated Players & Ball */}
+                {/* Home Attackers (Lime) */}
                 <motion.div
                   animate={{ x: [0, 8, -4, 0], y: [0, -6, 4, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute top-[42%] right-[22%] w-3.5 h-3.5 rounded-full bg-[#b7ff35] shadow-[0_0_10px_#b7ff35] flex items-center justify-center font-ibm text-[8px] text-black font-bold"
+                  transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+                  className="absolute left-[70%] top-[45%] w-4 h-4 rounded-full bg-[#b7ff35] border-2 border-[#050806] shadow-[0_0_10px_#b7ff35] flex items-center justify-center font-ibm text-[8px] text-[#050806] font-bold"
                 >
                   9
                 </motion.div>
                 <motion.div
-                  animate={{ x: [0, -6, 6, 0], y: [0, 8, -4, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute top-[58%] right-[28%] w-3.5 h-3.5 rounded-full bg-[#b7ff35] shadow-[0_0_10px_#b7ff35] flex items-center justify-center font-ibm text-[8px] text-black font-bold"
+                  animate={{ x: [0, -5, 6, 0], y: [0, 8, -3, 0] }}
+                  transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
+                  className="absolute left-[58%] top-[30%] w-4 h-4 rounded-full bg-[#b7ff35] border-2 border-[#050806] shadow-[0_0_8px_#b7ff35] flex items-center justify-center font-ibm text-[8px] text-[#050806] font-bold"
                 >
                   10
                 </motion.div>
-
-                {/* Away Defenders (Teal dots) */}
-                <div className="absolute top-[38%] right-[14%] w-3 h-3 rounded-full bg-[#17e5c2] shadow-[0_0_6px_#17e5c2]" />
-                <div className="absolute top-[62%] right-[14%] w-3 h-3 rounded-full bg-[#17e5c2] shadow-[0_0_6px_#17e5c2]" />
-                <div className="absolute top-[50%] right-[10%] w-3 h-3 rounded-full bg-[#17e5c2] shadow-[0_0_6px_#17e5c2]" />
-
-                {/* Pulsing Danger Zone in Opponent Box */}
-                <div className="absolute top-1/4 bottom-1/4 right-0 w-28 bg-[#b7ff35]/10 animate-pulse pointer-events-none" />
-
-                {/* Ball */}
                 <motion.div
-                  animate={{ x: [0, 12, 0], y: [0, -10, 0] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                  className="absolute top-[48%] right-[20%] w-2 h-2 rounded-full bg-white shadow-[0_0_8px_white]"
+                  animate={{ x: [0, 4, -6, 0], y: [0, -4, 5, 0] }}
+                  transition={{ repeat: Infinity, duration: 4.5, ease: 'easeInOut' }}
+                  className="absolute left-[62%] top-[65%] w-4 h-4 rounded-full bg-[#b7ff35] border-2 border-[#050806] shadow-[0_0_8px_#b7ff35] flex items-center justify-center font-ibm text-[8px] text-[#050806] font-bold"
+                >
+                  7
+                </motion.div>
+
+                {/* Away Defenders (Teal) */}
+                <motion.div
+                  animate={{ x: [0, -6, 3, 0] }}
+                  transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+                  className="absolute left-[76%] top-[42%] w-4 h-4 rounded-full bg-[#17e5c2] border-2 border-[#050806] flex items-center justify-center font-ibm text-[8px] text-[#050806] font-bold"
+                >
+                  4
+                </motion.div>
+                <motion.div
+                  animate={{ x: [0, 4, -3, 0] }}
+                  transition={{ repeat: Infinity, duration: 3.2, ease: 'easeInOut' }}
+                  className="absolute left-[78%] top-[55%] w-4 h-4 rounded-full bg-[#17e5c2] border-2 border-[#050806] flex items-center justify-center font-ibm text-[8px] text-[#050806] font-bold"
+                >
+                  5
+                </motion.div>
+
+                {/* Moving Match Ball */}
+                <motion.div
+                  animate={{
+                    x: [0, 16, -10, 0],
+                    y: [0, -12, 8, 0],
+                    scale: [1, 1.25, 0.95, 1],
+                  }}
+                  transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+                  className="absolute left-[66%] top-[40%] w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_12px_#ffffff]"
                 />
               </div>
 
-              <span className="font-ibm text-[11px] text-[#b7ff35] mt-3">
-                CURRENT PHASE: OVERLOAD ON RIGHT WING
-              </span>
+              {/* Pitch status bar */}
+              <div className="w-full flex justify-between font-ibm text-[11px] text-[#8b958d] mt-3 pt-2 border-t border-white/5">
+                <span>TACTICAL PHASE: FINAL THIRD OVERLOAD</span>
+                <span className="text-[#b7ff35]">ZONE 14 ACTIVE</span>
+              </div>
             </div>
 
             {/* 3. MATCH STATS & RATINGS (4 cols) */}
-            <div className="lg:col-span-4 flex flex-col gap-4">
-              {/* Stats Module */}
+            <div className="lg:col-span-4 flex flex-col gap-6">
+              {/* Detailed Metrics */}
               <div className="bg-[#0d1410] border border-white/10 rounded-[8px] p-5">
                 <span className="font-ibm text-[11px] text-[#8b958d] uppercase tracking-wider block mb-3">
-                  LIVE MATCH STATISTICS
+                  MATCH STATS
                 </span>
-
-                <div className="space-y-3 font-ibm text-[11px]">
+                <div className="space-y-3 font-ibm text-[12px]">
                   <div>
                     <div className="flex justify-between mb-1">
                       <span className="text-[#b7ff35] font-bold">58%</span>
@@ -284,27 +318,43 @@ export function LiveMatchPreview() {
                   </div>
 
                   <div className="flex justify-between py-1 border-b border-white/5">
-                    <span className="text-[#b7ff35] font-bold">13</span>
+                    <span className="text-[#b7ff35] font-bold">
+                      <AnimatedCounter value={13} duration={1.2} />
+                    </span>
                     <span className="text-[#8b958d]">TOTAL SHOTS</span>
-                    <span className="text-[#17e5c2] font-bold">8</span>
+                    <span className="text-[#17e5c2] font-bold">
+                      <AnimatedCounter value={8} duration={1.2} />
+                    </span>
                   </div>
 
                   <div className="flex justify-between py-1 border-b border-white/5">
-                    <span className="text-[#b7ff35] font-bold">6</span>
+                    <span className="text-[#b7ff35] font-bold">
+                      <AnimatedCounter value={6} duration={1.2} />
+                    </span>
                     <span className="text-[#8b958d]">ON TARGET</span>
-                    <span className="text-[#17e5c2] font-bold">3</span>
+                    <span className="text-[#17e5c2] font-bold">
+                      <AnimatedCounter value={3} duration={1.2} />
+                    </span>
                   </div>
 
                   <div className="flex justify-between py-1 border-b border-white/5">
-                    <span className="text-[#b7ff35] font-bold">2.18</span>
+                    <span className="text-[#b7ff35] font-bold">
+                      <AnimatedCounter value={2.18} decimals={2} duration={1.3} />
+                    </span>
                     <span className="text-[#8b958d]">EXPECTED GOALS (xG)</span>
-                    <span className="text-[#17e5c2] font-bold">1.07</span>
+                    <span className="text-[#17e5c2] font-bold">
+                      <AnimatedCounter value={1.07} decimals={2} duration={1.3} />
+                    </span>
                   </div>
 
                   <div className="flex justify-between py-1">
-                    <span className="text-[#b7ff35] font-bold">5</span>
+                    <span className="text-[#b7ff35] font-bold">
+                      <AnimatedCounter value={5} duration={1.2} />
+                    </span>
                     <span className="text-[#8b958d]">CORNERS</span>
-                    <span className="text-[#17e5c2] font-bold">2</span>
+                    <span className="text-[#17e5c2] font-bold">
+                      <AnimatedCounter value={2} duration={1.2} />
+                    </span>
                   </div>
                 </div>
               </div>

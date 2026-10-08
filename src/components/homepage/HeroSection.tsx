@@ -3,8 +3,15 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { ArrowRight, Activity, ShieldAlert, Award } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import {
+  DecryptedText,
+  SplitText,
+  MagneticButton,
+  SpotlightCard,
+  AnimatedCounter,
+} from '@/components/ui/react-bits';
 
 // Dynamic import with SSR: false for 3D R3F Canvas
 const SquadCraftEnvironment = dynamic(
@@ -28,7 +35,7 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-[#050806] flex flex-col justify-between pt-24 pb-8 select-none">
       {/* 3D Stadium Environment Canvas behind UI */}
-      <SquadCraftEnvironment showFootball={true} particleCount={400} />
+      <SquadCraftEnvironment showFootball={true} particleCount={250} />
 
       {/* Huge Background Word: SQUADCRAFT */}
       <div
@@ -49,7 +56,7 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
       <div className="relative z-10 w-full max-w-[1500px] mx-auto px-6 sm:px-12 lg:px-16 my-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         {/* Left Column: Hero Typography & CTAs (7 cols) */}
         <div className="lg:col-span-7 flex flex-col items-start">
-          {/* Kicker */}
+          {/* Athletic Kicker with Decrypted Text */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -57,48 +64,35 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
             className="flex items-center gap-2 mb-4"
           >
             <span className="w-2 h-2 rounded-full bg-[#b7ff35] shadow-[0_0_8px_#b7ff35]" />
-            <span
-              className="font-ibm text-[11px] text-[#b7ff35] uppercase font-medium tracking-[0.22em]"
-              style={{ letterSpacing: '0.22em' }}
-            >
-              {t.heroKicker}
+            <span className="font-ibm text-[11px] text-[#b7ff35] uppercase font-medium tracking-[0.22em]">
+              <DecryptedText
+                text={t.heroKicker}
+                speed={30}
+                maxIterations={12}
+                animateOn="view"
+              />
             </span>
           </motion.div>
 
-          {/* Main Hero Title (Split Lines) */}
-          <div className="overflow-hidden mb-5">
-            {/* Line 1 */}
-            <motion.div
-              initial={{ y: 70, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.75, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal uppercase"
-              style={{ fontSize: 'clamp(68px, 9.5vw, 150px)' }}
-            >
-              {t.heroLine1}
-            </motion.div>
+          {/* Main Hero Title (Split Athletic Typography) */}
+          <div className="overflow-hidden mb-6 space-y-1">
+            <SplitText
+              text={t.heroLine1}
+              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal uppercase text-[clamp(64px,9.2vw,144px)] block"
+              delay={0.04}
+            />
 
-            {/* Line 2 (Outlined Typography) */}
-            <motion.div
-              initial={{ y: 70, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.75, delay: 0.17, ease: [0.16, 1, 0.3, 1] }}
-              className="font-barlow font-extrabold text-outline leading-[0.82] tracking-normal uppercase"
-              style={{ fontSize: 'clamp(68px, 9.5vw, 150px)' }}
-            >
-              {t.heroLine2}
-            </motion.div>
+            <SplitText
+              text={t.heroLine2}
+              className="font-barlow font-extrabold text-outline leading-[0.82] tracking-normal uppercase text-[clamp(64px,9.2vw,144px)] block"
+              delay={0.06}
+            />
 
-            {/* Line 3 */}
-            <motion.div
-              initial={{ y: 70, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.75, delay: 0.26, ease: [0.16, 1, 0.3, 1] }}
-              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal uppercase"
-              style={{ fontSize: 'clamp(68px, 9.5vw, 150px)' }}
-            >
-              {t.heroLine3}
-            </motion.div>
+            <SplitText
+              text={t.heroLine3}
+              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal uppercase text-[clamp(64px,9.2vw,144px)] block"
+              delay={0.08}
+            />
           </div>
 
           {/* Hero Description */}
@@ -111,7 +105,7 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
             {t.heroDescription}
           </motion.p>
 
-          {/* Hero CTAs */}
+          {/* Hero CTAs with Magnetic Buttons */}
           <motion.div
             initial={{ y: 18, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -119,97 +113,121 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
             className="flex flex-row flex-wrap items-center gap-4"
           >
             {/* Primary: START YOUR CAREER */}
-            <button
-              type="button"
-              onClick={onStartCareer}
-              className="group font-barlow font-bold text-[18px] tracking-wider text-[#050806] bg-[#b7ff35] hover:bg-[#9bea27] h-[54px] px-8 rounded-[3px] flex items-center gap-2.5 transition-all duration-200 cursor-pointer shadow-[0_4px_24px_rgba(183,255,53,0.35)] hover:translate-y-[-2px] uppercase"
-            >
-              {t.heroStartCareer}
-              <ArrowRight
-                size={18}
-                className="group-hover:translate-x-1 transition-transform"
-              />
-            </button>
+            <MagneticButton strength={0.22}>
+              <button
+                type="button"
+                onClick={onStartCareer}
+                className="group font-barlow font-bold text-[18px] tracking-wider text-[#050806] bg-[#b7ff35] hover:bg-[#a6f028] h-[54px] px-8 rounded-[3px] flex items-center gap-2.5 transition-colors cursor-pointer shadow-[0_4px_28px_rgba(183,255,53,0.35)] uppercase"
+              >
+                {t.heroStartCareer}
+                <ArrowRight
+                  size={18}
+                  className="group-hover:translate-x-1 transition-transform"
+                />
+              </button>
+            </MagneticButton>
 
             {/* Secondary: ENTER DRAFT LEAGUE */}
-            <button
-              type="button"
-              onClick={onEnterDraft}
-              className="font-barlow font-bold text-[18px] tracking-wider text-[#f2f5f2] bg-transparent border border-white/25 hover:border-[#b7ff35] hover:text-[#b7ff35] h-[54px] px-8 rounded-[3px] flex items-center transition-all duration-200 cursor-pointer hover:bg-white/5 uppercase"
-            >
-              {t.heroEnterDraft}
-            </button>
+            <MagneticButton strength={0.16}>
+              <button
+                type="button"
+                onClick={onEnterDraft}
+                className="font-barlow font-bold text-[18px] tracking-wider text-[#f2f5f2] bg-white/[0.04] border border-white/20 hover:border-[#b7ff35] hover:text-[#b7ff35] h-[54px] px-8 rounded-[3px] flex items-center transition-all cursor-pointer hover:bg-white/10 uppercase"
+              >
+                {t.heroEnterDraft}
+              </button>
+            </MagneticButton>
           </motion.div>
         </div>
 
-        {/* Right Column: Hero Tactical HUD (5 cols) */}
+        {/* Right Column: Hero Tactical HUD with Spotlight Surface */}
         <div className="lg:col-span-5 flex justify-end">
           <motion.div
             initial={{ x: 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.55, ease: 'easeOut' }}
-            className="w-full max-w-sm rounded-[6px] p-6 backdrop-blur-xl border border-white/10 shadow-2xl"
-            style={{
-              backgroundColor: 'rgba(7, 12, 8, 0.65)',
-              borderLeft: '3px solid #b7ff35',
-              transform: 'perspective(800px) rotateY(-4deg) rotateX(2deg)',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.8), 0 0 25px rgba(183,255,53,0.08)',
-            }}
+            className="w-full max-w-sm"
           >
-            {/* HUD Header */}
-            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
-              <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest font-semibold uppercase">
-                {t.heroLiveSystem}
-              </span>
-              <span className="font-ibm text-[11px] text-[#8b958d] uppercase">
-                {t.heroSeason}
-              </span>
-            </div>
-
-            {/* Tactical Metrics */}
-            <div className="space-y-3 font-ibm text-[12px]">
-              <div className="flex justify-between items-center">
-                <span className="text-[#8b958d] uppercase">{t.heroPossession}</span>
-                <span className="text-[#b7ff35] font-bold">58%</span>
-              </div>
-              <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                <div className="w-[58%] h-full bg-[#b7ff35]" />
-              </div>
-
-              <div className="flex justify-between items-center pt-1">
-                <span className="text-[#8b958d] uppercase">{t.heroXG}</span>
-                <span className="text-[#f2f5f2] font-bold">2.41</span>
+            <SpotlightCard
+              spotlightColor="rgba(183, 255, 53, 0.12)"
+              className="w-full rounded-[6px] p-6 backdrop-blur-xl border border-white/10 shadow-2xl bg-[#070c08]/85"
+              style={{
+                borderLeft: '3px solid #b7ff35',
+                transform: 'perspective(900px) rotateY(-4deg) rotateX(2deg)',
+                boxShadow: '0 25px 50px rgba(0,0,0,0.85), 0 0 25px rgba(183,255,53,0.08)',
+              }}
+            >
+              {/* HUD Header */}
+              <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+                <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest font-semibold uppercase">
+                  {t.heroLiveSystem}
+                </span>
+                <span className="font-ibm text-[11px] text-[#8b958d] uppercase">
+                  {t.heroSeason}
+                </span>
               </div>
 
-              <div className="flex justify-between items-center pt-1">
-                <span className="text-[#8b958d] uppercase">{t.heroPress}</span>
-                <span className="text-[#17e5c2] font-bold">74 // {t.heroHigh}</span>
-              </div>
-              <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-                <div className="w-[74%] h-full bg-[#17e5c2]" />
-              </div>
-
-              <div className="flex justify-between items-center pt-2 border-t border-white/10">
-                <span className="text-[#8b958d] uppercase">{t.heroTeamForm}</span>
-                <div className="flex gap-1.5 font-bold">
-                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
-                    {language === 'tr' ? 'G' : 'W'}
-                  </span>
-                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
-                    {language === 'tr' ? 'G' : 'W'}
-                  </span>
-                  <span className="w-5 h-5 rounded-[2px] bg-[#ffc84a]/20 text-[#ffc84a] flex items-center justify-center text-[10px]">
-                    {language === 'tr' ? 'B' : 'D'}
-                  </span>
-                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
-                    {language === 'tr' ? 'G' : 'W'}
-                  </span>
-                  <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
-                    {language === 'tr' ? 'G' : 'W'}
+              {/* Tactical Metrics */}
+              <div className="space-y-3 font-ibm text-[12px]">
+                <div className="flex justify-between items-center">
+                  <span className="text-[#8b958d] uppercase">{t.heroPossession}</span>
+                  <span className="text-[#b7ff35] font-bold">
+                    <AnimatedCounter value={58} suffix="%" duration={1.2} />
                   </span>
                 </div>
+                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: '58%' }}
+                    transition={{ duration: 1, ease: 'easeOut' }}
+                    className="h-full bg-[#b7ff35]"
+                  />
+                </div>
+
+                <div className="flex justify-between items-center pt-1">
+                  <span className="text-[#8b958d] uppercase">{t.heroXG}</span>
+                  <span className="text-[#f2f5f2] font-bold">
+                    <AnimatedCounter value={2.41} decimals={2} duration={1.3} />
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center pt-1">
+                  <span className="text-[#8b958d] uppercase">{t.heroPress}</span>
+                  <span className="text-[#17e5c2] font-bold">
+                    <AnimatedCounter value={74} duration={1.1} /> // {t.heroHigh}
+                  </span>
+                </div>
+                <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: '74%' }}
+                    transition={{ duration: 1.1, ease: 'easeOut' }}
+                    className="h-full bg-[#17e5c2]"
+                  />
+                </div>
+
+                <div className="flex justify-between items-center pt-2 border-t border-white/10">
+                  <span className="text-[#8b958d] uppercase">{t.heroTeamForm}</span>
+                  <div className="flex gap-1.5 font-bold">
+                    <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
+                      {language === 'tr' ? 'G' : 'W'}
+                    </span>
+                    <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
+                      {language === 'tr' ? 'G' : 'W'}
+                    </span>
+                    <span className="w-5 h-5 rounded-[2px] bg-[#ffc84a]/20 text-[#ffc84a] flex items-center justify-center text-[10px]">
+                      {language === 'tr' ? 'B' : 'D'}
+                    </span>
+                    <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
+                      {language === 'tr' ? 'G' : 'W'}
+                    </span>
+                    <span className="w-5 h-5 rounded-[2px] bg-[#65ff83]/20 text-[#65ff83] flex items-center justify-center text-[10px]">
+                      {language === 'tr' ? 'G' : 'W'}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
+            </SpotlightCard>
           </motion.div>
         </div>
       </div>

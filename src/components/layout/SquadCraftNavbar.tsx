@@ -6,6 +6,7 @@ import { Bell, Settings, User, Menu, X, Shield, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '@/lib/context/LanguageContext';
 import { useAuth } from '@/lib/auth/AuthContext';
+import { MagneticButton } from '@/components/ui/react-bits';
 
 interface SquadCraftNavbarProps {
   activeTab?: string;
@@ -110,23 +111,25 @@ export function SquadCraftNavbar({
           </button>
 
           {/* Auth Giriş / Profile Button */}
-          <button
-            type="button"
-            onClick={onOpenAuth || onOpenProfile}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-[4px] bg-[#0c1410] border border-white/10 hover:border-[#b7ff35]/60 hover:bg-[#b7ff35]/10 text-[#f2f5f2] hover:text-[#b7ff35] transition-all cursor-pointer shadow-sm active:scale-95"
-            title={user ? `Menajer: ${user.username}` : 'Giriş Yap / Kayıt Ol'}
-          >
-            <div className="w-6 h-6 rounded-full bg-[#b7ff35]/20 text-[#b7ff35] flex items-center justify-center font-ibm text-[11px] font-bold">
-              {user ? (
-                user.username.slice(0, 2).toUpperCase()
-              ) : (
-                <LogIn size={13} className="text-[#b7ff35]" />
-              )}
-            </div>
-            <span className="font-barlow font-bold text-[15px] tracking-wide uppercase">
-              {user ? user.username : 'GİRİŞ'}
-            </span>
-          </button>
+          <MagneticButton strength={0.15}>
+            <button
+              type="button"
+              onClick={onOpenAuth || onOpenProfile}
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-[4px] bg-[#0c1410] border border-white/10 hover:border-[#b7ff35]/60 hover:bg-[#b7ff35]/10 text-[#f2f5f2] hover:text-[#b7ff35] transition-all cursor-pointer shadow-sm active:scale-95"
+              title={user ? `Menajer: ${user.username}` : 'Giriş Yap / Kayıt Ol'}
+            >
+              <div className="w-6 h-6 rounded-full bg-[#b7ff35]/20 text-[#b7ff35] flex items-center justify-center font-ibm text-[11px] font-bold">
+                {user ? (
+                  user.username.slice(0, 2).toUpperCase()
+                ) : (
+                  <LogIn size={13} className="text-[#b7ff35]" />
+                )}
+              </div>
+              <span className="font-barlow font-bold text-[15px] tracking-wide uppercase">
+                {user ? user.username : 'GİRİŞ'}
+              </span>
+            </button>
+          </MagneticButton>
         </div>
 
         {/* Mobile menu toggle */}

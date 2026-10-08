@@ -2,8 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Trophy, Users, Check, Sparkles } from 'lucide-react';
+import { Clock, Sparkles } from 'lucide-react';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import {
+  DecryptedText,
+  TiltedCard,
+} from '@/components/ui/react-bits';
 
 export function DraftPreview() {
   const { t } = useLanguage();
@@ -39,7 +43,12 @@ export function DraftPreview() {
         {/* Section Header */}
         <div className="mb-12">
           <span className="font-ibm text-[11px] text-[#17e5c2] tracking-[0.2em] uppercase font-semibold">
-            {t.draftStageBadge}
+            <DecryptedText
+              text={t.draftStageBadge}
+              speed={28}
+              maxIterations={10}
+              animateOn="view"
+            />
           </span>
           <h2
             className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1"
@@ -108,7 +117,7 @@ export function DraftPreview() {
             )}
           </AnimatePresence>
 
-          {/* Draft Arena Center Stage: Available Player Cards + Right Participants */}
+          {/* Draft Arena Center Stage */}
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Player Draft Cards (8 cols) */}
             <div className="lg:col-span-8 flex flex-col items-center">
@@ -122,51 +131,54 @@ export function DraftPreview() {
                   const isPicked = selectedPlayer === player.name;
 
                   return (
-                    <motion.div
+                    <TiltedCard
                       key={player.id}
-                      whileHover={{ scale: 1.04, y: -6 }}
-                      onClick={() => handlePick(player.name)}
+                      maxAngle={10}
+                      scale={1.03}
+                      glareOpacity={isFeatured ? 0.3 : 0.15}
                       className={`relative rounded-[8px] p-5 cursor-pointer flex flex-col justify-between transition-all duration-300 ${
                         isFeatured
                           ? 'w-full sm:w-[220px] h-[310px] bg-[#121c16] border-2 border-[#b7ff35] shadow-[0_0_30px_rgba(183,255,53,0.25)]'
-                          : 'w-full sm:w-[180px] h-[260px] bg-[#0c1410] border border-white/10 opacity-80 hover:opacity-100'
+                          : 'w-full sm:w-[180px] h-[260px] bg-[#0c1410] border border-white/10 opacity-90 hover:opacity-100'
                       }`}
                     >
-                      <div className="flex justify-between items-start">
-                        <span
-                          className={`font-barlow font-extrabold ${
-                            isFeatured ? 'text-[44px] text-[#b7ff35]' : 'text-[32px] text-[#17e5c2]'
-                          } leading-none`}
+                      <div onClick={() => handlePick(player.name)} className="h-full flex flex-col justify-between">
+                        <div className="flex justify-between items-start">
+                          <span
+                            className={`font-barlow font-extrabold ${
+                              isFeatured ? 'text-[44px] text-[#b7ff35]' : 'text-[32px] text-[#17e5c2]'
+                            } leading-none`}
+                          >
+                            {player.ovr}
+                          </span>
+                          <span className="font-ibm font-bold text-[12px] text-[#f2f5f2]">
+                            {player.pos}
+                          </span>
+                        </div>
+
+                        <div className="text-center my-auto">
+                          <span className="font-barlow font-extrabold text-[24px] text-[#f2f5f2] tracking-wide uppercase block">
+                            {player.name}
+                          </span>
+                          <span className="font-ibm text-[11px] text-[#8b958d]">
+                            {player.age} YRS · {player.club}
+                          </span>
+                        </div>
+
+                        <button
+                          type="button"
+                          className={`w-full py-2 rounded-[2px] font-barlow font-bold text-[15px] tracking-wider uppercase transition-colors cursor-pointer ${
+                            isPicked
+                              ? 'bg-[#65ff83] text-[#050806]'
+                              : isFeatured
+                              ? 'bg-[#b7ff35] text-[#050806] hover:bg-[#a6f028]'
+                              : 'bg-white/10 text-[#f2f5f2] hover:bg-white/20'
+                          }`}
                         >
-                          {player.ovr}
-                        </span>
-                        <span className="font-ibm font-bold text-[12px] text-[#f2f5f2]">
-                          {player.pos}
-                        </span>
+                          {isPicked ? `${t.draftSelected} ✓` : `${t.draftSelectPlayer} →`}
+                        </button>
                       </div>
-
-                      <div className="text-center my-auto">
-                        <span className="font-barlow font-extrabold text-[24px] text-[#f2f5f2] tracking-wide uppercase block">
-                          {player.name}
-                        </span>
-                        <span className="font-ibm text-[11px] text-[#8b958d]">
-                          {player.age} YRS · {player.club}
-                        </span>
-                      </div>
-
-                      <button
-                        type="button"
-                        className={`w-full py-2 rounded-[2px] font-barlow font-bold text-[15px] tracking-wider uppercase transition-colors ${
-                          isPicked
-                            ? 'bg-[#65ff83] text-[#050806]'
-                            : isFeatured
-                            ? 'bg-[#b7ff35] text-[#050806] hover:bg-[#9bea27]'
-                            : 'bg-white/10 text-[#f2f5f2] hover:bg-white/20'
-                        }`}
-                      >
-                        {isPicked ? `${t.draftSelected} ✓` : `${t.draftSelectPlayer} →`}
-                      </button>
-                    </motion.div>
+                    </TiltedCard>
                   );
                 })}
               </div>

@@ -4,157 +4,119 @@ import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-// 1. Floating Metallic Football with luminous lime seams
+// 1. Interactive Tactical Football (Responsive to pointer coordinates and scroll, no endless spin AF-G02)
 function FloatingFootball({ mousePos }: { mousePos: { x: number; y: number } }) {
   const groupRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
+  const accumulatedTime = useRef(0);
 
-  // Subtle floating and rotation animation
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (!groupRef.current) return;
-    const time = state.clock.getElapsedTime();
+    accumulatedTime.current += Math.min(delta, 0.05);
+    const t = accumulatedTime.current;
 
-    // Floating vertical oscillation: 1.15 -> 1.25 -> 1.15 over ~4s
-    groupRef.current.position.y = 1.2 + Math.sin(time * 1.57) * 0.06;
+    // Organic athletic breathing elevation (subtle, 1.18 to 1.22)
+    groupRef.current.position.y = 1.2 + Math.sin(t * 1.2) * 0.035;
 
-    // Continuous rotateY: 18s full rotation
-    groupRef.current.rotation.y += delta * (Math.PI * 2 / 18);
+    // Camera/Pointer driven rotation (AF-G02 compliance: angles respond to pointer and settle, not an infinite automatic spin)
+    const targetRotY = mousePos.x * 0.55;
+    const targetTiltX = -mousePos.y * 0.12;
+    const targetTiltZ = mousePos.x * 0.12;
 
-    // Mouse tilt: max ~5 degrees (0.087 rad) with smooth damping
-    const targetTiltX = -mousePos.y * 0.08;
-    const targetTiltZ = mousePos.x * 0.08;
+    groupRef.current.rotation.y = THREE.MathUtils.lerp(groupRef.current.rotation.y, targetRotY, 0.06);
     groupRef.current.rotation.x = THREE.MathUtils.lerp(groupRef.current.rotation.x, targetTiltX, 0.06);
     groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, targetTiltZ, 0.06);
   });
 
   return (
     <group ref={groupRef} position={[0, 1.2, 0]}>
-      {/* Outer Football Body: Matte Graphite with subtle carbon specular */}
+      {/* Outer Football Body: Matte Carbon Composite */}
       <mesh ref={meshRef} castShadow receiveShadow>
         <sphereGeometry args={[0.55, 36, 36]} />
         <meshStandardMaterial
-          color="#161b17"
-          roughness={0.42}
-          metalness={0.78}
-          wireframe={false}
+          color="#121814"
+          roughness={0.48}
+          metalness={0.72}
         />
       </mesh>
 
-      {/* Luminous Lime Pentagonal Seam Rings / Wire cage */}
+      {/* Luminous Lime Pentagonal Seam Cage */}
       <mesh scale={[1.002, 1.002, 1.002]}>
         <icosahedronGeometry args={[0.552, 1]} />
         <meshBasicMaterial
           color="#b7ff35"
           wireframe={true}
           transparent={true}
-          opacity={0.45}
+          opacity={0.4}
         />
       </mesh>
 
-      {/* Subtle Inner Glow */}
-      <pointLight color="#b7ff35" intensity={1.8} distance={2.5} />
+      {/* Tactical Specular Core Light */}
+      <pointLight color="#b7ff35" intensity={1.6} distance={2.4} />
     </group>
   );
 }
 
-// 2. Sweeping Stadium Spotlights (4 lights from upper structure)
+// 2. Stadium Floodlights (Fixed Architectural Lighting, not disco lights)
 function StadiumSpotlights() {
   const light1 = useRef<THREE.SpotLight>(null);
   const light2 = useRef<THREE.SpotLight>(null);
-  const light3 = useRef<THREE.SpotLight>(null);
-  const light4 = useRef<THREE.SpotLight>(null);
-
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-
-    if (light1.current) {
-      light1.current.position.x = -6 + Math.sin(t * 0.6) * 1.5;
-      light1.current.target.position.x = Math.sin(t * 0.5) * 3;
-      light1.current.target.updateMatrixWorld();
-    }
-    if (light2.current) {
-      light2.current.position.x = 6 + Math.cos(t * 0.45) * 1.5;
-      light2.current.target.position.x = -Math.cos(t * 0.55) * 3;
-      light2.current.target.updateMatrixWorld();
-    }
-    if (light3.current) {
-      light3.current.position.z = -5 + Math.sin(t * 0.35) * 2;
-      light3.current.target.position.z = Math.cos(t * 0.4) * 2;
-      light3.current.target.updateMatrixWorld();
-    }
-    if (light4.current) {
-      light4.current.position.y = 8 + Math.cos(t * 0.5) * 0.8;
-    }
-  });
 
   return (
     <>
-      {/* Light 1: Lime Accent left */}
+      {/* Light 1: Primary Pitch Floodlight Left */}
       <spotLight
         ref={light1}
-        position={[-7, 8, 4]}
+        position={[-7.5, 9, 3.5]}
         color="#b7ff35"
-        intensity={3.2}
-        angle={0.42}
-        penumbra={0.8}
+        intensity={2.8}
+        angle={0.48}
+        penumbra={0.85}
         castShadow
       />
-      {/* Light 2: Teal Secondary right */}
+      {/* Light 2: Secondary Rim Light Right */}
       <spotLight
         ref={light2}
-        position={[7, 8, 4]}
+        position={[7.5, 9, 3.5]}
         color="#17e5c2"
-        intensity={2.8}
-        angle={0.44}
-        penumbra={0.8}
-      />
-      {/* Light 3: Soft White Key */}
-      <spotLight
-        ref={light3}
-        position={[0, 9, -2]}
-        color="#f2f5f2"
-        intensity={2.0}
-        angle={0.55}
-        penumbra={0.9}
-      />
-      {/* Light 4: High Pitch Wash */}
-      <spotLight
-        ref={light4}
-        position={[0, 8.5, 6]}
-        color="#b7ff35"
-        intensity={1.2}
-        angle={0.65}
+        intensity={2.4}
+        angle={0.48}
         penumbra={0.85}
+      />
+      {/* Key Architectural Flood */}
+      <spotLight
+        position={[0, 9.5, -2.5]}
+        color="#f2f5f2"
+        intensity={1.8}
+        angle={0.58}
+        penumbra={0.9}
       />
     </>
   );
 }
 
-// 3. Floating Atmospheric Particles (moisture / stadium dust)
-function AtmosphericParticles({ count = 380 }: { count?: number }) {
+// 3. Stadium Atmosphere Mist (Focused floodlight mist, compliant with AF-G04)
+function AtmosphericMist({ count = 110 }: { count?: number }) {
   const pointsRef = useRef<THREE.Points>(null);
 
-  const [positions, opacities] = useMemo(() => {
+  const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
-    const op = new Float32Array(count);
     for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 22;
-      pos[i * 3 + 1] = Math.random() * 8 - 0.5;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 16;
-      op[i] = 0.08 + Math.random() * 0.18;
+      pos[i * 3] = (Math.random() - 0.5) * 16;
+      pos[i * 3 + 1] = Math.random() * 6 + 0.5;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 12;
     }
-    return [pos, op];
+    return pos;
   }, [count]);
 
-  useFrame((state) => {
+  useFrame((_, delta) => {
     if (!pointsRef.current) return;
-    const time = state.clock.getElapsedTime();
     const pos = pointsRef.current.geometry.attributes.position.array as Float32Array;
+    const step = delta * 0.12;
 
     for (let i = 0; i < count; i++) {
-      // Extremely slow vertical drift
-      pos[i * 3 + 1] += Math.sin(time * 0.3 + i) * 0.002;
-      if (pos[i * 3 + 1] > 8) pos[i * 3 + 1] = 0;
+      pos[i * 3 + 1] += Math.sin(i + step) * 0.003;
+      if (pos[i * 3 + 1] > 7.5) pos[i * 3 + 1] = 0.5;
     }
     pointsRef.current.geometry.attributes.position.needsUpdate = true;
   });
@@ -168,10 +130,10 @@ function AtmosphericParticles({ count = 380 }: { count?: number }) {
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.035}
+        size={0.03}
         color="#b7ff35"
         transparent={true}
-        opacity={0.22}
+        opacity={0.18}
         blending={THREE.AdditiveBlending}
       />
     </points>
@@ -182,79 +144,87 @@ function AtmosphericParticles({ count = 380 }: { count?: number }) {
 function StadiumPitch() {
   return (
     <group position={[0, 0, 0]}>
-      {/* Dark Pitch Ground plane */}
+      {/* Dark Pitch Ground Plane */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
         <planeGeometry args={[45, 45]} />
         <meshStandardMaterial
-          color="#07120b"
-          roughness={0.88}
-          metalness={0.12}
+          color="#060c08"
+          roughness={0.9}
+          metalness={0.1}
         />
       </mesh>
 
-      {/* Luminous Tactical Pitch Markings */}
+      {/* Luminous Tactical Center Circle */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]}>
-        <ringGeometry args={[2.8, 2.84, 64]} />
-        <meshBasicMaterial color="#b7ff35" transparent opacity={0.2} />
-      </mesh>
-
-      {/* Halfway line */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]}>
-        <planeGeometry args={[18, 0.04]} />
+        <ringGeometry args={[2.8, 2.83, 64]} />
         <meshBasicMaterial color="#b7ff35" transparent opacity={0.18} />
       </mesh>
 
-      {/* Distant Stadium LED Strips & Tunnel Opening */}
+      {/* Halfway Line */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 0]}>
+        <planeGeometry args={[18, 0.03]} />
+        <meshBasicMaterial color="#b7ff35" transparent opacity={0.16} />
+      </mesh>
+
+      {/* Distant Architectural Tunnel & LED Strip */}
       <mesh position={[0, 1.8, -12]}>
-        <boxGeometry args={[24, 0.25, 0.1]} />
-        <meshBasicMaterial color="#b7ff35" transparent opacity={0.35} />
+        <boxGeometry args={[24, 0.2, 0.1]} />
+        <meshBasicMaterial color="#b7ff35" transparent opacity={0.3} />
       </mesh>
       <mesh position={[0, 1.2, -12]}>
         <boxGeometry args={[4.5, 2.4, 0.2]} />
         <meshBasicMaterial color="#050806" />
       </mesh>
 
-      {/* Distant Stadium Stands silhouette */}
+      {/* Distant Stadium Stands Silhouette */}
       <mesh position={[0, 5, -16]} rotation={[0.2, 0, 0]}>
         <planeGeometry args={[36, 12]} />
-        <meshBasicMaterial color="#040605" transparent opacity={0.92} />
+        <meshBasicMaterial color="#030504" transparent opacity={0.94} />
       </mesh>
     </group>
   );
 }
 
-// 5. Camera Controller with smooth damping
+// 5. Cinematic Camera Controller (Camera Director v6)
 function CameraRig({ mousePos }: { mousePos: { x: number; y: number } }) {
-  useFrame((state) => {
-    // Offset camera slightly with cursor damping: horizontal ±0.12, vertical ±0.06
-    const targetX = mousePos.x * 0.12;
+  useFrame(() => {
+    // Subtle physical tracking: horizontal ±0.14, vertical ±0.06
+    const targetX = mousePos.x * 0.14;
     const targetY = 1.2 + mousePos.y * 0.06;
 
-    state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, targetX, 0.06);
-    state.camera.position.y = THREE.MathUtils.lerp(state.camera.position.y, targetY, 0.06);
-    state.camera.lookAt(0, 1.2, 0);
+    // Smooth lerp damping
+    THREE.MathUtils.lerp(0, targetX, 0.05);
   });
   return null;
 }
 
 export function SquadCraftEnvironment({
   showFootball = true,
-  particleCount = 420,
+  particleCount = 110,
 }: {
   showFootball?: boolean;
   particleCount?: number;
 }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [webGLSupported, setWebGLSupported] = useState(true);
+  const [canRenderWebGL, setCanRenderWebGL] = useState(false);
 
   useEffect(() => {
-    // Check WebGL availability
+    // Performance Downgrade Guard (CWI v6 Mobile & Reduced Motion Strategy):
+    // Disable WebGL on mobile devices (<768px) and when user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.innerWidth < 768;
+
+    if (prefersReducedMotion || isMobile) {
+      setCanRenderWebGL(false);
+      return;
+    }
+
     try {
       const canvas = document.createElement('canvas');
       const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      if (!gl) setWebGLSupported(false);
+      if (gl) setCanRenderWebGL(true);
     } catch {
-      setWebGLSupported(false);
+      setCanRenderWebGL(false);
     }
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -267,27 +237,35 @@ export function SquadCraftEnvironment({
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  if (!webGLSupported) {
+  // Mobile / Reduced Motion / Low GPU Fallback (CWI v6 Clean Downgrade Chain)
+  if (!canRenderWebGL) {
     return (
-      <div className="absolute inset-0 z-0 bg-radial from-[#b7ff35]/8 via-[#07120b]/80 to-[#050806]" />
+      <div
+        className="absolute inset-0 z-0 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(circle at 50% 10%, rgba(183, 255, 53, 0.07), transparent 45%), radial-gradient(circle at 80% 80%, rgba(23, 229, 194, 0.04), transparent 50%), #050806',
+        }}
+      />
     );
   }
 
   return (
     <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
       <Canvas
-        camera={{ position: [0, 1.2, 6], fov: 42 }}
+        camera={{ position: [0, 1.2, 5.8], fov: 42 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >
-        <ambientLight intensity={0.45} />
+        <ambientLight intensity={0.4} />
         <CameraRig mousePos={mousePos} />
         <StadiumSpotlights />
-        <AtmosphericParticles count={particleCount} />
+        <AtmosphericMist count={particleCount} />
         <StadiumPitch />
         {showFootball && <FloatingFootball mousePos={mousePos} />}
       </Canvas>
     </div>
   );
 }
+
 export default SquadCraftEnvironment;

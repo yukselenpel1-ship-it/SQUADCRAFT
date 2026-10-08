@@ -3,8 +3,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { TacticalPitch3D } from '@/components/three/TacticalPitch3D';
-import { Search, TrendingUp, Sparkles, UserCheck, ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import {
+  SpotlightCard,
+  DecryptedText,
+} from '@/components/ui/react-bits';
 
 export function FeatureShowcase() {
   const { language } = useLanguage();
@@ -16,7 +19,12 @@ export function FeatureShowcase() {
         {/* Section Header */}
         <div className="mb-14">
           <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.2em] uppercase font-semibold">
-            {language === 'tr' ? 'OYNANIŞ MOTORU' : 'GAMEPLAY ENGINE'}
+            <DecryptedText
+              text={language === 'tr' ? 'OYNANIŞ MOTORU // KOMUTA' : 'GAMEPLAY ENGINE // COMMAND'}
+              speed={28}
+              maxIterations={10}
+              animateOn="view"
+            />
           </span>
           <h2
             className="font-barlow font-extrabold text-[#f2f5f2] leading-none tracking-tight mt-1 uppercase"
@@ -36,7 +44,10 @@ export function FeatureShowcase() {
           {/* Left Column (7 cols): Transfers Module + Scouting & Youth */}
           <div className="lg:col-span-7 flex flex-col gap-8">
             {/* 1. TRANSFERS: Large Horizontal Module */}
-            <div className="bg-[#090d0a] border border-white/10 rounded-[8px] p-6 sm:p-8 relative overflow-hidden shadow-2xl">
+            <SpotlightCard
+              spotlightColor="rgba(183, 255, 53, 0.12)"
+              className="bg-[#090d0a] border border-white/10 rounded-[8px] p-6 sm:p-8 relative overflow-hidden shadow-2xl"
+            >
               <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
                 <div className="flex items-center gap-2.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#b7ff35]" />
@@ -126,12 +137,15 @@ export function FeatureShowcase() {
                   </div>
                 </div>
               </div>
-            </div>
+            </SpotlightCard>
 
             {/* Sub-grid: Scouting & Youth */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
               {/* 2. SCOUTING MODULE */}
-              <div className="bg-[#090d0a] border border-white/10 rounded-[8px] p-6 shadow-xl flex flex-col justify-between">
+              <SpotlightCard
+                spotlightColor="rgba(23, 229, 194, 0.12)"
+                className="bg-[#090d0a] border border-white/10 rounded-[8px] p-6 shadow-xl flex flex-col justify-between"
+              >
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <span className="font-barlow font-extrabold text-[20px] text-[#f2f5f2] tracking-wider uppercase">
@@ -197,10 +211,13 @@ export function FeatureShowcase() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </SpotlightCard>
 
               {/* 3. YOUTH ACADEMY MODULE */}
-              <div className="bg-[#080d0a] border border-white/10 rounded-[8px] p-6 shadow-xl flex flex-col justify-between">
+              <SpotlightCard
+                spotlightColor="rgba(101, 255, 131, 0.12)"
+                className="bg-[#080d0a] border border-white/10 rounded-[8px] p-6 shadow-xl flex flex-col justify-between"
+              >
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <span className="font-barlow font-extrabold text-[20px] text-[#f2f5f2] tracking-wider uppercase">
@@ -244,7 +261,7 @@ export function FeatureShowcase() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </SpotlightCard>
             </div>
           </div>
 

@@ -1,26 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
+import {
+  TiltedCard,
+  SpotlightCard,
+  AnimatedCounter,
+  MagneticButton,
+} from '@/components/ui/react-bits';
 
 export function PlayerCard3D() {
-  const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left - rect.width / 2;
-    const y = e.clientY - rect.top - rect.height / 2;
-    // max tilt 7 deg
-    setRotateX(-(y / (rect.height / 2)) * 7);
-    setRotateY((x / (rect.width / 2)) * 7);
-  };
-
-  const handleMouseLeave = () => {
-    setRotateX(0);
-    setRotateY(0);
-  };
-
   return (
     <div className="relative w-full max-w-5xl mx-auto py-12 flex flex-col lg:flex-row items-center justify-center gap-12 select-none">
       {/* Huge blurred number "86" in the background */}
@@ -31,32 +19,20 @@ export function PlayerCard3D() {
         86
       </div>
 
-      {/* 3D Interactive Card (approx 2.2 x 3.2 ratio) */}
-      <div
-        style={{ perspective: '1200px' }}
-        className="relative z-10 flex items-center justify-center"
-      >
-        <motion.div
-          animate={{
-            rotateX,
-            rotateY,
-          }}
-          transition={{ type: 'spring', stiffness: 220, damping: 20 }}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
+      {/* 3D Interactive Card with TiltedCard Physics & Specular Sheen */}
+      <div className="relative z-10 flex items-center justify-center">
+        <TiltedCard
+          maxAngle={12}
+          scale={1.03}
+          glareOpacity={0.25}
           className="relative w-[300px] sm:w-[340px] aspect-[2.2/3.2] rounded-[12px] p-6 flex flex-col justify-between overflow-hidden shadow-2xl cursor-pointer"
-          style={{
-            background: 'linear-gradient(145deg, #121914 0%, #080d09 100%)',
-            border: '1.5px solid rgba(183, 255, 53, 0.45)',
-            boxShadow: '0 25px 60px rgba(0,0,0,0.85), 0 0 35px rgba(183,255,53,0.18)',
-          }}
         >
-          {/* Subtle Holographic Edge Sheen */}
           <div
-            className="absolute inset-0 pointer-events-none opacity-40 mix-blend-color-dodge"
+            className="absolute inset-0 pointer-events-none -z-10"
             style={{
-              background:
-                'linear-gradient(115deg, transparent 20%, rgba(183,255,53,0.3) 45%, rgba(23,229,194,0.3) 55%, transparent 75%)',
+              background: 'linear-gradient(145deg, #121914 0%, #080d09 100%)',
+              border: '1.5px solid rgba(183, 255, 53, 0.45)',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.85), 0 0 35px rgba(183,255,53,0.18)',
             }}
           />
 
@@ -119,56 +95,64 @@ export function PlayerCard3D() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </TiltedCard>
       </div>
 
       {/* Side Intelligence Panel */}
-      <div className="relative z-10 w-full max-w-md bg-[#0d120f]/90 border border-white/10 rounded-[8px] p-6 backdrop-blur-md">
-        <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
-          <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest uppercase">
-            SCOUT DOSSIER // SC-882
-          </span>
-          <span className="font-ibm text-[11px] text-[#65ff83] bg-[#65ff83]/15 px-2 py-0.5 rounded">
-            PEAK FORM
-          </span>
-        </div>
-
-        <div className="space-y-4">
-          <div className="flex justify-between items-center border-b border-white/5 pb-2">
-            <span className="font-inter text-[13px] text-[#8b958d]">ROLE</span>
-            <span className="font-barlow text-[18px] font-bold text-[#f2f5f2] tracking-wide">
-              Advanced Playmaker
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center border-b border-white/5 pb-2">
-            <span className="font-inter text-[13px] text-[#8b958d]">SEASON FORM</span>
-            <span className="font-barlow text-[22px] font-extrabold text-[#b7ff35]">
-              8.1 <span className="font-ibm text-[12px] text-[#8b958d]">/ 10</span>
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center border-b border-white/5 pb-2">
-            <span className="font-inter text-[13px] text-[#8b958d]">MARKET VALUE</span>
-            <span className="font-barlow text-[20px] font-bold text-[#17e5c2]">
-              €64M
-            </span>
-          </div>
-
-          <div className="flex justify-between items-center">
-            <span className="font-inter text-[13px] text-[#8b958d]">CONTRACT EXPIRY</span>
-            <span className="font-ibm text-[14px] text-[#f2f5f2]">
-              JUNE 2029
-            </span>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          className="mt-6 w-full py-3 bg-[#b7ff35] hover:bg-[#9bea27] text-[#050806] font-barlow font-bold text-[16px] tracking-wider uppercase rounded-[3px] transition-all cursor-pointer shadow-[0_4px_16px_rgba(183,255,53,0.3)] hover:translate-y-[-2px]"
+      <div className="relative z-10 w-full max-w-md">
+        <SpotlightCard
+          spotlightColor="rgba(183, 255, 53, 0.12)"
+          className="bg-[#0d120f]/90 border border-white/10 rounded-[8px] p-6 backdrop-blur-md shadow-2xl"
         >
-          SHORTLIST PLAYER →
-        </button>
+          <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+            <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest uppercase">
+              SCOUT DOSSIER // SC-882
+            </span>
+            <span className="font-ibm text-[11px] text-[#65ff83] bg-[#65ff83]/15 px-2 py-0.5 rounded">
+              PEAK FORM
+            </span>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex justify-between items-center border-b border-white/5 pb-2">
+              <span className="font-inter text-[13px] text-[#8b958d]">ROLE</span>
+              <span className="font-barlow text-[18px] font-bold text-[#f2f5f2] tracking-wide">
+                Advanced Playmaker
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center border-b border-white/5 pb-2">
+              <span className="font-inter text-[13px] text-[#8b958d]">SEASON FORM</span>
+              <span className="font-barlow text-[22px] font-extrabold text-[#b7ff35]">
+                <AnimatedCounter value={8.1} decimals={1} duration={1.2} />{' '}
+                <span className="font-ibm text-[12px] text-[#8b958d]">/ 10</span>
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center border-b border-white/5 pb-2">
+              <span className="font-inter text-[13px] text-[#8b958d]">MARKET VALUE</span>
+              <span className="font-barlow text-[20px] font-bold text-[#17e5c2]">
+                €64M
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="font-inter text-[13px] text-[#8b958d]">CONTRACT EXPIRY</span>
+              <span className="font-ibm text-[14px] text-[#f2f5f2]">
+                JUNE 2029
+              </span>
+            </div>
+          </div>
+
+          <MagneticButton strength={0.16} className="w-full mt-6">
+            <button
+              type="button"
+              className="w-full py-3 bg-[#b7ff35] hover:bg-[#a6f028] text-[#050806] font-barlow font-bold text-[16px] tracking-wider uppercase rounded-[3px] transition-colors cursor-pointer shadow-[0_4px_16px_rgba(183,255,53,0.3)]"
+            >
+              SHORTLIST PLAYER →
+            </button>
+          </MagneticButton>
+        </SpotlightCard>
       </div>
     </div>
   );
