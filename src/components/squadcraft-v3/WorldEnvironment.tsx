@@ -14,6 +14,7 @@ export function WorldEnvironment() {
   const accentLightRef = useRef<THREE.DirectionalLight>(null);
   const floodlightGlowRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
   const beamConeMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const accentColorRef = useRef(new THREE.Color('#B7FF3C'));
 
   // 4 Corner floodlight mast coordinates
   const floodlightPositions: [number, number, number][] = useMemo(
@@ -35,7 +36,8 @@ export function WorldEnvironment() {
   // Frame animation for lighting interpolation based on scroll progress
   useFrame((state, delta) => {
     // 1. Dynamic Lighting state calculation
-    let currentAccentColor = limeColor;
+    const currentAccentColor = accentColorRef.current;
+    currentAccentColor.copy(limeColor);
     let keyIntensity = 1.0;
     let beamOpacity = 0.06;
     let floodlightIntensity = 1.0;
@@ -46,30 +48,30 @@ export function WorldEnvironment() {
       floodlightIntensity = THREE.MathUtils.lerp(0.1, 1.2, t);
       keyIntensity = THREE.MathUtils.lerp(0.2, 1.2, t);
       beamOpacity = THREE.MathUtils.lerp(0.01, 0.07, t);
-      currentAccentColor = limeColor;
+      currentAccentColor.copy(limeColor);
     } else if (progress < 0.38) {
       // Act II: Tactical Universe (Tactical Lime / Cyan focus)
       keyIntensity = 1.35;
       beamOpacity = 0.08;
       floodlightIntensity = 1.2;
-      currentAccentColor = limeColor;
+      currentAccentColor.copy(limeColor);
     } else if (progress < 0.58) {
       // Act III: Build Your Dynasty (Victory Gold warmth)
       const t = (progress - 0.38) / 0.2;
-      currentAccentColor = limeColor.clone().lerp(goldColor, t);
+      currentAccentColor.lerp(goldColor, t);
       keyIntensity = 1.15;
       beamOpacity = 0.07;
       floodlightIntensity = 1.0;
     } else if (progress < 0.78) {
       // Act IV: Draft League (Electric Blue competitive arena)
       const t = (progress - 0.58) / 0.2;
-      currentAccentColor = goldColor.clone().lerp(blueColor, t);
+      currentAccentColor.copy(goldColor).lerp(blueColor, t);
       keyIntensity = 1.2;
       beamOpacity = 0.09;
       floodlightIntensity = 1.3;
     } else {
       // Act V: Finale Master Composition
-      currentAccentColor = limeColor;
+      currentAccentColor.copy(limeColor);
       keyIntensity = 1.4;
       beamOpacity = 0.08;
       floodlightIntensity = 1.4;

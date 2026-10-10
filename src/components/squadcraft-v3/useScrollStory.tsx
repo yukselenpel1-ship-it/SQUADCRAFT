@@ -67,21 +67,25 @@ export function ScrollStoryProvider({ children }: { children: React.ReactNode })
           scrub: 0.6,
           onUpdate: (self) => {
             const p = self.progress;
-            setProgress(p);
+            // ScrollTrigger may fire more frequently than the display can show a
+            // perceptible camera change. This avoids cascading React work across
+            // the cinematic DOM and WebGL tree on tiny sub-pixel deltas.
+            setProgress((previous) =>
+              Math.abs(previous - p) >= 0.001 ? p : previous
+            );
 
             // Determine current Act
             const { acts } = STORY_CONFIG;
-            if (p < acts.intro[1]) {
-              setCurrentAct('intro');
-            } else if (p < acts.tactics[1]) {
-              setCurrentAct('tactics');
-            } else if (p < acts.career[1]) {
-              setCurrentAct('career');
-            } else if (p < acts.draft[1]) {
-              setCurrentAct('draft');
-            } else {
-              setCurrentAct('finale');
-            }
+            const nextAct: StoryAct = p < acts.intro[1]
+              ? 'intro'
+              : p < acts.tactics[1]
+                ? 'tactics'
+                : p < acts.career[1]
+                  ? 'career'
+                  : p < acts.draft[1]
+                    ? 'draft'
+                    : 'finale';
+            setCurrentAct((previous) => previous === nextAct ? previous : nextAct);
           },
         });
       }

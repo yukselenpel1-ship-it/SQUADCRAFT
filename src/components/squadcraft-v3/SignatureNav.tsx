@@ -146,6 +146,7 @@ export function SignatureNav({ onOpenAuth, onOpenSettings }: SignatureNavProps) 
                 <Link
                   key={item.href}
                   href={item.href}
+                  aria-current={isActive ? 'page' : undefined}
                   className="relative py-2 flex items-center gap-2 group cursor-pointer focus:outline-none"
                 >
                   <span
@@ -321,6 +322,7 @@ export function SignatureNav({ onOpenAuth, onOpenSettings }: SignatureNavProps) 
                     key={item.href}
                     href={item.href}
                     onClick={closeMobile}
+                    aria-current={pathname === item.href ? 'page' : undefined}
                     className="p-4 rounded-[3px] bg-[#0B131E] hover:bg-[#101B2B] border border-white/[0.06] hover:border-white/20 transition-all flex items-center justify-between group cursor-pointer"
                   >
                     <div className="flex flex-col">
