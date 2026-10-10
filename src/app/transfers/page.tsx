@@ -782,10 +782,10 @@ export default function TransfersPage() {
           {/* TAB 2: TRANSFER LISTED */}
           {activeTab === 'LISTED' && (
             <div className="space-y-4">
-              <div className="overflow-x-auto rounded-2xl border border-white/10 bg-[#090d0a] shadow-2xl">
+              <div className="overflow-x-auto rounded-2xl border border-[#d5c7b7] bg-[#fffaf2] shadow-2xl">
                 <table className="w-full text-left border-collapse min-w-[900px]">
                   <thead>
-                    <tr className="border-b border-white/10 bg-[#050706] text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                    <tr className="border-b border-[#d5c7b7] bg-[#e9dfd2] text-[10px] font-mono font-bold uppercase tracking-wider text-[#695e54]">
                       <th className="py-3 px-4">OYUNCU</th>
                       <th className="py-3 px-3">KULÜBÜ</th>
                       <th className="py-3 px-2 text-center">MEVKİ</th>
@@ -808,43 +808,43 @@ export default function TransfersPage() {
                           key={player.id}
                           onClick={() => setDrawerPlayer(player)}
                           className={`cursor-pointer transition-colors ${
-                            isSelected ? 'bg-[#b8ff3d]/10 border-l-4 border-l-[#b8ff3d]' : 'hover:bg-[#0d130f]'
+                            isSelected ? 'bg-[#eadbd5] border-l-4 border-l-[#9b2529]' : 'hover:bg-[#f1e7da]'
                           }`}
                         >
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-3">
                               <PlayerPortrait player={player} size="sm" />
                               <div>
-                                <div className="font-bold text-white uppercase">{player.firstName} {player.lastName}</div>
-                                <div className="text-[10px] font-mono text-zinc-500">{player.nationality}</div>
+                                <div className="font-bold text-[#1d1b19] uppercase">{player.firstName} {player.lastName}</div>
+                                <div className="text-[10px] font-mono text-[#776b60]">{player.nationality}</div>
                               </div>
                             </div>
                           </td>
                           <td className="py-3 px-3">
-                            <span className="text-zinc-300 font-mono text-xs">{club?.name || 'Harici'}</span>
+                            <span className="text-[#3f3831] font-mono text-xs">{club?.name || 'Harici'}</span>
                           </td>
                           <td className="py-3 px-2 text-center">
-                            <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#050706] border border-white/10 text-[#b8ff3d] rounded">
+                            <span className="px-2 py-1 font-mono text-[11px] font-black bg-[#e9dfd2] border border-[#b7a697] text-[#24211e] rounded-sm">
                               {player.position}
                             </span>
                           </td>
-                          <td className="py-3 px-2 text-center font-mono text-zinc-300">{player.age}</td>
+                          <td className="py-3 px-2 text-center font-mono text-[#3f3831]">{player.age}</td>
                           <td className="py-3 px-3 text-center"><StatBadge value={player.overall} size="sm" /></td>
-                          <td className="py-3 px-3 text-right font-mono font-bold text-white">
+                          <td className="py-3 px-3 text-right font-mono font-bold text-[#1d1b19]">
                             €{(player.marketValue / 1_000_000).toFixed(2)}M
                           </td>
-                          <td className="py-3 px-3 text-right font-mono text-[#b8ff3d]">
+                          <td className="py-3 px-3 text-right font-mono text-[#873238]">
                             €{player.wage.toLocaleString('tr-TR')}/hf
                           </td>
                           <td className="py-3 px-3 text-center">
-                            <span className="px-2 py-0.5 text-[9px] font-mono font-bold rounded uppercase bg-[#ffd34f]/10 text-[#ffd34f] border border-[#ffd34f]/30">
+                            <span className="px-2 py-0.5 text-[9px] font-mono font-bold rounded uppercase bg-[#ffd34f]/10 text-[#825727] border border-[#ffd34f]/30">
                               {player.isTransferListedByRequest ? 'Talebi Üzerine' : 'Kulüp Kararı'}
                             </span>
                           </td>
                           <td className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                             <button
                               onClick={() => setNegotiationTargetPlayer(player)}
-                              className="px-3 py-1 bg-[#b8ff3d] hover:bg-[#a6ec31] text-[#050806] font-mono font-black text-xs uppercase rounded-lg"
+                              className="px-3 py-1 bg-[#9b2529] hover:bg-[#751b21] text-white font-mono font-black text-xs uppercase rounded-lg"
                             >
                               Teklif Yap
                             </button>
@@ -861,17 +861,17 @@ export default function TransfersPage() {
           {/* TAB 3: FREE AGENTS */}
           {activeTab === 'FREE_AGENTS' && (
             <div className="space-y-4">
-              <div className="p-4 bg-[#090d0a] rounded-2xl border border-white/10 text-xs text-zinc-300 flex items-center gap-3">
-                <UserCheck className="w-5 h-5 text-[#21dfbd] shrink-0" />
+              <div className="p-4 bg-[#fffaf2] rounded-2xl border border-[#d5c7b7] text-xs text-[#3f3831] flex items-center gap-3">
+                <UserCheck className="w-5 h-5 text-[#376d67] shrink-0" />
                 <div>
-                  <strong className="text-white uppercase font-mono">Bonservissiz Serbest Oyuncular Masası:</strong> Toplam {freeAgents.length} kulüpsüz profesyonel futbolcu. Kulüplere bonservis ödenmez; doğrudan sözleşme ve imza primi üzerinden anlaşılır.
+                  <strong className="text-[#1d1b19] uppercase font-mono">Bonservissiz Serbest Oyuncular Masası:</strong> Toplam {freeAgents.length} kulüpsüz profesyonel futbolcu. Kulüplere bonservis ödenmez; doğrudan sözleşme ve imza primi üzerinden anlaşılır.
                 </div>
               </div>
 
-              <div className="overflow-x-auto rounded-2xl border border-white/10 bg-[#090d0a] shadow-2xl">
+              <div className="overflow-x-auto rounded-2xl border border-[#d5c7b7] bg-[#fffaf2] shadow-2xl">
                 <table className="w-full text-left border-collapse min-w-[920px]">
                   <thead>
-                    <tr className="border-b border-white/10 bg-[#050706] text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                    <tr className="border-b border-[#d5c7b7] bg-[#e9dfd2] text-[10px] font-mono font-bold uppercase tracking-wider text-[#695e54]">
                       <th className="py-3 px-4">OYUNCU</th>
                       <th className="py-3 px-3">ÖNCEKİ KULÜBÜ</th>
                       <th className="py-3 px-2 text-center">MEVKİ</th>
@@ -892,32 +892,32 @@ export default function TransfersPage() {
                           key={player.id}
                           onClick={() => setDrawerPlayer(player)}
                           className={`cursor-pointer transition-colors ${
-                            isSelected ? 'bg-[#b8ff3d]/10 border-l-4 border-l-[#b8ff3d]' : 'hover:bg-[#0d130f]'
+                            isSelected ? 'bg-[#eadbd5] border-l-4 border-l-[#9b2529]' : 'hover:bg-[#f1e7da]'
                           }`}
                         >
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-3">
                               <PlayerPortrait player={player} size="sm" />
                               <div>
-                                <div className="font-bold text-white uppercase">{player.firstName} {player.lastName}</div>
-                                <div className="text-[10px] font-mono text-zinc-500">{player.nationality}</div>
+                                <div className="font-bold text-[#1d1b19] uppercase">{player.firstName} {player.lastName}</div>
+                                <div className="text-[10px] font-mono text-[#776b60]">{player.nationality}</div>
                               </div>
                             </div>
                           </td>
-                          <td className="py-3 px-3 font-mono text-zinc-400 text-xs">
+                          <td className="py-3 px-3 font-mono text-[#695e54] text-xs">
                             {player.previousClubName || 'Serbest'}
                           </td>
                           <td className="py-3 px-2 text-center">
-                            <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#050806] border border-white/10 text-[#21dfbd] rounded">
+                            <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#050806] border border-[#d5c7b7] text-[#376d67] rounded">
                               {player.position}
                             </span>
                           </td>
-                          <td className="py-3 px-2 text-center font-mono text-zinc-300">{player.age}</td>
+                          <td className="py-3 px-2 text-center font-mono text-[#3f3831]">{player.age}</td>
                           <td className="py-3 px-3 text-center"><StatBadge value={player.overall} size="sm" /></td>
-                          <td className="py-3 px-3 text-right font-mono text-[#b8ff3d] font-bold">
+                          <td className="py-3 px-3 text-right font-mono text-[#873238] font-bold">
                             €{player.wage.toLocaleString('tr-TR')}/hf
                           </td>
-                          <td className="py-3 px-3 text-right font-mono text-zinc-300">
+                          <td className="py-3 px-3 text-right font-mono text-[#3f3831]">
                             €{signingBonusEstimate.toLocaleString('tr-TR')}
                           </td>
                           <td className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
@@ -936,22 +936,22 @@ export default function TransfersPage() {
               </div>
 
               {/* Free agent pagination */}
-              <div className="flex items-center justify-between p-4 bg-[#090d0a] rounded-xl border border-white/10 text-xs font-mono">
-                <span className="text-zinc-400">
+              <div className="flex items-center justify-between p-4 bg-[#fffaf2] rounded-xl border border-[#d5c7b7] text-xs font-mono">
+                <span className="text-[#695e54]">
                   Toplam {freeAgents.length} serbest oyuncu • Sayfa {freeAgentPage} / {freeAgentTotalPages}
                 </span>
                 <div className="flex items-center gap-2">
                   <button
                     disabled={freeAgentPage <= 1}
                     onClick={() => setFreeAgentPage((prev) => Math.max(1, prev - 1))}
-                    className="px-3 py-1.5 bg-[#050706] border border-white/10 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:border-white/30 text-white"
+                    className="px-3 py-1.5 bg-[#e9dfd2] border border-[#d5c7b7] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:border-white/30 text-[#1d1b19]"
                   >
                     Önceki
                   </button>
                   <button
                     disabled={freeAgentPage >= freeAgentTotalPages}
                     onClick={() => setFreeAgentPage((prev) => Math.min(freeAgentTotalPages, prev + 1))}
-                    className="px-3 py-1.5 bg-[#050706] border border-white/10 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:border-white/30 text-white"
+                    className="px-3 py-1.5 bg-[#e9dfd2] border border-[#d5c7b7] rounded-lg disabled:opacity-30 disabled:cursor-not-allowed hover:border-white/30 text-[#1d1b19]"
                   >
                     Sonraki
                   </button>
@@ -964,7 +964,7 @@ export default function TransfersPage() {
           {activeTab === 'SHORTLIST' && (
             <div className="space-y-4">
               {shortlistedPlayers.length === 0 ? (
-                <div className="p-12 bg-[#090d0a] rounded-2xl border border-white/10 text-center text-zinc-400 font-mono text-sm">
+                <div className="p-12 bg-[#fffaf2] rounded-2xl border border-[#d5c7b7] text-center text-[#695e54] font-mono text-sm">
                   Gözlem listenizde henüz kayıtlı futbolcu bulunmuyor. Pazardan oyuncuları listenize ekleyebilirsiniz.
                 </div>
               ) : (
@@ -975,7 +975,7 @@ export default function TransfersPage() {
                     return (
                       <div
                         key={player.id}
-                        className="p-5 bg-[#090d0a] rounded-2xl border border-white/10 flex flex-col justify-between gap-4 hover:border-white/20 transition-all shadow-xl"
+                        className="p-5 bg-[#fffaf2] rounded-2xl border border-[#d5c7b7] flex flex-col justify-between gap-4 hover:border-white/20 transition-all shadow-xl"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -983,11 +983,11 @@ export default function TransfersPage() {
                             <div>
                               <h3
                                 onClick={() => setDrawerPlayer(player)}
-                                className="font-bold text-white uppercase tracking-tight hover:text-[#b8ff3d] cursor-pointer transition-colors"
+                                className="font-bold text-[#1d1b19] uppercase tracking-tight hover:text-[#873238] cursor-pointer transition-colors"
                               >
                                 {player.firstName} {player.lastName}
                               </h3>
-                              <div className="text-[11px] font-mono text-zinc-400">
+                              <div className="text-[11px] font-mono text-[#695e54]">
                                 {club ? club.name : 'Serbest'} • {player.position} ({player.age} YAŞ)
                               </div>
                             </div>
@@ -997,7 +997,7 @@ export default function TransfersPage() {
                             <StatBadge value={player.overall} size="sm" />
                             <button
                               onClick={() => toggleShortlist(player.id)}
-                              className="p-1.5 bg-[#ffd34f]/20 text-[#ffd34f] border border-[#ffd34f]/40 rounded-lg"
+                              className="p-1.5 bg-[#ffd34f]/20 text-[#825727] border border-[#ffd34f]/40 rounded-lg"
                               title="Gözlemden Çıkar"
                             >
                               <Bookmark className="w-3.5 h-3.5" />
@@ -1005,18 +1005,18 @@ export default function TransfersPage() {
                           </div>
                         </div>
 
-                        <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+                        <div className="pt-3 border-t border-[#d5c7b7] flex items-center justify-between text-xs font-mono">
                           <div>
-                            <span className="text-zinc-500 block text-[10px] uppercase">Değer</span>
-                            <span className="font-bold text-white">€{(player.marketValue / 1_000_000).toFixed(2)}M</span>
+                            <span className="text-[#776b60] block text-[10px] uppercase">Değer</span>
+                            <span className="font-bold text-[#1d1b19]">€{(player.marketValue / 1_000_000).toFixed(2)}M</span>
                           </div>
                           <div>
-                            <span className="text-zinc-500 block text-[10px] uppercase">Maaş</span>
-                            <span className="font-bold text-[#b8ff3d]">€{player.wage.toLocaleString('tr-TR')}/hf</span>
+                            <span className="text-[#776b60] block text-[10px] uppercase">Maaş</span>
+                            <span className="font-bold text-[#873238]">€{player.wage.toLocaleString('tr-TR')}/hf</span>
                           </div>
                           <button
                             onClick={() => setNegotiationTargetPlayer(player)}
-                            className="px-3.5 py-1.5 bg-[#b8ff3d] text-[#050806] font-black text-xs uppercase rounded-lg hover:bg-[#a6ec31] transition-all"
+                            className="px-3.5 py-1.5 bg-[#9b2529] text-white font-black text-xs uppercase rounded-lg hover:bg-[#751b21] transition-all"
                           >
                             Pazarlık
                           </button>
@@ -1033,7 +1033,7 @@ export default function TransfersPage() {
           {activeTab === 'OUTGOING' && (
             <div className="space-y-4">
               {userNegotiations.length === 0 ? (
-                <div className="p-12 bg-[#090d0a] rounded-2xl border border-white/10 text-center text-zinc-400 font-mono text-sm">
+                <div className="p-12 bg-[#fffaf2] rounded-2xl border border-[#d5c7b7] text-center text-[#695e54] font-mono text-sm">
                   Şu an masada aktif veya arşivlenmiş bir transfer görüşmeniz bulunmuyor.
                 </div>
               ) : (
@@ -1048,7 +1048,7 @@ export default function TransfersPage() {
                   return (
                     <div
                       key={neg.id}
-                      className="p-5 bg-[#090d0a] rounded-2xl border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:border-white/20 shadow-xl"
+                      className="p-5 bg-[#fffaf2] rounded-2xl border border-[#d5c7b7] flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all hover:border-white/20 shadow-xl"
                     >
                       <div className="flex items-start sm:items-center gap-4">
                         {player ? (
@@ -1064,31 +1064,31 @@ export default function TransfersPage() {
 
                         <div className="space-y-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase bg-[#4FE4FF]/10 text-[#4FE4FF] border border-[#4FE4FF]/30 rounded">
+                            <span className="px-2.5 py-0.5 text-[10px] font-mono font-bold uppercase bg-[#4FE4FF]/10 text-[#376d67] border border-[#4FE4FF]/30 rounded">
                               {statusInfo.stageTitle}
                             </span>
                             <span className={`px-2 py-0.5 text-[10px] font-mono font-black uppercase rounded border ${statusInfo.badgeClass}`}>
                               {statusInfo.badgeText}
                             </span>
-                            <span className="text-[11px] font-mono text-zinc-500">GÜNCELLENDİ: {neg.lastUpdatedDate}</span>
+                            <span className="text-[11px] font-mono text-[#776b60]">GÜNCELLENDİ: {neg.lastUpdatedDate}</span>
                           </div>
 
-                          <h3 className="text-base font-bold text-white uppercase tracking-tight">
+                          <h3 className="text-base font-bold text-[#1d1b19] uppercase tracking-tight">
                             {player?.firstName} {player?.lastName} ({player?.position})
                           </h3>
 
-                          <p className="text-xs font-mono text-zinc-400">
+                          <p className="text-xs font-mono text-[#695e54]">
                             {club ? club.name : 'Serbest Oyuncu'} • OVR: {player?.overall} • YAŞ: {player?.age}
                           </p>
 
                           <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
                             {contractData && (
-                              <span className="px-2.5 py-0.5 bg-[#050706] border border-white/10 text-[#b8ff3d] font-bold rounded">
+                              <span className="px-2.5 py-0.5 bg-[#e9dfd2] border border-[#d5c7b7] text-[#873238] font-bold rounded">
                                 €{contractData.wage.toLocaleString('tr-TR')} / hf • {contractData.durationYears} Yıl
                               </span>
                             )}
                             {!neg.isFreeAgent && clubFeeData && (
-                              <span className="px-2.5 py-0.5 bg-[#050706] border border-white/10 text-[#ffd34f] font-bold rounded">
+                              <span className="px-2.5 py-0.5 bg-[#e9dfd2] border border-[#d5c7b7] text-[#825727] font-bold rounded">
                                 Bonservis: €{((clubFeeData.upfrontFee + (clubFeeData.installmentsFee || 0)) / 1_000_000).toFixed(2)}M
                               </span>
                             )}
@@ -1100,7 +1100,7 @@ export default function TransfersPage() {
                         {isCompleted ? (
                           <Link
                             href="/squad"
-                            className="px-4 py-2 bg-[#b8ff3d] text-[#050806] font-mono font-black text-xs uppercase rounded-xl hover:bg-[#a6ec31] transition-all flex items-center gap-1.5"
+                            className="px-4 py-2 bg-[#9b2529] text-white font-mono font-black text-xs uppercase rounded-xl hover:bg-[#751b21] transition-all flex items-center gap-1.5"
                           >
                             <UserCheck className="w-4 h-4" />
                             Kadroda Gör
@@ -1108,7 +1108,7 @@ export default function TransfersPage() {
                         ) : player ? (
                           <button
                             onClick={() => setNegotiationTargetPlayer(player)}
-                            className="px-4 py-2 bg-[#b8ff3d] text-[#050806] font-mono font-black text-xs uppercase rounded-xl hover:bg-[#a6ec31] transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(184,255,61,0.3)]"
+                            className="px-4 py-2 bg-[#9b2529] text-white font-mono font-black text-xs uppercase rounded-xl hover:bg-[#751b21] transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(184,255,61,0.3)]"
                           >
                             <Briefcase className="w-4 h-4" />
                             Masaya Dön
@@ -1126,7 +1126,7 @@ export default function TransfersPage() {
           {activeTab === 'INCOMING' && (
             <div className="space-y-4">
               {incomingOffers.length === 0 ? (
-                <div className="p-12 bg-[#090d0a] rounded-2xl border border-white/10 text-center text-zinc-400 font-mono text-sm">
+                <div className="p-12 bg-[#fffaf2] rounded-2xl border border-[#d5c7b7] text-center text-[#695e54] font-mono text-sm">
                   Kulübünüze gelen herhangi bir transfer teklifi bulunmuyor.
                 </div>
               ) : (
@@ -1137,7 +1137,7 @@ export default function TransfersPage() {
                   return (
                     <div
                       key={offer.id}
-                      className="p-5 bg-[#090d0a] rounded-2xl border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl"
+                      className="p-5 bg-[#fffaf2] rounded-2xl border border-[#d5c7b7] flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-xl"
                     >
                       <div className="flex items-center gap-4">
                         {buyer && (
@@ -1149,13 +1149,13 @@ export default function TransfersPage() {
                           />
                         )}
                         <div>
-                          <div className="text-xs text-zinc-400 font-mono">
-                            <strong className="text-white uppercase">{buyer?.name}</strong> kulübünden resmi bonservis teklifi:
+                          <div className="text-xs text-[#695e54] font-mono">
+                            <strong className="text-[#1d1b19] uppercase">{buyer?.name}</strong> kulübünden resmi bonservis teklifi:
                           </div>
-                          <h3 className="text-base font-bold text-white uppercase tracking-tight mt-0.5">
+                          <h3 className="text-base font-bold text-[#1d1b19] uppercase tracking-tight mt-0.5">
                             {player?.firstName} {player?.lastName} ({player?.position})
                           </h3>
-                          <div className="text-xs font-mono text-zinc-500 mt-0.5">
+                          <div className="text-xs font-mono text-[#776b60] mt-0.5">
                             Piyasa Değeri: €{player?.marketValue.toLocaleString('tr-TR')} • Maaş: €{player?.wage.toLocaleString('tr-TR')}/hf
                           </div>
                         </div>
@@ -1163,8 +1163,8 @@ export default function TransfersPage() {
 
                       <div className="flex items-center gap-4">
                         <div className="text-right font-mono">
-                          <span className="text-[10px] text-zinc-500 block uppercase">Teklif Edilen Bonservis</span>
-                          <span className="text-xl font-black text-[#b8ff3d]">
+                          <span className="text-[10px] text-[#776b60] block uppercase">Teklif Edilen Bonservis</span>
+                          <span className="text-xl font-black text-[#873238]">
                             €{offer.fee.toLocaleString('tr-TR')}
                           </span>
                         </div>
@@ -1173,7 +1173,7 @@ export default function TransfersPage() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => respondToTransferOffer(offer.id, true)}
-                              className="px-3.5 py-2 bg-[#b8ff3d] text-[#050806] font-mono font-black text-xs uppercase rounded-xl hover:bg-[#a6ec31] transition-all flex items-center gap-1"
+                              className="px-3.5 py-2 bg-[#9b2529] text-white font-mono font-black text-xs uppercase rounded-xl hover:bg-[#751b21] transition-all flex items-center gap-1"
                             >
                               <CheckCircle className="w-3.5 h-3.5" />
                               Kabul
@@ -1190,7 +1190,7 @@ export default function TransfersPage() {
                           <span
                             className={`px-3 py-1 font-mono text-xs font-bold uppercase rounded ${
                               offer.status === 'ACCEPTED'
-                                ? 'bg-[#b8ff3d]/20 text-[#b8ff3d] border border-[#b8ff3d]/30'
+                                ? 'bg-[#9b2529]/20 text-[#873238] border border-[#b8ff3d]/30'
                                 : 'bg-[#ff5365]/20 text-[#ff5365] border border-[#ff5365]/30'
                             }`}
                           >
@@ -1209,14 +1209,14 @@ export default function TransfersPage() {
           {activeTab === 'HISTORY' && (
             <div className="space-y-4">
               {transferHistory.length === 0 ? (
-                <div className="p-12 bg-[#090d0a] rounded-2xl border border-white/10 text-center text-zinc-400 font-mono text-sm">
+                <div className="p-12 bg-[#fffaf2] rounded-2xl border border-[#d5c7b7] text-center text-[#695e54] font-mono text-sm">
                   Bu sezonda henüz resmileşmiş bir transfer kaydı bulunmuyor.
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-2xl border border-white/10 bg-[#090d0a] shadow-2xl">
+                <div className="overflow-x-auto rounded-2xl border border-[#d5c7b7] bg-[#fffaf2] shadow-2xl">
                   <table className="w-full text-left border-collapse min-w-[760px]">
                     <thead>
-                      <tr className="border-b border-white/10 bg-[#050706] text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                      <tr className="border-b border-[#d5c7b7] bg-[#e9dfd2] text-[10px] font-mono font-bold uppercase tracking-wider text-[#695e54]">
                         <th className="py-3 px-4">TARİH</th>
                         <th className="py-3 px-3">FUTBOLCU</th>
                         <th className="py-3 px-3">AYRILAN</th>
@@ -1228,21 +1228,21 @@ export default function TransfersPage() {
                     </thead>
                     <tbody className="divide-y divide-white/5 text-xs font-medium">
                       {transferHistory.map((tr) => (
-                        <tr key={tr.id} className="hover:bg-[#0d130f]">
-                          <td className="py-3 px-4 text-zinc-400 font-mono text-[11px]">{tr.date}</td>
-                          <td className="py-3 px-3 font-bold text-white uppercase font-mono">
+                        <tr key={tr.id} className="hover:bg-[#f1e7da]">
+                          <td className="py-3 px-4 text-[#695e54] font-mono text-[11px]">{tr.date}</td>
+                          <td className="py-3 px-3 font-bold text-[#1d1b19] uppercase font-mono">
                             {tr.playerName} ({tr.playerPosition})
                           </td>
-                          <td className="py-3 px-3 text-zinc-400">{tr.fromClubName}</td>
-                          <td className="py-3 px-3 text-[#b8ff3d] font-bold">{tr.toClubName}</td>
-                          <td className="py-3 px-3 text-right font-mono font-black text-white">
+                          <td className="py-3 px-3 text-[#695e54]">{tr.fromClubName}</td>
+                          <td className="py-3 px-3 text-[#873238] font-bold">{tr.toClubName}</td>
+                          <td className="py-3 px-3 text-right font-mono font-black text-[#1d1b19]">
                             {tr.fee === 0 ? 'Bedelsiz' : `€${tr.fee.toLocaleString('tr-TR')}`}
                           </td>
-                          <td className="py-3 px-3 text-right font-mono text-[#b8ff3d]">
+                          <td className="py-3 px-3 text-right font-mono text-[#873238]">
                             €{tr.wage.toLocaleString('tr-TR')}/hf
                           </td>
                           <td className="py-3 px-4 text-center">
-                            <span className="px-2 py-0.5 font-mono text-[10px] font-bold uppercase rounded bg-[#b8ff3d]/15 text-[#b8ff3d] border border-[#b8ff3d]/30">
+                            <span className="px-2 py-0.5 font-mono text-[10px] font-bold uppercase rounded bg-[#9b2529]/15 text-[#873238] border border-[#b8ff3d]/30">
                               {tr.status}
                             </span>
                           </td>
