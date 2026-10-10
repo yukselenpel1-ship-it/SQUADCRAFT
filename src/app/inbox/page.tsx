@@ -121,7 +121,7 @@ export default function InboxPage() {
   };
 
   return (
-    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle sc-inbox-editorial space-y-5 px-4 sm:px-8 lg:px-12 py-6 pb-20 max-w-[1500px] mx-auto animate-in fade-in duration-300">
       {/* 1. BROADCAST INBOX HEADER */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#090d0a] via-[#0d130f] to-[#090d0a] border border-white/10 p-5 md:p-6 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#b8ff3d]/5 rounded-full blur-3xl pointer-events-none" />
@@ -134,7 +134,7 @@ export default function InboxPage() {
               <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-[#b8ff3d]/15 text-[#b8ff3d] border border-[#b8ff3d]/30">
                 // OPERATIONS INBOX & COMMUNICATIONS
               </span>
-              <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-zinc-800 text-zinc-300 border border-white/10">
+              <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-[#eee4d8] text-[#453b33] border border-[#d3c5b6]">
                 {formatDateTurkish(currentDate, false)}
               </span>
             </div>
@@ -144,7 +144,7 @@ export default function InboxPage() {
                 <Inbox className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase font-sport">
+                <h1 className="text-2xl sm:text-3xl font-black text-[#211e1a] tracking-tight uppercase font-barlow">
                   MENAJER GELEN KUTUSU
                 </h1>
                 <p className="text-xs text-zinc-400 font-mono">
@@ -163,7 +163,7 @@ export default function InboxPage() {
               <span className="text-[10px] uppercase font-bold text-zinc-400 block tracking-wider">
                 OKUNMAMIŞ BİLDİRİMLER
               </span>
-              <div className="text-xl font-black text-white mt-0.5 flex items-center gap-2">
+              <div className="text-xl font-black text-[#211e1a] mt-0.5 flex items-center gap-2">
                 <span className={unreadCount > 0 ? 'text-[#b8ff3d]' : 'text-zinc-500'}>
                   {unreadCount} MESAJ
                 </span>
@@ -188,7 +188,7 @@ export default function InboxPage() {
       )}
 
       {/* 2. CATEGORY FILTERS */}
-      <div className="flex items-center gap-1.5 p-1.5 bg-[#090d0a] rounded-2xl border border-white/10 overflow-x-auto scrollbar-none font-mono text-xs">
+      <div className="flex items-center gap-1.5 p-1.5 bg-[#fffaf2] rounded-2xl border border-[#d2c5b7] overflow-x-auto scrollbar-none font-mono text-xs">
         {[
           { id: 'ALL', label: 'TÜMÜ' },
           { id: 'BOARD', label: 'YÖNETİM KURULU' },
@@ -202,8 +202,8 @@ export default function InboxPage() {
             onClick={() => setSelectedCategory(cat.id)}
             className={`px-4 py-2 rounded-xl font-bold uppercase transition-all shrink-0 ${
               selectedCategory === cat.id
-                ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_12px_rgba(184,255,61,0.3)]'
-                : 'text-zinc-400 hover:text-white hover:bg-white/5'
+                ? 'bg-[#9b2529] text-white font-black shadow-[0_0_12px_rgba(184,255,61,0.3)]'
+                : 'text-[#62564b] hover:text-[#211e1a] hover:bg-white/5'
             }`}
           >
             {cat.label}
@@ -212,11 +212,11 @@ export default function InboxPage() {
       </div>
 
       {/* 3. SPLIT INBOX LAYOUT */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[580px] items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[440px] items-start">
         {/* Left Message Cards List (5 Cols) */}
         <div className="lg:col-span-5 space-y-2.5 max-h-[700px] overflow-y-auto pr-1">
           {filteredMessages.length === 0 ? (
-            <div className="p-12 bg-[#090d0a] rounded-2xl border border-white/10 text-center text-zinc-500 font-mono text-xs">
+            <div className="p-12 bg-[#fffaf2] rounded-2xl border border-[#d2c5b7] text-center text-[#74675c] font-mono text-xs">
               Bu kategoride herhangi bir bildirim bulunmuyor.
             </div>
           ) : (
@@ -229,43 +229,43 @@ export default function InboxPage() {
                   onClick={() => handleSelectMessage(msg)}
                   className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                     isSelected
-                      ? 'bg-[#0d130f] border-2 border-[#b8ff3d] shadow-[0_0_20px_rgba(184,255,61,0.15)] ring-1 ring-[#b8ff3d]/30'
+                      ? 'bg-[#f3e8dc] border-2 border-[#b8ff3d] shadow-[0_0_20px_rgba(184,255,61,0.15)] ring-1 ring-[#b8ff3d]/30'
                       : !msg.isRead
-                      ? 'bg-[#090d0a] border-white/15 hover:border-white/30'
-                      : 'bg-[#050706]/80 border-white/5 opacity-70 hover:opacity-100 hover:border-white/10'
+                      ? 'bg-[#fffaf2] border-[#cdbfb1] hover:border-white/30'
+                      : 'bg-[#eee4d8]/80 border-[#dfd3c7] opacity-70 hover:opacity-100 hover:border-[#d2c5b7]'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-2 mb-1.5 font-mono">
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-lg bg-[#050706] border border-white/10 flex items-center justify-center shrink-0">
+                      <div className="w-6 h-6 rounded-lg bg-[#eee4d8] border border-[#d2c5b7] flex items-center justify-center shrink-0">
                         {getCategoryIcon(msg.category)}
                       </div>
-                      <span className="text-xs font-bold text-white truncate max-w-[170px] uppercase">
+                      <span className="text-xs font-bold text-[#211e1a] truncate max-w-[170px] uppercase">
                         {msg.senderName}
                       </span>
                     </div>
 
-                    <span className="text-[10px] text-zinc-500 font-mono shrink-0">
+                    <span className="text-[10px] text-[#74675c] font-mono shrink-0">
                       {msg.date}
                     </span>
                   </div>
 
-                  <h3 className={`text-xs font-bold truncate mt-1 ${!msg.isRead ? 'text-[#b8ff3d]' : 'text-zinc-200'}`}>
+                  <h3 className={`text-sm font-bold leading-snug mt-1 line-clamp-2 ${!msg.isRead ? 'text-[#8f2830]' : 'text-[#332b25]'}`}>
                     {msg.subject}
                   </h3>
 
-                  <p className="text-[11px] font-mono text-zinc-400 truncate mt-1">
+                  <p className="text-xs font-inter text-[#62564b] line-clamp-2 mt-1">
                     {msg.preview}
                   </p>
 
-                  <div className="mt-2.5 flex items-center justify-between text-[10px] font-mono pt-2 border-t border-white/5">
-                    <span className="px-2 py-0.5 bg-[#050706] border border-white/10 text-zinc-400 font-bold uppercase rounded">
+                  <div className="mt-2.5 flex items-center justify-between text-[10px] font-mono pt-2 border-t border-[#dfd3c7]">
+                    <span className="px-2 py-0.5 bg-[#eee4d8] border border-[#d2c5b7] text-[#62564b] font-bold uppercase rounded">
                       {getCategoryLabel(msg.category)}
                     </span>
 
                     {!msg.isRead && (
-                      <span className="flex items-center gap-1 font-black text-[#b8ff3d]">
-                        <span className="w-1.5 h-1.5 bg-[#b8ff3d] rounded-full animate-pulse" />
+                      <span className="flex items-center gap-1 font-black text-[#8f2830]">
+                        <span className="w-1.5 h-1.5 bg-[#9b2529] rounded-full animate-pulse" />
                         OKUNMADI
                       </span>
                     )}
@@ -279,9 +279,9 @@ export default function InboxPage() {
         {/* Right Reader (Official Club Letterhead) (7 Cols) */}
         <div className="lg:col-span-7 sticky top-6">
           {selectedMessage ? (
-            <div className="bg-[#090d0a] rounded-2xl border border-white/10 shadow-2xl overflow-hidden flex flex-col justify-between min-h-[580px]">
+            <div className="bg-[#fffaf2] rounded-2xl border border-[#d2c5b7] shadow-2xl overflow-hidden flex flex-col justify-between min-h-[440px]">
               {/* Official Letterhead Header */}
-              <div className="relative p-6 bg-gradient-to-r from-[#0d130f] via-[#090d0a] to-[#0d130f] border-b border-white/10">
+              <div className="relative p-6 bg-gradient-to-r from-[#0d130f] via-[#090d0a] to-[#0d130f] border-b border-[#d2c5b7]">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <ClubBadge
@@ -291,10 +291,10 @@ export default function InboxPage() {
                       size="md"
                     />
                     <div>
-                      <div className="text-[10px] font-mono text-[#b8ff3d] font-bold uppercase tracking-widest">
+                      <div className="text-[10px] font-mono text-[#8f2830] font-bold uppercase tracking-widest">
                         // RESMİ KULÜP YAZIŞMASI • İÇ İLETİŞİM
                       </div>
-                      <h2 className="text-xl font-black text-white uppercase tracking-tight font-sport mt-0.5">
+                      <h2 className="text-lg sm:text-xl font-black text-[#211e1a] uppercase tracking-tight font-barlow mt-1">
                         {userClub.name.toUpperCase()} FUTBOL KULÜBÜ
                       </h2>
                     </div>
@@ -305,7 +305,7 @@ export default function InboxPage() {
                       deleteMessage(selectedMessage.id);
                       showToast('Mesaj silindi.');
                     }}
-                    className="p-2.5 rounded-xl bg-[#050706] text-zinc-400 hover:text-[#ff5365] border border-white/10 hover:border-[#ff5365]/30 transition-colors"
+                    className="p-2.5 rounded-xl bg-[#eee4d8] text-[#62564b] hover:text-[#ff5365] border border-[#d2c5b7] hover:border-[#ff5365]/30 transition-colors"
                     title="Mesajı Arşivden Sil"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -313,34 +313,34 @@ export default function InboxPage() {
                 </div>
 
                 {/* Sender & Subject Dossier */}
-                <div className="mt-5 p-3.5 bg-[#050706] rounded-xl border border-white/5 space-y-1 font-mono text-xs">
+                <div className="mt-5 p-3.5 bg-[#eee4d8] rounded-xl border border-[#dfd3c7] space-y-1 font-mono text-xs">
                   <div className="flex justify-between items-center">
-                    <span className="text-zinc-500">KİMDEN:</span>
-                    <strong className="text-white font-bold">{selectedMessage.senderName} ({selectedMessage.senderRole})</strong>
+                    <span className="text-[#74675c]">KİMDEN:</span>
+                    <strong className="text-[#211e1a] font-bold">{selectedMessage.senderName} ({selectedMessage.senderRole})</strong>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-zinc-500">KONU:</span>
-                    <span className="text-[#b8ff3d] font-bold">{selectedMessage.subject}</span>
+                    <span className="text-[#74675c]">KONU:</span>
+                    <span className="text-[#8f2830] font-bold">{selectedMessage.subject}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-zinc-500">TARİH / SAAT:</span>
-                    <span className="text-zinc-400">{selectedMessage.date}</span>
+                    <span className="text-[#74675c]">TARİH / SAAT:</span>
+                    <span className="text-[#62564b]">{selectedMessage.date}</span>
                   </div>
                 </div>
               </div>
 
               {/* Message Body */}
-              <div className="p-6 md:p-8 flex-1 text-sm text-zinc-300 font-mono leading-relaxed whitespace-pre-line">
+              <div className="p-6 md:p-8 flex-1 text-[15px] sm:text-base text-[#29231e] font-inter leading-7 whitespace-pre-line">
                 {selectedMessage.body}
               </div>
 
               {/* Contextual Action Buttons Footer */}
-              <div className="p-5 bg-[#050706] border-t border-white/10 flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
+              <div className="p-5 bg-[#eee4d8] border-t border-[#d2c5b7] flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
                 <div className="flex items-center gap-2">
                   {selectedMessage.actionType === 'REPLY_TRANSFER' && (
                     <Link
                       href="/transfers"
-                      className="px-4 py-2.5 bg-[#b8ff3d] hover:bg-[#a6ec31] text-[#050806] font-black uppercase rounded-xl transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)] flex items-center gap-1.5"
+                      className="px-4 py-2.5 bg-[#9b2529] hover:bg-[#741d23] text-white font-black uppercase rounded-xl transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)] flex items-center gap-1.5"
                     >
                       <DollarSign className="w-4 h-4" />
                       Teklife Git & Yanıtla
@@ -350,7 +350,7 @@ export default function InboxPage() {
                   {selectedMessage.actionType === 'VIEW_SQUAD' && (
                     <Link
                       href="/squad"
-                      className="px-4 py-2.5 bg-[#b8ff3d] hover:bg-[#a6ec31] text-[#050806] font-black uppercase rounded-xl transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)] flex items-center gap-1.5"
+                      className="px-4 py-2.5 bg-[#9b2529] hover:bg-[#741d23] text-white font-black uppercase rounded-xl transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)] flex items-center gap-1.5"
                     >
                       <HeartPulse className="w-4 h-4" />
                       Kadro & Sağlık Durumunu İncele
@@ -360,7 +360,7 @@ export default function InboxPage() {
                   {selectedMessage.actionType === 'VIEW_TACTICS' && (
                     <Link
                       href="/tactics"
-                      className="px-4 py-2.5 bg-[#b8ff3d] hover:bg-[#a6ec31] text-[#050806] font-black uppercase rounded-xl transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)] flex items-center gap-1.5"
+                      className="px-4 py-2.5 bg-[#9b2529] hover:bg-[#741d23] text-white font-black uppercase rounded-xl transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)] flex items-center gap-1.5"
                     >
                       <Swords className="w-4 h-4" />
                       Taktik Tahtasına Git
@@ -374,7 +374,7 @@ export default function InboxPage() {
                           respondToManagerContractOffer(true);
                           showToast('Yeni sözleşme imzalandı!');
                         }}
-                        className="px-4 py-2.5 bg-[#b8ff3d] hover:bg-[#a6ec31] text-[#050806] font-black uppercase rounded-xl transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)] flex items-center gap-1.5"
+                        className="px-4 py-2.5 bg-[#9b2529] hover:bg-[#741d23] text-white font-black uppercase rounded-xl transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)] flex items-center gap-1.5"
                       >
                         <Check className="w-4 h-4" />
                         Sözleşmeyi İmzala
@@ -384,7 +384,7 @@ export default function InboxPage() {
                           respondToManagerContractOffer(false);
                           showToast('Sözleşme teklifi reddedildi.');
                         }}
-                        className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-bold uppercase rounded-xl border border-white/10"
+                        className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-[#453c34] font-bold uppercase rounded-xl border border-[#d2c5b7]"
                       >
                         Reddet
                       </button>
@@ -394,7 +394,7 @@ export default function InboxPage() {
                   {(selectedMessage.category === 'SCOUT' || selectedMessage.category === 'SCOUTING') && (
                     <Link
                       href="/scouting"
-                      className="px-4 py-2.5 bg-[#21dfbd] hover:bg-[#1bc4a5] text-[#050806] font-black uppercase rounded-xl transition-all flex items-center gap-1.5"
+                      className="px-4 py-2.5 bg-[#9b2529] hover:bg-[#741d23] text-white font-black uppercase rounded-xl transition-all flex items-center gap-1.5"
                     >
                       <Compass className="w-4 h-4" />
                       Gözlem Raporlarına Git
@@ -402,14 +402,14 @@ export default function InboxPage() {
                   )}
                 </div>
 
-                <div className="text-[11px] text-zinc-500 font-bold flex items-center gap-1.5 ml-auto">
-                  <Shield className="w-3.5 h-3.5 text-[#b8ff3d]" />
+                <div className="text-[11px] text-[#74675c] font-bold flex items-center gap-1.5 ml-auto">
+                  <Shield className="w-3.5 h-3.5 text-[#8f2830]" />
                   <span>SQUADCRAFT 26 // RESMİ İLETİŞİM PROTOKOLÜ</span>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="p-12 bg-[#090d0a] rounded-2xl border border-white/10 text-center text-zinc-500 font-mono text-sm h-full flex flex-col items-center justify-center gap-2.5 min-h-[400px]">
+            <div className="p-12 bg-[#fffaf2] rounded-2xl border border-[#d2c5b7] text-center text-[#74675c] font-mono text-sm h-full flex flex-col items-center justify-center gap-2.5 min-h-[400px]">
               <MailOpen className="w-12 h-12 text-zinc-600" />
               <span>Görüntülemek için sol listeden bir mesaj seçin.</span>
             </div>
