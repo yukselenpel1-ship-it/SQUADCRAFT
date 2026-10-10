@@ -50,12 +50,12 @@ export default function FinancesPage() {
   // Financial health status
   const financialHealth = useMemo(() => {
     if (finances.clubBalance > 15_000_000 && netProfit >= 0) {
-      return { status: 'STRONG', text: 'GÜÇLÜ & STABİL // A+', color: 'text-[#356c52] bg-[#568b6b]/15 border-[#b8ff3d]/30' };
+      return { status: 'STRONG', text: 'GÜÇLÜ & STABİL // A+', color: 'text-[#235541] bg-[#568b6b]/15 border-[#b8ff3d]/30' };
     }
     if (finances.clubBalance > 5_000_000) {
       return { status: 'STABLE', text: 'DENGELİ // B', color: 'text-[#245f62] bg-[#529b92]/15 border-[#21dfbd]/30' };
     }
-    return { status: 'AT_RISK', text: 'RİSKLİ // DİKKAT', color: 'text-[#a13d45] bg-[#bc5960]/15 border-[#ff5365]/30' };
+    return { status: 'AT_RISK', text: 'RİSKLİ // DİKKAT', color: 'text-[#8f313d] bg-[#bc5960]/15 border-[#ff5365]/30' };
   }, [finances.clubBalance, netProfit]);
 
   // Filter user club commitments
@@ -93,23 +93,23 @@ export default function FinancesPage() {
           {/* Left Title */}
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-widest bg-[#568b6b]/15 text-[#356c52] border border-[#b8ff3d]/30">
+              <span className="px-2.5 py-0.5 rounded text-xs font-inter font-bold uppercase tracking-widest bg-[#568b6b]/15 text-[#235541] border border-[#b8ff3d]/30">
                 // CLUB FINANCIAL CONTROL & AUDIT
               </span>
-              <span className={`px-2.5 py-0.5 rounded text-[10px] font-mono font-bold uppercase border ${financialHealth.color}`}>
+              <span className={`px-2.5 py-0.5 rounded text-xs font-inter font-bold uppercase border ${financialHealth.color}`}>
                 SAĞLIK DURUMU: {financialHealth.text}
               </span>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#568b6b]/10 border border-[#b8ff3d]/20 flex items-center justify-center text-[#356c52]">
+              <div className="w-10 h-10 rounded-xl bg-[#568b6b]/10 border border-[#b8ff3d]/20 flex items-center justify-center text-[#235541]">
                 <Landmark className="w-6 h-6" />
               </div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-black text-[#211e1a] tracking-tight uppercase font-sport">
                   FİNANSAL YÖNETİM
                 </h1>
-                <p className="text-sm text-[#62584f] font-inter leading-relaxed">
+                <p className="text-sm text-[#4a4038] font-inter leading-relaxed">
                   {userClub.name.toUpperCase()} • KULÜP BÜTÇESİ, NAKİT AKIŞI VE GELECEK TAAHHÜTLER
                 </p>
               </div>
@@ -118,19 +118,19 @@ export default function FinancesPage() {
 
           {/* Right Health Pill */}
           <div className="flex items-center gap-3 bg-[#efe6da]/90 rounded-2xl border border-[#d5c8b9] p-4 shadow-sm shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-[#568b6b]/10 border border-[#b8ff3d]/30 flex items-center justify-center text-[#356c52]">
+            <div className="w-10 h-10 rounded-xl bg-[#568b6b]/10 border border-[#b8ff3d]/30 flex items-center justify-center text-[#235541]">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] font-mono uppercase font-bold text-[#62584f] block tracking-wider">
+              <span className="text-xs font-inter uppercase font-bold text-[#4a4038] block tracking-wider">
                 NET SEZON PROJEKSİYONU
               </span>
               <div className="text-xl font-black font-mono mt-0.5">
-                <span className={netProfit >= 0 ? 'text-[#356c52]' : 'text-[#a13d45]'}>
+                <span className={netProfit >= 0 ? 'text-[#235541]' : 'text-[#8f313d]'}>
                   {netProfit >= 0 ? '+' : ''}€{(netProfit / 1_000_000).toFixed(2)}M
                 </span>
               </div>
-              <span className="text-[11px] font-inter text-[#73675c] block">
+              <span className="text-[11px] font-inter text-[#594d43] block">
                 Tahmini gelir-gider dengesi
               </span>
             </div>
@@ -142,14 +142,14 @@ export default function FinancesPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Club Balance */}
         <div className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 space-y-2 shadow-sm hover:border-white/20 transition-all">
-          <div className="flex items-center justify-between text-[#62584f]">
-            <span className="text-[10px] font-mono uppercase font-bold tracking-wider">KULÜP KASASI (NET NAKİT)</span>
-            <Wallet className="w-4 h-4 text-[#356c52]" />
+          <div className="flex items-center justify-between text-[#4a4038]">
+            <span className="text-xs font-inter uppercase font-bold tracking-wide">KULÜP KASASI (NET NAKİT)</span>
+            <Wallet className="w-4 h-4 text-[#235541]" />
           </div>
           <div className="text-2xl font-black text-[#211e1a] font-mono">
             €{(finances.clubBalance / 1_000_000).toFixed(2)}M
           </div>
-          <div className="text-[11px] font-mono text-[#356c52] flex items-center gap-1">
+          <div className="text-xs font-inter text-[#235541] flex items-center gap-1">
             <TrendingUp className="w-3.5 h-3.5" />
             <span>Kullanılabilir likit sermaye</span>
           </div>
@@ -157,44 +157,44 @@ export default function FinancesPage() {
 
         {/* Transfer Budget */}
         <div className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 space-y-2 shadow-sm hover:border-white/20 transition-all">
-          <div className="flex items-center justify-between text-[#62584f]">
-            <span className="text-[10px] font-mono uppercase font-bold tracking-wider">TRANSFER BÜTÇESİ</span>
+          <div className="flex items-center justify-between text-[#4a4038]">
+            <span className="text-xs font-inter uppercase font-bold tracking-wide">TRANSFER BÜTÇESİ</span>
             <Coins className="w-4 h-4 text-[#245f62]" />
           </div>
           <div className="text-2xl font-black text-[#245f62] font-mono">
             €{(finances.transferBudget / 1_000_000).toFixed(2)}M
           </div>
-          <div className="text-xs font-inter text-[#62584f]">
+          <div className="text-xs font-inter text-[#4a4038]">
             Bonservis tavan limiti
           </div>
         </div>
 
         {/* Weekly Wages */}
         <div className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 space-y-2 shadow-sm hover:border-white/20 transition-all">
-          <div className="flex items-center justify-between text-[#62584f]">
-            <span className="text-[10px] font-mono uppercase font-bold tracking-wider">HAFTALIK MAAŞ YÜKÜ</span>
+          <div className="flex items-center justify-between text-[#4a4038]">
+            <span className="text-xs font-inter uppercase font-bold tracking-wide">HAFTALIK MAAŞ YÜKÜ</span>
             <CreditCard className="w-4 h-4 text-[#846124]" />
           </div>
           <div className="text-2xl font-black text-[#846124] font-mono">
             €{(finances.weeklyWages / 1000).toFixed(0)}K
-            <span className="text-xs text-[#73675c] font-normal"> /hf</span>
+            <span className="text-xs text-[#594d43] font-normal"> /hf</span>
           </div>
-          <div className="text-xs font-inter text-[#62584f]">
+          <div className="text-xs font-inter text-[#4a4038]">
             Tavan: €{(finances.wageBudget / 1000).toFixed(0)}K/hf (%{wagePercentage})
           </div>
         </div>
 
         {/* Weekly Burn Rate */}
         <div className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 space-y-2 shadow-sm hover:border-white/20 transition-all">
-          <div className="flex items-center justify-between text-[#62584f]">
-            <span className="text-[10px] font-mono uppercase font-bold tracking-wider">HAFTALIK BURN RATE</span>
+          <div className="flex items-center justify-between text-[#4a4038]">
+            <span className="text-xs font-inter uppercase font-bold tracking-wide">HAFTALIK BURN RATE</span>
             <TrendingDown className="w-4 h-4 text-[#245f62]" />
           </div>
           <div className="text-2xl font-black text-[#211e1a] font-mono">
             €{((finances.weeklyWages + 25_000) / 1000).toFixed(0)}K
-            <span className="text-xs text-[#73675c] font-normal"> /hf</span>
+            <span className="text-xs text-[#594d43] font-normal"> /hf</span>
           </div>
-          <div className="text-xs font-inter text-[#62584f]">
+          <div className="text-xs font-inter text-[#4a4038]">
             Maaşlar + personel & tesis işletme
           </div>
         </div>
@@ -205,18 +205,18 @@ export default function FinancesPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#d5c8b9]">
           <div>
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-[#356c52]" />
-              <h2 className="text-xl font-black text-[#211e1a] uppercase tracking-tight font-barlow">
+              <BarChart3 className="w-4 h-4 text-[#235541]" />
+              <h2 className="text-lg sm:text-xl font-black text-[#211e1a] uppercase tracking-tight font-barlow">
                 NAKİT AKIŞ PERFORMANS GRAFİĞİ (GELİR VS GİDER)
               </h2>
             </div>
-            <p className="text-sm text-[#62584f] font-inter leading-relaxed mt-0.5">
+            <p className="text-sm text-[#4a4038] font-inter leading-relaxed mt-0.5">
               Aylık gelir ve gider dengesi, kulüp net operasyon marjı
             </p>
           </div>
 
           {/* Period Selector */}
-          <div className="flex items-center gap-1.5 bg-[#efe6da] p-1 rounded-xl border border-[#d5c8b9] text-xs font-mono">
+          <div className="flex items-center gap-1.5 bg-[#efe6da] p-1 rounded-xl border border-[#d5c8b9] text-sm font-inter">
             {[
               { id: 'MONTH', label: 'SON AY' },
               { id: 'QUARTER', label: 'SON 3 AY' },
@@ -249,7 +249,7 @@ export default function FinancesPage() {
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-[#211e1a] uppercase text-sm">{m.month} DÖNEMİ</span>
                     <span className="font-black text-[#211e1a]">
-                      Net: <strong className={m.net >= 0 ? 'text-[#356c52]' : 'text-[#a13d45]'}>
+                      Net: <strong className={m.net >= 0 ? 'text-[#235541]' : 'text-[#8f313d]'}>
                         {m.net >= 0 ? '+' : ''}€{m.net.toLocaleString('tr-TR')}
                       </strong>
                     </span>
@@ -258,11 +258,11 @@ export default function FinancesPage() {
                   {/* Income bar */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-[11px]">
-                      <span className="text-[#356c52]">GELİR: +€{m.income.toLocaleString('tr-TR')}</span>
+                      <span className="text-[#235541]">GELİR: +€{m.income.toLocaleString('tr-TR')}</span>
                     </div>
                     <div className="w-full bg-[#d8cbbc] h-2 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[#568b6b] shadow-[0_0_10px_rgba(184,255,61,0.5)] transition-all duration-500"
+                        className="h-full bg-[#447a62] transition-all duration-500"
                         style={{ width: `${incomeWidth}%` }}
                       />
                     </div>
@@ -271,11 +271,11 @@ export default function FinancesPage() {
                   {/* Expense bar */}
                   <div className="space-y-1">
                     <div className="flex justify-between text-[11px]">
-                      <span className="text-[#a13d45]">GİDER: -€{m.expense.toLocaleString('tr-TR')}</span>
+                      <span className="text-[#8f313d]">GİDER: -€{m.expense.toLocaleString('tr-TR')}</span>
                     </div>
                     <div className="w-full bg-[#d8cbbc] h-2 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[#bc5960] shadow-[0_0_10px_rgba(255,83,101,0.5)] transition-all duration-500"
+                        className="h-full bg-[#a94c58] transition-all duration-500"
                         style={{ width: `${expenseWidth}%` }}
                       />
                     </div>
@@ -293,12 +293,12 @@ export default function FinancesPage() {
         <div className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 sm:p-6 space-y-4 shadow-sm">
           <div className="flex items-center justify-between pb-3 border-b border-[#d5c8b9]">
             <div className="flex items-center gap-2">
-              <ArrowUpRight className="w-4 h-4 text-[#356c52]" />
+              <ArrowUpRight className="w-4 h-4 text-[#235541]" />
               <h3 className="text-lg font-black uppercase tracking-tight text-[#211e1a] font-barlow">
                 GELİR KALEMLERİ (REVENUE)
               </h3>
             </div>
-            <span className="text-base font-black text-[#356c52] font-mono">
+            <span className="text-base font-black text-[#235541] font-mono">
               €{(totalIncome / 1_000_000).toFixed(2)}M
             </span>
           </div>
@@ -322,7 +322,7 @@ export default function FinancesPage() {
                     <div className="w-full bg-[#d8cbbc] h-1.5 rounded-full overflow-hidden">
                       <div className="h-full bg-[#568b6b]" style={{ width: `${percent}%` }} />
                     </div>
-                    <span className="text-[10px] text-[#73675c] font-bold w-9 text-right">%{percent}</span>
+                    <span className="text-[10px] text-[#594d43] font-bold w-9 text-right">%{percent}</span>
                   </div>
                 </div>
               );
@@ -334,12 +334,12 @@ export default function FinancesPage() {
         <div className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 sm:p-6 space-y-4 shadow-sm">
           <div className="flex items-center justify-between pb-3 border-b border-[#d5c8b9]">
             <div className="flex items-center gap-2">
-              <ArrowDownRight className="w-4 h-4 text-[#a13d45]" />
+              <ArrowDownRight className="w-4 h-4 text-[#8f313d]" />
               <h3 className="text-lg font-black uppercase tracking-tight text-[#211e1a] font-barlow">
                 GİDER KALEMLERİ (EXPENSES)
               </h3>
             </div>
-            <span className="text-base font-black text-[#a13d45] font-mono">
+            <span className="text-base font-black text-[#8f313d] font-mono">
               €{(totalExpense / 1_000_000).toFixed(2)}M
             </span>
           </div>
@@ -363,7 +363,7 @@ export default function FinancesPage() {
                     <div className="w-full bg-[#d8cbbc] h-1.5 rounded-full overflow-hidden">
                       <div className="h-full bg-[#bc5960]" style={{ width: `${percent}%` }} />
                     </div>
-                    <span className="text-[10px] text-[#73675c] font-bold w-9 text-right">%{percent}</span>
+                    <span className="text-[10px] text-[#594d43] font-bold w-9 text-right">%{percent}</span>
                   </div>
                 </div>
               );
@@ -377,38 +377,38 @@ export default function FinancesPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3 border-b border-[#d5c8b9]">
           <div>
             <h3 className="text-lg font-black uppercase tracking-tight text-[#211e1a] font-barlow flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#356c52]" />
+              <Layers className="w-4 h-4 text-[#235541]" />
               TRANSFER TAAHHÜTLERİ (TAKSİTLİ ÖDEMELER VE ALACAKLAR)
             </h3>
-            <p className="text-sm font-inter text-[#62584f] mt-0.5">
+            <p className="text-sm font-inter text-[#4a4038] mt-0.5">
               Gelecek transfer takvimine bağlı vadeli borçlar ve tahsilatlar
             </p>
           </div>
-          <div className="flex items-center gap-4 text-xs font-mono font-bold">
-            <span className="text-[#a13d45]">
+          <div className="flex items-center gap-4 text-sm font-inter font-bold">
+            <span className="text-[#8f313d]">
               Toplam Borç: €{totalPayable.toLocaleString('tr-TR')}
             </span>
             <span className="text-zinc-700">|</span>
-            <span className="text-[#356c52]">
+            <span className="text-[#235541]">
               Toplam Alacak: €{totalReceivable.toLocaleString('tr-TR')}
             </span>
           </div>
         </div>
 
         {payableCommitments.length === 0 && receivableCommitments.length === 0 ? (
-          <div className="text-center py-8 text-[#73675c] text-xs font-mono">
+          <div className="text-center py-8 text-[#594d43] text-sm font-inter">
             Kulübün aktif veya vadesi bekleyen taksitli transfer taahhüdü bulunmamaktadır.
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Payables */}
             <div className="space-y-3">
-              <h4 className="text-xs font-mono font-black uppercase tracking-wider text-[#a13d45] flex items-center gap-1.5">
+              <h4 className="text-sm font-inter font-black uppercase tracking-wider text-[#8f313d] flex items-center gap-1.5">
                 <ArrowDownRight className="w-3.5 h-3.5" />
                 ÖDENECEK TAKSİTLER ({payableCommitments.length})
               </h4>
               {payableCommitments.length === 0 ? (
-                <div className="p-4 bg-[#efe6da] rounded-xl border border-[#e0d5c9] text-xs font-mono text-[#73675c] text-center">
+                <div className="p-4 bg-[#efe6da] rounded-xl border border-[#e0d5c9] text-sm font-inter text-[#594d43] text-center">
                   Ödenecek taksit bulunmuyor.
                 </div>
               ) : (
@@ -416,19 +416,19 @@ export default function FinancesPage() {
                   {payableCommitments.map((c) => (
                     <div
                       key={c.id}
-                      className="p-3.5 bg-[#efe6da] rounded-xl border border-[#ff5365]/30 flex items-center justify-between text-xs font-mono"
+                      className="p-3.5 bg-[#efe6da] rounded-xl border border-[#ff5365]/30 flex items-center justify-between text-sm font-inter"
                     >
                       <div>
                         <div className="font-bold text-[#211e1a] uppercase">{c.playerName}</div>
-                        <div className="text-[10px] text-[#62584f]">
+                        <div className="text-[10px] text-[#4a4038]">
                           {c.toClubName} kulübüne • TAKSİT {c.installmentIndex}/{c.totalInstallments}
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-black text-[#a13d45]">
+                        <div className="font-black text-[#8f313d]">
                           -€{c.amount.toLocaleString('tr-TR')}
                         </div>
-                        <div className="text-[10px] text-[#73675c]">
+                        <div className="text-[10px] text-[#594d43]">
                           Vade: {c.dueDate}
                         </div>
                       </div>
@@ -440,12 +440,12 @@ export default function FinancesPage() {
 
             {/* Receivables */}
             <div className="space-y-3">
-              <h4 className="text-xs font-mono font-black uppercase tracking-wider text-[#356c52] flex items-center gap-1.5">
+              <h4 className="text-sm font-inter font-black uppercase tracking-wider text-[#235541] flex items-center gap-1.5">
                 <ArrowUpRight className="w-3.5 h-3.5" />
                 TAHSİL EDİLECEK TAKSİTLER ({receivableCommitments.length})
               </h4>
               {receivableCommitments.length === 0 ? (
-                <div className="p-4 bg-[#efe6da] rounded-xl border border-[#e0d5c9] text-xs font-mono text-[#73675c] text-center">
+                <div className="p-4 bg-[#efe6da] rounded-xl border border-[#e0d5c9] text-sm font-inter text-[#594d43] text-center">
                   Tahsil edilecek taksit bulunmuyor.
                 </div>
               ) : (
@@ -453,19 +453,19 @@ export default function FinancesPage() {
                   {receivableCommitments.map((c) => (
                     <div
                       key={c.id}
-                      className="p-3.5 bg-[#efe6da] rounded-xl border border-[#b8ff3d]/30 flex items-center justify-between text-xs font-mono"
+                      className="p-3.5 bg-[#efe6da] rounded-xl border border-[#b8ff3d]/30 flex items-center justify-between text-sm font-inter"
                     >
                       <div>
                         <div className="font-bold text-[#211e1a] uppercase">{c.playerName}</div>
-                        <div className="text-[10px] text-[#62584f]">
+                        <div className="text-[10px] text-[#4a4038]">
                           {c.fromClubName} kulübünden • TAKSİT {c.installmentIndex}/{c.totalInstallments}
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-black text-[#356c52]">
+                        <div className="font-black text-[#235541]">
                           +€{c.amount.toLocaleString('tr-TR')}
                         </div>
-                        <div className="text-[10px] text-[#73675c]">
+                        <div className="text-[10px] text-[#594d43]">
                           Vade: {c.dueDate}
                         </div>
                       </div>
