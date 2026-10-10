@@ -259,10 +259,10 @@ export default function SquadPage() {
                 </div>
 
                 {/* Sub Roster Below Pitch (Bench & Reserves) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-white/10 font-ibm">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pt-6 border-t border-[#d2c4b4] font-ibm">
                   {/* Bench */}
-                  <div className="p-4 rounded-[6px] bg-[#0d130f] border border-white/10">
-                    <span className="text-[11px] text-[#21dfbd] font-bold uppercase tracking-wider block mb-3">
+                  <div className="p-4 rounded-[6px] bg-[#fffaf2] border border-[#d2c4b4]">
+                    <span className="text-[11px] text-[#32685f] font-bold uppercase tracking-wider block mb-3">
                       YEDEKLER (BENCH - {benchPlayers.length})
                     </span>
                     <div className="space-y-1.5">
@@ -270,25 +270,25 @@ export default function SquadPage() {
                         <div
                           key={p.id}
                           onClick={() => setInspectedPlayer(p)}
-                          className="flex items-center justify-between p-2 rounded bg-white/[0.02] hover:bg-white/[0.05] cursor-pointer transition-colors"
+                          className="flex items-center justify-between p-2 rounded bg-[#f1e8dc] hover:bg-[#e6d8c9] cursor-pointer transition-colors"
                         >
                           <div className="flex items-center gap-2">
-                            <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-[#8f9a91] font-bold">
+                            <span className="px-1.5 py-0.5 rounded bg-[#e7d8c8] text-[12px] text-[#594d43] font-bold">
                               {p.position}
                             </span>
-                            <span className="text-[12px] font-bold text-[#f3f6f3]">
+                            <span className="text-sm font-bold text-[#171717]">
                               {p.firstName[0]}. {p.lastName}
                             </span>
                           </div>
-                          <span className="font-bold text-[#b8ff3d]">{p.overall} OVR</span>
+                          <span className="font-bold text-[#8f2830]">{p.overall} OVR</span>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Reserves */}
-                  <div className="p-4 rounded-[6px] bg-[#0d130f] border border-white/10">
-                    <span className="text-[11px] text-[#ffd34f] font-bold uppercase tracking-wider block mb-3">
+                  <div className="p-4 rounded-[6px] bg-[#fffaf2] border border-[#d2c4b4]">
+                    <span className="text-[11px] text-[#815e2b] font-bold uppercase tracking-wider block mb-3">
                       REZERV KADRO ({reservePlayers.length})
                     </span>
                     <div className="space-y-1.5">
@@ -296,17 +296,17 @@ export default function SquadPage() {
                         <div
                           key={p.id}
                           onClick={() => setInspectedPlayer(p)}
-                          className="flex items-center justify-between p-2 rounded bg-white/[0.02] hover:bg-white/[0.05] cursor-pointer transition-colors"
+                          className="flex items-center justify-between p-2 rounded bg-[#f1e8dc] hover:bg-[#e6d8c9] cursor-pointer transition-colors"
                         >
                           <div className="flex items-center gap-2">
-                            <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-[#8f9a91] font-bold">
+                            <span className="px-1.5 py-0.5 rounded bg-[#e7d8c8] text-[12px] text-[#594d43] font-bold">
                               {p.position}
                             </span>
-                            <span className="text-[12px] font-bold text-[#f3f6f3]">
+                            <span className="text-sm font-bold text-[#171717]">
                               {p.firstName[0]}. {p.lastName}
                             </span>
                           </div>
-                          <span className="font-bold text-[#ffd34f]">{p.overall} OVR</span>
+                          <span className="font-bold text-[#815e2b]">{p.overall} OVR</span>
                         </div>
                       ))}
                     </div>
@@ -344,7 +344,7 @@ export default function SquadPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Oyuncu ara..."
-                    className="w-full sm:w-48 bg-[#efe5d8] border border-[#d4c6b6] focus:border-[#b8ff3d] px-7 py-1.5 rounded-[4px] text-[12px] font-inter text-[#171717] outline-none"
+                    className="w-full sm:w-48 bg-[#efe5d8] border border-[#d4c6b6] focus:border-[#9b2529] px-8 py-2.5 rounded-[4px] text-[12px] font-inter text-[#171717] outline-none"
                   />
                   <Search size={14} className="text-[#665b50] absolute left-2.5 top-2.5 pointer-events-none" />
                 </div>
@@ -352,7 +352,7 @@ export default function SquadPage() {
 
               {/* Roster Table */}
               <div className="overflow-x-auto">
-                <table className="w-full text-left font-ibm text-[12px]">
+                <table className="w-full min-w-[900px] text-left font-inter text-[13px] tabular-nums">
                   <thead>
                     <tr className="border-b border-[#d4c6b6] text-[#665b50]">
                       <th className="py-2.5 px-3 cursor-pointer" onClick={() => handleSort('lastName')}>
