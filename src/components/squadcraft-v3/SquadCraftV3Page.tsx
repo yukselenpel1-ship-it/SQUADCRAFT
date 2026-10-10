@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { ScrollStoryProvider, useScrollStory } from './useScrollStory';
 import { StoryDOMOverlay } from './StoryDOMOverlay';
-import { TacticalHUD } from '../squadcraft-experience/TacticalHUD';
+import { SignatureNav } from './SignatureNav';
 import { GameSettingsModal } from '@/components/modals/GameSettingsModal';
 import AuthModal from '@/components/auth/AuthModal';
 
@@ -30,7 +30,7 @@ function V3Inner() {
       className="relative min-h-screen w-full bg-[#05080D] text-[#F2F6FA] font-sans selection:bg-[#B7FF3C] selection:text-[#05080D]"
     >
       {/* 1. TOP GLOBAL BROADCAST NAVBAR & MOBILE DRAWER */}
-      <TacticalHUD
+      <SignatureNav
         onOpenAuth={() => setAuthModalOpen(true)}
         onOpenSettings={() => setSettingsOpen(true)}
       />
