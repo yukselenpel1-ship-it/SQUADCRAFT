@@ -632,3 +632,24 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 @media(prefers-reduced-motion:reduce){
  .sc-draft-room-readable * {animation-duration:.01ms !important;transition-duration:.01ms !important;}
 }
+
+
+/* Career match center: readable text while preserving the live tactical pitch. */
+.sc-career-match-readable { font-size:14px;line-height:1.5;color:#27221f; }
+.sc-career-match-readable :is(button,a):focus-visible {outline:2px solid #a3262c;outline-offset:3px;}
+.sc-career-match-readable button {min-height:36px;}
+.sc-career-match-readable [class*="text-[9px]"] {font-size:11px;}
+.sc-career-match-readable [class*="text-[10px]"] {font-size:11px;}
+.sc-career-match-readable [class*="text-[11px]"] {font-size:12px;}
+.sc-career-match-readable [class*="text-zinc-500"] {color:#aebbb5;}
+.sc-career-match-readable [class*="text-zinc-400"] {color:#cbd6d1;}
+.sc-career-match-readable .sc-panel {border-color:rgba(236,243,237,.19);}
+.sc-career-match-readable :is(h2,h3,h4) {line-height:1.2;}
+.sc-career-match-readable [class*="text-[#b7ff35]"] {color:#c6f47b;}
+.sc-career-match-readable [class*="text-[#17e5c2]"] {color:#65e1ca;}
+@media(max-width:767px){
+ .sc-career-match-readable {min-width:0;}
+ .sc-career-match-readable button {min-height:42px;}
+ .sc-career-match-readable :is(h2,h3) {overflow-wrap:anywhere;}
+}
+@media(prefers-reduced-motion:reduce){.sc-career-match-readable *{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
