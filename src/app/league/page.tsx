@@ -65,7 +65,7 @@ export default function LeaguePage() {
   }
 
   return (
-    <div className="space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
       {/* Broadcast Header HUD */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[#292622] pb-6">
         <div>
