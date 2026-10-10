@@ -220,7 +220,8 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 }
 
 /* SQUADCRAFT AAA Typography & Utility Classes */
-.font-barlow {
+.font-barlow,
+.font-condensed {
   font-family: 'Barlow Condensed', sans-serif;
 }
 .font-ibm {
