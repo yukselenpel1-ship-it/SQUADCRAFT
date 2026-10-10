@@ -98,7 +98,7 @@ export default function ScoutingPage() {
   }
 
   return (
-    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle sc-scouting-editorial space-y-5 px-4 sm:px-8 lg:px-12 py-6 pb-20 max-w-[1500px] mx-auto animate-in fade-in duration-300">
       {/* 1. BROADCAST SCOUTING HEADER */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#090d0a] via-[#0d130f] to-[#090d0a] border border-white/10 p-5 md:p-6 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#21dfbd]/5 rounded-full blur-3xl pointer-events-none" />
@@ -121,7 +121,7 @@ export default function ScoutingPage() {
                 <Compass className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase font-sport">
+                <h1 className="text-2xl sm:text-3xl font-black text-[#211d19] tracking-tight uppercase font-sport">
                   GÖZLEM DEPARTMANI
                 </h1>
                 <p className="text-xs text-zinc-400 font-mono">
@@ -185,8 +185,8 @@ export default function ScoutingPage() {
           onClick={() => setActiveTab('network')}
           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'network'
-              ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_15px_rgba(184,255,61,0.3)]'
-              : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10 hover:border-white/20'
+              ? 'bg-[#9b2529] text-white font-black'
+              : 'bg-[#e8ddd0] text-[#40362e] hover:text-[#9b2529] border border-[#c9b9a7] hover:border-[#9b2529]'
           }`}
         >
           <Globe className="w-4 h-4" />
@@ -197,8 +197,8 @@ export default function ScoutingPage() {
           onClick={() => setActiveTab('search')}
           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'search'
-              ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_15px_rgba(184,255,61,0.3)]'
-              : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10 hover:border-white/20'
+              ? 'bg-[#9b2529] text-white font-black'
+              : 'bg-[#e8ddd0] text-[#40362e] hover:text-[#9b2529] border border-[#c9b9a7] hover:border-[#9b2529]'
           }`}
         >
           <Search className="w-4 h-4" />
@@ -209,8 +209,8 @@ export default function ScoutingPage() {
           onClick={() => setActiveTab('scouts')}
           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'scouts'
-              ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_15px_rgba(184,255,61,0.3)]'
-              : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10 hover:border-white/20'
+              ? 'bg-[#9b2529] text-white font-black'
+              : 'bg-[#e8ddd0] text-[#40362e] hover:text-[#9b2529] border border-[#c9b9a7] hover:border-[#9b2529]'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -221,8 +221,8 @@ export default function ScoutingPage() {
           onClick={() => setActiveTab('assignments')}
           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'assignments'
-              ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_15px_rgba(184,255,61,0.3)]'
-              : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10 hover:border-white/20'
+              ? 'bg-[#9b2529] text-white font-black'
+              : 'bg-[#e8ddd0] text-[#40362e] hover:text-[#9b2529] border border-[#c9b9a7] hover:border-[#9b2529]'
           }`}
         >
           <Clock className="w-4 h-4" />
@@ -233,8 +233,8 @@ export default function ScoutingPage() {
           onClick={() => setActiveTab('reports')}
           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'reports'
-              ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_15px_rgba(184,255,61,0.3)]'
-              : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10 hover:border-white/20'
+              ? 'bg-[#9b2529] text-white font-black'
+              : 'bg-[#e8ddd0] text-[#40362e] hover:text-[#9b2529] border border-[#c9b9a7] hover:border-[#9b2529]'
           }`}
         >
           <FileText className="w-4 h-4" />
@@ -247,16 +247,16 @@ export default function ScoutingPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-black text-white uppercase tracking-tight font-sport">
+              <h2 className="text-lg sm:text-xl font-black text-[#25201c] uppercase tracking-tight font-sport">
                 BÖLGESEL İSTİHBARAT AĞI
               </h2>
-              <p className="text-xs text-zinc-400 font-mono">
+              <p className="text-xs text-[#675d53] font-mono">
                 Her coğrafi bölgenin yetenek yoğunluğu, futbol ekolü ve aktif gözlemci ataması
               </p>
             </div>
             <button
               onClick={() => setActiveTab('search')}
-              className="px-4 py-2 rounded-xl bg-[#b8ff3d] hover:bg-[#a6ec31] text-[#050806] font-mono font-black text-xs uppercase flex items-center gap-1.5 transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)]"
+              className="px-4 py-2 rounded-xl bg-[#9b2529] hover:bg-[#761d23] text-[#22201c] font-mono font-black text-xs uppercase flex items-center gap-1.5 transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)]"
             >
               <Search className="w-4 h-4" />
               Oyuncu Tara
@@ -272,14 +272,14 @@ export default function ScoutingPage() {
               return (
                 <div
                   key={region.id}
-                  className="bg-[#090d0a] rounded-2xl border border-white/10 p-5 space-y-4 hover:border-white/20 transition-all shadow-xl relative overflow-hidden"
+                  className="bg-[#fffaf2] rounded-2xl border border-[#d3c5b5] p-5 space-y-4 hover:border-white/20 transition-all shadow-xl relative overflow-hidden"
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <span className="text-[10px] font-mono font-bold uppercase text-zinc-500 block">
+                      <span className="text-[10px] font-mono font-bold uppercase text-[#75695e] block">
                         COĞRAFİ HAVZA #{idx + 1}
                       </span>
-                      <h3 className="text-base font-black text-white uppercase font-sport mt-0.5">
+                      <h3 className="text-base font-black text-[#22201c] uppercase font-sport mt-0.5">
                         {region.name}
                       </h3>
                     </div>
@@ -287,25 +287,25 @@ export default function ScoutingPage() {
                     <span
                       className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase border ${
                         idx < 2
-                          ? 'bg-[#b8ff3d]/15 text-[#b8ff3d] border-[#b8ff3d]/30'
+                          ? 'bg-[#b8ff3d]/15 text-[#873137] border-[#b8ff3d]/30'
                           : idx < 4
-                          ? 'bg-[#21dfbd]/15 text-[#21dfbd] border-[#21dfbd]/30'
-                          : 'bg-zinc-800 text-zinc-400 border-white/10'
+                          ? 'bg-[#21dfbd]/15 text-[#366a63] border-[#21dfbd]/30'
+                          : 'bg-zinc-800 text-[#675d53] border-[#d3c5b5]'
                       }`}
                     >
                       {priorityTier}
                     </span>
                   </div>
 
-                  <p className="text-xs text-zinc-400 font-mono line-clamp-2">
+                  <p className="text-xs text-[#675d53] font-mono line-clamp-2">
                     {region.descriptionTurkish}
                   </p>
 
                   {/* Coverage & Talent Density Gauge */}
                   <div className="space-y-1.5 font-mono text-xs">
                     <div className="flex justify-between text-[11px]">
-                      <span className="text-zinc-500">YETENEK YOĞUNLUĞU</span>
-                      <span className="font-bold text-[#21dfbd]">%{region.talentDensity}</span>
+                      <span className="text-[#75695e]">YETENEK YOĞUNLUĞU</span>
+                      <span className="font-bold text-[#366a63]">%{region.talentDensity}</span>
                     </div>
                     <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
                       <div
@@ -316,14 +316,14 @@ export default function ScoutingPage() {
                   </div>
 
                   {/* Assigned Scout Node */}
-                  <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+                  <div className="pt-3 border-t border-[#d3c5b5] flex items-center justify-between text-xs font-mono">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-[#050706] border border-white/10 flex items-center justify-center text-[#21dfbd]">
+                      <div className="w-7 h-7 rounded-lg bg-[#e9dfd2] border border-[#d3c5b5] flex items-center justify-center text-[#366a63]">
                         <UserCheck className="w-3.5 h-3.5" />
                       </div>
                       <div>
-                        <span className="text-[10px] text-zinc-500 block">BÖLGE SORUMLUSU</span>
-                        <span className="font-bold text-white">
+                        <span className="text-[10px] text-[#75695e] block">BÖLGE SORUMLUSU</span>
+                        <span className="font-bold text-[#22201c]">
                           {assignedScout ? `${assignedScout.firstName} ${assignedScout.lastName}` : 'ATANMAMIŞ'}
                         </span>
                       </div>
@@ -331,7 +331,7 @@ export default function ScoutingPage() {
 
                     <button
                       onClick={() => setActiveTab('search')}
-                      className="px-3 py-1 bg-[#050706] hover:bg-zinc-900 border border-white/10 rounded-lg text-zinc-300 hover:text-white text-[11px] font-bold uppercase transition-all"
+                      className="px-3 py-1 bg-[#e9dfd2] hover:bg-zinc-900 border border-[#d3c5b5] rounded-lg text-[#4b4139] hover:text-[#22201c] text-[11px] font-bold uppercase transition-all"
                     >
                       Tara
                     </button>
@@ -347,16 +347,16 @@ export default function ScoutingPage() {
       {activeTab === 'search' && (
         <div className="space-y-4">
           {/* Controls Bar */}
-          <div className="bg-[#090d0a] rounded-2xl border border-white/10 p-4 space-y-3 shadow-xl">
+          <div className="bg-[#fffaf2] rounded-2xl border border-[#d3c5b5] p-4 space-y-3 shadow-xl">
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
               <div className="sm:col-span-5 relative">
-                <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Search className="w-4 h-4 text-[#675d53] absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   placeholder="Futbolcu adı ile ara..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#050706] border border-white/10 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-[#b8ff3d] font-mono"
+                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#e9dfd2] border border-[#d3c5b5] text-xs text-[#22201c] placeholder-zinc-500 focus:outline-none focus:border-[#b8ff3d] font-mono"
                 />
               </div>
 
@@ -364,7 +364,7 @@ export default function ScoutingPage() {
                 <select
                   value={positionFilter}
                   onChange={(e) => setPositionFilter(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-[#050706] border border-white/10 text-xs text-white focus:outline-none focus:border-[#b8ff3d] font-mono"
+                  className="w-full px-3 py-2 rounded-xl bg-[#e9dfd2] border border-[#d3c5b5] text-xs text-[#22201c] focus:outline-none focus:border-[#b8ff3d] font-mono"
                 >
                   <option value="ALL">Tüm Mevkiler</option>
                   <option value="GK">Kaleci (GK)</option>
@@ -381,9 +381,9 @@ export default function ScoutingPage() {
               </div>
 
               <div className="sm:col-span-2">
-                <div className="flex items-center gap-2 px-3 py-2 bg-[#050706] rounded-xl border border-white/10 text-xs font-mono">
-                  <span className="text-zinc-500 text-[10px]">Yaş ≤</span>
-                  <span className="font-bold text-white">{maxAgeFilter}</span>
+                <div className="flex items-center gap-2 px-3 py-2 bg-[#e9dfd2] rounded-xl border border-[#d3c5b5] text-xs font-mono">
+                  <span className="text-[#75695e] text-[10px]">Yaş ≤</span>
+                  <span className="font-bold text-[#22201c]">{maxAgeFilter}</span>
                   <input
                     type="range"
                     min="16"
@@ -399,7 +399,7 @@ export default function ScoutingPage() {
                 <select
                   value={minKnowledge}
                   onChange={(e) => setMinKnowledge(Number(e.target.value))}
-                  className="w-full px-2.5 py-2 rounded-xl bg-[#050706] border border-white/10 text-xs text-white focus:outline-none focus:border-[#b8ff3d] font-mono"
+                  className="w-full px-2.5 py-2 rounded-xl bg-[#e9dfd2] border border-[#d3c5b5] text-xs text-[#22201c] focus:outline-none focus:border-[#b8ff3d] font-mono"
                 >
                   <option value="0">Bilgi: Tümü</option>
                   <option value="50">%50+ Raporlu</option>
@@ -410,10 +410,10 @@ export default function ScoutingPage() {
           </div>
 
           {/* Fog of War Table */}
-          <div className="overflow-x-auto rounded-2xl border border-white/10 bg-[#090d0a] shadow-2xl">
+          <div className="overflow-x-auto rounded-2xl border border-[#d3c5b5] bg-[#fffaf2] shadow-2xl">
             <table className="w-full text-left border-collapse min-w-[960px]">
               <thead>
-                <tr className="border-b border-white/10 bg-[#050706] text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                <tr className="border-b border-[#d3c5b5] bg-[#e9dfd2] text-[10px] font-mono font-bold uppercase tracking-wider text-[#675d53]">
                   <th className="py-3 px-4">OYUNCU</th>
                   <th className="py-3 px-3">KULÜBÜ</th>
                   <th className="py-3 px-2 text-center">MEVKİ</th>
@@ -436,31 +436,31 @@ export default function ScoutingPage() {
                     <tr
                       key={player.id}
                       onClick={() => setSelectedPlayer(player)}
-                      className="hover:bg-[#0d130f] transition-colors cursor-pointer"
+                      className="hover:bg-[#eee3d6] transition-colors cursor-pointer"
                     >
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
                           <PlayerPortrait player={player} size="sm" />
                           <div>
-                            <span className="font-bold text-white uppercase block hover:text-[#b8ff3d] transition-colors">
+                            <span className="font-bold text-[#22201c] uppercase block hover:text-[#873137] transition-colors">
                               {player.firstName} {player.lastName}
                             </span>
-                            <span className="text-[10px] font-mono text-zinc-500">{player.nationality}</span>
+                            <span className="text-[10px] font-mono text-[#75695e]">{player.nationality}</span>
                           </div>
                         </div>
                       </td>
 
-                      <td className="py-3 px-3 font-mono text-zinc-300 text-xs">
+                      <td className="py-3 px-3 font-mono text-[#4b4139] text-xs">
                         {club ? club.name : 'Serbest'}
                       </td>
 
                       <td className="py-3 px-2 text-center">
-                        <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#050706] border border-white/10 text-[#b8ff3d] rounded">
+                        <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#e9dfd2] border border-[#d3c5b5] text-[#873137] rounded">
                           {player.position}
                         </span>
                       </td>
 
-                      <td className="py-3 px-2 text-center font-mono text-zinc-300">{player.age}</td>
+                      <td className="py-3 px-2 text-center font-mono text-[#4b4139]">{player.age}</td>
 
                       <td className="py-3 px-3 text-center">
                         <div className="flex items-center justify-center gap-2 font-mono text-[10px]">
@@ -470,23 +470,23 @@ export default function ScoutingPage() {
                               style={{ width: `${masked.knowledgePercentage}%` }}
                             />
                           </div>
-                          <span className="text-[#21dfbd] font-bold">%{masked.knowledgePercentage}</span>
+                          <span className="text-[#366a63] font-bold">%{masked.knowledgePercentage}</span>
                         </div>
                       </td>
 
                       <td className="py-3 px-3 text-center font-mono">
-                        <span className="px-2 py-0.5 rounded bg-[#050706] border border-white/10 font-bold text-white">
+                        <span className="px-2 py-0.5 rounded bg-[#e9dfd2] border border-[#d3c5b5] font-bold text-[#22201c]">
                           {masked.overallDisplay}
                         </span>
                       </td>
 
                       <td className="py-3 px-3 text-center font-mono">
-                        <span className="px-2 py-0.5 rounded bg-[#050706] border border-white/10 font-bold text-[#4FE4FF]">
+                        <span className="px-2 py-0.5 rounded bg-[#e9dfd2] border border-[#d3c5b5] font-bold text-[#366a63]">
                           {masked.potentialDisplay}
                         </span>
                       </td>
 
-                      <td className="py-3 px-3 text-right font-mono font-bold text-white">
+                      <td className="py-3 px-3 text-right font-mono font-bold text-[#22201c]">
                         {masked.marketValueDisplay}
                       </td>
 
@@ -499,7 +499,7 @@ export default function ScoutingPage() {
                       <td className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                         <button
                           onClick={() => setScoutModalPlayer(player)}
-                          className="px-3 py-1 bg-[#21dfbd] hover:bg-[#1bc4a5] text-[#050806] font-mono font-black text-xs uppercase rounded-lg transition-all flex items-center gap-1 mx-auto"
+                          className="px-3 py-1 bg-[#9b2529] hover:bg-[#751b21] text-white font-mono font-black text-xs uppercase rounded-lg transition-all flex items-center gap-1 mx-auto"
                         >
                           <Compass className="w-3.5 h-3.5" />
                           Gözlemci Gönder
@@ -520,8 +520,8 @@ export default function ScoutingPage() {
           {/* Active Club Scouts */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-black uppercase tracking-wider text-white font-sport flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#b8ff3d]" />
+              <h3 className="text-sm font-black uppercase tracking-wider text-[#22201c] font-sport flex items-center gap-2">
+                <Users className="w-4 h-4 text-[#873137]" />
                 KULÜP GÖZLEMCİ EKİBİ ({scouts.length} / 6 KONTENJAN)
               </h3>
             </div>
@@ -532,55 +532,55 @@ export default function ScoutingPage() {
                 const activeAssign = scoutingAssignments.find((a) => a.id === scout.activeAssignmentId);
 
                 return (
-                  <div key={scout.id} className="bg-[#090d0a] rounded-2xl border border-white/10 p-5 space-y-4 shadow-xl">
+                  <div key={scout.id} className="bg-[#fffaf2] rounded-2xl border border-[#d3c5b5] p-5 space-y-4 shadow-xl">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="text-base font-black text-white uppercase font-sport">
+                        <h4 className="text-base font-black text-[#22201c] uppercase font-sport">
                           {scout.firstName} {scout.lastName}
                         </h4>
-                        <span className="text-[11px] font-mono text-zinc-400">
+                        <span className="text-[11px] font-mono text-[#675d53]">
                           {scout.nationality} • {scout.age} YAŞ • €{scout.wage.toLocaleString('tr-TR')}/hf
                         </span>
                       </div>
                       <span
                         className={`text-[10px] font-mono px-2 py-0.5 rounded font-bold uppercase border ${
                           isBusy
-                            ? 'bg-[#ffd34f]/20 text-[#ffd34f] border-[#ffd34f]/30'
-                            : 'bg-[#b8ff3d]/20 text-[#b8ff3d] border-[#b8ff3d]/30'
+                            ? 'bg-[#ffd34f]/20 text-[#795623] border-[#ffd34f]/30'
+                            : 'bg-[#b8ff3d]/20 text-[#873137] border-[#b8ff3d]/30'
                         }`}
                       >
                         {isBusy ? 'GÖREVDE' : 'MÜSAİT'}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 p-3 bg-[#050706] rounded-xl border border-white/5 text-xs font-mono">
+                    <div className="grid grid-cols-2 gap-2 p-3 bg-[#e9dfd2] rounded-xl border border-[#dfd2c3] text-xs font-mono">
                       <div>
-                        <span className="text-zinc-500 block text-[10px] uppercase">Yetenek Sezisi</span>
-                        <strong className="text-white font-bold">{scout.judgingAbility} / 20</strong>
+                        <span className="text-[#75695e] block text-[10px] uppercase">Yetenek Sezisi</span>
+                        <strong className="text-[#22201c] font-bold">{scout.judgingAbility} / 20</strong>
                       </div>
                       <div>
-                        <span className="text-zinc-500 block text-[10px] uppercase">Potansiyel Sezisi</span>
-                        <strong className="text-[#b8ff3d] font-bold">{scout.judgingPotential} / 20</strong>
+                        <span className="text-[#75695e] block text-[10px] uppercase">Potansiyel Sezisi</span>
+                        <strong className="text-[#873137] font-bold">{scout.judgingPotential} / 20</strong>
                       </div>
                       <div>
-                        <span className="text-zinc-500 block text-[10px] uppercase">Taktik Bilgisi</span>
-                        <strong className="text-[#4FE4FF] font-bold">{scout.tacticalKnowledge} / 20</strong>
+                        <span className="text-[#75695e] block text-[10px] uppercase">Taktik Bilgisi</span>
+                        <strong className="text-[#366a63] font-bold">{scout.tacticalKnowledge} / 20</strong>
                       </div>
                       <div>
-                        <span className="text-zinc-500 block text-[10px] uppercase">Uyum Becerisi</span>
-                        <strong className="text-zinc-300 font-bold">{scout.adaptability} / 20</strong>
+                        <span className="text-[#75695e] block text-[10px] uppercase">Uyum Becerisi</span>
+                        <strong className="text-[#4b4139] font-bold">{scout.adaptability} / 20</strong>
                       </div>
                     </div>
 
                     {isBusy && activeAssign && (
-                      <div className="p-3 bg-[#050706] rounded-xl border border-white/10 text-xs font-mono text-zinc-300">
-                        <span className="text-[10px] text-zinc-500 block uppercase">AKTİF GÖREV</span>
-                        <strong className="text-white block mt-0.5">{activeAssign.targetPlayerName || 'Bölgesel Tarama'}</strong>
-                        <span className="text-[10px] text-[#4FE4FF] block mt-0.5">Kalan: {activeAssign.daysRemaining} Gün</span>
+                      <div className="p-3 bg-[#e9dfd2] rounded-xl border border-[#d3c5b5] text-xs font-mono text-[#4b4139]">
+                        <span className="text-[10px] text-[#75695e] block uppercase">AKTİF GÖREV</span>
+                        <strong className="text-[#22201c] block mt-0.5">{activeAssign.targetPlayerName || 'Bölgesel Tarama'}</strong>
+                        <span className="text-[10px] text-[#366a63] block mt-0.5">Kalan: {activeAssign.daysRemaining} Gün</span>
                       </div>
                     )}
 
-                    <div className="pt-2 border-t border-white/10 flex justify-end">
+                    <div className="pt-2 border-t border-[#d3c5b5] flex justify-end">
                       <button
                         onClick={() => fireScout(scout.id)}
                         className="text-xs font-mono text-[#ff5365] hover:text-[#ff384e] font-bold flex items-center gap-1.5"
@@ -597,37 +597,37 @@ export default function ScoutingPage() {
 
           {/* Free Agent Scouts to Hire */}
           {freeAgentScouts.length > 0 && (
-            <div className="space-y-3 pt-4 border-t border-white/10">
-              <h3 className="text-sm font-black uppercase tracking-wider text-white font-sport flex items-center gap-2">
-                <UserPlus className="w-4 h-4 text-[#21dfbd]" />
+            <div className="space-y-3 pt-4 border-t border-[#d3c5b5]">
+              <h3 className="text-sm font-black uppercase tracking-wider text-[#22201c] font-sport flex items-center gap-2">
+                <UserPlus className="w-4 h-4 text-[#366a63]" />
                 SERBEST GÖZLEMCİ HAVUZU (İŞE ALINABİLİR)
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {freeAgentScouts.map((scout) => (
-                  <div key={scout.id} className="bg-[#090d0a] rounded-2xl border border-white/10 p-5 space-y-4 shadow-xl">
+                  <div key={scout.id} className="bg-[#fffaf2] rounded-2xl border border-[#d3c5b5] p-5 space-y-4 shadow-xl">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="text-base font-black text-white uppercase font-sport">
+                        <h4 className="text-base font-black text-[#22201c] uppercase font-sport">
                           {scout.firstName} {scout.lastName}
                         </h4>
-                        <span className="text-[11px] font-mono text-zinc-400">
+                        <span className="text-[11px] font-mono text-[#675d53]">
                           {scout.nationality} • €{scout.wage.toLocaleString('tr-TR')}/hf
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded uppercase bg-[#21dfbd]/15 text-[#21dfbd] border border-[#21dfbd]/30">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded uppercase bg-[#21dfbd]/15 text-[#366a63] border border-[#21dfbd]/30">
                         BOŞTA
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 p-3 bg-[#050706] rounded-xl border border-white/5 text-xs font-mono">
+                    <div className="grid grid-cols-2 gap-2 p-3 bg-[#e9dfd2] rounded-xl border border-[#dfd2c3] text-xs font-mono">
                       <div>
-                        <span className="text-zinc-500 block text-[10px]">YETENEK</span>
-                        <strong className="text-white">{scout.judgingAbility} / 20</strong>
+                        <span className="text-[#75695e] block text-[10px]">YETENEK</span>
+                        <strong className="text-[#22201c]">{scout.judgingAbility} / 20</strong>
                       </div>
                       <div>
-                        <span className="text-zinc-500 block text-[10px]">POTANSİYEL</span>
-                        <strong className="text-[#b8ff3d]">{scout.judgingPotential} / 20</strong>
+                        <span className="text-[#75695e] block text-[10px]">POTANSİYEL</span>
+                        <strong className="text-[#873137]">{scout.judgingPotential} / 20</strong>
                       </div>
                     </div>
 
@@ -651,16 +651,16 @@ export default function ScoutingPage() {
       {activeTab === 'assignments' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black uppercase tracking-wider text-white font-sport flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#4FE4FF]" />
+            <h3 className="text-sm font-black uppercase tracking-wider text-[#22201c] font-sport flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[#366a63]" />
               DEVAM EDEN VE TAMAMLANMIŞ GÖREVLER
             </h3>
           </div>
 
-          <div className="overflow-x-auto rounded-2xl border border-white/10 bg-[#090d0a] shadow-2xl">
+          <div className="overflow-x-auto rounded-2xl border border-[#d3c5b5] bg-[#fffaf2] shadow-2xl">
             <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
-                <tr className="border-b border-white/10 bg-[#050706] text-[10px] font-mono font-bold uppercase tracking-wider text-zinc-400">
+                <tr className="border-b border-[#d3c5b5] bg-[#e9dfd2] text-[10px] font-mono font-bold uppercase tracking-wider text-[#675d53]">
                   <th className="py-3 px-4">GÖZLEMCİ</th>
                   <th className="py-3 px-3">HEDEF / BÖLGE</th>
                   <th className="py-3 px-3">BAŞLANGIÇ</th>
@@ -673,27 +673,27 @@ export default function ScoutingPage() {
               <tbody className="divide-y divide-white/5 text-xs font-medium">
                 {scoutingAssignments.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-zinc-500 font-mono">
+                    <td colSpan={7} className="py-12 text-center text-[#75695e] font-mono">
                       Şu an kayıtlı bir görev bulunmuyor.
                     </td>
                   </tr>
                 ) : (
                   scoutingAssignments.map((a) => (
-                    <tr key={a.id} className="hover:bg-[#0d130f]">
-                      <td className="py-3 px-4 font-bold text-white uppercase">{a.scoutName}</td>
-                      <td className="py-3 px-3 font-mono text-zinc-300">{a.targetPlayerName || 'Bölgesel Tarama'}</td>
-                      <td className="py-3 px-3 font-mono text-zinc-500">{a.startDate}</td>
-                      <td className="py-3 px-3 font-mono text-zinc-400">{a.durationDays} Gün</td>
-                      <td className="py-3 px-3 font-mono font-bold text-[#4FE4FF]">
+                    <tr key={a.id} className="hover:bg-[#eee3d6]">
+                      <td className="py-3 px-4 font-bold text-[#22201c] uppercase">{a.scoutName}</td>
+                      <td className="py-3 px-3 font-mono text-[#4b4139]">{a.targetPlayerName || 'Bölgesel Tarama'}</td>
+                      <td className="py-3 px-3 font-mono text-[#75695e]">{a.startDate}</td>
+                      <td className="py-3 px-3 font-mono text-[#675d53]">{a.durationDays} Gün</td>
+                      <td className="py-3 px-3 font-mono font-bold text-[#366a63]">
                         {a.status === 'ACTIVE' ? `${a.daysRemaining} Gün` : '-'}
                       </td>
                       <td className="py-3 px-3">
                         <span
                           className={`px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase border ${
                             a.status === 'ACTIVE'
-                              ? 'bg-[#4FE4FF]/15 text-[#4FE4FF] border-[#4FE4FF]/30'
+                              ? 'bg-[#4FE4FF]/15 text-[#366a63] border-[#4FE4FF]/30'
                               : a.status === 'COMPLETED'
-                              ? 'bg-[#b8ff3d]/15 text-[#b8ff3d] border-[#b8ff3d]/30'
+                              ? 'bg-[#b8ff3d]/15 text-[#873137] border-[#b8ff3d]/30'
                               : 'bg-[#ff5365]/15 text-[#ff5365] border-[#ff5365]/30'
                           }`}
                         >
@@ -723,15 +723,15 @@ export default function ScoutingPage() {
       {activeTab === 'reports' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-black uppercase tracking-wider text-white font-sport flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[#b8ff3d]" />
+            <h3 className="text-sm font-black uppercase tracking-wider text-[#22201c] font-sport flex items-center gap-2">
+              <FileText className="w-4 h-4 text-[#873137]" />
               GÖZLEMCİ RAPORLARI DOSYASI ({scoutingReports.length} RAPOR)
             </h3>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {scoutingReports.length === 0 ? (
-              <div className="col-span-2 p-12 text-center bg-[#090d0a] rounded-2xl border border-white/10 text-zinc-400 font-mono text-xs">
+              <div className="col-span-2 p-12 text-center bg-[#fffaf2] rounded-2xl border border-[#d3c5b5] text-[#675d53] font-mono text-xs">
                 Arşivde henüz tamamlanmış bir gözlemci raporu bulunmamaktadır.
               </div>
             ) : (
@@ -741,48 +741,48 @@ export default function ScoutingPage() {
                   <div
                     key={rep.id}
                     onClick={() => targetP && setSelectedPlayer(targetP)}
-                    className="p-5 bg-[#090d0a] rounded-2xl border border-white/10 hover:border-white/20 transition-all cursor-pointer space-y-3 shadow-xl"
+                    className="p-5 bg-[#fffaf2] rounded-2xl border border-[#d3c5b5] hover:border-white/20 transition-all cursor-pointer space-y-3 shadow-xl"
                   >
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h4 className="text-base font-black text-white uppercase font-sport">{rep.playerName}</h4>
-                          <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#b8ff3d]/15 text-[#b8ff3d] border border-[#b8ff3d]/30 rounded">
+                          <h4 className="text-base font-black text-[#22201c] uppercase font-sport">{rep.playerName}</h4>
+                          <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#b8ff3d]/15 text-[#873137] border border-[#b8ff3d]/30 rounded">
                             {rep.bestPosition}
                           </span>
                         </div>
-                        <span className="text-[11px] font-mono text-zinc-400 block mt-0.5">
+                        <span className="text-[11px] font-mono text-[#675d53] block mt-0.5">
                           Gözlemci: {rep.scoutName} • {rep.date}
                         </span>
                       </div>
 
-                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#4FE4FF]/15 text-[#4FE4FF] border border-[#4FE4FF]/30 uppercase">
+                      <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#4FE4FF]/15 text-[#366a63] border border-[#4FE4FF]/30 uppercase">
                         {rep.recommendation}
                       </span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2 p-3 bg-[#050706] rounded-xl border border-white/5 text-xs font-mono">
+                    <div className="grid grid-cols-2 gap-2 p-3 bg-[#e9dfd2] rounded-xl border border-[#dfd2c3] text-xs font-mono">
                       <div>
-                        <span className="text-zinc-500 block text-[10px] uppercase">Tahmini Seviye</span>
-                        <strong className="text-white">{rep.estimatedOverallMin} – {rep.estimatedOverallMax} GEN</strong>
+                        <span className="text-[#75695e] block text-[10px] uppercase">Tahmini Seviye</span>
+                        <strong className="text-[#22201c]">{rep.estimatedOverallMin} – {rep.estimatedOverallMax} GEN</strong>
                       </div>
                       <div>
-                        <span className="text-zinc-500 block text-[10px] uppercase">Potansiyel Bandı</span>
-                        <strong className="text-[#b8ff3d]">{rep.estimatedPotentialMin} – {rep.estimatedPotentialMax} POT</strong>
+                        <span className="text-[#75695e] block text-[10px] uppercase">Potansiyel Bandı</span>
+                        <strong className="text-[#873137]">{rep.estimatedPotentialMin} – {rep.estimatedPotentialMax} POT</strong>
                       </div>
                       <div>
-                        <span className="text-zinc-500 block text-[10px] uppercase">Bonservis</span>
-                        <span className="text-zinc-300">
+                        <span className="text-[#75695e] block text-[10px] uppercase">Bonservis</span>
+                        <span className="text-[#4b4139]">
                           €{(rep.estimatedTransferFeeMin / 1_000_000).toFixed(1)}M – €{(rep.estimatedTransferFeeMax / 1_000_000).toFixed(1)}M
                         </span>
                       </div>
                       <div>
-                        <span className="text-zinc-500 block text-[10px] uppercase">Güven Oranı</span>
-                        <span className="text-[#4FE4FF] font-bold">%{rep.confidence}</span>
+                        <span className="text-[#75695e] block text-[10px] uppercase">Güven Oranı</span>
+                        <span className="text-[#366a63] font-bold">%{rep.confidence}</span>
                       </div>
                     </div>
 
-                    <p className="text-xs text-zinc-300 font-mono italic">{rep.summaryNotes}</p>
+                    <p className="text-xs text-[#4b4139] font-mono italic">{rep.summaryNotes}</p>
                   </div>
                 );
               })
