@@ -359,3 +359,49 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
   .sc-editorial-career h1 { overflow-wrap: anywhere; }
   .sc-editorial-career :is(button,a) { touch-action: manipulation; }
 }
+
+
+/* Editorial cohesion v2 — limited to career content, never the homepage/draft. */
+.sc-editorial-restyle {
+  color: #282420;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.sc-editorial-restyle h1 { font-size: clamp(2rem, 4vw, 3.7rem); line-height: 1.03; }
+.sc-editorial-restyle h2 { font-size: clamp(1.45rem, 2.6vw, 2.25rem); line-height: 1.12; }
+.sc-editorial-restyle :is(h3,h4) { line-height: 1.2; }
+.sc-editorial-restyle :is(article,section,div,aside,header,nav)[class*="bg-[#0d130f]"],
+.sc-editorial-restyle :is(article,section,div,aside,header,nav)[class*="bg-[#090d0a]"],
+.sc-editorial-restyle :is(article,section,div,aside,header,nav)[class*="bg-[#050706]"],
+.sc-editorial-restyle :is(article,section,div,aside,header,nav)[class*="bg-[#0B131E]"],
+.sc-editorial-restyle :is(article,section,div,aside,header,nav)[class*="bg-[#080E17]"],
+.sc-editorial-restyle :is(article,section,div,aside,header,nav)[class*="bg-gradient-to-r"] {
+  background: #fffaf2 !important;
+  border-color: #d2c7b7 !important;
+  box-shadow: 0 2px 12px rgba(38,31,25,.06) !important;
+  color: #292622;
+}
+.sc-editorial-restyle :is(article,section,div,aside,header,nav)[class*="bg-[#0d130f]"] [class*="text-white"],
+.sc-editorial-restyle :is(article,section,div,aside,header,nav)[class*="bg-[#090d0a]"] [class*="text-white"],
+.sc-editorial-restyle :is(article,section,div,aside,header,nav)[class*="bg-[#050706]"] [class*="text-white"],
+.sc-editorial-restyle :is(article,section,div,aside,header,nav)[class*="bg-gradient-to-r"] [class*="text-white"] {
+  color: #292622;
+}
+.sc-editorial-restyle [class*="text-zinc-400"],
+.sc-editorial-restyle [class*="text-[#8f9a91]"] { color: #695f56; }
+.sc-editorial-restyle :is(button,a)[class*="bg-[#b8ff3d]"],
+.sc-editorial-restyle :is(button,a)[class*="bg-[#B7FF3C]"] {
+  background-color: #9b2529 !important;
+  color: white !important;
+}
+.sc-editorial-restyle :is(button,a)[class*="bg-[#b8ff3d]"] *,
+.sc-editorial-restyle :is(button,a)[class*="bg-[#B7FF3C]"] * { color: white !important; }
+.sc-editorial-restyle .football-pitch-bg,
+.sc-editorial-restyle .football-pitch-bg * {
+  box-shadow: none;
+}
+@media(max-width: 767px) {
+ .sc-editorial-restyle { min-width: 0; }
+ .sc-editorial-restyle :is(table,[role="table"]) { font-size: 12px; }
+ .sc-editorial-restyle :is(h1,h2) { overflow-wrap: anywhere; }
+}
