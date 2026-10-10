@@ -766,3 +766,12 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 .sc-draft-career-theme main .sc-panel {
  background:linear-gradient(140deg,#fffaf2,#f0e6da) !important;
 }
+
+/* Actual waiting-room background; no stadium image or dark overlays. */
+.sc-draft-career-theme .sc-draft-paper-backdrop {
+  display:block;
+  background-color:#f2ede3;
+  background-image: radial-gradient(ellipse at 14% 12%,rgba(145,54,54,.06),transparent 50%),
+    radial-gradient(ellipse at 88% 82%,rgba(146,110,75,.09),transparent 45%),
+    linear-gradient(145deg,#f8f3eb 0%,#efe6db 100%);
+}
