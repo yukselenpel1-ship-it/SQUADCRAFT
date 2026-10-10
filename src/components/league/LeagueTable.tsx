@@ -9,141 +9,60 @@ interface LeagueTableProps {
   limit?: number;
 }
 
-export const LeagueTable: React.FC<LeagueTableProps> = ({
-  standings,
-  clubs,
-  userClubId = 'kalyon-doruk',
-  limit,
-}) => {
+export const LeagueTable: React.FC<LeagueTableProps> = ({ standings, clubs, userClubId, limit }) => {
   const displayStandings = limit ? standings.slice(0, limit) : standings;
-
-  const getClub = (id: string) => clubs.find((c) => c.id === id);
-
-  const getFormPill = (form: 'W' | 'D' | 'L', index: number) => {
-    const config = {
-      W: { label: 'W', bg: 'bg-[#65ff83]/20 text-[#65ff83] border-[#65ff83]/40' },
-      D: { label: 'D', bg: 'bg-[#ffd34f]/20 text-[#ffd34f] border-[#ffd34f]/40' },
-      L: { label: 'L', bg: 'bg-[#ff5365]/20 text-[#ff5365] border-[#ff5365]/40' },
-    }[form] || { label: 'W', bg: 'bg-[#65ff83]/20 text-[#65ff83] border-[#65ff83]/40' };
-
-    return (
-      <span
-        key={index}
-        className={`inline-flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-[2px] font-ibm text-[10px] font-black border ${config.bg}`}
-      >
-        {config.label}
-      </span>
-    );
+  const getClub = (id: string) => clubs.find(c => c.id === id);
+  const formColor: Record<string,string> = {
+    W: 'bg-[#e1edde] text-[#315c38]',
+    D: 'bg-[#f1e7cb] text-[#725a23]',
+    L: 'bg-[#f4dad7] text-[#922e30]',
   };
-
   return (
-    <div className="w-full overflow-x-auto rounded-[8px] border border-white/10 bg-[#090d0a] shadow-2xl">
-      <table className="w-full text-left border-collapse min-w-[700px] font-ibm text-[12px]">
+    <div className="w-full overflow-x-auto border border-[#d5c9b9] bg-[#fffaf2]">
+      <table className="w-full min-w-[720px] border-collapse text-left font-ibm text-[12px] tabular-nums">
         <thead>
-          <tr className="border-b border-white/10 bg-[#0c120e] text-[10px] text-[#8f9a91] font-bold uppercase tracking-widest">
-            <th className="py-3 px-3 text-center w-12">#</th>
-            <th className="py-3 px-4">CLUB</th>
-            <th className="py-3 px-3 text-center w-10">P</th>
-            <th className="py-3 px-3 text-center w-10">W</th>
-            <th className="py-3 px-3 text-center w-10">D</th>
-            <th className="py-3 px-3 text-center w-10">L</th>
-            <th className="py-3 px-3 text-center w-10">GF</th>
-            <th className="py-3 px-3 text-center w-10">GA</th>
-            <th className="py-3 px-3 text-center w-12">GD</th>
-            <th className="py-3 px-4 text-center w-16 text-[#f3f6f3] bg-[#0d130f]">PTS</th>
-            <th className="py-3 px-4 text-center">FORM</th>
+          <tr className="bg-[#ded2c3] border-b-2 border-[#5c4b40] text-[#322922] uppercase text-[11px] tracking-wide">
+            <th scope="col" className="p-3 text-center w-12">#</th>
+            <th scope="col" className="p-3 min-w-[190px]">KULÜP</th>
+            <th scope="col" className="p-3 text-center">O</th>
+            <th scope="col" className="p-3 text-center">G</th>
+            <th scope="col" className="p-3 text-center">B</th>
+            <th scope="col" className="p-3 text-center">M</th>
+            <th scope="col" className="p-3 text-center">AG</th>
+            <th scope="col" className="p-3 text-center">YG</th>
+            <th scope="col" className="p-3 text-center">AV</th>
+            <th scope="col" className="p-3 text-center font-black">PUAN</th>
+            <th scope="col" className="p-3 text-center">FORM</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-white/5">
+        <tbody className="divide-y divide-[#dfd5c8]">
           {displayStandings.map((item, index) => {
-            const club = getClub(item.clubId);
-            const isUserClub = item.clubId === userClubId;
-            const rank = index + 1;
-
-            // Subtle highlights & relegation markers
-            let rankBorder = 'border-l-4 border-transparent';
-            if (isUserClub) {
-              rankBorder = 'border-l-4 border-[#b8ff3d] bg-[#b8ff3d]/15 text-[#f3f6f3] font-bold';
-            } else if (rank === 1) {
-              rankBorder = 'border-l-4 border-[#ffd34f] bg-[#ffd34f]/5';
-            } else if (rank <= 3) {
-              rankBorder = 'border-l-4 border-[#21dfbd] bg-[#21dfbd]/5';
-            } else if (rank >= displayStandings.length - 1) {
-              rankBorder = 'border-l-4 border-[#ff5365] bg-[#ff5365]/5';
-            }
-
+            const club=getClub(item.clubId);
+            const mine=item.clubId===userClubId;
+            const rank=index+1;
+            const border=mine?'border-[#9b2529]':rank===1?'border-[#b58b36]':rank<=3?'border-[#52978c]':rank>=displayStandings.length-1?'border-[#b65c60]':'border-transparent';
             return (
-              <tr
-                key={item.clubId}
-                className={`transition-colors hover:bg-white/[0.03] ${rankBorder}`}
-              >
-                {/* # Rank */}
-                <td className="py-3 px-3 text-center font-bold">
-                  <span
-                    className={`inline-flex items-center justify-center w-6 h-6 rounded-[2px] text-[11px] ${
-                      isUserClub
-                        ? 'bg-[#b8ff3d] text-[#050806] font-extrabold shadow-[0_0_8px_#b8ff3d]'
-                        : rank === 1
-                        ? 'text-[#ffd34f] font-bold'
-                        : rank <= 3
-                        ? 'text-[#21dfbd] font-bold'
-                        : rank >= displayStandings.length - 1
-                        ? 'text-[#ff5365] font-bold'
-                        : 'text-[#8f9a91]'
-                    }`}
-                  >
-                    {rank}
-                  </span>
-                </td>
-
-                {/* CLUB */}
-                <td className="py-3 px-4">
-                  <div className="flex items-center gap-3">
-                    {club && (
-                      <ClubBadge
-                        code={club.code}
-                        name={club.name}
-                        clubId={club.id}
-                        primaryColor={club.primaryColor}
-                        secondaryColor={club.secondaryColor}
-                        size="xs"
-                      />
-                    )}
-                    <span
-                      className={`font-barlow font-bold text-[16px] uppercase tracking-wide truncate ${
-                        isUserClub ? 'text-[#b8ff3d]' : 'text-[#f3f6f3]'
-                      }`}
-                    >
-                      {club?.name || item.clubId}
-                    </span>
-                    {isUserClub && (
-                      <span className="px-1.5 py-0.2 rounded bg-[#b8ff3d] text-[#050806] font-ibm font-black text-[9px] uppercase">
-                        SEN
-                      </span>
-                    )}
+              <tr key={item.clubId} className={`border-l-4 ${border} ${mine?'bg-[#f3e0d9]':'hover:bg-[#f4eee5]'} text-[#181818] transition-colors`}>
+                <td className="p-3 text-center font-bold text-[#202020]">{rank}</td>
+                <td className="p-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    {club && <ClubBadge code={club.code} name={club.name} clubId={club.id} primaryColor={club.primaryColor} secondaryColor={club.secondaryColor} size="xs"/>}
+                    <span className="font-barlow font-extrabold uppercase text-[16px] tracking-wide text-[#111111]">{club?.name || item.clubId}</span>
+                    {mine && <span className="shrink-0 bg-[#9b2529] px-2 py-1 text-[10px] font-black text-white">SEN</span>}
                   </div>
                 </td>
-
-                {/* P, W, D, L, GF, GA, GD, PTS */}
-                <td className="py-3 px-3 text-center text-[#8f9a91]">{item.played}</td>
-                <td className="py-3 px-3 text-center text-[#f3f6f3]">{item.won}</td>
-                <td className="py-3 px-3 text-center text-[#8f9a91]">{item.drawn}</td>
-                <td className="py-3 px-3 text-center text-[#8f9a91]">{item.lost}</td>
-                <td className="py-3 px-3 text-center text-[#8f9a91]">{item.goalsFor}</td>
-                <td className="py-3 px-3 text-center text-[#8f9a91]">{item.goalsAgainst}</td>
-                <td className="py-3 px-3 text-center text-[#21dfbd] font-semibold">
-                  {item.goalDifference > 0 ? `+${item.goalDifference}` : item.goalDifference}
-                </td>
-                <td className="py-3 px-4 text-center font-barlow font-extrabold text-[17px] text-[#f3f6f3] bg-[#0c120e]">
-                  {item.points}
-                </td>
-
-                {/* FORM */}
-                <td className="py-3 px-4 text-center">
-                  <div className="flex items-center justify-center gap-1">
-                    {(item.form || ['W', 'W', 'D', 'W', 'L']).slice(-5).map((f, i) => getFormPill(f as any, i))}
-                  </div>
-                </td>
+                <td className="p-3 text-center">{item.played}</td>
+                <td className="p-3 text-center">{item.won}</td>
+                <td className="p-3 text-center">{item.drawn}</td>
+                <td className="p-3 text-center">{item.lost}</td>
+                <td className="p-3 text-center">{item.goalsFor}</td>
+                <td className="p-3 text-center">{item.goalsAgainst}</td>
+                <td className="p-3 text-center font-semibold">{item.goalDifference>0?`+${item.goalDifference}`:item.goalDifference}</td>
+                <td className="p-3 text-center bg-[#eee5d9] font-barlow font-black text-lg text-[#171717]">{item.points}</td>
+                <td className="p-3"><div className="flex items-center justify-center gap-1">
+                  {(item.form || []).slice(-5).map((form,i)=><span key={i} title={form==='W'?'Galibiyet':form==='D'?'Beraberlik':'Mağlubiyet'} className={`w-5 h-5 flex items-center justify-center font-bold text-[10px] ${formColor[form] || 'bg-[#e5dfd7] text-[#333]'}`}>{form}</span>)}
+                  {!item.form?.length && <span className="text-[#766e67]">—</span>}
+                </div></td>
               </tr>
             );
           })}
