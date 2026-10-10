@@ -115,8 +115,8 @@ export default function TacticsPage() {
     <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
       {/* Broadcast Header HUD */}
       <CareerPageHeader
-        badge="TACTICAL SYSTEM // COMMAND CENTER"
-        title="TACTICAL COMMAND CENTER"
+        badge="SQUADCRAFT / TAKTİK DOSYASI"
+        title="TAKTİK TAHTASI"
         subtitle={`${userClub.name} oyun felsefesi, saha yerleşimi ve maç stratejisi`}
         metrics={[
           { label: 'DİZİLİŞ', value: tactics?.formation || '4-3-3', accent: 'lime' },
@@ -128,7 +128,7 @@ export default function TacticsPage() {
           <button
             type="button"
             onClick={handleAutoAssign}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#B7FF3C] text-black font-barlow font-black text-[13px] uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(183,255,60,0.35)] hover:scale-[1.02] cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-sm bg-[#9b2529] text-white font-barlow font-black text-[13px] uppercase tracking-wider transition-all hover:bg-[#751c22] cursor-pointer"
           >
             <Sparkles size={16} />
             <span>KADROYU DİZ (AUTO-ASSIGN)</span>
@@ -138,7 +138,7 @@ export default function TacticsPage() {
 
       {/* Action Notice Banner */}
       {actionNotice && (
-        <div className="p-4 rounded-xl bg-[#B7FF3C]/10 border border-[#B7FF3C]/40 text-[#B7FF3C] font-mono text-[12px] flex items-center gap-3 animate-in fade-in shadow-[0_0_20px_rgba(183,255,60,0.15)]">
+        <div className="p-4 rounded-sm bg-[#eee4d8] border border-[#bfa19c] text-[#8f2027] font-mono text-[12px] flex items-center gap-3 animate-in fade-in shadow-[0_0_20px_rgba(183,255,60,0.15)]">
           <CheckCircle2 size={18} className="shrink-0" />
           <span className="font-bold">{actionNotice}</span>
         </div>
@@ -148,15 +148,15 @@ export default function TacticsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column (8 cols): Pitch and Tactical Visualization */}
         <div className="lg:col-span-8 space-y-6">
-          <div className="rounded-[10px] border border-white/15 bg-[#090d0a] shadow-2xl p-6 sm:p-8 overflow-hidden relative">
+          <div className="rounded-sm border border-[#d7cab9] bg-[#fffaf2] shadow-sm p-4 sm:p-6 overflow-hidden relative">
             {/* Tactical Display Sub-tabs & Formation Selector */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4 mb-6 font-ibm text-[11px]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#d6c9b9] pb-4 mb-5 font-ibm text-[11px]">
               <div className="flex items-center gap-3">
-                <span className="text-[#8f9a91]">DİZİLİŞ:</span>
+                <span className="text-[#62584f]">DİZİLİŞ:</span>
                 <select
                   value={tactics.formation}
                   onChange={(e) => setFormation(e.target.value as Formation)}
-                  className="bg-[#0d130f] border border-white/10 focus:border-[#b8ff3d] px-3 py-1.5 rounded-[4px] font-barlow font-extrabold text-[16px] text-[#b8ff3d] outline-none cursor-pointer"
+                  className="bg-[#f0e6d9] border border-[#c4b5a4] focus:border-[#9b2529] px-3 py-2 rounded-sm font-barlow font-extrabold text-[16px] text-[#24211e] outline-none cursor-pointer"
                 >
                   {[
                     '4-3-3',
@@ -176,7 +176,7 @@ export default function TacticsPage() {
               </div>
 
               {/* View Modes */}
-              <div className="flex items-center gap-1.5 bg-[#0d130f] border border-white/10 p-1 rounded-[4px]">
+              <div className="flex flex-wrap items-center gap-1.5 bg-[#efe5d8] border border-[#cfbfad] p-1 rounded-sm">
                 {[
                   { id: 'SHAPE', label: 'TAKTIK DİZİLİŞ' },
                   { id: 'HEATMAP', label: 'PRES & BASKI ALANI' },
@@ -188,8 +188,8 @@ export default function TacticsPage() {
                     onClick={() => setActiveTab(mode.id as any)}
                     className={`px-3 py-1 rounded-[2px] font-barlow font-bold text-[12px] uppercase tracking-wider transition-colors cursor-pointer ${
                       activeTab === mode.id
-                        ? 'bg-[#b8ff3d] text-[#050806]'
-                        : 'text-[#8f9a91] hover:text-[#f3f6f3]'
+                        ? 'bg-[#9b2529] text-white'
+                        : 'text-[#4b423a] hover:text-[#9b2529]'
                     }`}
                   >
                     {mode.label}
@@ -200,7 +200,7 @@ export default function TacticsPage() {
 
             {/* Tactical Pitch Console */}
             <div
-              className="relative w-full max-w-2xl mx-auto h-[560px] rounded-[10px] border-2 border-[#b8ff3d]/30 overflow-hidden shadow-inner flex flex-col justify-between p-4"
+              className="relative w-full max-w-[660px] mx-auto h-[clamp(370px,49vw,520px)] rounded-sm border-2 border-[#8b9d89]/40 overflow-hidden shadow-inner flex flex-col justify-between p-4"
               style={{
                 background:
                   'radial-gradient(circle at 50% 50%, #0a170f 0%, #050b07 80%, #040805 100%)',
@@ -279,24 +279,24 @@ export default function TacticsPage() {
             </div>
 
             {/* Tactical Bench Strip */}
-            <div className="mt-6 pt-4 border-t border-white/10">
-              <span className="font-ibm text-[11px] text-[#8f9a91] uppercase tracking-wider block mb-3">
+            <div className="mt-5 pt-4 border-t border-[#d6c9b9]">
+              <span className="font-ibm text-[11px] text-[#62584f] uppercase tracking-wider block mb-3">
                 YEDEK KULÜBESİ (SAHAYA ALMAK İÇİN ÖNCE MEVKİYE SONRA OYUNCUYA TIKLAYIN)
               </span>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-ibm text-[11px]">
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 font-ibm text-[12px]">
                 {benchPlayers.map((player) => (
                   <div
                     key={player.id}
                     onClick={() => handleBenchPlayerClick(player)}
-                    className="p-2.5 rounded bg-[#0d130f] border border-white/10 hover:border-[#b8ff3d] cursor-pointer flex items-center justify-between transition-colors"
+                    className="p-3 min-w-0 rounded-sm bg-[#f3ebe0] border border-[#d4c6b5] hover:border-[#9b2529] cursor-pointer flex items-center justify-between gap-2 transition-colors"
                   >
                     <div>
-                      <span className="text-[#8f9a91] text-[9px] block">{player.position}</span>
-                      <span className="font-bold text-[#f3f6f3] truncate">
+                      <span className="text-[#675c52] text-[11px] block">{player.position}</span>
+                      <span className="font-bold text-[#161616] truncate block">
                         {player.firstName[0]}. {player.lastName}
                       </span>
                     </div>
-                    <span className="font-bold text-[#b8ff3d]">{player.overall}</span>
+                    <span className="font-bold text-[#9b2529]">{player.overall}</span>
                   </div>
                 ))}
               </div>
@@ -305,22 +305,22 @@ export default function TacticsPage() {
         </div>
 
         {/* Right Column (4 cols): Tactical Philosophy Sliders */}
-        <div className="lg:col-span-4 p-6 rounded-[8px] bg-[#0d130f] border border-white/10 space-y-6 shadow-2xl">
-          <div className="border-b border-white/10 pb-3">
-            <span className="font-ibm text-[11px] text-[#b8ff3d] uppercase tracking-widest font-semibold block">
+        <div className="lg:col-span-4 p-5 sm:p-6 rounded-sm bg-[#fffaf2] border border-[#d7cab9] space-y-5 shadow-sm">
+          <div className="border-b border-[#d6c9b9] pb-3">
+            <span className="font-ibm text-[11px] text-[#9b2529] uppercase tracking-widest font-semibold block">
               TACTICAL PHILOSOPHY
             </span>
-            <h3 className="font-barlow font-extrabold text-[24px] text-[#f3f6f3] uppercase leading-none mt-1">
+            <h3 className="font-barlow font-extrabold text-[21px] text-[#161616] uppercase leading-none mt-1">
               OYUN ANLAYIŞI & TALİMATLAR
             </h3>
           </div>
 
-          <div className="space-y-4 font-ibm text-[12px]">
+          <div className="space-y-5 font-ibm text-[12px]">
             {/* 1. Mentality */}
             <div>
-              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+              <div className="flex justify-between text-[#4f463e] mb-2 font-bold">
                 <span>MENTALİTE (MENTALITY)</span>
-                <span className="text-[#b8ff3d]">{settings.mentality}</span>
+                <span className="text-[#9b2529]">{settings.mentality}</span>
               </div>
               <div className="grid grid-cols-3 gap-1.5">
                 {(['Savunmacı', 'Dengeli', 'Hücum'] as Mentality[]).map((val) => (
@@ -328,10 +328,10 @@ export default function TacticsPage() {
                     key={val}
                     type="button"
                     onClick={() => handleSettingChange('mentality', val)}
-                    className={`py-1.5 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
+                    className={`py-2.5 rounded-sm text-[11px] font-bold uppercase transition-all cursor-pointer ${
                       settings.mentality === val
-                        ? 'bg-[#b8ff3d] text-[#050806]'
-                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                        ? 'bg-[#9b2529] text-white'
+                        : 'bg-[#eee4d8] border border-[#d7c9b8] text-[#38302b] hover:bg-[#e4d4c2]'
                     }`}
                   >
                     {val}
@@ -342,9 +342,9 @@ export default function TacticsPage() {
 
             {/* 2. Tempo */}
             <div>
-              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+              <div className="flex justify-between text-[#4f463e] mb-2 font-bold">
                 <span>TEMPO</span>
-                <span className="text-[#21dfbd]">{settings.tempo}</span>
+                <span className="text-[#9b2529]">{settings.tempo}</span>
               </div>
               <div className="grid grid-cols-3 gap-1.5">
                 {(['Düşük', 'Standart', 'Yüksek'] as Tempo[]).map((val) => (
@@ -352,10 +352,10 @@ export default function TacticsPage() {
                     key={val}
                     type="button"
                     onClick={() => handleSettingChange('tempo', val)}
-                    className={`py-1.5 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
+                    className={`py-2.5 rounded-sm text-[11px] font-bold uppercase transition-all cursor-pointer ${
                       settings.tempo === val
-                        ? 'bg-[#21dfbd] text-[#050806]'
-                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                        ? 'bg-[#9b2529] text-white'
+                        : 'bg-[#eee4d8] border border-[#d7c9b8] text-[#38302b] hover:bg-[#e4d4c2]'
                     }`}
                   >
                     {val}
@@ -366,9 +366,9 @@ export default function TacticsPage() {
 
             {/* 3. Pressing */}
             <div>
-              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+              <div className="flex justify-between text-[#4f463e] mb-2 font-bold">
                 <span>PRES YOĞUNLUĞU (PRESSING)</span>
-                <span className="text-[#ff5365]">{settings.pressing}</span>
+                <span className="text-[#9b2529]">{settings.pressing}</span>
               </div>
               <div className="grid grid-cols-4 gap-1">
                 {(['Hafif', 'Orta', 'Yoğun', 'Aşırı'] as Pressing[]).map((val) => (
@@ -376,10 +376,10 @@ export default function TacticsPage() {
                     key={val}
                     type="button"
                     onClick={() => handleSettingChange('pressing', val)}
-                    className={`py-1.5 rounded text-[10px] font-bold uppercase transition-all cursor-pointer ${
+                    className={`py-2.5 rounded-sm text-[10px] font-bold uppercase transition-all cursor-pointer ${
                       settings.pressing === val
-                        ? 'bg-[#ff5365] text-white'
-                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                        ? 'bg-[#9b2529] text-white'
+                        : 'bg-[#eee4d8] border border-[#d7c9b8] text-[#38302b] hover:bg-[#e4d4c2]'
                     }`}
                   >
                     {val}
@@ -390,9 +390,9 @@ export default function TacticsPage() {
 
             {/* 4. Width */}
             <div>
-              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+              <div className="flex justify-between text-[#4f463e] mb-2 font-bold">
                 <span>GENİŞLİK (WIDTH)</span>
-                <span className="text-[#ffd34f]">{settings.width}</span>
+                <span className="text-[#9b2529]">{settings.width}</span>
               </div>
               <div className="grid grid-cols-3 gap-1.5">
                 {(['Dar', 'Dengeli', 'Geniş'] as Width[]).map((val) => (
@@ -400,10 +400,10 @@ export default function TacticsPage() {
                     key={val}
                     type="button"
                     onClick={() => handleSettingChange('width', val)}
-                    className={`py-1.5 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
+                    className={`py-2.5 rounded-sm text-[11px] font-bold uppercase transition-all cursor-pointer ${
                       settings.width === val
-                        ? 'bg-[#ffd34f] text-[#050806]'
-                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                        ? 'bg-[#9b2529] text-white'
+                        : 'bg-[#eee4d8] border border-[#d7c9b8] text-[#38302b] hover:bg-[#e4d4c2]'
                     }`}
                   >
                     {val}
@@ -414,9 +414,9 @@ export default function TacticsPage() {
 
             {/* 5. Defensive Line */}
             <div>
-              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+              <div className="flex justify-between text-[#4f463e] mb-2 font-bold">
                 <span>SAVUNMA ÇİZGİSİ (DEFENSIVE LINE)</span>
-                <span className="text-[#b8ff3d]">{settings.defensiveLine}</span>
+                <span className="text-[#9b2529]">{settings.defensiveLine}</span>
               </div>
               <div className="grid grid-cols-3 gap-1.5">
                 {(['Derin', 'Standart', 'Yüksek'] as DefensiveLine[]).map((val) => (
@@ -424,10 +424,10 @@ export default function TacticsPage() {
                     key={val}
                     type="button"
                     onClick={() => handleSettingChange('defensiveLine', val)}
-                    className={`py-1.5 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
+                    className={`py-2.5 rounded-sm text-[11px] font-bold uppercase transition-all cursor-pointer ${
                       settings.defensiveLine === val
-                        ? 'bg-[#b8ff3d] text-[#050806]'
-                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                        ? 'bg-[#9b2529] text-white'
+                        : 'bg-[#eee4d8] border border-[#d7c9b8] text-[#38302b] hover:bg-[#e4d4c2]'
                     }`}
                   >
                     {val}
@@ -438,9 +438,9 @@ export default function TacticsPage() {
 
             {/* 6. Passing Style / Build-up */}
             <div>
-              <div className="flex justify-between text-[#8f9a91] mb-1.5 font-bold">
+              <div className="flex justify-between text-[#4f463e] mb-2 font-bold">
                 <span>PAS STİLİ (BUILD-UP)</span>
-                <span className="text-[#21dfbd]">{settings.passingStyle}</span>
+                <span className="text-[#9b2529]">{settings.passingStyle}</span>
               </div>
               <div className="grid grid-cols-3 gap-1.5">
                 {(['Kısa', 'Doğrudan', 'Uzun'] as PassingStyle[]).map((val) => (
@@ -448,10 +448,10 @@ export default function TacticsPage() {
                     key={val}
                     type="button"
                     onClick={() => handleSettingChange('passingStyle', val)}
-                    className={`py-1.5 rounded text-[11px] font-bold uppercase transition-all cursor-pointer ${
+                    className={`py-2.5 rounded-sm text-[11px] font-bold uppercase transition-all cursor-pointer ${
                       settings.passingStyle === val
-                        ? 'bg-[#21dfbd] text-[#050806]'
-                        : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                        ? 'bg-[#9b2529] text-white'
+                        : 'bg-[#eee4d8] border border-[#d7c9b8] text-[#38302b] hover:bg-[#e4d4c2]'
                     }`}
                   >
                     {val}
