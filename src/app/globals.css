@@ -349,15 +349,6 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 .sc-editorial-career :is(button,a)[class*="bg-[#B7FF3C]"]:hover {
   background-color: #741a20 !important;
 }
-.sc-editorial-career [class*="text-[#b8ff3d]"],
-.sc-editorial-career [class*="text-[#B7FF3C]"],
-.sc-editorial-career [class*="text-[#b7ff35]"] {
-  color: #f1c992;
-}
-.sc-editorial-career [class*="text-[#21dfbd]"],
-.sc-editorial-career [class*="text-[#17e5c2]"] {
-  color: #92d5c4;
-}
 .sc-editorial-career :is(button,select,input,textarea) { max-width: 100%; }
 .sc-editorial-career input,
 .sc-editorial-career select,
