@@ -524,7 +524,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
   };
 
   return (
-    <div className="sc-draft-room-readable sc-draft-lobby-v2 relative min-h-screen w-full bg-[#050806] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden font-sans antialiased">
+    <div className="sc-draft-room-readable sc-draft-lobby-v2 sc-draft-career-theme relative min-h-screen w-full bg-[#050806] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. HIGH-CONTRAST STADIUM ARENA BACKGROUND (FULL VIEWPORT)            */}
       {/* ==================================================================== */}
