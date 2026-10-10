@@ -153,8 +153,8 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
     return (
       <div className="relative min-h-screen bg-[#050806] text-white flex flex-col items-center justify-center p-4 overflow-hidden select-none font-sans">
         <div
-          className="sc-draft-room-stadium fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
+          className="sc-draft-room-stadium fixed inset-0 pointer-events-none z-0"
+          style={{ backgroundImage: 'none' }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-[#050806]/85 via-transparent to-[#050806]/95" />
           <div className="absolute inset-0 bg-radial from-transparent via-[#050806]/40 to-[#050806]/90" />
