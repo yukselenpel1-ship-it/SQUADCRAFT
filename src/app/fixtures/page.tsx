@@ -102,7 +102,7 @@ export default function FixturesPage() {
   const finishedMatchesCount = fixtures.filter(f => f.status === 'FINISHED').length;
 
   return (
-    <div className="space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
       {/* Broadcast Header HUD */}
       <CareerPageHeader
         badge={`CALENDAR & MATCH SCHEDULE // ${seasonYear || '2026/27'}`}
