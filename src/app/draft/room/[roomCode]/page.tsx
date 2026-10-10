@@ -701,7 +701,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
               {myClub && (
                 <button
                   onClick={() => setIsCustomizerOpen(true)}
-                  className="px-3.5 py-2 rounded-xl bg-[#e9dfd3] hover:bg-[#141b16] border border-[#cdbfb0] text-xs font-bold text-[#97252c] hover:text-[#24211e] transition flex items-center gap-2 shadow-sm"
+                  className="px-3.5 py-2 rounded-xl bg-[#e9dfd3] hover:bg-[#ead2c9] border border-[#cdbfb0] hover:border-[#9b2529] text-xs font-bold text-[#97252c] hover:text-[#751c24] transition flex items-center gap-2 shadow-sm"
                 >
                   <Palette className="w-4 h-4" />
                   <span>Kulübümü Özelleştir</span>
@@ -835,7 +835,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                       {member.isBot && isHost ? (
                         <button
                           onClick={() => handleRemoveBot(member.id)}
-                          className="px-2.5 py-1 rounded-lg bg-rose-950/80 hover:bg-rose-900 border border-rose-600/40 text-rose-300 text-xs font-bold transition shadow-sm"
+                          className="px-2.5 py-1 rounded-lg bg-[#f3d9d8] hover:bg-[#9b2529] border border-[#c78385] text-[#8f2932] hover:text-white text-xs font-bold transition shadow-sm"
                           title="Botu Odadan Çıkar"
                         >
                           ✕ Kaldır
@@ -992,7 +992,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
               {isHost && (
                 <button
                   onClick={() => setIsRulesOpen(true)}
-                  className="px-2.5 py-1.5 rounded-xl bg-[#e9dfd3] hover:bg-[#141b16] border border-[#cdbfb0] text-xs font-bold text-[#97252c] hover:text-[#24211e] transition flex items-center gap-1.5"
+                  className="px-2.5 py-1.5 rounded-xl bg-[#e9dfd3] hover:bg-[#ead2c9] border border-[#cdbfb0] hover:border-[#9b2529] text-xs font-bold text-[#97252c] hover:text-[#751c24] transition flex items-center gap-1.5"
                 >
                   <Settings className="w-3.5 h-3.5" />
                   <span>Düzenle</span>
