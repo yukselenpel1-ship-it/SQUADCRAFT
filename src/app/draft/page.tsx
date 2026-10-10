@@ -187,468 +187,75 @@ export default function DraftHomePage() {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#050806] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
-      {/* ==================================================================== */}
-      {/* 1. SHARP STADIUM ARENA BACKGROUND (NO BLUR, CRISP GRAPHITE & LIGHTS) */}
-      {/* ==================================================================== */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/theme-career/stadium-bg.webp')` }}
-      >
-        {/* High-contrast crisp sports vignette: zero blur */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050806]/85 via-transparent to-[#050806]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#050806]/40 to-[#050806]/90" />
-      </div>
-
-      {/* ==================================================================== */}
-      {/* 2. SQUADCRAFT BROADCAST TOP NAVIGATION BAR                           */}
-      {/* ==================================================================== */}
-      <header className="relative z-20 w-full border-b border-white/10 bg-[#0d120f]/95 backdrop-blur-md px-4 sm:px-8 py-3">
-        <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
-          {/* Left: Brand Plate & Back Button */}
-          <div className="flex items-center gap-3.5">
-            <Link
-              href="/"
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#090d0a] hover:bg-[#141b16] border border-white/10 text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>ANA MENÜ</span>
-            </Link>
-
-            <div className="h-6 w-px bg-[#141b16] hidden sm:block" />
-
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="relative h-8 sm:h-9 w-11 sm:w-13 flex items-center justify-center">
-                <Image
-                  src="/images/sc-emblem-official-hd.png"
-                  alt="SquadCraft SC"
-                  width={52}
-                  height={36}
-                  className="object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] group-hover:scale-105 transition-transform"
-                  priority
-                />
-              </div>
-              <div className="flex flex-col justify-center">
-                <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-lg sm:text-xl leading-none">
-                  <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
-                  <span className="text-[#b7ff35]">26</span>
-                </div>
-                <span className="text-[9px] font-ibm font-bold tracking-widest text-[#17e5c2] uppercase mt-0.5">
-                  DRAFT TOURNAMENT
-                </span>
-              </div>
-            </Link>
-          </div>
-
-          {/* Center: Tactical Category Switcher Tabs */}
-          <nav className="hidden lg:flex items-center gap-1.5 bg-[#090d0a] p-1 rounded-2xl border border-white/10">
-            <Link
-              href="/"
-              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-white hover:bg-[#0d120f] transition-all"
-            >
-              ANA MERKEZ
-            </Link>
-            <Link
-              href="/career/new"
-              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-[#b7ff35] hover:bg-[#0d120f] transition-all"
-            >
-              KARİYER MODU
-            </Link>
-            <button
-              className="px-4 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl bg-[#17e5c2] text-[#050806] shadow-[0_0_15px_rgba(23, 229, 194,0.3)]"
-            >
-              DRAFT LEAGUE
-            </button>
-            <Link
-              href="/settings"
-              className="px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl text-zinc-400 hover:text-white hover:bg-[#0d120f] transition-all"
-            >
-              AYARLAR
-            </Link>
+    <main className="min-h-screen bg-[#f2ede3] text-[#262320] font-inter selection:bg-[#a3262c] selection:text-white">
+      <header className="border-b-2 border-[#262320] bg-[#f2ede3]">
+        <div className="max-w-[1640px] mx-auto px-5 sm:px-10 py-5 flex flex-wrap gap-4 items-center justify-between">
+          <Link href="/" className="font-barlow font-black tracking-tight text-2xl">SQUAD<span className="text-[#a3262c]">CRAFT</span></Link>
+          <nav className="flex flex-wrap items-center gap-5 font-barlow font-extrabold uppercase text-sm tracking-wide" aria-label="Oyun menüsü">
+            <Link href="/" className="hover:text-[#a3262c]">ANA SAYFA</Link>
+            <Link href="/dashboard" className="hover:text-[#a3262c]">KARİYER</Link>
+            <span className="border-b-[3px] border-[#a3262c]">DRAFT LEAGUE</span>
           </nav>
-
-          {/* Right: Telemetry & Actions */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-[#090d0a] rounded-xl border border-white/10 text-[10px] font-ibm font-bold text-zinc-300">
-              <span className="w-2 h-2 rounded-full bg-[#b7ff35] animate-pulse" />
-              <span>SUNUCU: ÇEVRİMİÇİ</span>
-              <span className="text-zinc-600">•</span>
-              <span className="text-[#4FE4FF]">14ms TR</span>
-            </div>
-
-            <button
-              onClick={() => setIsFeedbackOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#090d0a] hover:bg-[#141b16] border border-white/10 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
-            >
-              <MessageSquare className="w-3.5 h-3.5 text-[#b7ff35]" />
-              <span className="hidden sm:inline">Geri Bildirim</span>
-            </button>
-
-            <Link
-              href="/settings"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#090d0a] hover:bg-[#141b16] border border-white/10 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all active:scale-95"
-            >
-              <Settings className="w-3.5 h-3.5 text-zinc-400" />
-              <span className="hidden sm:inline">Ayarlar</span>
-            </Link>
-          </div>
+          <span className="font-ibm text-[10px] tracking-[0.18em] text-[#776b65]">SQUADCRAFT / COMPETITION SERIES</span>
         </div>
       </header>
 
-      {/* ==================================================================== */}
-      {/* 3. HERO SECTION & TOURNAMENT OVERVIEW                                */}
-      {/* ==================================================================== */}
-      <main className="relative z-20 max-w-[1520px] w-full mx-auto px-4 sm:px-8 py-4 sm:py-6 my-auto flex flex-col items-center">
-        {/* Header HUD Badges & Title */}
-        <div className="w-full flex flex-col items-center text-center mb-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="px-2.5 py-0.5 bg-[#17e5c2] text-[#050806] text-[10px] font-black uppercase tracking-widest rounded-lg">
-              LIVE MULTIPLAYER
-            </span>
-            <span className="px-2.5 py-0.5 bg-[#090d0a] text-zinc-300 border border-white/10 text-[10px] font-ibm font-bold uppercase tracking-wider rounded-lg">
-              {APP_VERSION}
-            </span>
-            <span className="px-2.5 py-0.5 bg-emerald-950/80 text-[#b7ff35] border border-emerald-800/80 text-[10px] font-black uppercase tracking-wider rounded-lg">
-              {currentPreset.badge}
-            </span>
+      <div className="max-w-[1640px] mx-auto px-5 sm:px-10 pb-20">
+        <section className="border-b-2 border-[#262320] grid lg:grid-cols-[1.3fr_0.7fr]">
+          <div className="pt-10 pb-12 lg:pr-12">
+            <p className="font-ibm text-[11px] tracking-[0.2em] uppercase text-[#a3262c]">01 / ÇEVRİMİÇİ REKABET</p>
+            <h1 className="font-barlow font-black uppercase tracking-[-0.06em] leading-[0.8] text-[clamp(5rem,13vw,13rem)] mt-5">DRAFT<span className="text-[#a3262c] block">LEAGUE.</span></h1>
+            <p className="font-serif italic text-2xl sm:text-3xl mt-8 max-w-lg">Takımını seçme. Takımını kur. Rakiplerine karşı kendi hikâyeni yaz.</p>
+            <div className="flex flex-wrap gap-3 mt-8 font-ibm text-[11px] uppercase tracking-wider">
+              <span className="border border-[#2d2925] px-3 py-2">GERÇEK OYUNCULAR</span>
+              <span className="border border-[#2d2925] px-3 py-2">ÖZEL ODALAR</span>
+              <span className="border border-[#2d2925] px-3 py-2">CANLI DRAFT</span>
+            </div>
           </div>
+          <div className="relative overflow-hidden min-h-[320px] bg-[#a3262c] text-[#fff6ea] p-8 lg:p-12 flex flex-col justify-between">
+            <div aria-hidden className="absolute inset-0 opacity-15" style={{backgroundImage:'repeating-linear-gradient(135deg, transparent 0px, transparent 22px, white 23px, transparent 24px)'}}/>
+            <span className="relative font-ibm text-[11px] tracking-[0.2em]">THE SELECTION / 2026</span>
+            <div className="relative"><span className="block font-barlow font-black leading-[0.8] tracking-tight text-[clamp(6rem,10vw,11rem)]">01—08</span><p className="font-serif italic text-3xl mt-5">Her seçim bir karar.<br/>Her karar bir rekabet.</p></div>
+            <span className="relative font-ibm text-[11px] tracking-[0.15em]">SQUADCRAFT / FOOTBALL PEOPLE</span>
+          </div>
+        </section>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black italic tracking-tight uppercase text-white mt-1">
-            DRAFT LEAGUE{' '}
-            <span className="text-[#4FE4FF]">
-              LOBİ MERKEZİ
-            </span>
-          </h1>
+        <section className="py-8 border-b border-[#262320]/30">
+          <div className="flex justify-between flex-wrap items-end gap-4 mb-5"><h2 className="font-barlow font-black uppercase text-4xl sm:text-5xl">OYUNA GİRİŞ</h2><span className="font-ibm text-xs uppercase tracking-[0.15em] text-[#776b65]">MENAJER KİMLİĞİ</span></div>
+          <label htmlFor="draft-manager" className="block max-w-xl font-barlow font-bold uppercase text-sm mb-2">MENAJER ADIN</label>
+          <input id="draft-manager" value={username} onChange={e=>setUsername(e.target.value)} placeholder="Menajer adını yaz" maxLength={32} className="w-full max-w-xl px-5 py-4 bg-white/50 border-2 border-[#262320] focus:outline-none focus:border-[#a3262c] text-lg" />
+        </section>
 
-          <p className="text-xs sm:text-sm font-semibold tracking-wide uppercase text-zinc-400 mt-2 max-w-2xl">
-            Sıfırdan Canlı Kadro Kur // Özel Oda Oluştur veya Mevcut Lige Dahil Ol
-          </p>
+        <div className="grid lg:grid-cols-2 gap-0 lg:gap-12">
+          <section className="py-10 border-b lg:border-b-0 border-[#262320]/30">
+            <p className="font-ibm text-[11px] text-[#a3262c] tracking-[0.2em]">01 / HOST</p>
+            <h2 className="font-barlow font-black uppercase tracking-tight text-[clamp(3rem,6vw,6rem)] leading-none mt-2">ODA KUR.</h2>
+            <p className="font-serif italic text-xl text-[#625a53] mt-2 mb-8">Kendi liginin kurallarını sen belirle.</p>
+            <form onSubmit={handleCreateRoom} className="space-y-6">
+              <div><label htmlFor="draft-room-name" className="block font-barlow font-extrabold uppercase mb-2">ODA ADI <span className="font-normal text-xs text-[#756d65]">(İSTEĞE BAĞLI)</span></label><input id="draft-room-name" value={roomName} onChange={e=>setRoomName(e.target.value)} placeholder="Örn. Hafta Sonu Ligi" className="w-full border-b-2 border-[#262320] bg-transparent px-1 py-3 focus:outline-none focus:border-[#a3262c]"/></div>
+              <fieldset><legend className="font-barlow font-extrabold uppercase mb-3">MENAJER SAYISI</legend><div className="grid grid-cols-3 gap-2">{([4,6,8] as const).map(n=><button key={n} type="button" onClick={()=>setManagerCount(n)} aria-pressed={managerCount===n} className={`border-2 py-4 font-barlow font-black text-3xl ${managerCount===n ? 'bg-[#a3262c] border-[#a3262c] text-white' : 'border-[#262320] hover:bg-[#e4d8cc]'}`}>{n}</button>)}</div></fieldset>
+              <div className="border-t border-[#262320]/30 py-4 text-sm"><p className="font-bold">{currentPreset.label}</p><p className="text-[#625a53] mt-1">{currentPreset.cardDesc}</p><p className="text-[#a3262c] mt-2 font-bold">{currentPreset.format}</p></div>
+              {createError && <p role="alert" className="text-[#a3262c] font-bold text-sm">{createError}</p>}
+              {createProgressText && <p role="status" className="text-sm">{createProgressText}</p>}
+              <button type="submit" disabled={isCreating || !username.trim()} className="w-full flex justify-between items-center bg-[#a3262c] text-white p-5 font-barlow font-black uppercase text-xl hover:bg-[#7a1a20] disabled:opacity-50">{isCreating ? 'ODA OLUŞTURULUYOR...' : 'YENİ ODA OLUŞTUR'} <ArrowRight/></button>
+            </form>
+          </section>
+          <section className="py-10 lg:border-l border-[#262320]/30 lg:pl-12">
+            <p className="font-ibm text-[11px] text-[#a3262c] tracking-[0.2em]">02 / JOIN</p>
+            <h2 className="font-barlow font-black uppercase tracking-tight text-[clamp(3rem,6vw,6rem)] leading-none mt-2">LİGE KATIL.</h2>
+            <p className="font-serif italic text-xl text-[#625a53] mt-2 mb-8">Oda kodunu gir. Rakiplerin seni bekliyor.</p>
+            <form onSubmit={handleJoinRoom} className="space-y-6">
+              <div><label htmlFor="draft-join-code" className="block font-barlow font-extrabold uppercase mb-2">ODA KODU</label><input id="draft-join-code" value={joinCode} onChange={e=>setJoinCode(e.target.value.toUpperCase())} placeholder="ABC123" autoCapitalize="characters" className="w-full border-b-2 border-[#262320] bg-transparent px-1 py-3 font-ibm text-2xl uppercase tracking-[0.2em] focus:outline-none focus:border-[#a3262c]"/></div>
+              <label className="flex items-center gap-3 font-barlow font-bold uppercase cursor-pointer"><input type="checkbox" checked={isSpectator} onChange={e=>setIsSpectator(e.target.checked)} className="accent-[#a3262c] h-5 w-5"/> İZLEYİCİ OLARAK KATIL</label>
+              {joinError && <p role="alert" className="text-[#a3262c] font-bold text-sm">{joinError}</p>}
+              <button disabled={isJoining || !username.trim() || !joinCode.trim()} type="submit" className="w-full flex justify-between items-center border-2 border-[#262320] p-5 font-barlow font-black uppercase text-xl hover:bg-[#262320] hover:text-white disabled:opacity-50">{isJoining ? 'BAĞLANILIYOR...' : 'ODAYA KATIL'} <ArrowRight/></button>
+            </form>
+            <div className="border-t border-[#262320]/30 mt-12 pt-6"><h3 className="font-barlow font-black text-2xl uppercase mb-4">SON ODALARIN</h3>{recentRooms.length ? <div className="space-y-2">{recentRooms.map(code=><button key={code} type="button" onClick={()=>handleJoinRecent(code)} className="w-full flex justify-between items-center text-left border-b border-[#262320]/20 px-1 py-3 hover:text-[#a3262c] font-ibm tracking-widest">{code}<ArrowRight size={18}/></button>)}</div>:<p className="text-[#766c66] font-serif italic">Henüz katıldığın bir oda yok.</p>}</div>
+          </section>
         </div>
-
-        {/* ==================================================================== */}
-        {/* 4. PRIMARY SQUADCRAFT MODE CARDS (2-COLUMN GRID)                     */}
-        {/* ==================================================================== */}
-        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6 max-w-5xl">
-          {/* ------------------------------------------------------------------ */}
-          {/* CARD 1: YENİ LİG OLUŞTUR (HOST)                                    */}
-          {/* ------------------------------------------------------------------ */}
-          <div className="relative overflow-hidden sc-panel rounded-2xl border-2 border-[#17e5c2]/60 flex flex-col justify-between p-6 sm:p-7 shadow-[0_0_30px_rgba(23, 229, 194,0.15)]">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#17e5c2] to-transparent" />
-
-            {/* Top Badge & Header */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 bg-[#17e5c2] text-[#050806] font-black text-[10px] uppercase tracking-wider rounded-lg">
-                    HOST // ODA KURUCUSU
-                  </span>
-                  <span className="text-zinc-400 font-ibm text-[11px] font-bold">
-                    MODE // 02-A
-                  </span>
-                </div>
-                <div className="w-8 h-8 rounded-xl bg-[#17e5c2]/10 border border-[#17e5c2]/40 text-[#17e5c2] flex items-center justify-center font-bold">
-                  <Plus className="w-5 h-5 stroke-[3]" />
-                </div>
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-black italic tracking-tighter uppercase text-white mb-1.5 font-barlow">
-                YENİ LİG OLUŞTUR
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 font-medium mb-5">
-                {currentPreset.cardDesc}
-              </p>
-
-              <form onSubmit={handleCreateRoom} className="space-y-4">
-                <div>
-                  <label className="block text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer İsminiz <span className="text-[#4FE4FF]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Örn: Menajer Doruk"
-                    maxLength={20}
-                    required
-                    disabled={isCreating}
-                    className="w-full bg-[#0d120f] border border-white/10 rounded-xl focus:border-[#17e5c2] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Lig / Oda Adı <span className="text-zinc-500">(İsteğe Bağlı)</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={roomName}
-                    onChange={(e) => setRoomName(e.target.value)}
-                    placeholder="Örn: Alveria Premier Ligi"
-                    maxLength={30}
-                    disabled={isCreating}
-                    className="w-full bg-[#0d120f] border border-white/10 rounded-xl focus:border-[#17e5c2] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer Sayısı (Takım Kotası)
-                  </label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {([4, 6, 8] as const).map((count) => (
-                      <button
-                        key={count}
-                        type="button"
-                        onClick={() => setManagerCount(count)}
-                        className={`py-2 px-3 text-xs font-black uppercase tracking-wider rounded-xl border transition-all flex items-center justify-center gap-1.5 ${
-                          managerCount === count
-                            ? 'bg-[#17e5c2] text-[#050806] border-[#17e5c2] shadow-[0_0_15px_rgba(23, 229, 194,0.3)] font-black'
-                            : 'bg-[#0d120f] text-zinc-400 border-white/10 hover:border-zinc-600 hover:text-white'
-                        }`}
-                      >
-                        <Users className="w-3.5 h-3.5" />
-                        <span>{PRESET_CONFIGS[count].label}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Preset Specs Box */}
-                <div className="p-4 bg-[#0d120f] rounded-xl border border-white/10 space-y-2">
-                  <div className="text-[11px] font-ibm font-bold text-[#17e5c2] uppercase flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-[#17e5c2]" />
-                    <span>{currentPreset.summaryTitle}</span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-300">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[#4FE4FF]">👥</span> {currentPreset.summaryManagers}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[#4FE4FF]">⚡</span> 18 Oyuncu Kadro
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[#4FE4FF]">⏱️</span> 60sn Snake Draft
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[#4FE4FF]">🏆</span> {currentPreset.format}
-                    </div>
-                  </div>
-                </div>
-
-                {createError && (
-                  <div className="p-3 bg-red-950/90 border border-red-600 rounded-xl text-red-200 text-xs font-ibm flex items-start gap-2">
-                    <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                    <span>{createError}</span>
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={isCreating}
-                  className="w-full py-3.5 rounded-xl bg-[#17e5c2] hover:bg-[#12bda0] text-[#050806] font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-[0_0_20px_rgba(23, 229, 194,0.3)] flex items-center justify-center gap-2 disabled:opacity-60"
-                >
-                  {isCreating ? (
-                    <div className="flex items-center gap-2">
-                      <span className="w-4 h-4 border-2 border-[#050806] border-t-transparent rounded-full animate-spin" />
-                      <span>{createProgressText || 'ODA KURULUYOR...'}</span>
-                    </div>
-                  ) : (
-                    <>
-                      <span>ODAYI KUR VE LOBİYE GİR</span>
-                      <ArrowRight className="w-4 h-4 stroke-[3]" />
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
-          </div>
-
-          {/* ------------------------------------------------------------------ */}
-          {/* CARD 2: MEVCUT ODAYA KATIL (GUEST)                                  */}
-          {/* ------------------------------------------------------------------ */}
-          <div className="relative overflow-hidden sc-panel rounded-2xl border-2 border-[#b7ff35]/60 flex flex-col justify-between p-6 sm:p-7 shadow-[0_0_30px_rgba(183, 255, 53,0.15)]">
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#b7ff35] to-transparent" />
-
-            {/* Top Badge & Header */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 bg-[#b7ff35] text-[#050806] font-black text-[10px] uppercase tracking-wider rounded-lg">
-                    GUEST // KATILIMCI
-                  </span>
-                  <span className="text-zinc-400 font-ibm text-[11px] font-bold">
-                    MODE // 02-B
-                  </span>
-                </div>
-                <div className="w-8 h-8 rounded-xl bg-[#b7ff35]/10 border border-[#b7ff35]/40 text-[#b7ff35] flex items-center justify-center font-bold">
-                  <KeyRound className="w-4 h-4 stroke-[2.5]" />
-                </div>
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-black italic tracking-tighter uppercase text-white mb-1.5 font-barlow">
-                KODLA ODAYA KATIL
-              </h2>
-              <p className="text-xs sm:text-sm text-zinc-400 font-medium mb-5">
-                Arkadaşınızın paylaştığı 7 haneli oda kodunu girerek canlı draft odasına dahil olun.
-              </p>
-
-              <form onSubmit={handleJoinRoom} className="space-y-4">
-                <div>
-                  <label className="block text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Menajer İsminiz <span className="text-[#b7ff35]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Örn: Menajer Kaan"
-                    maxLength={20}
-                    required
-                    disabled={isJoining}
-                    className="w-full bg-[#0d120f] border border-white/10 rounded-xl focus:border-[#b7ff35] px-3.5 py-2.5 text-sm text-white font-medium focus:outline-none transition-colors disabled:opacity-50"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-ibm font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
-                    Oda Kodu <span className="text-[#b7ff35]">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={joinCode}
-                    onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-                    placeholder="Örn: SC-WA2P"
-                    maxLength={10}
-                    required
-                    disabled={isJoining}
-                    className="w-full bg-[#0d120f] border border-white/10 rounded-xl focus:border-[#b7ff35] px-3.5 py-2.5 text-base text-white font-ibm uppercase tracking-widest focus:outline-none transition-colors disabled:opacity-50"
-                  />
-                </div>
-
-                {/* Spectator Option */}
-                <div className="flex items-center gap-2.5 pt-1">
-                  <input
-                    type="checkbox"
-                    id="spectator"
-                    checked={isSpectator}
-                    onChange={(e) => setIsSpectator(e.target.checked)}
-                    disabled={isJoining}
-                    className="w-4 h-4 rounded text-[#b7ff35] bg-[#0d120f] border-white/10 focus:ring-0 cursor-pointer"
-                  />
-                  <label
-                    htmlFor="spectator"
-                    className="text-xs font-semibold text-zinc-300 select-none cursor-pointer uppercase tracking-wide"
-                  >
-                    İzleyici (Seyirci) Modunda Katıl
-                  </label>
-                </div>
-
-                {joinError && (
-                  <div className="p-3 bg-red-950/90 border border-red-600 rounded-xl text-red-200 text-xs font-ibm flex items-start gap-2">
-                    <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                    <span>{joinError}</span>
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={isJoining}
-                  className="w-full py-3.5 rounded-xl bg-[#b7ff35] hover:bg-[#9bea27] text-[#050806] font-black text-xs sm:text-sm uppercase tracking-wider transition-all active:scale-95 shadow-[0_0_20px_rgba(183, 255, 53,0.3)] flex items-center justify-center gap-2 disabled:opacity-60"
-                >
-                  {isJoining ? (
-                    <div className="flex items-center gap-2">
-                      <span className="w-4 h-4 border-2 border-[#050806] border-t-transparent rounded-full animate-spin" />
-                      <span>ODAYA BAĞLANILIYOR...</span>
-                    </div>
-                  ) : (
-                    <>
-                      <span>ODAYA GİRİŞ YAP</span>
-                      <ArrowRight className="w-4 h-4 stroke-[3]" />
-                    </>
-                  )}
-                </button>
-              </form>
-            </div>
-
-            {/* Recent Rooms Strip */}
-            {recentRooms.length > 0 && (
-              <div className="mt-5 pt-4 border-t border-white/10">
-                <div className="text-[10px] font-ibm font-bold text-zinc-400 uppercase tracking-wider mb-2">
-                  SON KATILDIĞINIZ ODALAR
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {recentRooms.map((code) => (
-                    <button
-                      key={code}
-                      onClick={() => handleJoinRecent(code)}
-                      className="px-3.5 py-1.5 rounded-xl bg-[#0d120f] hover:bg-[#141b16] border border-white/10 hover:border-[#b7ff35] text-xs font-ibm font-bold text-[#b7ff35] transition-colors"
-                    >
-                      {code}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-
-      {/* ==================================================================== */}
-      {/* 5. SQUADCRAFT BROADCAST TICKER & CONTROLLER PROMPT FOOTER             */}
-      {/* ==================================================================== */}
-      <footer className="relative z-20 w-full border-t border-white/10 bg-[#0d120f] text-xs">
-        {/* Broadcast Live News Ticker Strip */}
-        <div className="w-full bg-[#050806] border-b border-white/10 px-4 py-1.5 flex items-center overflow-hidden">
-          <div className="flex items-center gap-2 shrink-0 pr-4 border-r border-white/10 text-[10px] font-black uppercase text-[#17e5c2]">
-            <Radio className="w-3 h-3 text-[#17e5c2] animate-pulse" />
-            <span>CANLI LOBİ</span>
-          </div>
-          <div className="overflow-hidden whitespace-nowrap text-[11px] font-ibm text-zinc-400 pl-4">
-            <span className="text-zinc-200 font-bold">// DRAFT ODASI SUNUCUSU AKTİF</span>
-            <span className="mx-3 text-zinc-600">•</span>
-            <span>{currentPreset.tickerText}</span>
-            <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#b7ff35]">18 TURLUK CANLI SNAKE DRAFT MOTORU</span>
-            <span className="mx-3 text-zinc-600">•</span>
-            <span>GERÇEK ZAMANLI SUPABASE SENKRONİZASYONU</span>
-            <span className="mx-3 text-zinc-600">•</span>
-            <span className="text-[#4FE4FF]">{APP_VERSION}</span>
-          </div>
-        </div>
-
-        {/* Shortcuts & Status HUD */}
-        <div className="max-w-[1600px] mx-auto px-4 sm:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2.5">
-          <div className="hidden md:flex items-center gap-3 text-[11px] font-ibm text-zinc-400">
-            <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-[#090d0a] border border-white/10 rounded text-white font-bold">↵ ENTER</kbd>
-              <span>ODAYA GİR / OLUŞTUR</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <kbd className="px-1.5 py-0.5 bg-[#090d0a] border border-white/10 rounded text-white font-bold">ESC</kbd>
-              <span>ANA MENÜ</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 text-[11px] font-ibm text-zinc-400">
-            <span className="text-zinc-300 font-bold">SQUADCRAFT DRAFT ENGINE</span>
-            <span className="text-zinc-600">•</span>
-            <span className="text-[#b7ff35] font-bold">{APP_VERSION}</span>
-            <span className="text-zinc-600">•</span>
-            <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>SİSTEM HAZIR</span>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      {/* Feedback Modal */}
-      <FeedbackModal
-        isOpen={isFeedbackOpen}
-        onClose={() => setIsFeedbackOpen(false)}
-        route="/draft"
-        gamePhase="Draft Lobisi"
-      />
-    </div>
+        <footer className="border-t-2 border-[#262320] py-6 flex gap-4 flex-wrap justify-between font-ibm text-[10px] tracking-wider uppercase"><span>SQUADCRAFT / DRAFT LEAGUE</span><button type="button" className="underline hover:text-[#a3262c]" onClick={()=>setIsFeedbackOpen(true)}>GERİ BİLDİRİM</button><span>VERSION {APP_VERSION}</span></footer>
+      </div>
+      <FeedbackModal isOpen={isFeedbackOpen} onClose={()=>setIsFeedbackOpen(false)} />
+    </main>
   );
 }
