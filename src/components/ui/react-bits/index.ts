@@ -4,3 +4,5 @@ export { AnimatedCounter } from './AnimatedCounter';
 export { TiltedCard } from './TiltedCard';
 export { MagneticButton } from './MagneticButton';
 export { SplitText } from './SplitText';
+export { ShinyText } from './ShinyText';
+export { BlurText } from './BlurText';
