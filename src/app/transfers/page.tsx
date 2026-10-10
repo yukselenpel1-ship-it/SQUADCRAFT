@@ -323,7 +323,7 @@ export default function TransfersPage() {
   const wageCapPercent = Math.min(100, Math.round((finances.weeklyWages / (finances.wageBudget || 1)) * 100));
 
   return (
-    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle sc-transfer-editorial space-y-5 px-4 sm:px-8 lg:px-12 py-6 pb-24 max-w-[1600px] mx-auto animate-in fade-in duration-300">
       {/* 1. BROADCAST TRANSFER COMMAND HEADER */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#090d0a] via-[#0d130f] to-[#090d0a] border border-white/10 p-5 md:p-6 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#b8ff3d]/5 rounded-full blur-3xl pointer-events-none" />
@@ -653,8 +653,8 @@ export default function TransfersPage() {
                           onClick={() => setDrawerPlayer(player)}
                           className={`cursor-pointer transition-colors ${
                             isSelected
-                              ? 'bg-[#b8ff3d]/10 border-l-4 border-l-[#b8ff3d]'
-                              : 'hover:bg-[#0d130f]'
+                              ? 'bg-[#f0ded7] border-l-4 border-l-[#9b2529]'
+                              : 'hover:bg-[#f3eade]'
                           }`}
                         >
                           <td className="py-3 px-4">
@@ -681,7 +681,7 @@ export default function TransfersPage() {
                                   size="xs"
                                 />
                               )}
-                              <span className="text-zinc-300 text-xs truncate max-w-[120px]" title={club?.name}>
+                              <span className="text-[#292420] text-xs font-semibold truncate max-w-[150px]" title={club?.name}>
                                 {club?.name || 'Harici Kulüp'}
                               </span>
                             </div>
