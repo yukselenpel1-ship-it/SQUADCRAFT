@@ -137,11 +137,11 @@ export default function SquadPage() {
   );
 
   return (
-    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle sc-squad-readable space-y-5 px-4 sm:px-8 lg:px-12 py-6 pb-20 max-w-[1500px] mx-auto animate-in fade-in duration-300">
       {/* Broadcast Header HUD */}
       <CareerPageHeader
-        badge="TACTICAL ROSTER // SQUAD DEPT"
-        title="SQUAD WAR ROOM"
+        badge="SQUADCRAFT / KADRO YÖNETİMİ"
+        title="KADRO MERKEZİ"
         subtitle={`${userClub.name} aktif oyuncu kadrosu, kondisyon takibi, antrenman ve sağlık merkezi`}
         metrics={[
           { label: 'TOPLAM OYUNCU', value: userPlayers.length, accent: 'default' },
@@ -168,8 +168,8 @@ export default function SquadPage() {
                 onClick={() => setActiveSquadTab(tab.id as any)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all cursor-pointer min-h-[42px] ${
                   active
-                    ? 'bg-[#B7FF3C] text-black font-black shadow-[0_0_18px_rgba(183,255,60,0.35)] scale-[1.02]'
-                    : 'bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10'
+                    ? 'bg-[#9b2529] text-white font-black border border-[#9b2529]'
+                    : 'bg-[#e8dfd3] border border-[#cebfaf] text-[#3d342c] hover:bg-[#dfd1c1]'
                 }`}
               >
                 <Icon size={16} />
@@ -318,9 +318,9 @@ export default function SquadPage() {
 
           {/* TAB 2: ROSTER TABLE */}
           {(activeSquadTab === 'ROSTER' || activeSquadTab === 'CONTRACTS' || activeSquadTab === 'TRAINING' || activeSquadTab === 'INJURIES') && (
-            <div className="p-6 rounded-[8px] bg-[#0d130f] border border-white/10 space-y-4 shadow-xl">
+            <div className="p-6 rounded-[8px] bg-[#fffaf2] border border-[#d4c6b6] space-y-4 shadow-xl">
               {/* Category Filter Pills & Search */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#d4c6b6]">
                 <div className="flex items-center gap-1.5">
                   {(['ALL', 'GK', 'DEF', 'MID', 'ATT'] as const).map((cat) => (
                     <button
@@ -329,8 +329,8 @@ export default function SquadPage() {
                       onClick={() => setSelectedCategory(cat)}
                       className={`px-3 py-1 rounded-[3px] font-barlow font-bold text-[12px] uppercase tracking-wider transition-colors cursor-pointer ${
                         selectedCategory === cat
-                          ? 'bg-[#b8ff3d] text-[#050806]'
-                          : 'bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3]'
+                          ? 'bg-[#9b2529] text-white'
+                          : 'bg-[#ebe0d3] text-[#665b50] hover:text-[#171717]'
                       }`}
                     >
                       {cat}
@@ -344,9 +344,9 @@ export default function SquadPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Oyuncu ara..."
-                    className="w-full sm:w-48 bg-[#090d0a] border border-white/10 focus:border-[#b8ff3d] px-7 py-1.5 rounded-[4px] text-[12px] font-inter text-[#f3f6f3] outline-none"
+                    className="w-full sm:w-48 bg-[#efe5d8] border border-[#d4c6b6] focus:border-[#b8ff3d] px-7 py-1.5 rounded-[4px] text-[12px] font-inter text-[#171717] outline-none"
                   />
-                  <Search size={14} className="text-[#8f9a91] absolute left-2.5 top-2.5 pointer-events-none" />
+                  <Search size={14} className="text-[#665b50] absolute left-2.5 top-2.5 pointer-events-none" />
                 </div>
               </div>
 
@@ -354,7 +354,7 @@ export default function SquadPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left font-ibm text-[12px]">
                   <thead>
-                    <tr className="border-b border-white/10 text-[#8f9a91]">
+                    <tr className="border-b border-[#d4c6b6] text-[#665b50]">
                       <th className="py-2.5 px-3 cursor-pointer" onClick={() => handleSort('lastName')}>
                         OYUNCU <ArrowUpDown size={10} className="inline ml-1" />
                       </th>
@@ -375,36 +375,36 @@ export default function SquadPage() {
                     {filteredAndSortedPlayers.map((player) => (
                       <tr
                         key={player.id}
-                        className="border-b border-white/5 hover:bg-white/[0.03] transition-colors cursor-pointer"
+                        className="border-b border-[#ddd0c1] hover:bg-[#eee3d6] transition-colors cursor-pointer"
                         onClick={() => setInspectedPlayer(player)}
                       >
                         <td className="py-2.5 px-3">
                           <div className="flex items-center gap-2.5">
-                            <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-[#b8ff3d] font-bold">
+                            <span className="px-1.5 py-0.5 rounded bg-[#ebe0d3] text-[11px] text-[#7f2a31] font-bold">
                               {player.position}
                             </span>
-                            <span className="font-barlow font-bold text-[15px] text-[#f3f6f3] uppercase">
+                            <span className="font-barlow font-bold text-[15px] text-[#141414] uppercase">
                               {player.firstName} {player.lastName}
                             </span>
                           </div>
                         </td>
-                        <td className="py-2.5 px-2 text-center font-bold text-[#b8ff3d]">{player.overall}</td>
-                        <td className="py-2.5 px-2 text-center text-[#21dfbd]">{player.potential}</td>
-                        <td className="py-2.5 px-2 text-center text-[#8f9a91]">{player.age}</td>
+                        <td className="py-2.5 px-2 text-center font-bold text-[#7f2a31]">{player.overall}</td>
+                        <td className="py-2.5 px-2 text-center text-[#326d65]">{player.potential}</td>
+                        <td className="py-2.5 px-2 text-center text-[#665b50]">{player.age}</td>
                         <td className="py-2.5 px-2 text-center">
-                          <span className={player.fitness >= 85 ? 'text-[#65ff83]' : 'text-[#ffd34f]'}>
+                          <span className={player.fitness >= 85 ? 'text-[#316c44]' : 'text-[#946321]'}>
                             %{player.fitness}
                           </span>
                         </td>
-                        <td className="py-2.5 px-2 text-center text-[#8f9a91]">%{player.morale}</td>
-                        <td className="py-2.5 px-3 text-right text-[#f3f6f3] font-bold">
+                        <td className="py-2.5 px-2 text-center text-[#665b50]">%{player.morale}</td>
+                        <td className="py-3 px-3 text-right text-[#171717] font-bold">
                           €{((player.marketValue || 4500000) / 1_000_000).toFixed(1)}M
                         </td>
                         <td className="py-2.5 px-3 text-right" onClick={(e) => e.stopPropagation()}>
                           <button
                             type="button"
                             onClick={() => setFullModalPlayer(player)}
-                            className="px-2.5 py-1 rounded bg-white/5 hover:bg-[#b8ff3d] hover:text-[#050806] font-barlow font-bold text-[11px] uppercase transition-colors"
+                            className="px-2.5 py-1 rounded bg-[#ebe0d3] hover:bg-[#9b2529] hover:text-white font-barlow font-bold text-[11px] uppercase transition-colors"
                           >
                             DETAY
                           </button>
@@ -420,29 +420,29 @@ export default function SquadPage() {
 
         {/* Right Column (4 cols): Executive Player Command Drawer */}
         {inspectedPlayer && (
-          <div className="lg:col-span-4 p-6 rounded-[8px] bg-[#0d130f] border border-white/10 space-y-6 shadow-2xl relative">
+          <div className="lg:col-span-4 p-6 rounded-[8px] bg-[#fffaf2] border border-[#d4c6b6] space-y-6 shadow-2xl relative">
             <button
               type="button"
               onClick={() => setInspectedPlayer(null)}
-              className="absolute top-4 right-4 text-[#8f9a91] hover:text-[#f3f6f3] p-1 cursor-pointer"
+              className="absolute top-4 right-4 text-[#665b50] hover:text-[#171717] p-1 cursor-pointer"
             >
               <X size={18} />
             </button>
 
             {/* Header / Portrait */}
-            <div className="flex items-center gap-4 border-b border-white/10 pb-4">
+            <div className="flex items-center gap-4 border-b border-[#d4c6b6] pb-4">
               <PlayerPortrait
                 player={inspectedPlayer}
                 size="lg"
               />
               <div>
-                <span className="px-2 py-0.5 rounded bg-[#b8ff3d]/20 text-[#b8ff3d] font-ibm text-[10px] font-bold uppercase">
+                <span className="px-2 py-0.5 rounded bg-[#9b2529]/20 text-[#7f2a31] font-ibm text-[11px] font-bold uppercase">
                   {inspectedPlayer.position}
                 </span>
-                <h3 className="font-barlow font-extrabold text-[22px] text-[#f3f6f3] uppercase leading-tight mt-1">
+                <h3 className="font-barlow font-extrabold text-[22px] text-[#171717] uppercase leading-tight mt-1">
                   {inspectedPlayer.firstName} {inspectedPlayer.lastName}
                 </h3>
-                <span className="font-ibm text-[11px] text-[#8f9a91]">
+                <span className="font-ibm text-[11px] text-[#665b50]">
                   {inspectedPlayer.age} YAŞ · {userClub.name}
                 </span>
               </div>
@@ -450,21 +450,21 @@ export default function SquadPage() {
 
             {/* Vitals Grid */}
             <div className="grid grid-cols-3 gap-2 text-center font-ibm text-[11px]">
-              <div className="p-2.5 rounded bg-white/[0.02] border border-white/5">
-                <span className="text-[#8f9a91] block text-[9px] uppercase">OVERALL</span>
-                <span className="font-barlow font-extrabold text-[24px] text-[#b8ff3d] leading-none">
+              <div className="p-2.5 rounded bg-[#f4ecdf] border border-[#ddd0c1]">
+                <span className="text-[#665b50] block text-[11px] uppercase">OVERALL</span>
+                <span className="font-barlow font-extrabold text-[24px] text-[#7f2a31] leading-none">
                   {inspectedPlayer.overall}
                 </span>
               </div>
-              <div className="p-2.5 rounded bg-white/[0.02] border border-white/5">
-                <span className="text-[#8f9a91] block text-[9px] uppercase">POTENTIAL</span>
-                <span className="font-barlow font-extrabold text-[24px] text-[#21dfbd] leading-none">
+              <div className="p-2.5 rounded bg-[#f4ecdf] border border-[#ddd0c1]">
+                <span className="text-[#665b50] block text-[11px] uppercase">POTENTIAL</span>
+                <span className="font-barlow font-extrabold text-[24px] text-[#326d65] leading-none">
                   {inspectedPlayer.potential}
                 </span>
               </div>
-              <div className="p-2.5 rounded bg-white/[0.02] border border-white/5">
-                <span className="text-[#8f9a91] block text-[9px] uppercase">FITNESS</span>
-                <span className="font-barlow font-extrabold text-[24px] text-[#65ff83] leading-none">
+              <div className="p-2.5 rounded bg-[#f4ecdf] border border-[#ddd0c1]">
+                <span className="text-[#665b50] block text-[11px] uppercase">FITNESS</span>
+                <span className="font-barlow font-extrabold text-[24px] text-[#316c44] leading-none">
                   %{inspectedPlayer.fitness}
                 </span>
               </div>
@@ -472,46 +472,46 @@ export default function SquadPage() {
 
             {/* Attributes Breakdown */}
             <div className="space-y-2 font-ibm text-[11px]">
-              <span className="text-[#8f9a91] font-bold uppercase tracking-wider block">
+              <span className="text-[#665b50] font-bold uppercase tracking-wider block">
                 TEKNİK NİTELİKLER
               </span>
               <div className="grid grid-cols-2 gap-2">
-                <div className="flex justify-between p-2 rounded bg-white/[0.02] border border-white/5">
-                  <span className="text-[#8f9a91]">HIZ (PACE):</span>
-                  <span className="font-bold text-[#f3f6f3]">{inspectedPlayer.attributes?.pace || 78}</span>
+                <div className="flex justify-between p-2 rounded bg-[#f4ecdf] border border-[#ddd0c1]">
+                  <span className="text-[#665b50]">HIZ (PACE):</span>
+                  <span className="font-bold text-[#171717]">{inspectedPlayer.attributes?.pace || 78}</span>
                 </div>
-                <div className="flex justify-between p-2 rounded bg-white/[0.02] border border-white/5">
-                  <span className="text-[#8f9a91]">BİTİRİCİLİK:</span>
-                  <span className="font-bold text-[#f3f6f3]">{inspectedPlayer.attributes?.finishing || 74}</span>
+                <div className="flex justify-between p-2 rounded bg-[#f4ecdf] border border-[#ddd0c1]">
+                  <span className="text-[#665b50]">BİTİRİCİLİK:</span>
+                  <span className="font-bold text-[#171717]">{inspectedPlayer.attributes?.finishing || 74}</span>
                 </div>
-                <div className="flex justify-between p-2 rounded bg-white/[0.02] border border-white/5">
-                  <span className="text-[#8f9a91]">PAS (PASSING):</span>
-                  <span className="font-bold text-[#f3f6f3]">{inspectedPlayer.attributes?.passing || 81}</span>
+                <div className="flex justify-between p-2 rounded bg-[#f4ecdf] border border-[#ddd0c1]">
+                  <span className="text-[#665b50]">PAS (PASSING):</span>
+                  <span className="font-bold text-[#171717]">{inspectedPlayer.attributes?.passing || 81}</span>
                 </div>
-                <div className="flex justify-between p-2 rounded bg-white/[0.02] border border-white/5">
-                  <span className="text-[#8f9a91]">MÜDAHALE (TKL):</span>
-                  <span className="font-bold text-[#f3f6f3]">{inspectedPlayer.attributes?.tackling || 70}</span>
+                <div className="flex justify-between p-2 rounded bg-[#f4ecdf] border border-[#ddd0c1]">
+                  <span className="text-[#665b50]">MÜDAHALE (TKL):</span>
+                  <span className="font-bold text-[#171717]">{inspectedPlayer.attributes?.tackling || 70}</span>
                 </div>
               </div>
             </div>
 
             {/* Financial & Contract Details */}
-            <div className="p-3.5 rounded bg-[#090d0a] border border-white/10 space-y-2 font-ibm text-[11px]">
+            <div className="p-3.5 rounded bg-[#efe5d8] border border-[#d4c6b6] space-y-2 font-ibm text-[11px]">
               <div className="flex justify-between">
-                <span className="text-[#8f9a91]">PİYASA DEĞERİ:</span>
-                <span className="font-bold text-[#b8ff3d]">
+                <span className="text-[#665b50]">PİYASA DEĞERİ:</span>
+                <span className="font-bold text-[#7f2a31]">
                   €{((inspectedPlayer.marketValue || 4500000) / 1_000_000).toFixed(1)}M
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#8f9a91]">HAFTALIK MAAŞ:</span>
-                <span className="font-bold text-[#21dfbd]">
+                <span className="text-[#665b50]">HAFTALIK MAAŞ:</span>
+                <span className="font-bold text-[#326d65]">
                   €{((inspectedPlayer.wage || 45000) / 1000).toFixed(0)}K / hafta
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-[#8f9a91]">KONTRAT BİTİŞİ:</span>
-                <span className="font-bold text-[#f3f6f3]">{inspectedPlayer.contractUntil || 2028}</span>
+                <span className="text-[#665b50]">KONTRAT BİTİŞİ:</span>
+                <span className="font-bold text-[#171717]">{inspectedPlayer.contractUntil || 2028}</span>
               </div>
             </div>
 
@@ -520,14 +520,14 @@ export default function SquadPage() {
               <button
                 type="button"
                 onClick={() => setRenewingPlayer(inspectedPlayer)}
-                className="flex-1 py-2.5 rounded bg-[#b8ff3d] hover:bg-[#9bea27] text-[#050806] font-barlow font-bold text-[14px] uppercase tracking-wider transition-colors cursor-pointer"
+                className="flex-1 py-2.5 rounded bg-[#9b2529] hover:bg-[#761d23] text-white font-barlow font-bold text-[14px] uppercase tracking-wider transition-colors cursor-pointer"
               >
                 SÖZLEŞME YENİLE
               </button>
               <button
                 type="button"
                 onClick={() => setFullModalPlayer(inspectedPlayer)}
-                className="py-2.5 px-4 rounded bg-white/5 hover:bg-white/10 text-[#f3f6f3] font-barlow font-bold text-[14px] uppercase transition-colors cursor-pointer"
+                className="py-2.5 px-4 rounded bg-[#ebe0d3] hover:bg-white/10 text-[#171717] font-barlow font-bold text-[14px] uppercase transition-colors cursor-pointer"
               >
                 TAM DETAY
               </button>
