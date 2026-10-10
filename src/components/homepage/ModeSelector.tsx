@@ -54,15 +54,15 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
             onClick={onSelectCareer}
           >
             <SpotlightCard
-              spotlightColor="rgba(183, 255, 53, 0.14)"
+              spotlightColor="rgba(183, 255, 53, 0.16)"
               className="group relative rounded-[8px] overflow-hidden border border-white/10 hover:border-[#b7ff35]/60 transition-all duration-300 cursor-pointer min-h-[540px] h-full flex flex-col justify-end p-8 sm:p-10 bg-[#090d0a]"
             >
-              {/* Visual Environment Background: Stadium Tunnel */}
+              {/* Visual Environment Background: Career Mode Media Asset */}
               <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <img
-                  src="/images/bg-fc-arena.jpg"
+                  src="/media/homepage/career-mode.webp"
                   alt="Career Mode Tactical Arena"
-                  className={`w-full h-full object-cover object-center filter brightness-[0.38] contrast-[1.2] transition-transform duration-700 ${
+                  className={`w-full h-full object-cover object-center filter brightness-[0.42] contrast-[1.2] transition-transform duration-700 ${
                     careerHovered ? 'scale-105 -translate-y-2' : 'scale-100'
                   }`}
                 />
@@ -70,7 +70,7 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
                   className="absolute inset-0"
                   style={{
                     background:
-                      'linear-gradient(to top, #090d0a 0%, rgba(9,13,10,0.85) 45%, rgba(9,13,10,0.3) 100%)',
+                      'linear-gradient(to top, #090d0a 0%, rgba(9,13,10,0.85) 45%, rgba(9,13,10,0.2) 100%)',
                   }}
                 />
               </div>
@@ -120,21 +120,37 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
             onClick={onSelectDraft}
           >
             <SpotlightCard
-              spotlightColor="rgba(23, 229, 194, 0.14)"
+              spotlightColor="rgba(23, 229, 194, 0.16)"
               className="group relative rounded-[8px] overflow-hidden border border-white/10 hover:border-[#17e5c2]/60 transition-all duration-300 cursor-pointer min-h-[540px] h-full flex flex-col justify-end p-8 sm:p-10 bg-[#090d0a]"
             >
-              {/* Visual Environment */}
-              <div className="absolute inset-0 z-0 overflow-hidden flex items-center justify-center pointer-events-none">
+              {/* Visual Environment: Draft League Media Asset */}
+              <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                <img
+                  src="/media/homepage/draft-league.webp"
+                  alt="Draft League Arena"
+                  className={`w-full h-full object-cover object-center filter brightness-[0.4] contrast-[1.25] transition-transform duration-700 ${
+                    draftHovered ? 'scale-105 -translate-y-2' : 'scale-100'
+                  }`}
+                />
                 <div
                   className="absolute inset-0"
                   style={{
                     background:
-                      'radial-gradient(circle at 50% 30%, rgba(23,229,194,0.14), transparent 60%), #090d0a',
+                      'linear-gradient(to top, #090d0a 0%, rgba(9,13,10,0.85) 45%, rgba(9,13,10,0.2) 100%)',
+                  }}
+                />
+
+                {/* Cyan Spotlight Atmosphere */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      'radial-gradient(circle at 50% 30%, rgba(23,229,194,0.18), transparent 60%)',
                   }}
                 />
 
                 {/* Floating Draft Player Cards */}
-                <div className="absolute top-12 flex items-center justify-center pointer-events-none">
+                <div className="absolute top-10 inset-x-0 flex items-center justify-center pointer-events-none">
                   {/* Left Card */}
                   <motion.div
                     animate={{
@@ -143,7 +159,7 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
                       scale: draftHovered ? 0.95 : 0.85,
                     }}
                     transition={{ type: 'spring', stiffness: 160, damping: 22 }}
-                    className="w-24 sm:w-28 h-36 sm:h-44 rounded-[8px] bg-[#121a16] border border-[#17e5c2]/40 shadow-xl p-2.5 flex flex-col justify-between"
+                    className="w-24 sm:w-28 h-36 sm:h-44 rounded-[8px] bg-[#121a16]/95 border border-[#17e5c2]/50 shadow-2xl p-2.5 flex flex-col justify-between backdrop-blur-sm"
                   >
                     <span className="font-barlow font-bold text-[22px] text-[#17e5c2]">88</span>
                     <span className="font-barlow text-[13px] text-[#f2f5f2] uppercase font-semibold">POPOV</span>
@@ -157,7 +173,7 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
                       scale: draftHovered ? 1.05 : 0.98,
                     }}
                     transition={{ type: 'spring', stiffness: 160, damping: 22 }}
-                    className="relative z-10 w-28 sm:w-32 h-40 sm:h-48 rounded-[8px] bg-[#16221c] border-2 border-[#b7ff35] shadow-[0_0_24px_rgba(183,255,53,0.3)] p-3 flex flex-col justify-between"
+                    className="relative z-10 w-28 sm:w-32 h-40 sm:h-48 rounded-[8px] bg-[#16221c]/95 border-2 border-[#b7ff35] shadow-[0_0_28px_rgba(183,255,53,0.35)] p-3 flex flex-col justify-between backdrop-blur-sm"
                   >
                     <div className="flex justify-between items-start">
                       <span className="font-barlow font-extrabold text-[28px] text-[#b7ff35] leading-none">91</span>
@@ -178,22 +194,13 @@ export function ModeSelector({ onSelectCareer, onSelectDraft }: ModeSelectorProp
                       scale: draftHovered ? 0.95 : 0.85,
                     }}
                     transition={{ type: 'spring', stiffness: 160, damping: 22 }}
-                    className="w-24 sm:w-28 h-36 sm:h-44 rounded-[8px] bg-[#121a16] border border-[#17e5c2]/40 shadow-xl p-2.5 flex flex-col justify-between"
+                    className="w-24 sm:w-28 h-36 sm:h-44 rounded-[8px] bg-[#121a16]/95 border border-[#17e5c2]/50 shadow-2xl p-2.5 flex flex-col justify-between backdrop-blur-sm"
                   >
                     <span className="font-barlow font-bold text-[22px] text-[#17e5c2]">85</span>
                     <span className="font-barlow text-[13px] text-[#f2f5f2] uppercase font-semibold">COSTA</span>
                     <span className="font-ibm text-[9px] text-[#8b958d]">RB</span>
                   </motion.div>
                 </div>
-
-                {/* Gradient Bottom Fade */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      'linear-gradient(to top, #090d0a 0%, rgba(9,13,10,0.85) 45%, transparent 100%)',
-                  }}
-                />
               </div>
 
               {/* Information */}

@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 
 export function WorldStrip() {
   const words = [
@@ -20,17 +19,28 @@ export function WorldStrip() {
         <div className="w-1/3 h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#17e5c2]/15 via-transparent to-transparent" />
       </div>
 
-      {/* Cinematic Center Typography */}
-      <div className="relative z-10 max-w-[1500px] mx-auto px-6 sm:px-12 text-center my-6">
-        <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.25em] uppercase font-semibold">
-          THE FOOTBALL UNIVERSE
-        </span>
-        <h2 className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.85] tracking-tight mt-2 text-[52px] sm:text-[84px] md:text-[110px]">
+      {/* Cinematic Center Typography with Official Square Social Badge */}
+      <div className="relative z-10 max-w-[1500px] mx-auto px-6 sm:px-12 text-center my-6 flex flex-col items-center">
+        {/* Verified Square Brand Emblem */}
+        <div className="mb-4 inline-flex items-center gap-3 px-3 py-1.5 rounded-[6px] bg-[#0c1410] border border-white/15 shadow-xl">
+          <div className="w-7 h-7 rounded-[4px] overflow-hidden border border-[#b7ff35]/50 shadow-[0_0_12px_rgba(183,255,53,0.3)]">
+            <img
+              src="/media/homepage/square-social.webp"
+              alt="SquadCraft Official Seal"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <span className="font-ibm text-[11px] text-[#b7ff35] tracking-[0.25em] uppercase font-semibold">
+            THE FOOTBALL UNIVERSE // SQUADCRAFT
+          </span>
+        </div>
+
+        <h2 className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.85] tracking-tight mt-1 text-[52px] sm:text-[84px] md:text-[110px] uppercase">
           ONE SEASON. <span className="text-outline">THOUSANDS OF DECISIONS.</span>
         </h2>
       </div>
 
-      {/* Moving Marquee Strip (Section 19: Homepage Feature Strip) */}
+      {/* Moving Marquee Strip */}
       <div className="relative w-full overflow-hidden py-4 border-t border-b border-white/5 bg-[#090d0a]/60 backdrop-blur-sm">
         <div className="flex whitespace-nowrap animate-[marquee_28s_linear_infinite] hover:[animation-play-state:paused]">
           {[...words, ...words, ...words].map((phrase, idx) => (
@@ -42,7 +52,7 @@ export function WorldStrip() {
               >
                 {phrase}
               </span>
-              <span className="mx-6 font-ibm text-[#b7ff35]/40 text-[18px]">//</span>
+              <span className="mx-6 font-ibm text-[#b7ff35]/40 text-[18px]">{'//'}</span>
             </div>
           ))}
         </div>

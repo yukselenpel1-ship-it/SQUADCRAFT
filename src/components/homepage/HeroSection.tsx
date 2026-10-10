@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import dynamic from 'next/dynamic';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Volume2, VolumeX, Play, Pause, Tv } from 'lucide-react';
 import { useLanguage } from '@/lib/context/LanguageContext';
 import {
   DecryptedText,
@@ -31,11 +31,85 @@ interface HeroSectionProps {
 
 export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
   const { language, t } = useLanguage();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
+
+  const toggleSound = () => {
+    if (videoRef.current) {
+      const nextMuted = !isMuted;
+      videoRef.current.muted = nextMuted;
+      setIsMuted(nextMuted);
+    }
+  };
+
+  const togglePlayback = () => {
+    if (videoRef.current) {
+      if (isPlaying) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        videoRef.current.play();
+        setIsPlaying(true);
+      }
+    }
+  };
 
   return (
     <section className="relative min-h-screen w-full overflow-hidden bg-[#050806] flex flex-col justify-between pt-24 pb-8 select-none">
-      {/* 3D Stadium Environment Canvas behind UI */}
-      <SquadCraftEnvironment showFootball={true} particleCount={250} />
+      {/* 1. CINEMATIC VIDEO & POSTER BACKDROP LAYER */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        {/* High-res stadium fallback background */}
+        <img
+          src="/media/homepage/hero-background.webp"
+          alt="SquadCraft Stadium"
+          className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.38] contrast-[1.2]"
+        />
+
+        {/* Cinematic MP4 Teaser Loop */}
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted={isMuted}
+          playsInline
+          poster="/media/homepage/hero-poster.webp"
+          className="absolute inset-0 w-full h-full object-cover object-center filter brightness-[0.48] contrast-[1.22] transition-opacity duration-1000"
+        >
+          <source src="/media/homepage/squadcraft-teaser.mp4" type="video/mp4" />
+        </video>
+
+        {/* Stadium Floodlight & Vignette Gradient Overlays for High Legibility */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'linear-gradient(180deg, rgba(5,8,6,0.78) 0%, rgba(5,8,6,0.45) 30%, rgba(5,8,6,0.72) 70%, #050806 100%)',
+          }}
+        />
+
+        {/* Broadcast Vignette Radial */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              'radial-gradient(circle at 50% 40%, transparent 35%, rgba(5,8,6,0.85) 90%)',
+          }}
+        />
+
+        {/* Subtle Pitch Grid Geometry */}
+        <div
+          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          style={{
+            backgroundImage:
+              'radial-gradient(circle at 1px 1px, #b7ff35 1px, transparent 0)',
+            backgroundSize: '36px 36px',
+          }}
+        />
+      </div>
+
+      {/* 2. 3D Stadium Environment Canvas Floating Football */}
+      <SquadCraftEnvironment showFootball={true} particleCount={160} />
 
       {/* Huge Background Word: SQUADCRAFT */}
       <div
@@ -52,33 +126,41 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
         SQUADCRAFT
       </div>
 
-      {/* Hero Content Container */}
+      {/* 3. Hero Content Container */}
       <div className="relative z-10 w-full max-w-[1500px] mx-auto px-6 sm:px-12 lg:px-16 my-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         {/* Left Column: Hero Typography & CTAs (7 cols) */}
         <div className="lg:col-span-7 flex flex-col items-start">
-          {/* Athletic Kicker with Decrypted Text */}
+          {/* Athletic Kicker with Decrypted Text & Video Live Badge */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.05, ease: 'easeOut' }}
-            className="flex items-center gap-2 mb-4"
+            className="flex flex-wrap items-center gap-3 mb-4"
           >
-            <span className="w-2 h-2 rounded-full bg-[#b7ff35] shadow-[0_0_8px_#b7ff35]" />
-            <span className="font-ibm text-[11px] text-[#b7ff35] uppercase font-medium tracking-[0.22em]">
-              <DecryptedText
-                text={t.heroKicker}
-                speed={30}
-                maxIterations={12}
-                animateOn="view"
-              />
-            </span>
+            <div className="flex items-center gap-2 px-2.5 py-1 rounded-[3px] bg-[#b7ff35]/10 border border-[#b7ff35]/30">
+              <span className="w-2 h-2 rounded-full bg-[#b7ff35] shadow-[0_0_8px_#b7ff35] animate-pulse" />
+              <span className="font-ibm text-[11px] text-[#b7ff35] uppercase font-semibold tracking-[0.2em]">
+                <DecryptedText
+                  text={t.heroKicker}
+                  speed={30}
+                  maxIterations={12}
+                  animateOn="view"
+                />
+              </span>
+            </div>
+
+            {/* Broadcast Live Feed Pill */}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[3px] bg-white/5 border border-white/10 text-[#8b958d] font-ibm text-[10px] uppercase">
+              <Tv size={11} className="text-[#17e5c2]" />
+              <span>4K BROADCAST TEASER</span>
+            </div>
           </motion.div>
 
           {/* Main Hero Title (Split Athletic Typography) */}
           <div className="overflow-hidden mb-6 space-y-1">
             <SplitText
               text={t.heroLine1}
-              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal uppercase text-[clamp(64px,9.2vw,144px)] block"
+              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal uppercase text-[clamp(64px,9.2vw,144px)] block drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)]"
               delay={0.04}
             />
 
@@ -90,7 +172,7 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
 
             <SplitText
               text={t.heroLine3}
-              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal uppercase text-[clamp(64px,9.2vw,144px)] block"
+              className="font-barlow font-extrabold text-[#f2f5f2] leading-[0.82] tracking-normal uppercase text-[clamp(64px,9.2vw,144px)] block drop-shadow-[0_4px_24px_rgba(0,0,0,0.8)]"
               delay={0.08}
             />
           </div>
@@ -100,7 +182,7 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.55, delay: 0.36, ease: 'easeOut' }}
-            className="font-inter text-[16px] sm:text-[18px] text-[#99a39c] max-w-[560px] leading-[1.7] mb-8"
+            className="font-inter text-[16px] sm:text-[18px] text-[#c0cac2] max-w-[560px] leading-[1.7] mb-8 drop-shadow-md"
           >
             {t.heroDescription}
           </motion.p>
@@ -132,11 +214,31 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
               <button
                 type="button"
                 onClick={onEnterDraft}
-                className="font-barlow font-bold text-[18px] tracking-wider text-[#f2f5f2] bg-white/[0.04] border border-white/20 hover:border-[#b7ff35] hover:text-[#b7ff35] h-[54px] px-8 rounded-[3px] flex items-center transition-all cursor-pointer hover:bg-white/10 uppercase"
+                className="font-barlow font-bold text-[18px] tracking-wider text-[#f2f5f2] bg-black/40 backdrop-blur-md border border-white/20 hover:border-[#b7ff35] hover:text-[#b7ff35] h-[54px] px-8 rounded-[3px] flex items-center transition-all cursor-pointer hover:bg-white/10 uppercase shadow-lg"
               >
                 {t.heroEnterDraft}
               </button>
             </MagneticButton>
+
+            {/* Ambient Audio Toggle */}
+            <button
+              type="button"
+              onClick={toggleSound}
+              className="h-[54px] px-4 rounded-[3px] bg-black/40 backdrop-blur-md border border-white/15 hover:border-white/40 text-[#8b958d] hover:text-[#f2f5f2] flex items-center gap-2 transition-all cursor-pointer font-ibm text-[11px] uppercase tracking-wider"
+              title={isMuted ? 'Sesi Aç' : 'Sesi Kapat'}
+            >
+              {isMuted ? (
+                <>
+                  <VolumeX size={16} className="text-[#8b958d]" />
+                  <span className="hidden sm:inline">{language === 'tr' ? 'SES: KAPALI' : 'AUDIO: OFF'}</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 size={16} className="text-[#b7ff35] animate-pulse" />
+                  <span className="text-[#b7ff35] hidden sm:inline">{language === 'tr' ? 'SES: AÇIK' : 'AUDIO: ON'}</span>
+                </>
+              )}
+            </button>
           </motion.div>
         </div>
 
@@ -149,19 +251,22 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
             className="w-full max-w-sm"
           >
             <SpotlightCard
-              spotlightColor="rgba(183, 255, 53, 0.12)"
-              className="w-full rounded-[6px] p-6 backdrop-blur-xl border border-white/10 shadow-2xl bg-[#070c08]/85"
+              spotlightColor="rgba(183, 255, 53, 0.16)"
+              className="w-full rounded-[6px] p-6 backdrop-blur-2xl border border-white/15 shadow-2xl bg-[#070c08]/90"
               style={{
                 borderLeft: '3px solid #b7ff35',
                 transform: 'perspective(900px) rotateY(-4deg) rotateX(2deg)',
-                boxShadow: '0 25px 50px rgba(0,0,0,0.85), 0 0 25px rgba(183,255,53,0.08)',
+                boxShadow: '0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(183,255,53,0.12)',
               }}
             >
               {/* HUD Header */}
               <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
-                <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest font-semibold uppercase">
-                  {t.heroLiveSystem}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-[#b7ff35] animate-ping" />
+                  <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest font-semibold uppercase">
+                    {t.heroLiveSystem}
+                  </span>
+                </div>
                 <span className="font-ibm text-[11px] text-[#8b958d] uppercase">
                   {t.heroSeason}
                 </span>
@@ -194,7 +299,7 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
                 <div className="flex justify-between items-center pt-1">
                   <span className="text-[#8b958d] uppercase">{t.heroPress}</span>
                   <span className="text-[#17e5c2] font-bold">
-                    <AnimatedCounter value={74} duration={1.1} /> // {t.heroHigh}
+                    <AnimatedCounter value={74} duration={1.1} /> {'//'} {t.heroHigh}
                   </span>
                 </div>
                 <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
@@ -232,12 +337,12 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
         </div>
       </div>
 
-      {/* Hero Bottom Match Ticker (Sports Broadcast ticker entering from bottom) */}
+      {/* Hero Bottom Match Ticker with Video Control */}
       <motion.div
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.65, ease: 'easeOut' }}
-        className="relative z-10 w-full border-t border-white/10 bg-[#050806]/85 backdrop-blur-md px-6 py-2.5 flex items-center justify-between"
+        className="relative z-10 w-full border-t border-white/10 bg-[#050806]/90 backdrop-blur-md px-6 py-2.5 flex items-center justify-between"
       >
         <div className="max-w-[1500px] w-full mx-auto flex items-center justify-between font-ibm text-[12px]">
           <div className="flex items-center gap-3">
@@ -249,11 +354,22 @@ export function HeroSection({ onStartCareer, onEnterDraft }: HeroSectionProps) {
             <span className="font-ibm text-[11px] text-[#8b958d]">84&apos;</span>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#ff4d5f] animate-ping" />
-            <span className="font-ibm text-[11px] text-[#ff4d5f] font-bold tracking-wider uppercase">
-              {t.tickerLiveSim}
-            </span>
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={togglePlayback}
+              className="text-[#8b958d] hover:text-[#b7ff35] transition-colors flex items-center gap-1.5 cursor-pointer font-ibm text-[11px] uppercase"
+            >
+              {isPlaying ? <Pause size={12} /> : <Play size={12} />}
+              <span className="hidden md:inline">{isPlaying ? 'DURAKLAT' : 'OYNAT'}</span>
+            </button>
+
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#ff4d5f] animate-ping" />
+              <span className="font-ibm text-[11px] text-[#ff4d5f] font-bold tracking-wider uppercase">
+                {t.tickerLiveSim}
+              </span>
+            </div>
           </div>
         </div>
       </motion.div>

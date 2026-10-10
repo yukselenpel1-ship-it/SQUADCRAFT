@@ -64,8 +64,24 @@ export function LiveMatchPreview() {
           </p>
         </div>
 
-        {/* Live Match Engine Console */}
+        {/* Live Match Engine Console with Matchday Media Backdrop */}
         <div className="rounded-[10px] border border-white/15 bg-[#090d0a] shadow-2xl p-6 sm:p-8 overflow-hidden relative">
+          {/* Matchday Stadium Media Atmosphere Layer */}
+          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-40">
+            <img
+              src="/media/homepage/matchday.webp"
+              alt="Matchday Stadium Crowd Atmosphere"
+              className="w-full h-full object-cover object-center filter brightness-[0.45] contrast-[1.25]"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  'radial-gradient(ellipse at 50% 25%, rgba(5,8,6,0.2) 0%, rgba(9,13,10,0.88) 60%, #090d0a 100%)',
+              }}
+            />
+          </div>
+
           {/* Goal Flash Overlay */}
           <AnimatePresence>
             {goalFlash && (
@@ -88,10 +104,10 @@ export function LiveMatchPreview() {
           </AnimatePresence>
 
           {/* Match Scoreboard Header */}
-          <div className="bg-[#0e1611] border border-white/10 rounded-[8px] p-6 mb-8 flex flex-col items-center justify-center relative shadow-lg">
+          <div className="relative z-10 bg-[#0e1611]/90 backdrop-blur-md border border-white/15 rounded-[8px] p-6 mb-8 flex flex-col items-center justify-center shadow-2xl">
             <div className="font-ibm text-[11px] text-[#8b958d] uppercase tracking-widest mb-3 flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-[#ff4d5f] animate-ping" />
-              <span>LEAGUE FIXTURE // POLAR STADIUM // 44,280 ATTENDANCE</span>
+              <span>MATCHDAY LIVE // POLAR STADIUM // 44,280 ATTENDANCE</span>
             </div>
 
             {/* Score & Teams */}

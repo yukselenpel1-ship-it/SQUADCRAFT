@@ -123,7 +123,23 @@ export function CareerPreview() {
             <div className="lg:col-span-10 p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-6 bg-[#070b08]">
               {/* Module 1 (Large - 8 cols): NEXT MATCH CAROUSEL */}
               <div className="md:col-span-8 bg-[#0d1410] border border-white/10 rounded-[8px] p-6 flex flex-col justify-between relative overflow-hidden shadow-xl">
-                <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-6">
+                {/* Career Mode Stadium Clash Media Backdrop */}
+                <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-25">
+                  <img
+                    src="/media/homepage/career-mode.webp"
+                    alt="Career Stadium Clash Atmosphere"
+                    className="w-full h-full object-cover object-center filter brightness-[0.5] contrast-[1.2]"
+                  />
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        'linear-gradient(to top, #0d1410 0%, rgba(13,20,16,0.85) 50%, rgba(13,20,16,0.3) 100%)',
+                    }}
+                  />
+                </div>
+
+                <div className="relative z-10 flex items-center justify-between border-b border-white/10 pb-3 mb-6">
                   <span className="font-ibm text-[11px] text-[#b7ff35] tracking-widest uppercase">
                     NEXT FIXTURE // LEAGUE MATCHDAY 12
                   </span>
@@ -196,7 +212,7 @@ export function CareerPreview() {
                       {t.careerBoardConfidence}
                     </span>
                     <span className="font-ibm text-[12px] text-[#65ff83] font-bold">
-                      <AnimatedCounter value={88} suffix="%" duration={1.2} /> // A+
+                      <AnimatedCounter value={88} suffix="%" duration={1.2} /> {'//'} A+
                     </span>
                   </div>
 

@@ -63,14 +63,21 @@ export function DraftPreview() {
 
         {/* Draft Arena Frame */}
         <div className="relative w-full rounded-[10px] border border-white/15 bg-[#080d0a] shadow-2xl p-6 sm:p-8 overflow-hidden">
-          {/* Background Stage Atmosphere */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-20"
-            style={{
-              background:
-                'radial-gradient(circle at 50% 20%, rgba(23, 229, 194, 0.25), transparent 70%)',
-            }}
-          />
+          {/* Draft League Media Asset Atmosphere */}
+          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden opacity-25">
+            <img
+              src="/media/homepage/draft-league.webp"
+              alt="Draft League Arena Stage"
+              className="w-full h-full object-cover object-center filter brightness-[0.45] contrast-[1.25]"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  'radial-gradient(circle at 50% 20%, rgba(23, 229, 194, 0.25), transparent 70%), linear-gradient(to bottom, transparent 0%, #080d0a 90%)',
+              }}
+            />
+          </div>
 
           {/* Draft Arena Header */}
           <div className="relative z-10 flex flex-wrap items-center justify-between border-b border-white/10 pb-6 mb-8 gap-4 font-ibm">
