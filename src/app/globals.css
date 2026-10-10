@@ -709,3 +709,44 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 .sc-squad-readable [class*="text-[10px]"]{font-size:11px;}
 .sc-squad-readable table tbody [class*="text-[#171717]"] {color:#171717;}
 @media(max-width:767px){.sc-squad-readable {min-width:0}.sc-squad-readable table{min-width:900px}.sc-squad-readable button{min-height:40px}}
+
+
+/* Draft lobby, career editorial palette only. Other draft gameplay remains unchanged. */
+.sc-draft-career-theme {background:#f2ede3;color:#29231f;}
+.sc-draft-career-theme .sc-draft-room-stadium {display:none;}
+.sc-draft-career-theme > header,.sc-draft-career-theme > footer {
+ background:#e8ded1 !important;border-color:#c9b9a7 !important;color:#3e342d !important;
+}
+.sc-draft-career-theme main .sc-panel {
+ background:linear-gradient(145deg,#fffaf2,#f1e8dd) !important;
+ border:1px solid #cfbfaf !important;
+ box-shadow:0 3px 0 #d4c7b9,0 9px 18px rgba(60,44,36,.08) !important;
+ color:#28231e !important;
+}
+.sc-draft-career-theme main [class*="border-dashed"]{
+ background:#f8f0e7 !important;border:1px dashed #b4a395 !important;color:#28231e !important;
+}
+.sc-draft-career-theme main [class*="border-dashed"]:hover{border-color:#9b2529 !important;background:#f1e5d9 !important;}
+.sc-draft-career-theme [class*="text-[#b7ff35]"],
+.sc-draft-career-theme [class*="text-[#c8ef80]"]{color:#90272e !important;}
+.sc-draft-career-theme [class*="text-zinc-400"],
+.sc-draft-career-theme [class*="text-zinc-500"],
+.sc-draft-career-theme [class*="text-zinc-600"]{color:#66594f !important;}
+.sc-draft-career-theme :is(h1,h2,h3,h4){color:#241f1b !important;font-style:normal;letter-spacing:0;}
+.sc-draft-career-theme main :is(p,span){text-shadow:none;}
+.sc-draft-career-theme main button[class*="bg-[#a3262c]"]{
+ background:#9b2529 !important;color:#fffaf2 !important;border-color:#9b2529 !important;
+ box-shadow:0 3px 0 #682027 !important;
+}
+.sc-draft-career-theme main button[class*="bg-[#a3262c]"] :is(span,svg){color:#fffaf2 !important;}
+.sc-draft-career-theme main button:disabled{opacity:.65;cursor:not-allowed;}
+.sc-draft-career-theme main button:not(:disabled):hover{filter:brightness(.95);}
+.sc-draft-career-theme main :is(button,a):focus-visible{outline:3px solid #9b2529;outline-offset:3px;}
+.sc-draft-career-theme main :is(button,a){min-height:40px;}
+.sc-draft-career-theme main [class*="bg-emerald-950"],
+.sc-draft-career-theme main [class*="bg-amber-950"],
+.sc-draft-career-theme main [class*="bg-sky-950"]{background:#e9ddd1 !important;}
+.sc-draft-career-theme main [class*="text-emerald"],
+.sc-draft-career-theme main [class*="text-rose-"]{color:#7c3338;}
+.sc-draft-career-theme main [class*="text-[#050806]"]{color:#29231f;}
+@media(max-width:767px){.sc-draft-career-theme main .sc-panel{box-shadow:0 2px 10px rgba(60,44,36,.08) !important;}}
