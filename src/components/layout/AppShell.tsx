@@ -32,7 +32,7 @@ function EditorialShell({ children }: { children: ReactNode }) {
   const standalone = pathname === '/' || pathname === '/career/new' || pathname.startsWith('/draft') || pathname.startsWith('/vault');
   if (standalone) return <main className="min-h-screen w-full">{children}</main>;
   return (
-    <div className="min-h-screen bg-[#f3efe6] text-[#242321]">
+    <div className="sc-editorial-career min-h-screen bg-[#f3efe6] text-[#242321]">
       <header className="sticky top-0 z-50 bg-[#f3efe6]/95 backdrop-blur-md border-b border-[#2d2925]">
         <div className="max-w-[1680px] mx-auto px-4 sm:px-8">
           <div className="flex items-center justify-between h-[70px] gap-4">
