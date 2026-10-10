@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useGame } from '@/lib/context/GameContext';
 import { useLanguage } from '@/lib/context/LanguageContext';
+import { CareerLoadingState } from '@/components/career/CareerLoadingState';
 import { formatDateTurkish, daysBetween } from '@/lib/career';
 import {
   Settings,
@@ -64,17 +65,17 @@ export default function SettingsPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#b8ff3d] border-t-transparent rounded-full animate-spin" />
-        <span>Sistem ayarları yükleniyor...</span>
-      </div>
+      <CareerLoadingState
+        title="SİSTEM AYARLARI YÜKLENİYOR"
+        message="Kullanıcı tercihleri, zorluk seviyesi ve kariyer yapılandırması yükleniyor..."
+      />
     );
   }
 
   const daysElapsed = daysBetween('2026-08-01', currentDate);
 
   return (
-    <div className="space-y-6 max-w-5xl pb-20 animate-in fade-in duration-300">
+    <div className="space-y-6 max-w-5xl pb-28 lg:pb-12 animate-in fade-in duration-300">
       {/* 1. BROADCAST SYSTEM CONFIG HEADER */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#090d0a] via-[#0d130f] to-[#090d0a] border border-white/10 p-5 md:p-6 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#b8ff3d]/5 rounded-full blur-3xl pointer-events-none" />

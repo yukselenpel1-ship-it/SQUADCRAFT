@@ -52,7 +52,7 @@ export const MobileNav: React.FC = () => {
   return (
     <>
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#090d0a]/98 backdrop-blur-xl border-t border-white/10 px-3 py-2 flex items-center justify-around lg:hidden safe-area-bottom select-none">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-[#070D14]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around lg:hidden safe-area-bottom select-none shadow-[0_-8px_30px_rgba(0,0,0,0.8)]">
         {mainNavItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
@@ -61,17 +61,17 @@ export const MobileNav: React.FC = () => {
               key={item.href}
               href={item.href}
               onClick={() => setMoreDrawerOpen(false)}
-              className={`flex flex-col items-center justify-center py-1 px-2 transition-colors min-w-[54px] ${
-                active ? 'text-[#b7ff35]' : 'text-[#8f9a91] hover:text-[#f3f6f3]'
+              className={`flex flex-col items-center justify-center py-1.5 px-2 transition-all min-w-[54px] min-h-[48px] rounded-lg active:scale-95 ${
+                active ? 'text-[#B7FF3C]' : 'text-zinc-400 hover:text-white'
               }`}
             >
-              <div className="relative">
-                <Icon className="w-5 h-5" />
+              <div className="relative flex items-center justify-center">
+                <Icon className={`w-5 h-5 transition-transform ${active ? 'scale-110 drop-shadow-[0_0_8px_rgba(183,255,60,0.6)]' : ''}`} />
                 {active && (
-                  <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#b7ff35] shadow-[0_0_8px_#b7ff35]" />
+                  <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#B7FF3C] shadow-[0_0_8px_#B7FF3C]" />
                 )}
               </div>
-              <span className="text-[10px] font-barlow font-bold uppercase tracking-wider mt-1">
+              <span className="text-[10px] font-barlow font-bold uppercase tracking-widest mt-1.5 leading-none">
                 {item.label}
               </span>
             </Link>
@@ -82,18 +82,19 @@ export const MobileNav: React.FC = () => {
         <button
           type="button"
           onClick={() => setMoreDrawerOpen(!moreDrawerOpen)}
-          className={`flex flex-col items-center justify-center py-1 px-2 transition-colors min-w-[54px] cursor-pointer ${
-            isMoreActive || moreDrawerOpen ? 'text-[#b7ff35]' : 'text-[#8f9a91] hover:text-[#f3f6f3]'
+          className={`flex flex-col items-center justify-center py-1.5 px-2 transition-all min-w-[54px] min-h-[48px] rounded-lg cursor-pointer active:scale-95 ${
+            isMoreActive || moreDrawerOpen ? 'text-[#B7FF3C]' : 'text-zinc-400 hover:text-white'
           }`}
+          aria-label="Tüm Menüyü Aç"
         >
-          <div className="relative">
-            <MoreHorizontal className="w-5 h-5" />
-            {isMoreActive && (
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#b7ff35] shadow-[0_0_8px_#b7ff35]" />
+          <div className="relative flex items-center justify-center">
+            <MoreHorizontal className={`w-5 h-5 transition-transform ${isMoreActive || moreDrawerOpen ? 'scale-110 drop-shadow-[0_0_8px_rgba(183,255,60,0.6)]' : ''}`} />
+            {(isMoreActive || moreDrawerOpen) && (
+              <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#B7FF3C] shadow-[0_0_8px_#B7FF3C]" />
             )}
           </div>
-          <span className="text-[10px] font-barlow font-bold uppercase tracking-wider mt-1">
-            MORE
+          <span className="text-[10px] font-barlow font-bold uppercase tracking-widest mt-1.5 leading-none">
+            DAHA
           </span>
         </button>
       </nav>
@@ -103,24 +104,33 @@ export const MobileNav: React.FC = () => {
         <div className="fixed inset-0 z-50 lg:hidden flex flex-col justify-end">
           <div
             onClick={() => setMoreDrawerOpen(false)}
-            className="fixed inset-0 bg-black/85 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/80 backdrop-blur-md animate-in fade-in duration-200"
           />
 
-          <div className="relative z-10 bg-[#090d0a] border-t border-white/15 rounded-t-2xl p-6 shadow-2xl safe-area-bottom animate-in slide-in-from-bottom duration-200">
+          <div className="relative z-10 bg-[#070D14]/98 border-t border-white/15 rounded-t-2xl p-5 sm:p-6 shadow-[0_-20px_50px_rgba(0,0,0,0.9)] safe-area-bottom animate-in slide-in-from-bottom duration-250">
+            {/* Top decorative pill */}
+            <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mb-4" />
+
             <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
-              <span className="font-barlow font-extrabold text-[18px] text-[#f3f6f3] tracking-wider uppercase">
-                SQUADCRAFT COMMAND MENU
-              </span>
+              <div>
+                <span className="text-[10px] font-barlow font-bold text-[#B7FF3C] tracking-widest uppercase block">
+                  SQUADCRAFT COMMAND
+                </span>
+                <span className="font-barlow font-black text-[18px] text-white tracking-wide uppercase">
+                  TÜM MODÜLLER
+                </span>
+              </div>
               <button
                 type="button"
                 onClick={() => setMoreDrawerOpen(false)}
-                className="p-1 rounded text-[#8f9a91] hover:text-[#f3f6f3]"
+                className="p-2 rounded-lg bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10 transition-colors"
+                aria-label="Kapat"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5 max-h-[60vh] overflow-y-auto pr-1 pb-4">
               {moreItems.map((item) => {
                 const Icon = item.icon;
                 const active = pathname.startsWith(item.href);
@@ -130,13 +140,13 @@ export const MobileNav: React.FC = () => {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMoreDrawerOpen(false)}
-                    className={`flex items-center gap-3 p-3 rounded-[6px] border font-barlow font-bold text-[14px] uppercase tracking-wide transition-all ${
+                    className={`flex items-center gap-3 p-3.5 rounded-xl border font-barlow font-bold text-[13px] uppercase tracking-wider transition-all min-h-[50px] ${
                       active
-                        ? 'bg-[#b7ff35]/15 border-[#b7ff35] text-[#b7ff35]'
-                        : 'bg-[#0d130f] border-white/10 text-[#f3f6f3] hover:border-white/20'
+                        ? 'bg-[#B7FF3C]/15 border-[#B7FF3C] text-[#B7FF3C] shadow-[0_0_15px_rgba(183,255,60,0.15)]'
+                        : 'bg-[#0B131E]/80 border-white/10 text-zinc-300 hover:border-white/25 hover:text-white hover:bg-[#0E1A29]'
                     }`}
                   >
-                    <Icon size={18} className={active ? 'text-[#b7ff35]' : 'text-[#8f9a91]'} />
+                    <Icon size={18} className={active ? 'text-[#B7FF3C]' : 'text-zinc-400'} />
                     <span>{item.label}</span>
                   </Link>
                 );

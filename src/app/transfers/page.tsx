@@ -9,6 +9,7 @@ import { ClubBadge } from '@/components/ui/ClubBadge';
 import { PlayerPortrait } from '@/components/ui/PlayerPortrait';
 import { PlayerModal } from '@/components/ui/PlayerModal';
 import { NegotiationModal } from '@/components/negotiation/NegotiationModal';
+import { CareerLoadingState } from '@/components/career/CareerLoadingState';
 import { EXTERNAL_CLUBS } from '@/lib/career/careerUniverse';
 import {
   getTransferWindowStatus,
@@ -311,10 +312,10 @@ export default function TransfersPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#050706] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#b8ff3d] border-t-transparent rounded-full animate-spin" />
-        <span>Kariyer aktarılıyor...</span>
-      </div>
+      <CareerLoadingState
+        title="TRANSFER MERKEZİ YÜKLENİYOR"
+        message="Piyasa değerleri, aktif müzakereler ve transfer bütçesi senkronize ediliyor..."
+      />
     );
   }
 
@@ -322,7 +323,7 @@ export default function TransfersPage() {
   const wageCapPercent = Math.min(100, Math.round((finances.weeklyWages / (finances.wageBudget || 1)) * 100));
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-300">
+    <div className="space-y-6 pb-28 lg:pb-12 animate-in fade-in duration-300">
       {/* 1. BROADCAST TRANSFER COMMAND HEADER */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#090d0a] via-[#0d130f] to-[#090d0a] border border-white/10 p-5 md:p-6 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#b8ff3d]/5 rounded-full blur-3xl pointer-events-none" />

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useGame } from '@/lib/context/GameContext';
 import Link from 'next/link';
 import { Swords, Calendar, ArrowRight, Play } from 'lucide-react';
+import { CareerLoadingState } from '@/components/career/CareerLoadingState';
 
 export default function MatchIndexPage() {
   const router = useRouter();
@@ -18,10 +19,10 @@ export default function MatchIndexPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-zinc-400 font-ibm text-xs">
-        <div className="w-6 h-6 border-2 border-[#b7ff35] border-t-transparent rounded-full animate-spin" />
-        <span>Kariyer yükleniyor...</span>
-      </div>
+      <CareerLoadingState
+        title="MAÇ MERKEZİ BAĞLANIYOR"
+        message="Sıradaki karşılaşma ve fikstür verileri derleniyor..."
+      />
     );
   }
 

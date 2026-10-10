@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { SquadCraftLogo } from '@/components/ui/SquadCraftLogo';
 import { ClubBadge } from '@/components/ui/ClubBadge';
 import { useGame } from '@/lib/context/GameContext';
 import { useLanguage } from '@/lib/context/LanguageContext';
@@ -27,6 +26,8 @@ import {
 interface SidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 interface NavItem {
@@ -42,11 +43,15 @@ interface NavGroup {
   items: NavItem[];
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
+export const Sidebar: React.FC<SidebarProps> = ({
+  isOpen = false,
+  onClose,
+  collapsed = false,
+  onToggleCollapse,
+}) => {
   const pathname = usePathname();
   const { unreadMessageCount, userClub } = useGame();
   const { language } = useLanguage();
-  const [collapsed, setCollapsed] = useState(false);
 
   const isTR = language === 'tr';
 
@@ -108,58 +113,62 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 bg-black/85 z-40 lg:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/80 z-40 lg:hidden backdrop-blur-sm transition-opacity"
         />
       )}
 
-      {/* Sidebar Container: Fixed 100vh height, completely static, zero scrolling */}
+      {/* Sidebar Container */}
       <aside
         className={`sc-career-sidebar fixed top-0 bottom-0 left-0 z-40 ${
-          collapsed ? 'lg:w-[70px]' : 'lg:w-[235px]'
-        } w-[240px] h-screen max-h-screen bg-[#090d0a]/98 backdrop-blur-xl border-r border-white/10 flex flex-col justify-between transition-all duration-200 select-none overflow-hidden ${
+          collapsed ? 'lg:w-[70px]' : 'lg:w-[240px]'
+        } w-[240px] h-screen max-h-screen bg-[#070D14]/98 backdrop-blur-xl border-r border-white/10 flex flex-col justify-between transition-all duration-200 select-none overflow-hidden ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
-        {/* Main Body - Locked to viewport height, absolutely zero vertical scrolling */}
+        {/* Main Body */}
         <div className="flex-1 flex flex-col justify-between overflow-hidden py-1">
           <div>
             {/* Brand Header */}
-            <div className="px-3.5 py-1.5 flex items-center justify-between border-b border-white/5">
+            <div className="px-3.5 py-2 flex items-center justify-between border-b border-white/[0.08]">
               <Link
                 href="/"
                 onClick={onClose}
-                className="flex items-center gap-2 hover:opacity-90 transition-opacity"
+                className="flex items-center gap-2.5 hover:opacity-90 transition-opacity"
               >
-                <div className="w-5 h-5 rounded-[3px] bg-[#0d1611] border border-[#b7ff35]/60 flex items-center justify-center shadow-[0_0_8px_rgba(183,255,53,0.3)] shrink-0">
-                  <span className="font-barlow font-extrabold text-[12px] text-[#b7ff35]">SC</span>
+                {/* Precision Architectural Crest */}
+                <div className="relative flex items-center justify-center w-6 h-6 rounded-[2px] bg-[#050910] border border-white/15 overflow-hidden shrink-0 shadow-sm">
+                  <div className="absolute top-0 right-0 w-2 h-2 bg-[#B7FF3C] [clip-path:polygon(0_0,100%_0,100%_100%)]" />
+                  <span className="font-condensed font-black text-xs text-[#F2F6FA]">SC</span>
                 </div>
+
                 {!collapsed && (
                   <div className="flex flex-col leading-none">
-                    <span className="font-barlow font-extrabold text-[15px] text-[#f3f6f3] tracking-wider uppercase">
-                      SQUAD<span className="text-[#b7ff35]">CRAFT</span>
+                    <span className="font-condensed font-black text-base text-[#F2F6FA] tracking-[0.06em] uppercase">
+                      SQUADCRAFT
                     </span>
-                    <div className="flex items-center gap-1 mt-0.5 font-mono text-[7.5px] text-[#8f9a91] tracking-widest uppercase">
-                      <span>{isTR ? 'MOTOR' : 'ENGINE'}</span>
-                      <span className="w-1 h-1 rounded-full bg-[#65ff83] animate-pulse" />
-                      <span className="text-[#65ff83] font-bold">{isTR ? 'AKTİF' : 'ONLINE'}</span>
+                    <div className="flex items-center gap-1 mt-0.5 font-mono text-[8px] text-[#91A2B4] tracking-widest uppercase">
+                      <span>CAREER PRO</span>
+                      <span className="w-1 h-1 rounded-full bg-[#B7FF3C] animate-pulse" />
                     </div>
                   </div>
                 )}
               </Link>
 
               {/* Desktop Collapse Toggle */}
-              <button
-                type="button"
-                onClick={() => setCollapsed(!collapsed)}
-                className="hidden lg:flex p-1 rounded hover:bg-white/5 text-[#8f9a91] hover:text-[#f3f6f3] transition-colors"
-                title={collapsed ? (isTR ? 'Genişlet' : 'Expand') : (isTR ? 'Daralt' : 'Collapse')}
-              >
-                {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
-              </button>
+              {onToggleCollapse && (
+                <button
+                  type="button"
+                  onClick={onToggleCollapse}
+                  className="hidden lg:flex p-1 rounded hover:bg-white/5 text-[#91A2B4] hover:text-[#F2F6FA] transition-colors cursor-pointer"
+                  title={collapsed ? (isTR ? 'Genişlet' : 'Expand') : (isTR ? 'Daralt' : 'Collapse')}
+                >
+                  {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+                </button>
+              )}
             </div>
 
             {/* Active Club Mini Module */}
-            <div className={`mx-2.5 my-1 p-1.5 bg-[#0d130f] border border-white/10 rounded-md ${collapsed ? 'text-center' : ''}`}>
+            <div className={`mx-2.5 my-1.5 p-1.5 bg-[#050910] border border-white/10 rounded-[3px] ${collapsed ? 'text-center' : ''}`}>
               <div className={`flex items-center ${collapsed ? 'justify-center' : 'gap-2'} overflow-hidden`}>
                 <div className="relative group shrink-0">
                   <ClubBadge
@@ -174,24 +183,24 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
 
                 {!collapsed && (
                   <div className="truncate flex-1">
-                    <div className="text-[11.5px] font-barlow font-extrabold uppercase text-[#f3f6f3] truncate leading-tight tracking-wide">
+                    <div className="text-xs font-condensed font-black uppercase text-[#F2F6FA] truncate leading-tight tracking-wide">
                       {userClub.name}
                     </div>
-                    <div className="text-[9.5px] text-[#8f9a91] truncate font-mono flex items-center gap-1">
+                    <div className="text-[9px] text-[#91A2B4] truncate font-mono flex items-center gap-1">
                       <span>{isTR ? 'Menajer' : 'Manager'}</span>
-                      <span className="text-[#b7ff35] font-semibold">{userClub.managerName || 'Steve'}</span>
+                      <span className="text-[#B7FF3C] font-semibold">{userClub.managerName || 'Steve'}</span>
                     </div>
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Navigation Groups - Compact Spacing to Fit on Screen without scroll */}
+            {/* Navigation Groups */}
             <nav className="mt-0.5 space-y-0.5">
               {navGroups.map((group) => (
                 <div key={group.groupTitle} className="space-y-0">
                   {!collapsed && (
-                    <div className="px-3 pt-0.5 pb-0 text-[7.5px] font-mono font-bold tracking-widest text-[#8f9a91]/70 uppercase">
+                    <div className="px-3 pt-1 pb-0.5 text-[8px] font-mono font-bold tracking-[0.16em] text-[#7A8B9E] uppercase">
                       {group.groupTitle}
                     </div>
                   )}
@@ -206,18 +215,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
                         href={item.href}
                         onClick={onClose}
                         title={collapsed ? item.label : undefined}
-                        className={`group relative flex items-center justify-between px-3 py-1 text-[11.5px] font-barlow font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                        className={`group relative flex items-center justify-between px-3 py-1.5 text-xs font-condensed font-bold uppercase tracking-wider transition-all cursor-pointer ${
                           active
-                            ? 'border-l-2 border-[#b7ff35] bg-[#b7ff35]/15 text-[#f3f6f3]'
-                            : 'border-l-2 border-transparent text-[#8f9a91] hover:text-[#f3f6f3] hover:bg-white/[0.04]'
+                            ? 'border-l-2 border-[#B7FF3C] bg-[#B7FF3C]/12 text-[#F2F6FA]'
+                            : 'border-l-2 border-transparent text-[#91A2B4] hover:text-[#F2F6FA] hover:bg-white/[0.04]'
                         }`}
                       >
                         <div className={`flex items-center gap-2.5 ${collapsed ? 'mx-auto' : ''}`}>
                           <Icon
                             className={`w-3.5 h-3.5 transition-colors shrink-0 ${
                               active
-                                ? 'text-[#b7ff35] drop-shadow-[0_0_8px_rgba(183,255,53,0.5)]'
-                                : 'text-[#8f9a91] group-hover:text-[#f3f6f3]'
+                                ? 'text-[#B7FF3C] drop-shadow-[0_0_8px_rgba(183,255,60,0.4)]'
+                                : 'text-[#91A2B4] group-hover:text-[#F2F6FA]'
                             }`}
                           />
                           {!collapsed && <span className="truncate">{item.label}</span>}
@@ -227,17 +236,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
                           <div className="flex items-center gap-1.5">
                             {item.isMultiplayer && (
                               <span
-                                className={`px-1 py-0.2 text-[7.5px] font-mono font-bold uppercase rounded ${
+                                className={`px-1 py-0.2 text-[8px] font-mono font-bold uppercase rounded-[2px] ${
                                   active
-                                    ? 'bg-[#17e5c2]/20 text-[#17e5c2] border border-[#17e5c2]/40'
-                                    : 'bg-white/5 text-[#17e5c2]'
+                                    ? 'bg-[#38D8FF]/20 text-[#38D8FF] border border-[#38D8FF]/40'
+                                    : 'bg-white/5 text-[#38D8FF]'
                                 }`}
                               >
                                 MP
                               </span>
                             )}
                             {item.badge && (
-                              <span className="px-1.5 py-0.2 text-[8px] font-mono font-black bg-[#ff5365] text-white rounded-full">
+                              <span className="px-1.5 py-0.2 text-[8px] font-mono font-black bg-[#FF4D5F] text-white rounded-[2px]">
                                 {item.badge}
                               </span>
                             )}
@@ -252,15 +261,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => 
           </div>
 
           {/* Bottom Status Footnote */}
-          <div className="p-2 px-3 border-t border-white/10 bg-[#050706]">
-            <div className="flex items-center justify-between font-mono text-[9px] text-[#8f9a91]">
+          <div className="p-2.5 px-3 border-t border-white/[0.08] bg-[#050910]">
+            <div className="flex items-center justify-between font-mono text-[9px] text-[#7A8B9E]">
               {!collapsed ? (
                 <>
-                  <span className="font-semibold">SQUADCRAFT 26</span>
-                  <span className="text-[#b7ff35] font-bold">PRO LEAGUE</span>
+                  <span className="font-semibold text-[#91A2B4]">SQUADCRAFT 26</span>
+                  <span className="text-[#B7FF3C] font-bold">PRO SUITE</span>
                 </>
               ) : (
-                <span className="mx-auto text-[#b7ff35] font-bold">PRO</span>
+                <span className="mx-auto text-[#B7FF3C] font-bold">PRO</span>
               )}
             </div>
           </div>

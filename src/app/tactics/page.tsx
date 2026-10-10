@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import { useGame } from '@/lib/context/GameContext';
 import { PlayerModal } from '@/components/ui/PlayerModal';
+import { CareerPageHeader } from '@/components/career/CareerPageHeader';
+import { CareerLoadingState } from '@/components/career/CareerLoadingState';
 import { Player, Formation, Mentality, Tempo, Pressing, PassingStyle, DefensiveLine, Width } from '@/types/game';
 import {
   Swords,
@@ -89,10 +91,10 @@ export default function TacticsPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center gap-3 text-[#8f9a91] font-ibm text-xs">
-        <div className="w-8 h-8 border-2 border-[#b8ff3d] border-t-transparent rounded-full animate-spin" />
-        <span>Taktik tahtası yükleniyor...</span>
-      </div>
+      <CareerLoadingState
+        title="TAKTİK TAHTASI HAZIRLANIYOR"
+        message="Diziliş formasyonu, oyun anlayışı ve oyuncu pozisyonları yükleniyor..."
+      />
     );
   }
 
@@ -110,39 +112,35 @@ export default function TacticsPage() {
       : 0;
 
   return (
-    <div className="space-y-6 pb-12 select-none animate-in fade-in duration-300">
-      {/* Header HUD */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-ibm text-[11px] text-[#b8ff3d] tracking-widest uppercase font-semibold">
-              TACTICAL SYSTEM // COMMAND CENTER
-            </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#65ff83] animate-pulse" />
-          </div>
-          <h1 className="font-barlow font-extrabold text-[36px] sm:text-[46px] text-[#f3f6f3] uppercase tracking-tight leading-none mt-1">
-            TACTICAL COMMAND CENTER
-          </h1>
-        </div>
-
-        {/* Action Controls */}
-        <div className="flex items-center gap-3">
+    <div className="space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
+      {/* Broadcast Header HUD */}
+      <CareerPageHeader
+        badge="TACTICAL SYSTEM // COMMAND CENTER"
+        title="TACTICAL COMMAND CENTER"
+        subtitle={`${userClub.name} oyun felsefesi, saha yerleşimi ve maç stratejisi`}
+        metrics={[
+          { label: 'DİZİLİŞ', value: tactics?.formation || '4-3-3', accent: 'lime' },
+          { label: 'ANLAYIŞ', value: settings.mentality || 'Dengeli', accent: 'cyan' },
+          { label: 'TEMPO', value: settings.tempo || 'Standart', accent: 'gold' },
+          { label: 'PRES', value: settings.pressing || 'Orta', accent: 'default' },
+        ]}
+        actions={
           <button
             type="button"
             onClick={handleAutoAssign}
-            className="flex items-center gap-2 px-4 py-2 rounded-[3px] bg-white/5 hover:bg-white/10 border border-white/10 font-barlow font-bold text-[13px] uppercase tracking-wider text-[#f3f6f3] transition-colors cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#B7FF3C] text-black font-barlow font-black text-[13px] uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(183,255,60,0.35)] hover:scale-[1.02] cursor-pointer"
           >
-            <Sparkles size={14} className="text-[#b8ff3d]" />
+            <Sparkles size={16} />
             <span>KADROYU DİZ (AUTO-ASSIGN)</span>
           </button>
-        </div>
-      </div>
+        }
+      />
 
       {/* Action Notice Banner */}
       {actionNotice && (
-        <div className="p-3 rounded-[4px] bg-[#b8ff3d]/15 border border-[#b8ff3d] text-[#b8ff3d] font-ibm text-[12px] flex items-center gap-2 animate-in fade-in">
-          <CheckCircle2 size={16} />
-          <span>{actionNotice}</span>
+        <div className="p-4 rounded-xl bg-[#B7FF3C]/10 border border-[#B7FF3C]/40 text-[#B7FF3C] font-mono text-[12px] flex items-center gap-3 animate-in fade-in shadow-[0_0_20px_rgba(183,255,60,0.15)]">
+          <CheckCircle2 size={18} className="shrink-0" />
+          <span className="font-bold">{actionNotice}</span>
         </div>
       )}
 

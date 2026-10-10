@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useGame } from '@/lib/context/GameContext';
 import { BudgetCard } from '@/components/ui/BudgetCard';
+import { CareerLoadingState } from '@/components/career/CareerLoadingState';
 import {
   Landmark,
   Wallet,
@@ -33,10 +34,10 @@ export default function FinancesPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center gap-3 text-zinc-400 font-mono text-xs">
-        <div className="w-6 h-6 border-2 border-[#b8ff3d] border-t-transparent rounded-full animate-spin" />
-        <span>Finans verileri yükleniyor...</span>
-      </div>
+      <CareerLoadingState
+        title="KULÜP FİNANSI YÜKLENİYOR"
+        message="Bütçe kalemleri, gelir-gider tabloları ve finansal projeksiyonlar derleniyor..."
+      />
     );
   }
 
@@ -82,7 +83,7 @@ export default function FinancesPage() {
   );
 
   return (
-    <div className="space-y-6 pb-20 animate-in fade-in duration-300">
+    <div className="space-y-6 pb-28 lg:pb-12 animate-in fade-in duration-300">
       {/* 1. BROADCAST FINANCIAL CONTROL HEADER */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#090d0a] via-[#0d130f] to-[#090d0a] border border-white/10 p-5 md:p-6 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#b8ff3d]/5 rounded-full blur-3xl pointer-events-none" />

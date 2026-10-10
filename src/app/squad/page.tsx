@@ -7,6 +7,8 @@ import { TrainingIntensity } from '@/lib/career/types';
 import { PlayerPortrait } from '@/components/ui/PlayerPortrait';
 import { PlayerModal } from '@/components/ui/PlayerModal';
 import { NegotiationModal } from '@/components/negotiation/NegotiationModal';
+import { CareerPageHeader } from '@/components/career/CareerPageHeader';
+import { CareerLoadingState } from '@/components/career/CareerLoadingState';
 import {
   Users,
   Search,
@@ -123,31 +125,33 @@ export default function SquadPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center gap-3 text-[#8f9a91] font-ibm text-xs">
-        <div className="w-8 h-8 border-2 border-[#b8ff3d] border-t-transparent rounded-full animate-spin" />
-        <span>Kadro yükleniyor...</span>
-      </div>
+      <CareerLoadingState
+        title="KADRO KOMUTASI YÜKLENİYOR"
+        message="Oyuncu profilleri, kondisyon verileri ve taktiksel eşleşmeler derleniyor..."
+      />
     );
   }
 
-  return (
-    <div className="space-y-6 pb-12 select-none animate-in fade-in duration-300">
-      {/* Header HUD */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-ibm text-[11px] text-[#b8ff3d] tracking-widest uppercase font-semibold">
-              TACTICAL ROSTER // SQUAD DEPT
-            </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#65ff83] animate-pulse" />
-          </div>
-          <h1 className="font-barlow font-extrabold text-[36px] sm:text-[46px] text-[#f3f6f3] uppercase tracking-tight leading-none mt-1">
-            SQUAD WAR ROOM
-          </h1>
-        </div>
+  const avgOvr = Math.round(
+    userPlayers.reduce((acc, p) => acc + (p.overall || 70), 0) / (userPlayers.length || 1)
+  );
 
+  return (
+    <div className="space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
+      {/* Broadcast Header HUD */}
+      <CareerPageHeader
+        badge="TACTICAL ROSTER // SQUAD DEPT"
+        title="SQUAD WAR ROOM"
+        subtitle={`${userClub.name} aktif oyuncu kadrosu, kondisyon takibi, antrenman ve sağlık merkezi`}
+        metrics={[
+          { label: 'TOPLAM OYUNCU', value: userPlayers.length, accent: 'default' },
+          { label: 'ORTALAMA GÜÇ', value: `${avgOvr} OVR`, accent: 'lime' },
+          { label: 'HAFTALIK MAAŞ', value: `€${(finances.weeklyWages || 0).toLocaleString()}`, accent: 'gold' },
+          { label: 'KADRO DURUMU', value: 'TAM HAZIR', accent: 'cyan' },
+        ]}
+      >
         {/* Tab Pills */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-[#0d130f] border border-white/10 rounded-[6px] font-barlow font-bold text-[13px] uppercase tracking-wider">
+        <div className="flex flex-wrap items-center gap-2 pt-2 font-barlow font-bold text-[13px] uppercase tracking-wider">
           {[
             { id: 'WAR_ROOM', label: 'WAR ROOM 3D', icon: Layers },
             { id: 'ROSTER', label: 'TAM KADRO', icon: Users },
@@ -162,19 +166,19 @@ export default function SquadPage() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveSquadTab(tab.id as any)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-[4px] transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all cursor-pointer min-h-[42px] ${
                   active
-                    ? 'bg-[#b8ff3d] text-[#050806] shadow-[0_0_12px_rgba(184,255,61,0.35)]'
-                    : 'text-[#8f9a91] hover:text-[#f3f6f3]'
+                    ? 'bg-[#B7FF3C] text-black font-black shadow-[0_0_18px_rgba(183,255,60,0.35)] scale-[1.02]'
+                    : 'bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10'
                 }`}
               >
-                <Icon size={14} />
+                <Icon size={16} />
                 <span>{tab.label}</span>
               </button>
             );
           })}
         </div>
-      </div>
+      </CareerPageHeader>
 
       {/* Main Layout: Left Perspective Pitch / Roster + Right Inspection Drawer */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">

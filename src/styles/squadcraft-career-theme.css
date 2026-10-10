@@ -1,14 +1,20 @@
+/* =========================================================================
+   SQUADCRAFT CAREER THEME — PRECISION SPORTS EDITORIAL V5
+   ========================================================================= */
+
 .sc-career-theme {
-  --sc-bg: #050806;
-  --sc-surface: #0d120f;
-  --sc-surface-light: #141b16;
-  --sc-line: rgba(255, 255, 255, 0.09);
-  --sc-line-highlight: rgba(183, 255, 53, 0.34);
-  --sc-lime: #b7ff35;
-  --sc-lime-hover: #9bea27;
-  --sc-cyan: #17e5c2;
-  --sc-text-main: #f2f5f2;
-  --sc-text-muted: #8b958d;
+  --sc-bg: #05080E;
+  --sc-surface: #080E17;
+  --sc-surface-light: #0D1624;
+  --sc-line: rgba(255, 255, 255, 0.08);
+  --sc-line-highlight: rgba(183, 255, 60, 0.35);
+  --sc-lime: #B7FF3C;
+  --sc-lime-hover: #c9ff6a;
+  --sc-cyan: #38D8FF;
+  --sc-gold: #FFC84A;
+  --sc-danger: #FF4D5F;
+  --sc-text-main: #F2F6FA;
+  --sc-text-muted: #91A2B4;
   background: var(--sc-bg);
   color: var(--sc-text-main);
 }
@@ -17,20 +23,24 @@
 .sc-career-theme .sc-panel-interactive,
 .sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#07101C]"],
 .sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#081325]"] {
-  background-color: #0d120f !important;
+  background-color: #080E17 !important;
   border-color: var(--sc-line) !important;
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
 }
 
 .sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#040814]"],
-.sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#050B14]"] {
-  background-color: #050806 !important;
+.sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#050B14]"],
+.sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#050706]"],
+.sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#050806]"] {
+  background-color: #05080E !important;
   border-color: var(--sc-line) !important;
 }
 
 .sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#0B1524]"],
-.sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#0E1E38]"] {
-  background-color: #141b16 !important;
+.sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#0E1E38]"],
+.sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#0d130f]"],
+.sc-career-theme :is(article, section, div, aside, header, nav, button)[class*="bg-[#090d0a]"] {
+  background-color: #0B1422 !important;
   border-color: var(--sc-line) !important;
 }
 
@@ -40,46 +50,63 @@
   border-color: var(--sc-line) !important;
 }
 
-.sc-career-theme [class*="text-[#00F5A0]"] {
-  color: #b7ff35 !important;
+/* Tactical Lime overrides */
+.sc-career-theme [class*="text-[#00F5A0]"],
+.sc-career-theme [class*="text-[#b7ff35]"],
+.sc-career-theme [class*="text-[#b8ff3d]"] {
+  color: #B7FF3C !important;
 }
 
-.sc-career-theme [class*="bg-[#00F5A0]"] {
-  background-color: #b7ff35 !important;
-  color: #050806 !important;
+.sc-career-theme [class*="bg-[#00F5A0]"],
+.sc-career-theme [class*="bg-[#b7ff35]"],
+.sc-career-theme [class*="bg-[#b8ff3d]"] {
+  background-color: #B7FF3C !important;
+  color: #070D14 !important;
 }
 
-.sc-career-theme [class*="border-[#00F5A0]"] {
-  border-color: rgba(183, 255, 53, 0.4) !important;
+.sc-career-theme [class*="border-[#00F5A0]"],
+.sc-career-theme [class*="border-[#b7ff35]"],
+.sc-career-theme [class*="border-[#b8ff3d]"] {
+  border-color: rgba(183, 255, 60, 0.45) !important;
 }
 
-.sc-career-theme [class*="text-[#00D4FF]"] {
-  color: #17e5c2 !important;
+/* Electric Cyan overrides */
+.sc-career-theme [class*="text-[#00D4FF]"],
+.sc-career-theme [class*="text-[#17e5c2]"],
+.sc-career-theme [class*="text-[#21dfbd]"] {
+  color: #38D8FF !important;
 }
 
-.sc-career-theme [class*="bg-[#00D4FF]"] {
-  background-color: #17e5c2 !important;
-  color: #050806 !important;
+.sc-career-theme [class*="bg-[#00D4FF]"],
+.sc-career-theme [class*="bg-[#17e5c2]"],
+.sc-career-theme [class*="bg-[#21dfbd]"] {
+  background-color: #38D8FF !important;
+  color: #070D14 !important;
 }
 
-.sc-career-theme [class*="border-[#00D4FF]"] {
-  border-color: rgba(23, 229, 194, 0.4) !important;
+.sc-career-theme [class*="border-[#00D4FF]"],
+.sc-career-theme [class*="border-[#17e5c2]"],
+.sc-career-theme [class*="border-[#21dfbd]"] {
+  border-color: rgba(56, 216, 255, 0.4) !important;
 }
 
+/* Muted text overrides */
 .sc-career-theme [class*="text-[#8E9EB5]"],
 .sc-career-theme [class*="text-[#51647E]"],
-.sc-career-theme [class*="text-[#43556D]"] {
-  color: #8b958d !important;
+.sc-career-theme [class*="text-[#43556D]"],
+.sc-career-theme [class*="text-[#8f9a91]"],
+.sc-career-theme [class*="text-[#8b958d]"] {
+  color: #91A2B4 !important;
 }
 
+/* Glow effects */
 .sc-career-theme .sc-glow-green {
   border-color: var(--sc-lime) !important;
-  box-shadow: 0 0 0 1px rgba(183, 255, 53, 0.25), 0 0 34px rgba(183, 255, 53, 0.15);
+  box-shadow: 0 0 0 1px rgba(183, 255, 60, 0.3), 0 0 24px rgba(183, 255, 60, 0.2);
 }
 
 .sc-career-theme .sc-career-sidebar {
-  width: 246px;
-  background: rgba(9, 13, 10, 0.98);
+  background: rgba(8, 14, 23, 0.98);
   border-color: var(--sc-line);
   height: 100vh !important;
   max-height: 100vh !important;
@@ -88,32 +115,32 @@
 
 .sc-career-theme .sc-career-sidebar nav a {
   min-height: 28px !important;
-  border-radius: 4px;
+  border-radius: 2px;
 }
 
 .sc-career-theme .sc-career-sidebar nav a[aria-current="page"] {
-  background: var(--sc-lime);
-  color: #050806;
-  box-shadow: 0 0 28px rgba(183, 255, 53, 0.25);
+  background: rgba(183, 255, 60, 0.14);
+  color: #F2F6FA;
+  border-left: 2px solid #B7FF3C;
 }
 
 .sc-career-theme .sc-career-topbar {
-  height: 58px;
-  background: rgba(9, 13, 10, 0.96);
+  height: 64px;
+  background: rgba(7, 13, 20, 0.96);
   border-color: var(--sc-line);
 }
 
 .sc-career-theme .sc-career-content {
   width: 100%;
-  max-width: 1700px;
+  max-width: 1720px;
 }
 
 .sc-career-theme .sc-career-stadium {
-  background-image: radial-gradient(circle at 50% -20%, rgba(183, 255, 53, 0.08), transparent 45%), radial-gradient(circle at 0% 100%, rgba(23, 229, 194, 0.05), transparent 35%), #050806;
+  background-image:
+    radial-gradient(ellipse at 50% -20%, rgba(183, 255, 60, 0.06), transparent 50%),
+    radial-gradient(ellipse at 90% 20%, rgba(56, 216, 255, 0.04), transparent 40%),
+    radial-gradient(ellipse at 10% 80%, rgba(15, 34, 56, 0.35), transparent 60%),
+    #05080E;
   background-position: center;
   background-size: cover;
-}
-
-@media (min-width: 1024px) {
-  .sc-career-theme .sc-career-main { padding-left: 246px; }
 }

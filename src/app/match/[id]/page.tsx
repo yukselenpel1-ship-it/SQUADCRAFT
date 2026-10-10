@@ -6,6 +6,7 @@ import { useGame } from '@/lib/context/GameContext';
 import { MatchEngine } from '@/lib/match-engine/engine';
 import { MatchEngineState, MatchEngineEvent } from '@/lib/match-engine/types';
 import { TacticalRadarPitch } from '@/components/match/TacticalRadarPitch';
+import { CareerLoadingState } from '@/components/career/CareerLoadingState';
 import { ClubBadge } from '@/components/ui/ClubBadge';
 import { StatBadge } from '@/components/ui/StatBadge';
 import { FitnessIndicator } from '@/components/ui/FitnessIndicator';
@@ -317,10 +318,10 @@ export default function MatchCenterPage() {
 
   if (!isCareerHydrated || !isInitialized || !engineState) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3 text-zinc-400 font-ibm text-xs">
-        <div className="w-6 h-6 border-2 border-[#b7ff35] border-t-transparent rounded-full animate-spin" />
-        <span>Kariyer ve maç motoru yükleniyor...</span>
-      </div>
+      <CareerLoadingState
+        title="MAÇ MOTORU VE TAKTİKSEL RADAR BAŞLATILIYOR"
+        message="22 oyunculu simülasyon motoru, canlı istatistikler ve stadyum atmosferi hazırlanıyor..."
+      />
     );
   }
 

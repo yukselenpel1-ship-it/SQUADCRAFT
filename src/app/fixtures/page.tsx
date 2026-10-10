@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useGame } from '@/lib/context/GameContext';
 import { ClubBadge } from '@/components/ui/ClubBadge';
 import { FifaMatchReportModal } from '@/components/match/FifaMatchReportModal';
+import { CareerPageHeader } from '@/components/career/CareerPageHeader';
+import { CareerLoadingState } from '@/components/career/CareerLoadingState';
 import { Fixture } from '@/types/game';
 import {
   Calendar,
@@ -81,10 +83,10 @@ export default function FixturesPage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center gap-3 text-[#8f9a91] font-ibm text-xs">
-        <div className="w-8 h-8 border-2 border-[#b8ff3d] border-t-transparent rounded-full animate-spin" />
-        <span>Fikstür yükleniyor...</span>
-      </div>
+      <CareerLoadingState
+        title="FİKSTÜR TAKVİMİ YÜKLENİYOR"
+        message="Sezon fikstürü, maç haftaları ve karşılaşma sonuçları derleniyor..."
+      />
     );
   }
 
@@ -97,24 +99,24 @@ export default function FixturesPage() {
 
   const isUserHome = nextMatch ? nextMatch.homeClubId === userClub.id : true;
 
-  return (
-    <div className="space-y-6 pb-12 select-none animate-in fade-in duration-300">
-      {/* Header HUD */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-ibm text-[11px] text-[#b8ff3d] tracking-widest uppercase font-semibold">
-              CALENDAR & MATCH SCHEDULE // {seasonYear || '2026/27'}
-            </span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#65ff83] animate-pulse" />
-          </div>
-          <h1 className="font-barlow font-extrabold text-[36px] sm:text-[46px] text-[#f3f6f3] uppercase tracking-tight leading-none mt-1">
-            SEASON TIMELINE
-          </h1>
-        </div>
+  const finishedMatchesCount = fixtures.filter(f => f.status === 'FINISHED').length;
 
+  return (
+    <div className="space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
+      {/* Broadcast Header HUD */}
+      <CareerPageHeader
+        badge={`CALENDAR & MATCH SCHEDULE // ${seasonYear || '2026/27'}`}
+        title="SEASON TIMELINE"
+        subtitle={`${userClub.name} lig fikstürü, maç sonuçları ve yaklaşan karşılaşmalar`}
+        metrics={[
+          { label: 'SEZON', value: seasonYear || '2026/27', accent: 'default' },
+          { label: 'SIRADAKİ RAKİP', value: nextOpponent?.name || 'Rakip', accent: 'lime' },
+          { label: 'OYNANAN MAÇ', value: `${finishedMatchesCount}`, accent: 'cyan' },
+          { label: 'HAFTA', value: `W-${nextMatch?.round || 1}`, accent: 'gold' },
+        ]}
+      >
         {/* Filter Tabs */}
-        <div className="flex flex-wrap items-center gap-1.5 p-1 bg-[#0d130f] border border-white/10 rounded-[6px] font-barlow font-bold text-[13px] uppercase tracking-wider">
+        <div className="flex flex-wrap items-center gap-2 pt-2 font-barlow font-bold text-[13px] uppercase tracking-wider">
           {[
             { id: 'MY_CLUB', label: 'KULÜBÜMÜZ' },
             { id: 'ALL', label: 'TÜM LİG' },
@@ -125,17 +127,17 @@ export default function FixturesPage() {
               key={tab.id}
               type="button"
               onClick={() => setSelectedFilter(tab.id as any)}
-              className={`px-3 py-1.5 rounded-[4px] transition-all cursor-pointer ${
+              className={`px-4 py-2 rounded-xl transition-all cursor-pointer min-h-[42px] ${
                 selectedFilter === tab.id
-                  ? 'bg-[#b8ff3d] text-[#050806] shadow-[0_0_12px_rgba(184,255,61,0.35)]'
-                  : 'text-[#8f9a91] hover:text-[#f3f6f3]'
+                  ? 'bg-[#B7FF3C] text-black font-black shadow-[0_0_18px_rgba(183,255,60,0.35)] scale-[1.02]'
+                  : 'bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10'
               }`}
             >
               {tab.label}
             </button>
           ))}
         </div>
-      </div>
+      </CareerPageHeader>
 
       {/* Featured Upcoming Match Cinematic Strip */}
       {nextMatch && (

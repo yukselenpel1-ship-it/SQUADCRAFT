@@ -3,6 +3,7 @@
 import React, { useMemo } from 'react';
 import { useGame } from '@/lib/context/GameContext';
 import { LeagueTable } from '@/components/league/LeagueTable';
+import { CareerLoadingState } from '@/components/career/CareerLoadingState';
 import { ClubBadge } from '@/components/ui/ClubBadge';
 import { Trophy, Award, Flame, Shield, Users, ChevronRight, Swords, Sparkles, TrendingUp } from 'lucide-react';
 
@@ -56,15 +57,15 @@ export default function LeaguePage() {
 
   if (!isCareerHydrated || !isInitialized) {
     return (
-      <div className="min-h-screen bg-[#050806] flex flex-col items-center justify-center gap-3 text-[#8f9a91] font-ibm text-xs">
-        <div className="w-8 h-8 border-2 border-[#b8ff3d] border-t-transparent rounded-full animate-spin" />
-        <span>Lig verileri yükleniyor...</span>
-      </div>
+      <CareerLoadingState
+        title="LİG MERKEZİ YÜKLENİYOR"
+        message="Puan durumu, averaj tabloları ve haftalık fikstür derleniyor..."
+      />
     );
   }
 
   return (
-    <div className="space-y-6 pb-12 select-none animate-in fade-in duration-300">
+    <div className="space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
       {/* Broadcast Header HUD */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
         <div>
