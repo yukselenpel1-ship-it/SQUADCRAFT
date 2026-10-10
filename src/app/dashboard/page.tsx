@@ -82,7 +82,7 @@ export default function DashboardPage() {
           <div className="flex flex-wrap justify-between gap-4 items-start">
             <div>
               <div className={eyebrow + ' text-[#8b2429] mb-3'}>{tr ? 'FUTBOLUN İÇİNDEN / SAYI' : 'THE FOOTBALL JOURNAL / ISSUE'} {String(seasonNumber || 1).padStart(2, '0')}</div>
-              <h1 className={headingClass + ' text-[clamp(4.2rem,12vw,11rem)]'}>{tr ? 'KARİYER' : 'CAREER'}<span className="text-[#a6282c]">.</span></h1>
+              <h1 className={headingClass + ' text-[clamp(3rem,6vw,6rem)]'}>{tr ? 'KARİYER' : 'CAREER'}<span className="text-[#a6282c]">.</span></h1>
             </div>
             <div className="sm:text-right max-w-xs pt-2">
               <div className="font-serif italic text-2xl sm:text-3xl leading-tight">{tr ? 'Bir kadrodan fazlasını inşa et.' : 'Build more than a squad.'}</div>
@@ -98,13 +98,13 @@ export default function DashboardPage() {
               <div className="flex items-center gap-5">
                 <div className="shrink-0"><ClubBadge clubId={userClub.id} code={userClub.code} name={userClub.name} primaryColor={userClub.primaryColor} secondaryColor={userClub.secondaryColor} size="xl" /></div>
                 <div>
-                  <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl leading-[0.95]">{localName}</h2>
+                  <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl leading-[0.95]">{localName}</h2>
                   <p className="font-serif italic text-[#716862] text-lg mt-3">{tr ? 'Kulübün geleceği senin ellerinde.' : 'The future of the club is in your hands.'}</p>
                 </div>
               </div>
             </div>
             <div className="grid grid-cols-3 gap-3 mt-9 pt-4 border-t border-[#252322]/25">
-              <div><p className={eyebrow + ' text-[#7a716a]'}>{tr ? 'SIRA' : 'RANK'}</p><strong className="font-barlow text-5xl font-black">{standing?.rank ?? '—'}</strong></div>
+              <div><p className={eyebrow + ' text-[#7a716a]'}>{tr ? 'SIRA' : 'RANK'}</p><strong className="font-barlow text-4xl font-black">{standing?.rank ?? '—'}</strong></div>
               <div><p className={eyebrow + ' text-[#7a716a]'}>{tr ? 'PUAN' : 'POINTS'}</p><strong className="font-barlow text-5xl font-black">{standing?.points ?? '—'}</strong></div>
               <div><p className={eyebrow + ' text-[#7a716a]'}>{tr ? 'KADRO' : 'SQUAD'}</p><strong className="font-barlow text-5xl font-black">{userPlayers?.length ?? 0}</strong></div>
             </div>
@@ -113,7 +113,7 @@ export default function DashboardPage() {
             <div aria-hidden className="absolute inset-0 opacity-[0.10]" style={{backgroundImage:'repeating-linear-gradient(0deg, transparent 0px, transparent 18px, #fff 19px, transparent 20px)'}} />
             <span className={eyebrow + ' relative z-10'}>{tr ? 'SEZONUN HİKÂYESİ' : 'THE SEASON STORY'}</span>
             <div className="relative z-10">
-              <p className={headingClass + ' text-[clamp(3.2rem,6vw,7rem)]'}>{tr ? <>BİR KULÜP.<br />BİR MİRAS.</> : <>ONE CLUB.<br />ONE LEGACY.</>}</p>
+              <p className={headingClass + ' text-[clamp(2.7rem,4.5vw,5rem)]'}>{tr ? <>BİR KULÜP.<br />BİR MİRAS.</> : <>ONE CLUB.<br />ONE LEGACY.</>}</p>
               <p className="font-serif italic text-xl sm:text-2xl mt-4">{tr ? 'Sonraki sayfayı sen yaz.' : 'Write the next chapter.'}</p>
             </div>
             <span className={eyebrow + ' relative z-10 opacity-80'}>SQUADCRAFT / FOOTBALL STORIES</span>

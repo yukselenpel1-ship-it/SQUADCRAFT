@@ -65,7 +65,7 @@ export default function LeaguePage() {
   }
 
   return (
-    <div className="space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
       {/* Broadcast Header HUD */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[#292622] pb-6">
         <div>
@@ -75,7 +75,7 @@ export default function LeaguePage() {
             </span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#65ff83] animate-pulse" />
           </div>
-          <h1 className="font-barlow font-black text-[clamp(2.8rem,5.5vw,5.8rem)] text-[#292622] uppercase tracking-tight leading-[0.94] mt-3">
+          <h1 className="font-barlow font-black text-[clamp(2rem,4vw,3.8rem)] text-[#292622] uppercase tracking-tight leading-[0.94] mt-3">
             SEZON {seasonYear || '2026/27'} · HAFTA {nextMatch?.round || 1}
           </h1>
         </div>
