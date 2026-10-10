@@ -4,6 +4,7 @@ import React, { useState, ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X, ArrowUpRight } from 'lucide-react';
+import { Topbar } from './Topbar';
 import { useGame, GameProvider } from '@/lib/context/GameContext';
 import { AuthProvider } from '@/lib/auth/AuthContext';
 import { LanguageProvider, useLanguage } from '@/lib/context/LanguageContext';
@@ -52,6 +53,7 @@ function EditorialShell({ children }: { children: ReactNode }) {
         </div>
         {open && <nav aria-label={tr ? 'Mobil navigasyon' : 'Mobile navigation'} className="lg:hidden border-t border-[#d0c8bc] p-4 grid grid-cols-2 sm:grid-cols-3 gap-2 bg-[#f3efe6]">{links.map(l => <Link key={l.href} onClick={()=>setOpen(false)} href={l.href} className={`px-3 py-3 border border-[#d0c8bc] font-barlow uppercase font-bold ${pathname.startsWith(l.href) ? 'bg-[#9b2529] text-white' : ''}`}>{tr ? l.tr : l.en}</Link>)}</nav>}
       </header>
+      <Topbar />
       <main className="w-full min-h-[calc(100vh-70px)]">{children}</main>
     </div>
   );
