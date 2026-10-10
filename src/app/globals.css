@@ -775,3 +775,36 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
     radial-gradient(ellipse at 88% 82%,rgba(146,110,75,.09),transparent 45%),
     linear-gradient(145deg,#f8f3eb 0%,#efe6db 100%);
 }
+
+
+/* Draft waiting room: explicit interactive states on light Career Mode surfaces. */
+.sc-draft-career-theme :is(button,a):not(:disabled):hover {
+  background-color:#e1d2c2;
+  color:#34251f;
+  border-color:#a88b7d;
+}
+.sc-draft-career-theme :is(button,a):not(:disabled):hover :is(span,svg) {
+  color:inherit;
+}
+.sc-draft-career-theme button[class*="bg-rose-950"],
+.sc-draft-career-theme button[class*="bg-rose-900"] {
+  background:#f3d9d8 !important;
+  border-color:#c78385 !important;
+  color:#8f2932 !important;
+}
+.sc-draft-career-theme button[class*="bg-rose-950"]:not(:disabled):hover,
+.sc-draft-career-theme button[class*="bg-rose-900"]:not(:disabled):hover {
+  background:#9b2529 !important;
+  color:#fffaf2 !important;
+}
+.sc-draft-career-theme button[class*="bg-[#a3262c]"]:not(:disabled):hover {
+  background:#751c24 !important;
+  color:#fffaf2 !important;
+}
+.sc-draft-career-theme button[class*="bg-[#a3262c]"]:not(:disabled):hover :is(span,svg) {color:#fffaf2 !important;}
+.sc-draft-career-theme :is(button,a):disabled {color:#756a60 !important;background:#e6dbce !important;border-color:#c9bdaf !important;}
+.sc-draft-career-theme :is(button,a):disabled :is(span,svg) {color:#756a60 !important;}
+.sc-draft-career-theme button[class*="bg-emerald-500"]:not(:disabled):hover,
+.sc-draft-career-theme button[class*="bg-sky-500"]:not(:disabled):hover {
+  background:#d9e8df !important;color:#245443 !important;
+}
