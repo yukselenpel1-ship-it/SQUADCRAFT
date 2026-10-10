@@ -276,3 +276,46 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 }
 
 
+
+
+/* Editorial Football career system — isolated from public homepage and Draft. */
+.sc-editorial-career {
+  --sc-editorial-paper: #f3efe6;
+  --sc-editorial-ink: #292622;
+  --sc-editorial-red: #9b2529;
+  --sc-editorial-rule: #d2c7b7;
+  background: var(--sc-editorial-paper);
+  color: var(--sc-editorial-ink);
+}
+.sc-editorial-career main {
+  max-width: none;
+}
+.sc-editorial-career :is(button,a,input,select,textarea):focus-visible {
+  outline: 2px solid #a3262c;
+  outline-offset: 3px;
+}
+.sc-editorial-career .sc-panel,
+.sc-editorial-career .sc-panel-interactive {
+  border-radius: 0;
+  box-shadow: none;
+  border-color: rgba(41,38,34,.25);
+}
+.sc-editorial-career .sc-panel-interactive:hover {
+  transform: translateY(-1px);
+  box-shadow: none;
+  border-color: #9b2529;
+}
+/* The legacy card surfaces remain legible while their layout is being redesigned. */
+.sc-editorial-career :is(article,section,div)[class*="bg-[#0B131E]"],
+.sc-editorial-career :is(article,section,div)[class*="bg-[#080E17]"],
+.sc-editorial-career :is(article,section,div)[class*="bg-[#0d120f]"] {
+  border-radius: 2px;
+  box-shadow: none;
+}
+/* Keep dark tactical pitches untouched for player positioning and match readability. */
+@media (prefers-reduced-motion: reduce) {
+  .sc-editorial-career *, .sc-editorial-career *::before, .sc-editorial-career *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
