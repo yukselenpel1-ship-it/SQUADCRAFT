@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { ImmersiveHome } from '@/components/squadcraft-experience/ImmersiveHome';
+import { SquadCraftV3Page } from '@/components/squadcraft-v3/SquadCraftV3Page';
 
 export default function SquadCraftHomePage() {
-  return <ImmersiveHome />;
+  return <SquadCraftV3Page />;
 }
