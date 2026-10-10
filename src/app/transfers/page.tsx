@@ -688,7 +688,7 @@ export default function TransfersPage() {
                           </td>
 
                           <td className="py-3 px-2 text-center">
-                            <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#050706] border border-white/10 text-[#b8ff3d] rounded">
+                            <span className="sc-transfer-position inline-block px-2.5 py-1 font-mono text-[11px] font-black bg-[#eaded0] border border-[#beac99] text-[#25201b] rounded-sm">
                               {player.position}
                             </span>
                           </td>
@@ -699,28 +699,28 @@ export default function TransfersPage() {
 
                           <td className="py-3 px-3 text-center">
                             <div className="flex items-center justify-center gap-1.5 font-mono text-xs">
-                              <span className="font-bold text-white">{masked.overallDisplay}</span>
+                              <span className="font-bold text-[#202020]">{masked.overallDisplay}</span>
                               <span className="text-zinc-600">/</span>
-                              <span className="text-[#4FE4FF] font-bold">{masked.potentialDisplay}</span>
+                              <span className="text-[#7b3235] font-bold">{masked.potentialDisplay}</span>
                             </div>
                           </td>
 
-                          <td className="py-3 px-3 text-right font-mono font-bold text-white">
+                          <td className="py-3 px-3 text-right font-mono font-bold text-[#202020]">
                             {masked.marketValueDisplay}
                           </td>
 
-                          <td className="py-3 px-3 text-right font-mono text-[#b8ff3d]">
+                          <td className="py-3 px-3 text-right font-mono text-[#202020]">
                             {masked.wageDisplay}
                           </td>
 
                           <td className="py-3 px-3 text-center">
-                            <span className={`px-2 py-0.5 text-[9px] font-mono font-bold border rounded uppercase ${statusInfo.color}`}>
+                            <span className={`sc-transfer-status inline-block px-2 py-1 text-[10px] font-mono font-bold border rounded-sm uppercase ${statusInfo.color}`}>
                               {statusInfo.text}
                             </span>
                           </td>
 
                           <td className="py-3 px-3 text-center">
-                            <span className={`px-2 py-0.5 text-[10px] font-mono font-black border rounded ${grade.color}`}>
+                            <span className={`sc-transfer-grade inline-block px-2 py-1 text-[11px] font-mono font-black border rounded-sm ${grade.color}`}>
                               {grade.grade}
                             </span>
                           </td>

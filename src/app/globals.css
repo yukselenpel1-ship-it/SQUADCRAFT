@@ -487,3 +487,31 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
   .sc-transfer-editorial {min-width:0;}
   .sc-transfer-editorial table {min-width:930px;}
 }
+
+
+/* Transfer market: explicit label contrast (overrides legacy dark badge styles). */
+.sc-transfer-editorial table tbody .sc-transfer-position {
+  background:#e9dfd2 !important;
+  color:#241f1b !important;
+  border:1px solid #b6a38e !important;
+  min-width:32px;
+}
+.sc-transfer-editorial table tbody .sc-transfer-status {
+  background:#eee0d5 !important;
+  color:#712d30 !important;
+  border:1px solid #b98b86 !important;
+  white-space:nowrap;
+}
+.sc-transfer-editorial table tbody .sc-transfer-grade {
+  background:#e0e8db !important;
+  color:#355737 !important;
+  border:1px solid #a5b89f !important;
+  min-width:30px;
+}
+.sc-transfer-editorial table tbody td { color:#28231f !important; }
+.sc-transfer-editorial table tbody td .sc-transfer-position,
+.sc-transfer-editorial table tbody td .sc-transfer-status,
+.sc-transfer-editorial table tbody td .sc-transfer-grade {
+  text-shadow:none !important;
+  box-shadow:none !important;
+}
