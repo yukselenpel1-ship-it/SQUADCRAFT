@@ -528,14 +528,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
       {/* ==================================================================== */}
       {/* 1. HIGH-CONTRAST STADIUM ARENA BACKGROUND (FULL VIEWPORT)            */}
       {/* ==================================================================== */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#04060A]/85 via-transparent to-[#04060A]/95" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#04060A]/40 to-[#04060A]/90" />
-      </div>
-
+      <div aria-hidden="true" className="sc-draft-paper-backdrop fixed inset-0 pointer-events-none z-0" />
       {/* ==================================================================== */}
       {/* 2. SQUADCRAFT ORIGINAL DRAFT COMMAND CENTER TOP HUD                  */}
       {/* ==================================================================== */}
