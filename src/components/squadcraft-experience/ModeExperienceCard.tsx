@@ -2,7 +2,7 @@
 
 import React, { useRef, useState, useCallback } from 'react';
 import Image from 'next/image';
-import { ArrowUpRight, Play, Shield, Users, Radio, Zap } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 
 export interface TelemetryStat {
   label: string;
@@ -54,25 +54,27 @@ export function ModeExperienceCard({
   });
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    // Only apply 3D tilt on devices with hover capability (desktop)
+    if (window.matchMedia('(hover: none)').matches) return;
     if (!cardRef.current) return;
+
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    // Constrained rotation: max 5 deg X, 6 deg Y
-    const rotateY = ((x - centerX) / centerX) * 5.5;
-    const rotateX = -((y - centerY) / centerY) * 4.5;
+    const rotateY = ((x - centerX) / centerX) * 4.5;
+    const rotateX = -((y - centerY) / centerY) * 3.5;
 
     const glareX = (x / rect.width) * 100;
     const glareY = (y / rect.height) * 100;
 
     setTransformStyle({
-      transform: `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(8px)`,
+      transform: `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(6px)`,
       glareX,
       glareY,
-      glareOpacity: 0.16,
+      glareOpacity: 0.12,
     });
   }, []);
 
@@ -85,7 +87,6 @@ export function ModeExperienceCard({
     });
   }, []);
 
-  // Theme accents
   const accentBorder =
     themeColor === 'lime'
       ? 'hover:border-[#B7FF3C]/50 border-white/10'
@@ -102,10 +103,10 @@ export function ModeExperienceCard({
 
   const primaryBtnClass =
     themeColor === 'lime'
-      ? 'bg-[#B7FF3C] text-[#05080D] hover:bg-[#c9ff6a] shadow-[0_0_24px_rgba(183,255,60,0.35)]'
+      ? 'bg-[#B7FF3C] text-[#05080D] hover:bg-[#c9ff6a]'
       : themeColor === 'cyan'
-      ? 'bg-[#38D8FF] text-[#05080D] hover:bg-[#63e1ff] shadow-[0_0_24px_rgba(56,216,255,0.35)]'
-      : 'bg-[#FFC857] text-[#05080D] hover:bg-[#ffd680] shadow-[0_0_24px_rgba(255,200,87,0.35)]';
+      ? 'bg-[#38D8FF] text-[#05080D] hover:bg-[#63e1ff]'
+      : 'bg-[#FFC857] text-[#05080D] hover:bg-[#ffd680]';
 
   return (
     <div
@@ -115,12 +116,12 @@ export function ModeExperienceCard({
       onMouseEnter={onHover}
       style={{
         transform: transformStyle.transform,
-        transition: 'transform 0.12s ease-out, border-color 0.25s ease',
+        transition: 'transform 0.15s ease-out, border-color 0.25s ease',
         transformStyle: 'preserve-3d',
       }}
-      className={`relative flex flex-col justify-between overflow-hidden rounded-[8px] bg-[#0c1522]/90 backdrop-blur-md border ${accentBorder} p-6 sm:p-7 min-h-[460px] group cursor-default`}
+      className={`relative flex flex-col justify-between overflow-hidden rounded-[8px] bg-[#0c1522]/90 backdrop-blur-md border ${accentBorder} p-5 sm:p-7 min-h-[380px] sm:min-h-[440px] group cursor-default`}
     >
-      {/* Dynamic Specular Sheen Glare */}
+      {/* Specular Sheen Glare */}
       <div
         className="pointer-events-none absolute inset-0 z-20 rounded-[8px] transition-opacity duration-300"
         style={{
@@ -128,51 +129,51 @@ export function ModeExperienceCard({
         }}
       />
 
-      {/* Background Graphic Asset with Dark Cinematic Gradient */}
-      <div className="absolute inset-0 z-0 overflow-hidden opacity-35 group-hover:opacity-50 transition-opacity duration-500">
+      {/* Background Graphic Asset */}
+      <div className="absolute inset-0 z-0 overflow-hidden opacity-30 group-hover:opacity-45 transition-opacity duration-500">
         <Image
           src={imageSrc}
           alt={title}
           fill
-          sizes="(max-width: 768px) 100vw, 33vw"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover object-center scale-100 group-hover:scale-105 transition-transform duration-700 ease-out"
           priority={mode === 'career'}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#05080D] via-[#080F18]/85 to-transparent" />
       </div>
 
-      {/* TOP HEADER: Kicker, Title & Mode Badge */}
+      {/* TOP: Header & Badges */}
       <div className="relative z-10">
-        <div className="flex items-center justify-between gap-3 mb-3">
-          <span className="font-mono text-[11px] tracking-[0.2em] uppercase text-[#91A2B4]">
+        <div className="flex items-center justify-between gap-3 mb-2.5">
+          <span className="font-mono text-[10px] sm:text-[11px] tracking-[0.2em] uppercase text-[#91A2B4]">
             {kicker}
           </span>
           <span
-            className={`font-mono text-[10px] tracking-widest uppercase font-semibold px-2.5 py-1 rounded-[4px] border ${badgeColor}`}
+            className={`font-mono text-[10px] tracking-wider uppercase font-semibold px-2 py-0.5 rounded-[4px] border ${badgeColor}`}
           >
             {badge}
           </span>
         </div>
 
-        <h3 className="font-condensed text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-[#F2F6FA] leading-none mb-3 group-hover:translate-x-0.5 transition-transform">
+        <h3 className="font-condensed text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-[#F2F6FA] leading-tight mb-2.5">
           {title}
         </h3>
 
-        <p className="text-sm text-[#91A2B4] leading-relaxed line-clamp-3">
+        <p className="font-sans text-xs sm:text-sm text-[#91A2B4] leading-relaxed line-clamp-3">
           {description}
         </p>
       </div>
 
-      {/* MIDDLE: Live Telemetry Metadata Block */}
-      <div className="relative z-10 my-6 bg-[#080F18]/75 border border-white/5 rounded-[6px] p-3.5 backdrop-blur-sm">
-        <div className="grid grid-cols-2 gap-2.5">
+      {/* MIDDLE: Essential Game Telemetry */}
+      <div className="relative z-10 my-4 sm:my-5 bg-[#080F18]/80 border border-white/5 rounded-[6px] p-3 sm:p-3.5 backdrop-blur-sm">
+        <div className="grid grid-cols-2 gap-2">
           {telemetryStats.map((stat, idx) => (
             <div key={idx} className="flex flex-col">
-              <span className="text-[10px] font-mono tracking-wider text-[#91A2B4]/80 uppercase">
+              <span className="text-[9px] sm:text-[10px] font-mono tracking-wider text-[#91A2B4]/80 uppercase">
                 {stat.label}
               </span>
               <span
-                className={`font-mono text-xs font-bold truncate mt-0.5 ${
+                className={`font-mono text-xs sm:text-sm font-bold truncate mt-0.5 ${
                   stat.highlight ? 'text-[#B7FF3C]' : 'text-[#F2F6FA]'
                 }`}
               >
@@ -183,22 +184,22 @@ export function ModeExperienceCard({
         </div>
       </div>
 
-      {/* BOTTOM ACTIONS: Primary Launch Button + Secondary Action */}
-      <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 pt-2">
+      {/* BOTTOM ACTIONS */}
+      <div className="relative z-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
         <button
           type="button"
           onClick={primaryAction.onClick}
-          className={`flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-[6px] font-condensed font-bold text-base uppercase tracking-wider transition-all duration-200 cursor-pointer active:scale-[0.98] ${primaryBtnClass}`}
+          className={`flex-1 h-12 flex items-center justify-center gap-2 px-4 rounded-[6px] font-condensed font-black text-sm sm:text-base uppercase tracking-wider transition-all duration-200 cursor-pointer active:scale-[0.98] ${primaryBtnClass}`}
         >
           <span>{primaryAction.label}</span>
-          <ArrowUpRight size={18} />
+          <ArrowUpRight size={17} />
         </button>
 
         {secondaryAction && (
           <button
             type="button"
             onClick={secondaryAction.onClick}
-            className="flex items-center justify-center px-4 py-3 rounded-[6px] bg-white/5 hover:bg-white/10 border border-white/10 text-[#F2F6FA] font-condensed font-bold text-sm uppercase tracking-wider transition-colors duration-200 cursor-pointer"
+            className="h-12 flex items-center justify-center px-4 rounded-[6px] bg-white/5 hover:bg-white/10 border border-white/10 text-[#F2F6FA] font-condensed font-bold text-xs sm:text-sm uppercase tracking-wider transition-colors duration-200 cursor-pointer"
           >
             {secondaryAction.label}
           </button>

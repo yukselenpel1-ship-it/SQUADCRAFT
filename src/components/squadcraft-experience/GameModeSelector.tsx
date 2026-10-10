@@ -42,21 +42,21 @@ export function GameModeSelector() {
   };
 
   return (
-    <section id="game-modes" className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 z-20">
+    <section id="game-modes" className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 z-20">
       {/* SECTION HEADER */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 sm:mb-14">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-12">
         <div>
-          <div className="flex items-center gap-2 mb-2.5">
-            <span className="w-2 h-2 rounded-full bg-[#B7FF3C] animate-pulse" />
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-[#B7FF3C]">
-              {isTr ? 'OYUN MODU SEÇİMİ' : 'GAME MODE SELECTION'}
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-2 h-2 rounded-full bg-[#B7FF3C]" />
+            <span className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em] text-[#B7FF3C]">
+              {isTr ? 'OYUN MODLARI' : 'GAME MODES'}
             </span>
           </div>
-          <h2 className="font-condensed text-4xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-[#F2F6FA]">
+          <h2 className="font-condensed text-3xl sm:text-5xl lg:text-6xl font-black uppercase tracking-tight text-[#F2F6FA]">
             {isTr ? 'BİR DÜNYA SEÇ // YÖNET' : 'CHOOSE YOUR WORLD // COMMAND'}
           </h2>
         </div>
-        <p className="font-sans text-sm sm:text-base text-[#91A2B4] max-w-md">
+        <p className="font-sans text-xs sm:text-base text-[#91A2B4] max-w-md">
           {isTr
             ? 'Stratejik kariyer hanedanlığı, canlı çok oyunculu draft ligi veya analitik 2D taktik radar maç motoru.'
             : 'Strategic career dynasty, live multiplayer draft league, or analytical 2D tactical radar match engine.'}
@@ -64,7 +64,7 @@ export function GameModeSelector() {
       </div>
 
       {/* THREE SIGNATURE GAME MODES GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
         {/* 1. CAREER MODE CARD */}
         <ModeExperienceCard
           mode="career"
