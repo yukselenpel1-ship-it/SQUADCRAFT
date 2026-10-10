@@ -127,10 +127,10 @@ export default function FixturesPage() {
               key={tab.id}
               type="button"
               onClick={() => setSelectedFilter(tab.id as any)}
-              className={`px-4 py-2 rounded-xl transition-all cursor-pointer min-h-[42px] ${
+              className={`px-4 py-2 rounded-sm transition-colors cursor-pointer min-h-[42px] ${
                 selectedFilter === tab.id
-                  ? 'bg-[#B7FF3C] text-black font-black shadow-[0_0_18px_rgba(183,255,60,0.35)] scale-[1.02]'
-                  : 'bg-white/5 border border-white/10 text-zinc-400 hover:text-white hover:bg-white/10'
+                  ? 'bg-[#a3262c] text-white font-black'
+                  : 'bg-[#e9dfd2] border border-[#bfb1a2] text-[#3a322b] hover:bg-[#ded1c1]'
               }`}
             >
               {tab.label}
@@ -200,7 +200,7 @@ export default function FixturesPage() {
       )}
 
       {/* Vertical Season Timeline Architecture */}
-      <div className="space-y-8 relative before:absolute before:inset-0 before:left-4 sm:before:left-6 before:w-[2px] before:bg-white/10 before:z-0">
+      <div className="space-y-8 relative before:absolute before:inset-0 before:left-4 sm:before:left-6 before:w-[2px] before:bg-[#b5a89a] before:z-0">
         {monthlyTimeline.map(({ month, round, fixtures: roundMatches }) => {
           const isCurrentRound = nextMatch?.round === round;
 
@@ -218,10 +218,10 @@ export default function FixturesPage() {
                   {round}
                 </div>
                 <div className="flex items-center gap-2 font-ibm">
-                  <span className="font-barlow font-extrabold text-[18px] text-[#f3f6f3] tracking-wide uppercase">
+                  <span className="font-barlow font-extrabold text-[18px] text-[#292622] tracking-wide uppercase">
                     HAFTA {round}
                   </span>
-                  <span className="text-[11px] text-[#8f9a91]">· {month} 2026</span>
+                  <span className="text-[11px] text-[#766b61]">· {month} 2026</span>
                   {isCurrentRound && (
                     <span className="px-2 py-0.5 rounded bg-[#b8ff3d] text-[#050806] text-[10px] font-bold uppercase font-ibm">
                       ŞİMDİKİ TUR
@@ -231,7 +231,7 @@ export default function FixturesPage() {
               </div>
 
               {/* Match Nodes Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pl-8 sm:pl-12">
+              <div className={selectedFilter === "MY_CLUB" ? "grid grid-cols-1 lg:grid-cols-2 gap-4 pl-8 sm:pl-12" : "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 pl-8 sm:pl-12"}>
                 {roundMatches.map((match) => {
                   const home = getClub(match.homeClubId);
                   const away = getClub(match.awayClubId);
