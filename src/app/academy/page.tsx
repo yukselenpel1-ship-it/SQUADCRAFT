@@ -99,7 +99,7 @@ export default function AcademyPage() {
   };
 
   return (
-    <div className="space-y-6 pb-28 lg:pb-12 animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 animate-in fade-in duration-300">
       {/* 1. BROADCAST ACADEMY LAB HEADER */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#090d0a] via-[#0d130f] to-[#090d0a] border border-white/10 p-5 md:p-6 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#ffd34f]/5 rounded-full blur-3xl pointer-events-none" />
