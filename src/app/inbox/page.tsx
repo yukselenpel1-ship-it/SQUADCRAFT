@@ -229,7 +229,7 @@ export default function InboxPage() {
                   onClick={() => handleSelectMessage(msg)}
                   className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                     isSelected
-                      ? 'bg-[#f3e8dc] border-2 border-[#b8ff3d] shadow-[0_0_20px_rgba(184,255,61,0.15)] ring-1 ring-[#b8ff3d]/30'
+                      ? 'bg-[#f3e8dc] border-2 border-[#9b2529]'
                       : !msg.isRead
                       ? 'bg-[#fffaf2] border-[#cdbfb1] hover:border-white/30'
                       : 'bg-[#eee4d8]/80 border-[#dfd3c7] opacity-70 hover:opacity-100 hover:border-[#d2c5b7]'
@@ -281,7 +281,7 @@ export default function InboxPage() {
           {selectedMessage ? (
             <div className="bg-[#fffaf2] rounded-2xl border border-[#d2c5b7] shadow-2xl overflow-hidden flex flex-col justify-between min-h-[440px]">
               {/* Official Letterhead Header */}
-              <div className="relative p-6 bg-gradient-to-r from-[#0d130f] via-[#090d0a] to-[#0d130f] border-b border-[#d2c5b7]">
+              <div className="relative p-6 bg-[#e9dfd3] border-b border-[#d2c5b7]">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <ClubBadge
@@ -291,7 +291,7 @@ export default function InboxPage() {
                       size="md"
                     />
                     <div>
-                      <div className="text-[10px] font-mono text-[#8f2830] font-bold uppercase tracking-widest">
+                      <div className="text-xs font-inter text-[#8f2830] font-bold uppercase tracking-wide">
                         // RESMİ KULÜP YAZIŞMASI • İÇ İLETİŞİM
                       </div>
                       <h2 className="text-lg sm:text-xl font-black text-[#211e1a] uppercase tracking-tight font-barlow mt-1">
