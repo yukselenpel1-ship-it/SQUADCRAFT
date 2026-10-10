@@ -75,7 +75,7 @@ export default function LeaguePage() {
             </span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#65ff83] animate-pulse" />
           </div>
-          <h1 className="font-barlow font-black text-[clamp(2.8rem,5.5vw,5.8rem)] text-[#292622] uppercase tracking-tight leading-[0.94] mt-3">
+          <h1 className="font-barlow font-black text-[clamp(2rem,4vw,3.8rem)] text-[#292622] uppercase tracking-tight leading-[0.94] mt-3">
             SEZON {seasonYear || '2026/27'} · HAFTA {nextMatch?.round || 1}
           </h1>
         </div>
