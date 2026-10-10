@@ -95,7 +95,7 @@ export default function FixturesPage() {
   const finishedMatchesCount = fixtures.filter(f => f.status === 'FINISHED').length;
 
   return (
-    <div className="min-h-screen bg-[#f3efe6] text-[#282420] px-4 sm:px-8 lg:px-12 py-7 pb-20">
+    <div className="min-h-screen bg-[#f3efe6] text-[#161616] px-4 sm:px-8 lg:px-12 py-6 pb-20">
       <div className="mx-auto max-w-[1380px]">
         <header className="border-b-2 border-[#332d29] pb-6">
           <p className="font-ibm text-[11px] uppercase tracking-[0.12em] text-[#9b2529]">
@@ -119,13 +119,13 @@ export default function FixturesPage() {
         </header>
 
         {nextMatch && nextOpponent && (
-          <section aria-label="Sıradaki maç" className="my-6 grid lg:grid-cols-[1fr_auto] gap-5 items-center border-l-[5px] border-[#9b2529] bg-[#e7ddd1] px-5 sm:px-7 py-6">
+          <section aria-label="Sıradaki maç" className="my-6 grid lg:grid-cols-[minmax(0,1fr)_auto] gap-5 items-center border-l-[5px] border-[#9b2529] bg-[#eee4d8] px-5 sm:px-7 py-5">
             <div>
               <p className="font-ibm text-[11px] tracking-widest font-bold text-[#9b2529]">SIRADAKİ MAÇ · HAFTA {nextMatch.round}</p>
               <div className="flex flex-wrap items-center gap-3 sm:gap-5 mt-3">
                 <ClubBadge code={userClub.code} name={userClub.name} clubId={userClub.id} primaryColor={userClub.primaryColor} secondaryColor={userClub.secondaryColor} size="md" />
                 <div className="min-w-0">
-                  <p className="font-barlow font-extrabold uppercase text-xl sm:text-3xl leading-tight">{userClub.name} <span className="text-[#9b2529]">vs</span> {nextOpponent.name}</p>
+                  <p className="font-barlow font-extrabold uppercase text-lg sm:text-2xl leading-tight text-[#111111]">{userClub.name} <span className="text-[#9b2529]">vs</span> {nextOpponent.name}</p>
                   <p className="text-sm text-[#655a51] mt-1">{isUserHome ? 'İç saha' : 'Deplasman'} · {nextMatch.date ? new Date(nextMatch.date).toLocaleDateString('tr-TR') : 'Tarih bekleniyor'} · {isUserHome ? userClub.stadium : nextOpponent.stadium}</p>
                 </div>
                 <ClubBadge code={nextOpponent.code} name={nextOpponent.name} clubId={nextOpponent.id} primaryColor={nextOpponent.primaryColor} secondaryColor={nextOpponent.secondaryColor} size="md" />
@@ -138,7 +138,7 @@ export default function FixturesPage() {
           </section>
         )}
 
-        <nav aria-label="Maç filtreleri" className="flex gap-2 overflow-x-auto py-4 border-b border-[#c9bdaf] mb-6">
+        <nav aria-label="Maç filtreleri" className="flex gap-2 overflow-x-auto py-3 border-b border-[#c9bdaf] mb-5">
           {([
             ['MY_CLUB', 'KULÜBÜM'],
             ['ALL', 'TÜM LİG'],
@@ -157,13 +157,13 @@ export default function FixturesPage() {
 
         <div className="space-y-4">
           {monthlyTimeline.map(({round, fixtures: roundMatches}) => (
-            <section key={round} className="grid lg:grid-cols-[130px_1fr] gap-3 lg:gap-6 border-b border-[#cec2b5] pb-5">
+            <section key={round} className="grid lg:grid-cols-[95px_minmax(0,1fr)] gap-3 lg:gap-5 border-b border-[#cec2b5] pb-4">
               <div className="pt-1">
                 <div className="font-ibm text-xs font-bold text-[#9b2529] uppercase">HAFTA</div>
                 <div className="font-barlow text-4xl font-black leading-none mt-1">{String(round).padStart(2,'0')}</div>
                 {nextMatch?.round === round && <div className="font-ibm text-[10px] uppercase text-[#9b2529] mt-2 font-bold">SIRADAKİ HAFTA</div>}
               </div>
-              <div className={`grid gap-3 ${selectedFilter === 'MY_CLUB' ? 'grid-cols-1' : 'grid-cols-1 xl:grid-cols-2'}`}>
+              <div className={`grid gap-3 ${selectedFilter === 'MY_CLUB' ? 'grid-cols-1' : 'grid-cols-1 2xl:grid-cols-2'}`}>
                 {roundMatches.map(match => {
                   const home = getClub(match.homeClubId);
                   const away = getClub(match.awayClubId);
@@ -172,19 +172,19 @@ export default function FixturesPage() {
                   return (
                     <button type="button" key={match.id}
                       onClick={() => isFinished ? setReportFixture(match) : router.push(`/match/${match.id}`)}
-                      className={`group w-full text-left bg-[#fffaf2] hover:bg-[#f9eee2] border px-4 sm:px-6 py-4 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9b2529] ${mine ? 'border-[#ba8a87]' : 'border-[#ded4c8]'}`}>
+                      className={`group w-full text-left bg-[#fffaf2] hover:bg-[#f9eee2] border px-4 sm:px-5 py-4 transition-colors shadow-[0_2px_8px_rgba(42,31,20,0.04)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#9b2529] ${mine ? 'border-[#ba8a87]' : 'border-[#ded4c8]'}`}>
                       <div className="flex items-center justify-between gap-3 border-b border-[#d7cbbd] pb-3 mb-4">
                         <span className="font-ibm text-[11px] text-[#70655c]">{match.date ? new Date(match.date).toLocaleDateString('tr-TR') : `Hafta ${round}`}</span>
                         <span className={`font-ibm text-[11px] uppercase font-bold ${isFinished ? 'text-[#525d45]' : 'text-[#9b2529]'}`}>{isFinished ? 'TAMAMLANDI' : 'PROGRAMLANDI'}</span>
                       </div>
-                      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
-                        <div className="flex min-w-0 items-center gap-3">
+                      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-4">
+                        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
                           <ClubBadge code={home.code} name={home.name} clubId={home.id} primaryColor={home.primaryColor} secondaryColor={home.secondaryColor} size="xs" />
-                          <span className={`font-barlow text-base sm:text-lg font-bold uppercase leading-tight break-words ${home.id === userClub.id ? 'text-[#9b2529]' : ''}`}>{home.name}</span>
+                          <span className="font-barlow text-sm sm:text-lg font-extrabold uppercase leading-tight break-words text-[#111111]">{home.name}</span>
                         </div>
-                        <strong className="font-barlow text-xl sm:text-2xl whitespace-nowrap">{isFinished ? `${match.homeScore ?? 0} - ${match.awayScore ?? 0}` : 'VS'}</strong>
-                        <div className="flex min-w-0 items-center justify-end gap-3 text-right">
-                          <span className={`font-barlow text-base sm:text-lg font-bold uppercase leading-tight break-words ${away.id === userClub.id ? 'text-[#9b2529]' : ''}`}>{away.name}</span>
+                        <strong className="font-barlow text-lg sm:text-2xl whitespace-nowrap text-[#111111]">{isFinished ? `${match.homeScore ?? 0} - ${match.awayScore ?? 0}` : 'VS'}</strong>
+                        <div className="flex min-w-0 items-center justify-end gap-2 sm:gap-3 text-right">
+                          <span className="font-barlow text-sm sm:text-lg font-extrabold uppercase leading-tight break-words text-[#111111]">{away.name}</span>
                           <ClubBadge code={away.code} name={away.name} clubId={away.id} primaryColor={away.primaryColor} secondaryColor={away.secondaryColor} size="xs" />
                         </div>
                       </div>
