@@ -319,6 +319,14 @@ export default function SquadPage() {
           {/* TAB 2: ROSTER TABLE */}
           {(activeSquadTab === 'ROSTER' || activeSquadTab === 'CONTRACTS' || activeSquadTab === 'TRAINING' || activeSquadTab === 'INJURIES') && (
             <div className="p-6 rounded-[8px] bg-[#fffaf2] border border-[#d4c6b6] space-y-4 shadow-xl">
+              <div className="border-b border-[#d4c6b6] pb-4">
+                <h2 className="font-barlow text-xl sm:text-2xl font-black uppercase text-[#201b17]">
+                  {activeSquadTab === 'ROSTER' ? 'TAM KADRO' : activeSquadTab === 'CONTRACTS' ? 'SÖZLEŞME TAKİBİ' : activeSquadTab === 'TRAINING' ? 'ANTRENMAN & GELİŞİM' : 'SAĞLIK & REVİR'}
+                </h2>
+                <p className="mt-1 font-inter text-sm text-[#62574e]">
+                  {activeSquadTab === 'ROSTER' ? 'Oyuncuları mevki, güç, potansiyel ve kondisyon bilgilerine göre incele.' : activeSquadTab === 'CONTRACTS' ? 'Bir oyuncuyu seçerek sözleşme ve maaş bilgilerini inceleyebilir, görüşme başlatabilirsin.' : activeSquadTab === 'TRAINING' ? 'Kadro gelişimini ve kondisyon durumunu takip et. Oyuncu ayrıntıları için bir satır seç.' : 'Oyuncuların kondisyon ve moral durumunu takip et. Detaylar için oyuncu seç.'}
+                </p>
+              </div>
               {/* Category Filter Pills & Search */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#d4c6b6]">
                 <div className="flex items-center gap-1.5">
