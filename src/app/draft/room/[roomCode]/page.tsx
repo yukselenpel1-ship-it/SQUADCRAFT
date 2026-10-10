@@ -524,7 +524,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
   };
 
   return (
-    <div className="sc-draft-room-readable relative min-h-screen w-full bg-[#050806] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden font-sans antialiased">
+    <div className="sc-draft-room-readable sc-draft-lobby-v2 relative min-h-screen w-full bg-[#050806] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. HIGH-CONTRAST STADIUM ARENA BACKGROUND (FULL VIEWPORT)            */}
       {/* ==================================================================== */}
@@ -646,11 +646,11 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
       {/* ==================================================================== */}
       {/* 3. MAIN COMMAND CENTER LOBBY GRID                                    */}
       {/* ==================================================================== */}
-      <main className="relative z-20 max-w-[1600px] w-full mx-auto px-4 sm:px-8 py-5 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <main className="relative z-20 max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
         {/* ==================================================================== */}
         {/* LEFT 8-COLS: MANAGER ROSTER & PODIUM DECK                            */}
         {/* ==================================================================== */}
-        <div className="lg:col-span-8 space-y-4">
+        <div className="lg:col-span-8 min-w-0 space-y-4">
           {/* Section Header Strip */}
           <div className="flex flex-wrap items-center justify-between gap-3 sc-panel rounded-2xl border border-white/10 p-4 shadow-2xl">
             <div className="flex items-center gap-3">
@@ -659,7 +659,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h2 className="text-base font-black tracking-wide text-white uppercase italic font-barlow">
+                  <h2 className="text-lg font-black tracking-wide text-white uppercase font-barlow">
                     KATILAN MENAJERLER & KULÜPLER
                   </h2>
                   <span className="px-2 py-0.5 rounded-lg text-[9px] font-ibm font-black bg-[#b7ff35]/10 border border-[#b7ff35]/30 text-[#b7ff35] uppercase">
@@ -726,7 +726,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
               return (
                 <div
                   key={member.id}
-                  className={`relative p-4 sm:p-5 rounded-2xl border transition-all duration-200 shadow-2xl flex flex-col justify-between min-h-[140px] overflow-hidden ${
+                  className={`relative p-4 sm:p-5 rounded-2xl border transition-all duration-200 shadow-2xl flex flex-col justify-between min-h-[156px] overflow-hidden ${
                     isMe
                       ? 'bg-[#0A121E]/95 border-[#b7ff35] shadow-[0_0_25px_rgba(183, 255, 53,0.15)] ring-1 ring-[#b7ff35]/40'
                       : 'sc-panel border-white/10 hover:border-zinc-700'
@@ -757,7 +757,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
 
                       <div className="min-w-0">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-base font-black text-white uppercase italic tracking-wide truncate font-barlow">
+                          <span className="text-lg font-black text-white uppercase tracking-wide break-words font-barlow">
                             {club ? club.name : member.username}
                           </span>
                           {isMe && (
@@ -872,7 +872,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                       {isMe && myClub && (
                         <button
                           onClick={() => setIsCustomizerOpen(true)}
-                          className="text-[11px] text-[#b7ff35] hover:underline font-bold flex items-center gap-1 mt-1"
+                          className="text-xs text-[#b7ff35] hover:underline font-bold flex items-center gap-1 mt-1"
                         >
                           <Palette className="w-3.5 h-3.5" />
                           <span>Armayı Düzenle</span>
@@ -888,14 +888,14 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
             {Array.from({ length: Math.max(0, room.rules.maxManagers - activeManagers.length) }).map((_, idx) => (
               <div
                 key={`empty-slot-${idx}`}
-                className="p-4 sm:p-5 rounded-2xl border border-dashed border-white/10 bg-[#0d120f]/50 hover:bg-[#0d120f]/80 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl min-h-[140px]"
+                className="p-4 sm:p-5 rounded-2xl border border-dashed border-white/10 bg-[#0d120f]/50 hover:bg-[#0d120f]/80 transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xl min-h-[156px]"
               >
                 <div className="flex items-center gap-3.5">
                   <div className="w-12 h-12 rounded-xl bg-[#050806] border border-white/10 flex items-center justify-center text-zinc-600 font-black text-lg">
                     +
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-zinc-300 uppercase tracking-wide font-barlow">
+                    <div className="text-base font-bold text-zinc-200 uppercase tracking-wide font-barlow">
                       Boş Menajer Slotu
                     </div>
                     <div className="text-xs text-zinc-500 mt-0.5">
@@ -926,7 +926,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                     </button>
                   </div>
                 ) : (
-                  <span className="text-[10px] px-2.5 py-1 rounded-lg bg-[#090d0a] border border-white/10 text-zinc-600 font-ibm font-bold uppercase">
+                  <span className="text-xs px-2.5 py-1 rounded-lg bg-[#090d0a] border border-white/10 text-zinc-300 font-ibm font-bold uppercase">
                     BOŞ
                   </span>
                 )}
