@@ -333,7 +333,7 @@ export default function MatchCenterPage() {
   const userTeamState = isUserHome ? engineState.home : engineState.away;
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-300">
+    <div className="sc-career-match-readable space-y-5 px-3 sm:px-6 py-4 animate-in fade-in duration-300">
       {/* 1. Header & Navigation Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10">
         <button
@@ -345,7 +345,7 @@ export default function MatchCenterPage() {
         </button>
 
         <div className="flex items-center gap-2 text-xs text-zinc-400">
-          <span className="px-2.5 py-0.5 rounded-lg text-[10px] font-black bg-[#b7ff35]/10 text-[#b7ff35] border border-[#b7ff35]/30 font-ibm">
+          <span className="px-2.5 py-0.5 rounded-lg text-xs font-black bg-[#b7ff35]/10 text-[#b7ff35] border border-[#b7ff35]/30 font-ibm">
             Alveria Elit Ligi • Hafta {fixture?.round}
           </span>
           <span className="hidden md:inline font-ibm">{fixture?.date}</span>
@@ -372,7 +372,7 @@ export default function MatchCenterPage() {
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 mt-2 text-[11px] text-zinc-400">
+          <div className="flex items-center gap-1.5 mt-2 text-xs text-zinc-300">
             <MapPin className="w-3.5 h-3.5 text-zinc-500" />
             <span>{fixture?.stadium || homeClub.stadium}</span>
           </div>
@@ -388,10 +388,10 @@ export default function MatchCenterPage() {
               secondaryColor={homeClub.secondaryColor}
               size="lg"
             />
-            <h2 className="mt-2.5 text-sm sm:text-xl font-black text-white truncate max-w-full font-barlow">
+            <h2 className="mt-2.5 text-base sm:text-2xl font-black text-white break-words max-w-full font-barlow leading-tight">
               {homeClub.name}
             </h2>
-            <span className="text-[11px] text-zinc-400 truncate">
+            <span className="text-xs sm:text-sm text-zinc-300 break-words">
               {homeClub.managerName}
             </span>
           </div>
@@ -417,10 +417,10 @@ export default function MatchCenterPage() {
               secondaryColor={awayClub.secondaryColor}
               size="lg"
             />
-            <h2 className="mt-2.5 text-sm sm:text-xl font-black text-white truncate max-w-full font-barlow">
+            <h2 className="mt-2.5 text-base sm:text-2xl font-black text-white break-words max-w-full font-barlow leading-tight">
               {awayClub.name}
             </h2>
-            <span className="text-[11px] text-zinc-400 truncate">
+            <span className="text-xs sm:text-sm text-zinc-300 break-words">
               {awayClub.managerName}
             </span>
           </div>
