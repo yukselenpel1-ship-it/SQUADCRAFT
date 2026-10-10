@@ -524,7 +524,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
   };
 
   return (
-    <div className="relative min-h-screen w-full bg-[#050806] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden select-none font-sans antialiased">
+    <div className="sc-draft-room-readable relative min-h-screen w-full bg-[#050806] text-[#F3F4F6] flex flex-col justify-between overflow-x-hidden font-sans antialiased">
       {/* ==================================================================== */}
       {/* 1. HIGH-CONTRAST STADIUM ARENA BACKGROUND (FULL VIEWPORT)            */}
       {/* ==================================================================== */}
@@ -569,7 +569,7 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
                   <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
                   <span className="text-[#b7ff35]">26</span>
                 </div>
-                <span className="text-[9px] font-ibm font-bold tracking-widest text-[#4FE4FF] uppercase mt-0.5">
+                <span className="text-[11px] font-ibm font-bold tracking-wide text-[#b9dedc] uppercase mt-0.5">
                   DRAFT MATCH LOBBY
                 </span>
               </div>
@@ -585,18 +585,18 @@ export default function DraftRoomLobbyPage({ params }: RoomPageProps) {
               </span>
             </div>
             <span className="text-zinc-600">|</span>
-            <span className="text-[11px] font-ibm font-bold text-zinc-400 uppercase">
+            <span className="text-xs font-inter font-semibold text-zinc-300 uppercase">
               {room.rules.maxManagers} TAKIMLI ALFA LİGİ • {room.rules.squadSize} FUTBOLCU • {room.rules.pickTimerSeconds > 0 ? `${room.rules.pickTimerSeconds}S SÜRE` : 'SÜRESİZ'} • €{((room.rules.draftBudget || 250_000_000) / 1_000_000).toFixed(1)}M BÜTÇE
             </span>
           </div>
 
           {/* Right: Telemetry & Room Code Badge */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-[#090d0a] rounded-xl border border-white/10 text-[10px] font-ibm font-bold text-zinc-300">
+            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-[#090d0a] rounded-xl border border-white/10 text-xs font-inter font-semibold text-zinc-200">
               <span className="w-1.5 h-1.5 rounded-full bg-[#b7ff35]" />
               <span>SUNUCU: AKTİF</span>
               <span className="text-zinc-600">•</span>
-              <span className="text-[#4FE4FF]">14ms TR</span>
+              <span className="text-[#b9dedc]">TR</span>
             </div>
 
             <button
