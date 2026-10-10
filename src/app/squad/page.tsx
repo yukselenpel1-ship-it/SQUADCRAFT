@@ -137,7 +137,7 @@ export default function SquadPage() {
   );
 
   return (
-    <div className="space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
       {/* Broadcast Header HUD */}
       <CareerPageHeader
         badge="TACTICAL ROSTER // SQUAD DEPT"
