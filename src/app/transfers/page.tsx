@@ -808,7 +808,7 @@ export default function TransfersPage() {
                           key={player.id}
                           onClick={() => setDrawerPlayer(player)}
                           className={`cursor-pointer transition-colors ${
-                            isSelected ? 'bg-[#9b2529]/10 border-l-4 border-l-[#b8ff3d]' : 'hover:bg-[#f1e7da]'
+                            isSelected ? 'bg-[#eadbd5] border-l-4 border-l-[#9b2529]' : 'hover:bg-[#f1e7da]'
                           }`}
                         >
                           <td className="py-3 px-4">
@@ -892,7 +892,7 @@ export default function TransfersPage() {
                           key={player.id}
                           onClick={() => setDrawerPlayer(player)}
                           className={`cursor-pointer transition-colors ${
-                            isSelected ? 'bg-[#9b2529]/10 border-l-4 border-l-[#b8ff3d]' : 'hover:bg-[#f1e7da]'
+                            isSelected ? 'bg-[#eadbd5] border-l-4 border-l-[#9b2529]' : 'hover:bg-[#f1e7da]'
                           }`}
                         >
                           <td className="py-3 px-4">
