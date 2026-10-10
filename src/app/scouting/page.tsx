@@ -98,7 +98,7 @@ export default function ScoutingPage() {
   }
 
   return (
-    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle sc-scouting-editorial space-y-5 px-4 sm:px-8 lg:px-12 py-6 pb-20 max-w-[1500px] mx-auto animate-in fade-in duration-300">
       {/* 1. BROADCAST SCOUTING HEADER */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#090d0a] via-[#0d130f] to-[#090d0a] border border-white/10 p-5 md:p-6 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#21dfbd]/5 rounded-full blur-3xl pointer-events-none" />
@@ -121,7 +121,7 @@ export default function ScoutingPage() {
                 <Compass className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase font-sport">
+                <h1 className="text-2xl sm:text-3xl font-black text-[#211d19] tracking-tight uppercase font-sport">
                   GÖZLEM DEPARTMANI
                 </h1>
                 <p className="text-xs text-zinc-400 font-mono">
@@ -185,8 +185,8 @@ export default function ScoutingPage() {
           onClick={() => setActiveTab('network')}
           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'network'
-              ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_15px_rgba(184,255,61,0.3)]'
-              : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10 hover:border-white/20'
+              ? 'bg-[#9b2529] text-white font-black'
+              : 'bg-[#e8ddd0] text-[#40362e] hover:text-[#9b2529] border border-[#c9b9a7] hover:border-[#9b2529]'
           }`}
         >
           <Globe className="w-4 h-4" />
@@ -197,8 +197,8 @@ export default function ScoutingPage() {
           onClick={() => setActiveTab('search')}
           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'search'
-              ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_15px_rgba(184,255,61,0.3)]'
-              : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10 hover:border-white/20'
+              ? 'bg-[#9b2529] text-white font-black'
+              : 'bg-[#e8ddd0] text-[#40362e] hover:text-[#9b2529] border border-[#c9b9a7] hover:border-[#9b2529]'
           }`}
         >
           <Search className="w-4 h-4" />
@@ -209,8 +209,8 @@ export default function ScoutingPage() {
           onClick={() => setActiveTab('scouts')}
           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'scouts'
-              ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_15px_rgba(184,255,61,0.3)]'
-              : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10 hover:border-white/20'
+              ? 'bg-[#9b2529] text-white font-black'
+              : 'bg-[#e8ddd0] text-[#40362e] hover:text-[#9b2529] border border-[#c9b9a7] hover:border-[#9b2529]'
           }`}
         >
           <Users className="w-4 h-4" />
@@ -221,8 +221,8 @@ export default function ScoutingPage() {
           onClick={() => setActiveTab('assignments')}
           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'assignments'
-              ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_15px_rgba(184,255,61,0.3)]'
-              : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10 hover:border-white/20'
+              ? 'bg-[#9b2529] text-white font-black'
+              : 'bg-[#e8ddd0] text-[#40362e] hover:text-[#9b2529] border border-[#c9b9a7] hover:border-[#9b2529]'
           }`}
         >
           <Clock className="w-4 h-4" />
@@ -233,8 +233,8 @@ export default function ScoutingPage() {
           onClick={() => setActiveTab('reports')}
           className={`px-4 py-2.5 rounded-xl text-xs font-mono font-bold uppercase transition-all flex items-center gap-2 shrink-0 ${
             activeTab === 'reports'
-              ? 'bg-[#b8ff3d] text-[#050806] font-black shadow-[0_0_15px_rgba(184,255,61,0.3)]'
-              : 'bg-[#090d0a] text-zinc-400 hover:text-white border border-white/10 hover:border-white/20'
+              ? 'bg-[#9b2529] text-white font-black'
+              : 'bg-[#e8ddd0] text-[#40362e] hover:text-[#9b2529] border border-[#c9b9a7] hover:border-[#9b2529]'
           }`}
         >
           <FileText className="w-4 h-4" />
@@ -247,7 +247,7 @@ export default function ScoutingPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-black text-white uppercase tracking-tight font-sport">
+              <h2 className="text-lg sm:text-xl font-black text-[#25201c] uppercase tracking-tight font-sport">
                 BÖLGESEL İSTİHBARAT AĞI
               </h2>
               <p className="text-xs text-zinc-400 font-mono">
@@ -256,7 +256,7 @@ export default function ScoutingPage() {
             </div>
             <button
               onClick={() => setActiveTab('search')}
-              className="px-4 py-2 rounded-xl bg-[#b8ff3d] hover:bg-[#a6ec31] text-[#050806] font-mono font-black text-xs uppercase flex items-center gap-1.5 transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)]"
+              className="px-4 py-2 rounded-xl bg-[#9b2529] hover:bg-[#761d23] text-white font-mono font-black text-xs uppercase flex items-center gap-1.5 transition-all shadow-[0_0_12px_rgba(184,255,61,0.3)]"
             >
               <Search className="w-4 h-4" />
               Oyuncu Tara
