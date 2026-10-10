@@ -48,9 +48,9 @@ export default function DashboardPage() {
   const balance = userClub?.transferBudget;
   const localName = userClub?.name || (tr ? 'Kulübün' : 'Your club');
   const headingClass = 'font-barlow font-black uppercase leading-[0.83] tracking-[-0.035em]';
-  const sectionLabel = 'font-barlow font-extrabold uppercase text-[23px] sm:text-[27px] leading-none tracking-tight text-[#951f24]';
-  const eyebrow = 'font-ibm text-[10px] sm:text-[11px] font-medium uppercase tracking-[0.18em]';
-  const paper = 'border-t border-[#33302d]/35 pt-4';
+  const sectionLabel = 'font-barlow font-extrabold uppercase text-[20px] sm:text-[23px] leading-none tracking-tight text-[#951f24]';
+  const eyebrow = 'font-ibm text-[11px] sm:text-[12px] font-medium uppercase tracking-[0.08em]';
+  const paper = 'border-t border-[#33302d]/35 pt-4 min-w-0';
 
   if (!isInitialized || !isCareerHydrated || !userClub) {
     return <CareerLoadingState title={tr ? 'KARİYER YÜKLENİYOR' : 'LOADING CAREER'} message={tr ? 'Kulüp verileri hazırlanıyor...' : 'Preparing club data...'} />;
@@ -62,59 +62,45 @@ export default function DashboardPage() {
   const awayClub = nextMatch?.awayClubId === userClub.id ? userClub : opponent;
 
   return (
-    <div className="min-h-screen bg-[#f3efe6] text-[#242321] selection:bg-[#a6282c] selection:text-white font-inter -mx-4 sm:-mx-6 lg:-mx-8 -my-6 px-4 sm:px-8 lg:px-12 py-7 pb-24">
-      <div className="mx-auto max-w-[1600px]">
-        <header className="border-b-2 border-[#252322] pb-4 flex flex-wrap gap-3 justify-between items-end">
-          <div className="flex items-center gap-3">
-            <span className="font-barlow font-black tracking-tight text-xl sm:text-2xl">SQUAD<span className="text-[#a6282c]">CRAFT</span></span>
-            <span className="hidden sm:block h-5 border-l border-[#252322]/40" />
-            <span className={eyebrow + ' hidden sm:block text-[#746b65]'}>{tr ? 'KULÜP / İNSAN / MİRAS' : 'CLUB / PEOPLE / LEGACY'}</span>
-          </div>
-          <nav aria-label={tr ? 'Kariyer kısayolları' : 'Career shortcuts'} className="flex gap-4 sm:gap-6 text-xs font-bold uppercase tracking-wide">
-            <Link className="border-b-2 border-[#a6282c] pb-1" href="/dashboard">{tr ? 'KARİYER' : 'CAREER'}</Link>
-            <Link className="hover:text-[#a6282c]" href="/squad">{tr ? 'KADRO' : 'SQUAD'}</Link>
-            <Link className="hover:text-[#a6282c]" href="/transfers">{tr ? 'TRANSFER' : 'TRANSFERS'}</Link>
-            <Link className="hover:text-[#a6282c]" href="/fixtures">{tr ? 'FİKSTÜR' : 'FIXTURES'}</Link>
-          </nav>
-        </header>
-
-        <section className="pt-5 sm:pt-8 pb-6 border-b border-[#2b2927]/35">
+    <div className="min-h-screen bg-[#f3efe6] text-[#242321] selection:bg-[#a6282c] selection:text-white font-inter px-4 sm:px-8 lg:px-12 py-6 sm:py-8 pb-20">
+      <div className="mx-auto max-w-[1380px]">
+        <section className="pt-2 sm:pt-3 pb-5 border-b border-[#2b2927]/35">
           <div className="flex flex-wrap justify-between gap-4 items-start">
             <div>
               <div className={eyebrow + ' text-[#8b2429] mb-3'}>{tr ? 'FUTBOLUN İÇİNDEN / SAYI' : 'THE FOOTBALL JOURNAL / ISSUE'} {String(seasonNumber || 1).padStart(2, '0')}</div>
-              <h1 className={headingClass + ' text-[clamp(3rem,6vw,6rem)]'}>{tr ? 'KARİYER' : 'CAREER'}<span className="text-[#a6282c]">.</span></h1>
+              <h1 className={headingClass + ' text-[clamp(2.6rem,4.5vw,4.8rem)]'}>{tr ? 'KARİYER' : 'CAREER'}<span className="text-[#a6282c]">.</span></h1>
             </div>
             <div className="sm:text-right max-w-xs pt-2">
-              <div className="font-serif italic text-2xl sm:text-3xl leading-tight">{tr ? 'Bir kadrodan fazlasını inşa et.' : 'Build more than a squad.'}</div>
+              <div className="font-serif italic text-lg sm:text-xl leading-tight">{tr ? 'Bir kadrodan fazlasını inşa et.' : 'Build more than a squad.'}</div>
               <div className={eyebrow + ' text-[#756e66] mt-3'}>{seasonYear || (tr ? 'GÜNCEL SEZON' : 'CURRENT SEASON')}</div>
             </div>
           </div>
         </section>
 
-        <section className="grid lg:grid-cols-[1.05fr_0.95fr] border-b-2 border-[#252322]">
-          <div className="py-7 sm:py-10 lg:pr-10 flex flex-col justify-between min-h-64">
+        <section className="grid lg:grid-cols-[1.1fr_0.9fr] border-b-2 border-[#252322]">
+          <div className="py-6 sm:py-8 lg:pr-8 flex flex-col justify-between min-h-[230px]">
             <div>
               <div className={eyebrow + ' text-[#a6282c] mb-6'}>{tr ? 'KULÜP DOSYASI / SEZON' : 'CLUB DOSSIER / SEASON'} {String(seasonNumber || 1).padStart(2,'0')}</div>
               <div className="flex items-center gap-5">
                 <div className="shrink-0"><ClubBadge clubId={userClub.id} code={userClub.code} name={userClub.name} primaryColor={userClub.primaryColor} secondaryColor={userClub.secondaryColor} size="xl" /></div>
                 <div>
-                  <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl leading-[0.95]">{localName}</h2>
-                  <p className="font-serif italic text-[#716862] text-lg mt-3">{tr ? 'Kulübün geleceği senin ellerinde.' : 'The future of the club is in your hands.'}</p>
+                  <h2 className="font-serif text-3xl sm:text-4xl leading-[1.02]">{localName}</h2>
+                  <p className="font-serif italic text-[#716862] text-base mt-2">{tr ? 'Kulübün geleceği senin ellerinde.' : 'The future of the club is in your hands.'}</p>
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-3 gap-3 mt-9 pt-4 border-t border-[#252322]/25">
+            <div className="grid grid-cols-3 gap-3 mt-7 pt-4 border-t border-[#252322]/25">
               <div><p className={eyebrow + ' text-[#7a716a]'}>{tr ? 'SIRA' : 'RANK'}</p><strong className="font-barlow text-4xl font-black">{standing?.rank ?? '—'}</strong></div>
-              <div><p className={eyebrow + ' text-[#7a716a]'}>{tr ? 'PUAN' : 'POINTS'}</p><strong className="font-barlow text-5xl font-black">{standing?.points ?? '—'}</strong></div>
-              <div><p className={eyebrow + ' text-[#7a716a]'}>{tr ? 'KADRO' : 'SQUAD'}</p><strong className="font-barlow text-5xl font-black">{userPlayers?.length ?? 0}</strong></div>
+              <div><p className={eyebrow + ' text-[#7a716a]'}>{tr ? 'PUAN' : 'POINTS'}</p><strong className="font-barlow text-3xl sm:text-4xl font-black">{standing?.points ?? '—'}</strong></div>
+              <div><p className={eyebrow + ' text-[#7a716a]'}>{tr ? 'KADRO' : 'SQUAD'}</p><strong className="font-barlow text-3xl sm:text-4xl font-black">{userPlayers?.length ?? 0}</strong></div>
             </div>
           </div>
-          <div className="relative min-h-[260px] sm:min-h-[345px] bg-[#a62b30] text-[#fff4e9] p-7 sm:p-10 flex flex-col justify-between overflow-hidden">
+          <div className="relative min-h-[230px] bg-[#a62b30] text-[#fff4e9] p-6 sm:p-8 flex flex-col justify-between overflow-hidden">
             <div aria-hidden className="absolute inset-0 opacity-[0.10]" style={{backgroundImage:'repeating-linear-gradient(0deg, transparent 0px, transparent 18px, #fff 19px, transparent 20px)'}} />
             <span className={eyebrow + ' relative z-10'}>{tr ? 'SEZONUN HİKÂYESİ' : 'THE SEASON STORY'}</span>
             <div className="relative z-10">
-              <p className={headingClass + ' text-[clamp(2.7rem,4.5vw,5rem)]'}>{tr ? <>BİR KULÜP.<br />BİR MİRAS.</> : <>ONE CLUB.<br />ONE LEGACY.</>}</p>
-              <p className="font-serif italic text-xl sm:text-2xl mt-4">{tr ? 'Sonraki sayfayı sen yaz.' : 'Write the next chapter.'}</p>
+              <p className={headingClass + ' text-[clamp(2.4rem,3.5vw,3.9rem)]'}>{tr ? <>BİR KULÜP.<br />BİR MİRAS.</> : <>ONE CLUB.<br />ONE LEGACY.</>}</p>
+              <p className="font-serif italic text-base sm:text-lg mt-3">{tr ? 'Sonraki sayfayı sen yaz.' : 'Write the next chapter.'}</p>
             </div>
             <span className={eyebrow + ' relative z-10 opacity-80'}>SQUADCRAFT / FOOTBALL STORIES</span>
           </div>
@@ -130,17 +116,17 @@ export default function DashboardPage() {
           <div className="flex gap-3"><button className="bg-[#a6282c] text-white px-4 py-2 font-bold text-xs" onClick={() => respondToManagerContractOffer(true)}>{tr ? 'KABUL ET' : 'ACCEPT'}</button><button className="border border-[#252322] px-4 py-2 font-bold text-xs" onClick={() => respondToManagerContractOffer(false)}>{tr ? 'REDDET' : 'DECLINE'}</button></div>
         </aside>}
 
-        <section className="grid lg:grid-cols-[1.2fr_0.8fr] gap-8 lg:gap-12 py-8 border-b border-[#252322]/35">
+        <section className="grid lg:grid-cols-[1.1fr_0.9fr] gap-7 lg:gap-9 py-7 border-b border-[#252322]/35">
           <article>
             <div className="flex items-center justify-between mb-5"><h3 className={sectionLabel}>{tr ? 'SIRADAKİ MAÇ' : 'NEXT FIXTURE'}</h3><span className={eyebrow + ' text-[#716862]'}>{tr ? 'MAÇ GÜNÜ' : 'MATCHDAY'}</span></div>
             {nextMatch && opponent && homeClub && awayClub ? <>
-              <div className="flex justify-between items-center gap-2 border-y border-[#252322]/30 py-8">
-                <div className="flex-1 text-center"><div className="flex justify-center"><ClubBadge clubId={homeClub.id} code={homeClub.code} name={homeClub.name} primaryColor={homeClub.primaryColor} secondaryColor={homeClub.secondaryColor} size="lg" /></div><p className="font-barlow font-extrabold uppercase text-lg sm:text-2xl mt-2">{homeClub.name}</p></div>
-                <div className="text-center shrink-0"><span className="font-serif italic text-[#9b242b] text-3xl sm:text-5xl">vs.</span></div>
+              <div className="flex justify-between items-center gap-2 border-y border-[#252322]/30 py-6">
+                <div className="flex-1 text-center"><div className="flex justify-center"><ClubBadge clubId={homeClub.id} code={homeClub.code} name={homeClub.name} primaryColor={homeClub.primaryColor} secondaryColor={homeClub.secondaryColor} size="lg" /></div><p className="font-barlow font-extrabold uppercase text-base sm:text-xl mt-2">{homeClub.name}</p></div>
+                <div className="text-center shrink-0"><span className="font-serif italic text-[#9b242b] text-2xl sm:text-4xl">vs.</span></div>
                 <div className="flex-1 text-center"><div className="flex justify-center"><ClubBadge clubId={awayClub.id} code={awayClub.code} name={awayClub.name} primaryColor={awayClub.primaryColor} secondaryColor={awayClub.secondaryColor} size="lg" /></div><p className="font-barlow font-extrabold uppercase text-lg sm:text-2xl mt-2">{awayClub.name}</p></div>
               </div>
               <p className="text-xs text-[#746e67] mt-3 font-ibm">{userClub.stadium || ''}</p>
-              <Link href={nextMatchLink} className="mt-6 inline-flex items-center gap-4 bg-[#a6282c] text-white px-6 py-4 font-barlow font-black uppercase text-lg hover:bg-[#7e1d22]">{tr ? 'MAÇ MERKEZİNE GİT' : 'OPEN MATCH CENTER'} <ArrowUpRight size={22}/></Link>
+              <Link href={nextMatchLink} className="mt-5 inline-flex items-center gap-3 bg-[#a6282c] text-white px-5 py-3 font-barlow font-black uppercase text-base hover:bg-[#7e1d22]">{tr ? 'MAÇ MERKEZİNE GİT' : 'OPEN MATCH CENTER'} <ArrowUpRight size={22}/></Link>
             </> : <div className="py-16 border-y border-[#252322]/30 font-serif italic text-xl">{tr ? 'Şu anda planlanmış maç yok.' : 'No upcoming fixture scheduled.'}<div className="mt-4"><Link className="text-[#a6282c] underline font-inter text-sm" href="/fixtures">{tr ? 'Fikstürü aç' : 'View fixtures'}</Link></div></div>}
             {lastMatch && <div className="mt-6 text-xs uppercase tracking-wider text-[#716862]">{tr ? 'SON TAMAMLANAN MAÇ' : 'LAST PLAYED MATCH'} — {lastMatch.homeScore ?? '—'} : {lastMatch.awayScore ?? '—'}</div>}
           </article>
@@ -159,14 +145,14 @@ export default function DashboardPage() {
           </article>
         </section>
 
-        <section className="grid md:grid-cols-3 gap-8 md:gap-7 py-9 border-b border-[#252322]/35">
+        <section className="grid md:grid-cols-3 gap-6 md:gap-7 py-7 border-b border-[#252322]/35">
           <article className={paper}><h3 className={sectionLabel}>{tr ? 'GENÇ YETENEK' : 'YOUTH REPORT'}</h3>
-            {prospect ? <><div className="flex gap-4 items-center mt-6"><PlayerPortrait player={prospect} size="md"/><div><strong className="font-barlow font-black text-2xl uppercase leading-none block">{prospect.firstName} {prospect.lastName}</strong><span className={eyebrow + ' text-[#786e67]'}>{prospect.position} / {prospect.age} {tr ? 'YAŞ' : 'YEARS'}</span></div></div><p className="font-serif italic text-lg mt-4">{tr ? 'Gelecek burada yetişiyor.' : 'The future begins here.'}</p><div className="flex gap-8 mt-3 border-t border-[#252322]/25 pt-3"><div><p className={eyebrow + ' text-[#7b706a]'}>OVR</p><strong className="font-barlow text-3xl">{prospect.overall}</strong></div><div><p className={eyebrow + ' text-[#7b706a]'}>{tr ? 'POTANSİYEL' : 'POTENTIAL'}</p><strong className="font-barlow text-3xl text-[#a6282c]">{prospect.potential}</strong></div></div></> : <p className="mt-6 text-sm">{tr ? 'Genç oyuncu bulunmuyor.' : 'No youth prospects available.'}</p>}
+            {prospect ? <><div className="flex gap-4 items-center mt-6"><PlayerPortrait player={prospect} size="md"/><div><strong className="font-barlow font-black text-xl uppercase leading-tight block">{prospect.firstName} {prospect.lastName}</strong><span className={eyebrow + ' text-[#786e67]'}>{prospect.position} / {prospect.age} {tr ? 'YAŞ' : 'YEARS'}</span></div></div><p className="font-serif italic text-base mt-3">{tr ? 'Gelecek burada yetişiyor.' : 'The future begins here.'}</p><div className="flex gap-8 mt-3 border-t border-[#252322]/25 pt-3"><div><p className={eyebrow + ' text-[#7b706a]'}>OVR</p><strong className="font-barlow text-3xl">{prospect.overall}</strong></div><div><p className={eyebrow + ' text-[#7b706a]'}>{tr ? 'POTANSİYEL' : 'POTENTIAL'}</p><strong className="font-barlow text-3xl text-[#a6282c]">{prospect.potential}</strong></div></div></> : <p className="mt-6 text-sm">{tr ? 'Genç oyuncu bulunmuyor.' : 'No youth prospects available.'}</p>}
             <Link href="/squad" className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase text-[#a6282c]">{tr ? 'KADROYU İNCELE' : 'EXPLORE SQUAD'} <ArrowUpRight size={16}/></Link>
           </article>
           <article className={paper}><h3 className={sectionLabel}>{tr ? 'KULÜP DURUMU' : 'CLUB HEALTH'}</h3>
             <div className="mt-7 space-y-5">
-              <div><p className={eyebrow + ' text-[#786e67]'}>{tr ? 'TRANSFER BÜTÇESİ' : 'TRANSFER BUDGET'}</p><p className="font-barlow font-black text-4xl mt-1">{typeof balance === 'number' ? new Intl.NumberFormat(tr ? 'tr-TR' : 'en-GB', {style:'currency',currency:'EUR',maximumFractionDigits:0}).format(balance) : '—'}</p></div>
+              <div><p className={eyebrow + ' text-[#786e67]'}>{tr ? 'TRANSFER BÜTÇESİ' : 'TRANSFER BUDGET'}</p><p className="font-barlow font-black text-2xl sm:text-3xl mt-1 break-words">{typeof balance === 'number' ? new Intl.NumberFormat(tr ? 'tr-TR' : 'en-GB', {style:'currency',currency:'EUR',maximumFractionDigits:0}).format(balance) : '—'}</p></div>
               <div className="border-t border-[#252322]/25 pt-4"><p className={eyebrow + ' text-[#786e67]'}>{tr ? 'KADRO DURUMU' : 'SQUAD STATUS'}</p><p className="font-serif text-2xl mt-1">{userPlayers.length} {tr ? 'futbolcu' : 'players'}</p></div>
             </div>
             <Link href="/transfers" className="mt-6 inline-flex items-center gap-2 text-xs font-bold uppercase text-[#a6282c]">{tr ? 'TRANSFER MERKEZİ' : 'TRANSFER HUB'} <ArrowUpRight size={16}/></Link>
