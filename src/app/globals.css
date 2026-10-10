@@ -689,3 +689,23 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 @media(prefers-reduced-motion:reduce){
  .sc-draft-lobby-v2 * {transition-duration:.01ms !important;animation-duration:.01ms !important;}
 }
+
+/* Squad career tabs: readable typography and paper surfaces; don't restyle the pitch itself. */
+.sc-squad-readable { color:#231d19;font-size:14px;line-height:1.5; }
+.sc-squad-readable .font-barlow {letter-spacing:0;}
+.sc-squad-readable table {border-collapse:collapse;background:#fffaf2;}
+.sc-squad-readable table thead {background:#e8dccd;}
+.sc-squad-readable table :is(th,td){color:#29231e;}
+.sc-squad-readable table th{font-weight:800;color:#443931;white-space:nowrap;}
+.sc-squad-readable table tbody tr{border-bottom:1px solid #ddcfbf;}
+.sc-squad-readable table tbody tr:hover{background:#f1e7d9;}
+.sc-squad-readable table tbody td span[class*="text-[#7f2a31]"]{color:#7f2a31;}
+.sc-squad-readable table tbody td span[class*="text-[#326d65]"]{color:#326d65;}
+.sc-squad-readable :is(button,input):focus-visible {outline:2px solid #9b2529;outline-offset:2px;}
+.sc-squad-readable button {min-height:36px;}
+.sc-squad-readable table tbody button{background:#9b2529;color:#fff;border:1px solid #9b2529;min-height:34px;padding:7px 12px;}
+.sc-squad-readable table tbody button:hover{background:#731d23;color:#fff;}
+.sc-squad-readable [class*="text-[9px]"]{font-size:11px;}
+.sc-squad-readable [class*="text-[10px]"]{font-size:11px;}
+.sc-squad-readable table tbody [class*="text-[#171717]"] {color:#171717;}
+@media(max-width:767px){.sc-squad-readable {min-width:0}.sc-squad-readable table{min-width:900px}.sc-squad-readable button{min-height:40px}}
