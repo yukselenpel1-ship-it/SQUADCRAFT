@@ -67,21 +67,21 @@ export default function LeaguePage() {
   return (
     <div className="space-y-6 pb-28 lg:pb-12 select-none animate-in fade-in duration-300">
       {/* Broadcast Header HUD */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b-2 border-[#292622] pb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="font-ibm text-[11px] text-[#b8ff3d] tracking-widest uppercase font-semibold">
-              COMPETITION CENTER // ALVERIA ELİT LİGİ
+            <span className="font-ibm text-[11px] text-[#9b2529] tracking-widest uppercase font-semibold">
+              LİG DOSYASI // ALVERIA ELİT LİGİ
             </span>
             <span className="w-1.5 h-1.5 rounded-full bg-[#65ff83] animate-pulse" />
           </div>
-          <h1 className="font-barlow font-extrabold text-[36px] sm:text-[46px] text-[#f3f6f3] uppercase tracking-tight leading-none mt-1">
-            SEASON {seasonYear || '2026/27'} · MATCHDAY {nextMatch?.round || 12}
+          <h1 className="font-barlow font-black text-[clamp(2.8rem,5.5vw,5.8rem)] text-[#292622] uppercase tracking-tight leading-[0.94] mt-3">
+            SEZON {seasonYear || '2026/27'} · HAFTA {nextMatch?.round || 1}
           </h1>
         </div>
 
         {/* Qualification Legend */}
-        <div className="flex flex-wrap items-center gap-2 font-ibm text-[11px]">
+        <div className="flex flex-wrap items-center gap-2 font-ibm text-[11px] max-w-full">
           <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0d130f] border border-white/10">
             <span className="w-2 h-2 rounded-full bg-[#ffd34f]" />
             <span className="text-[#8f9a91]">Şampiyon (1.)</span>
