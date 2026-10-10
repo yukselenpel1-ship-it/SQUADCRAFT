@@ -908,7 +908,7 @@ export default function TransfersPage() {
                             {player.previousClubName || 'Serbest'}
                           </td>
                           <td className="py-3 px-2 text-center">
-                            <span className="px-2 py-0.5 font-mono text-[10px] font-black bg-[#050806] border border-[#d5c7b7] text-[#376d67] rounded">
+                            <span className="sc-transfer-position inline-flex min-w-[38px] justify-center px-2 py-1 font-mono text-[11px] font-black bg-[#eaded0] border border-[#b7a697] text-[#202020] rounded-sm">
                               {player.position}
                             </span>
                           </td>
@@ -923,7 +923,7 @@ export default function TransfersPage() {
                           <td className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                             <button
                               onClick={() => setNegotiationTargetPlayer(player)}
-                              className="px-3 py-1.5 bg-[#21dfbd] hover:bg-[#1bc4a5] text-[#050806] font-mono font-black text-xs uppercase rounded-lg transition-all"
+                              className="px-3 py-2 bg-[#9b2529] hover:bg-[#761d23] text-white font-mono font-black text-xs uppercase rounded-sm transition-colors"
                             >
                               Sözleşme Masası
                             </button>
@@ -964,8 +964,11 @@ export default function TransfersPage() {
           {activeTab === 'SHORTLIST' && (
             <div className="space-y-4">
               {shortlistedPlayers.length === 0 ? (
-                <div className="p-12 bg-[#fffaf2] rounded-2xl border border-[#d5c7b7] text-center text-[#695e54] font-mono text-sm">
-                  Gözlem listenizde henüz kayıtlı futbolcu bulunmuyor. Pazardan oyuncuları listenize ekleyebilirsiniz.
+                <div className="bg-[#fffaf2] border border-[#d5c7b7] px-6 py-10 sm:py-14 text-center flex flex-col items-center gap-4">
+                  <div className="w-14 h-14 flex items-center justify-center bg-[#eaded0] text-[#9b2529] rounded-full"><Bookmark size={24} /></div>
+                  <h2 className="font-barlow text-2xl sm:text-3xl font-black uppercase text-[#211c19]">Gözlem Listen Henüz Boş</h2>
+                  <p className="font-inter text-sm text-[#61564d] max-w-md">Takip etmek istediğin oyuncuları transfer pazarında yer alan gözlem listesi simgesiyle buraya ekleyebilirsin.</p>
+                  <button type="button" onClick={() => setActiveTab('MARKET')} className="mt-2 px-6 py-3 bg-[#9b2529] hover:bg-[#761d23] text-white font-barlow font-black uppercase text-sm">Transfer Pazarını Aç</button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
