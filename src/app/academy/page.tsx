@@ -99,7 +99,7 @@ export default function AcademyPage() {
   };
 
   return (
-    <div className="sc-editorial-restyle space-y-6 pb-28 lg:pb-12 animate-in fade-in duration-300">
+    <div className="sc-editorial-restyle sc-academy-editorial space-y-6 px-4 sm:px-8 lg:px-12 py-6 pb-20 max-w-[1500px] mx-auto animate-in fade-in duration-300">
       {/* 1. BROADCAST ACADEMY LAB HEADER */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#090d0a] via-[#0d130f] to-[#090d0a] border border-white/10 p-5 md:p-6 shadow-2xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#ffd34f]/5 rounded-full blur-3xl pointer-events-none" />
@@ -122,7 +122,7 @@ export default function AcademyPage() {
                 <GraduationCap className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase font-sport">
+                <h1 className="text-2xl sm:text-3xl font-black text-[#211d19] tracking-tight uppercase font-sport">
                   FUTBOL AKADEMİSİ
                 </h1>
                 <p className="text-xs text-zinc-400 font-mono">
@@ -176,30 +176,30 @@ export default function AcademyPage() {
       <div>
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h2 className="text-lg font-black text-white uppercase tracking-tight font-sport">
+            <h2 className="text-xl sm:text-2xl font-black text-[#201d1a] uppercase tracking-tight font-sport">
               TESİS & GELİŞİM YATIRIM PANELİ
             </h2>
-            <p className="text-xs text-zinc-400 font-mono">
+            <p className="text-sm text-[#62574f] font-inter leading-relaxed">
               Altyapı tesislerini modernize ederek oyuncuların gelişim ivmesini ve yeni jenerasyon kalitesini artırın
             </p>
           </div>
-          <div className="text-xs font-mono text-zinc-400">
-            Kulüp Kasası: <strong className="text-[#b8ff3d]">€{(finances.clubBalance / 1_000_000).toFixed(2)}M</strong>
+          <div className="text-xs font-mono text-[#62574f]">
+            Kulüp Kasası: <strong className="text-[#8e2c31]">€{(finances.clubBalance / 1_000_000).toFixed(2)}M</strong>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* 1. Academy Level */}
-          <div className="bg-[#090d0a] rounded-2xl border border-white/10 p-5 flex flex-col justify-between space-y-4 shadow-xl hover:border-white/20 transition-all">
+          <div className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 flex flex-col justify-between space-y-4 shadow-xl hover:border-white/20 transition-all">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-[#21dfbd]/10 border border-[#21dfbd]/30 flex items-center justify-center text-[#21dfbd]">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#51483f] flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-[#21dfbd]/10 border border-[#21dfbd]/30 flex items-center justify-center text-[#32635a]">
                     <Building className="w-4 h-4" />
                   </div>
                   AKADEMİ TESİSLERİ
                 </span>
-                <span className="text-xs font-mono font-black text-[#21dfbd] px-2.5 py-1 bg-[#21dfbd]/10 border border-[#21dfbd]/30 rounded-lg">
+                <span className="text-xs font-mono font-black text-[#32635a] px-2.5 py-1 bg-[#21dfbd]/10 border border-[#21dfbd]/30 rounded-lg">
                   SEVİYE {academyFacilities.academyLevel} / 10
                 </span>
               </div>
@@ -218,15 +218,15 @@ export default function AcademyPage() {
                 ))}
               </div>
 
-              <p className="text-xs text-zinc-400 font-mono mt-2">
+              <p className="text-sm text-[#62574f] font-inter leading-relaxed mt-2">
                 Tesis kalitesi genç oyuncuların potansiyeline ulaşma hızını ve günlük antrenman gelişim çarpanını artırır.
               </p>
             </div>
 
-            <div className="pt-3 border-t border-white/10 flex items-center justify-between font-mono">
+            <div className="pt-3 border-t border-[#d5c8b9] flex items-center justify-between font-mono">
               <div>
-                <span className="text-[10px] text-zinc-500 block uppercase">YATIRIM MALİYETİ</span>
-                <span className="text-xs font-bold text-white">
+                <span className="text-[10px] text-[#75695e] block uppercase">YATIRIM MALİYETİ</span>
+                <span className="text-xs font-bold text-[#201d1a]">
                   {academyFacilities.academyLevel >= 10 ? 'MAKSİMUM SEVİYE' : `€${levelCost.toLocaleString('tr-TR')}`}
                 </span>
               </div>
@@ -234,7 +234,7 @@ export default function AcademyPage() {
               <button
                 onClick={() => handleUpgrade('academyLevel')}
                 disabled={academyFacilities.academyLevel >= 10 || finances.clubBalance < levelCost}
-                className="px-4 py-2 text-xs font-mono font-black uppercase rounded-xl bg-[#21dfbd] hover:bg-[#1bc4a5] disabled:opacity-40 disabled:cursor-not-allowed text-[#050806] transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(33,223,189,0.3)]"
+                className="px-4 py-2 text-xs font-mono font-black uppercase rounded-xl bg-[#9b2529] hover:bg-[#751b21] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(33,223,189,0.3)]"
               >
                 <ArrowUpCircle className="w-4 h-4" />
                 Yükselt
@@ -243,16 +243,16 @@ export default function AcademyPage() {
           </div>
 
           {/* 2. Youth Coaching Quality */}
-          <div className="bg-[#090d0a] rounded-2xl border border-white/10 p-5 flex flex-col justify-between space-y-4 shadow-xl hover:border-white/20 transition-all">
+          <div className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 flex flex-col justify-between space-y-4 shadow-xl hover:border-white/20 transition-all">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-[#b8ff3d]/10 border border-[#b8ff3d]/30 flex items-center justify-center text-[#b8ff3d]">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#51483f] flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-[#b8ff3d]/10 border border-[#b8ff3d]/30 flex items-center justify-center text-[#8e2c31]">
                     <Award className="w-4 h-4" />
                   </div>
                   ANTRENÖR EKİBİ KALİTESİ
                 </span>
-                <span className="text-xs font-mono font-black text-[#b8ff3d] px-2.5 py-1 bg-[#b8ff3d]/10 border border-[#b8ff3d]/30 rounded-lg">
+                <span className="text-xs font-mono font-black text-[#8e2c31] px-2.5 py-1 bg-[#b8ff3d]/10 border border-[#b8ff3d]/30 rounded-lg">
                   %{academyFacilities.youthCoachingQuality}
                 </span>
               </div>
@@ -265,15 +265,15 @@ export default function AcademyPage() {
                 />
               </div>
 
-              <p className="text-xs text-zinc-400 font-mono mt-2">
+              <p className="text-sm text-[#62574f] font-inter leading-relaxed mt-2">
                 Antrenör ekibinin pedagojik ve taktiksel birikimi altyapıdan çıkan futbolcuların başlangıç temel güçlerini yükseltir.
               </p>
             </div>
 
-            <div className="pt-3 border-t border-white/10 flex items-center justify-between font-mono">
+            <div className="pt-3 border-t border-[#d5c8b9] flex items-center justify-between font-mono">
               <div>
-                <span className="text-[10px] text-zinc-500 block uppercase">GELİŞTİRME GİDERİ</span>
-                <span className="text-xs font-bold text-white">
+                <span className="text-[10px] text-[#75695e] block uppercase">GELİŞTİRME GİDERİ</span>
+                <span className="text-xs font-bold text-[#201d1a]">
                   {academyFacilities.youthCoachingQuality >= 100 ? 'MAKSİMUM KALİTE' : `€${coachingCost.toLocaleString('tr-TR')}`}
                 </span>
               </div>
@@ -281,7 +281,7 @@ export default function AcademyPage() {
               <button
                 onClick={() => handleUpgrade('youthCoachingQuality')}
                 disabled={academyFacilities.youthCoachingQuality >= 100 || finances.clubBalance < coachingCost}
-                className="px-4 py-2 text-xs font-mono font-black uppercase rounded-xl bg-[#b8ff3d] hover:bg-[#a6ec31] disabled:opacity-40 disabled:cursor-not-allowed text-[#050806] transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(184,255,61,0.3)]"
+                className="px-4 py-2 text-xs font-mono font-black uppercase rounded-xl bg-[#b8ff3d] hover:bg-[#a6ec31] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(184,255,61,0.3)]"
               >
                 <ArrowUpCircle className="w-4 h-4" />
                 Geliştir
@@ -290,16 +290,16 @@ export default function AcademyPage() {
           </div>
 
           {/* 3. Recruitment Network */}
-          <div className="bg-[#090d0a] rounded-2xl border border-white/10 p-5 flex flex-col justify-between space-y-4 shadow-xl hover:border-white/20 transition-all">
+          <div className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 flex flex-col justify-between space-y-4 shadow-xl hover:border-white/20 transition-all">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-300 flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-[#ffd34f]/10 border border-[#ffd34f]/30 flex items-center justify-center text-[#ffd34f]">
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#51483f] flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-[#ffd34f]/10 border border-[#ffd34f]/30 flex items-center justify-center text-[#835f27]">
                     <Target className="w-4 h-4" />
                   </div>
                   YETENEK TARAMA AĞI
                 </span>
-                <span className="text-xs font-mono font-black text-[#ffd34f] px-2.5 py-1 bg-[#ffd34f]/10 border border-[#ffd34f]/30 rounded-lg">
+                <span className="text-xs font-mono font-black text-[#835f27] px-2.5 py-1 bg-[#ffd34f]/10 border border-[#ffd34f]/30 rounded-lg">
                   %{academyFacilities.youthRecruitmentNetwork}
                 </span>
               </div>
@@ -312,15 +312,15 @@ export default function AcademyPage() {
                 />
               </div>
 
-              <p className="text-xs text-zinc-400 font-mono mt-2">
+              <p className="text-sm text-[#62574f] font-inter leading-relaxed mt-2">
                 Geniş tarama ağı, her 15 Mart alımında akademiye üstün yetenekli (Wonderkid) gençlerin katılma ihtimalini güçlendirir.
               </p>
             </div>
 
-            <div className="pt-3 border-t border-white/10 flex items-center justify-between font-mono">
+            <div className="pt-3 border-t border-[#d5c8b9] flex items-center justify-between font-mono">
               <div>
-                <span className="text-[10px] text-zinc-500 block uppercase">GENİŞLETME GİDERİ</span>
-                <span className="text-xs font-bold text-white">
+                <span className="text-[10px] text-[#75695e] block uppercase">GENİŞLETME GİDERİ</span>
+                <span className="text-xs font-bold text-[#201d1a]">
                   {academyFacilities.youthRecruitmentNetwork >= 100 ? 'MAKSİMUM AĞ' : `€${networkCost.toLocaleString('tr-TR')}`}
                 </span>
               </div>
@@ -328,7 +328,7 @@ export default function AcademyPage() {
               <button
                 onClick={() => handleUpgrade('youthRecruitmentNetwork')}
                 disabled={academyFacilities.youthRecruitmentNetwork >= 100 || finances.clubBalance < networkCost}
-                className="px-4 py-2 text-xs font-mono font-black uppercase rounded-xl bg-[#ffd34f] hover:bg-[#ecc03f] disabled:opacity-40 disabled:cursor-not-allowed text-[#050806] transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(255,211,79,0.3)]"
+                className="px-4 py-2 text-xs font-mono font-black uppercase rounded-xl bg-[#9b2529] hover:bg-[#751b21] disabled:opacity-40 disabled:cursor-not-allowed text-white transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(255,211,79,0.3)]"
               >
                 <ArrowUpCircle className="w-4 h-4" />
                 Genişlet
@@ -342,20 +342,20 @@ export default function AcademyPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-black text-white uppercase tracking-tight font-sport">
+            <h2 className="text-xl sm:text-2xl font-black text-[#201d1a] uppercase tracking-tight font-sport">
               AKADEMİ GELİŞİM HAVUZU ({youthPlayers.length} ADAY FUTBOLCU)
             </h2>
-            <p className="text-xs text-zinc-400 font-mono">
+            <p className="text-sm text-[#62574f] font-inter leading-relaxed">
               15–18 yaş arası profesyonel akademi futbolcuları, potansiyel tavanları ve gelişim hızları
             </p>
           </div>
         </div>
 
         {youthPlayers.length === 0 ? (
-          <div className="p-12 text-center bg-[#090d0a] rounded-2xl border border-white/10 space-y-2">
+          <div className="p-12 text-center bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] space-y-2">
             <GraduationCap className="w-12 h-12 text-zinc-600 mx-auto mb-2" />
-            <h4 className="text-sm font-bold text-white uppercase font-mono">Akademide Henüz Futbolcu Bulunmuyor</h4>
-            <p className="text-xs font-mono text-zinc-400 max-w-md mx-auto">
+            <h4 className="text-base font-bold text-[#201d1a] uppercase font-barlow">Akademide Henüz Futbolcu Bulunmuyor</h4>
+            <p className="text-xs font-mono text-[#62574f] max-w-md mx-auto">
               Her yıl <strong>15 Mart</strong> tarihinde altyapınıza yeni nesil genç yetenek adayları katılacaktır.
             </p>
           </div>
@@ -368,19 +368,19 @@ export default function AcademyPage() {
                 <div
                   key={player.id}
                   onClick={() => setSelectedPlayer(player)}
-                  className="bg-[#090d0a] rounded-2xl border border-white/10 p-5 space-y-4 hover:border-white/20 transition-all cursor-pointer shadow-xl relative overflow-hidden"
+                  className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 space-y-4 hover:border-white/20 transition-all cursor-pointer shadow-xl relative overflow-hidden"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-xl bg-[#050706] border border-white/10 flex items-center justify-center text-[#ffd34f]">
+                      <div className="w-12 h-12 rounded-xl bg-[#eee4d8] border border-[#d5c8b9] flex items-center justify-center text-[#835f27]">
                         <Star className="w-6 h-6 fill-[#ffd34f]/20" />
                       </div>
                       <div>
-                        <h3 className="text-base font-black text-white uppercase tracking-tight font-sport">
+                        <h3 className="text-base font-black text-[#201d1a] uppercase tracking-tight font-sport">
                           {player.firstName} {player.lastName}
                         </h3>
-                        <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 mt-0.5">
-                          <span className="px-2 py-0.5 rounded bg-[#b8ff3d]/15 text-[#b8ff3d] font-bold">
+                        <div className="flex items-center gap-2 text-xs font-mono text-[#62574f] mt-0.5">
+                          <span className="px-2 py-0.5 rounded bg-[#b8ff3d]/15 text-[#8e2c31] font-bold">
                             {player.position}
                           </span>
                           <span>{player.age} YAŞ</span>
@@ -393,40 +393,40 @@ export default function AcademyPage() {
                     {/* Overall vs Potential Ceiling */}
                     <div className="text-right font-mono">
                       <div className="flex items-center justify-end gap-1.5">
-                        <span className="text-xl font-black text-white">{player.overall}</span>
+                        <span className="text-xl font-black text-[#201d1a]">{player.overall}</span>
                         <span className="text-zinc-600">→</span>
-                        <span className="text-xl font-black text-[#b8ff3d]">
+                        <span className="text-xl font-black text-[#8e2c31]">
                           [{player.estimatedPotentialRange[0]}–{player.estimatedPotentialRange[1]}]
                         </span>
                       </div>
-                      <span className="text-[10px] text-zinc-500 uppercase block">OVR → POTANSİYEL</span>
+                      <span className="text-[10px] text-[#75695e] uppercase block">OVR → POTANSİYEL</span>
                     </div>
                   </div>
 
                   {/* Velocity Meter & Graduation */}
-                  <div className="flex items-center justify-between p-3 bg-[#050706] rounded-xl border border-white/5 text-xs font-mono">
+                  <div className="flex items-center justify-between p-3 bg-[#eee4d8] rounded-xl border border-[#ded2c3] text-xs font-mono">
                     <div className="flex items-center gap-2">
-                      <span className="text-zinc-500 text-[10px] uppercase">GELİŞİM HIZI:</span>
-                      <span className="flex items-center gap-1 font-bold text-[#21dfbd]">
+                      <span className="text-[#75695e] text-[10px] uppercase">GELİŞİM HIZI:</span>
+                      <span className="flex items-center gap-1 font-bold text-[#32635a]">
                         <span className="w-2 h-2 rounded-full bg-[#21dfbd] animate-ping" />
                         {velocity === 'FAST' ? 'HIZLI GELİŞİM (FAST)' : 'DENGELİ (STEADY)'}
                       </span>
                     </div>
-                    <span className="text-[11px] text-zinc-400">
+                    <span className="text-[11px] text-[#62574f]">
                       Mezuniyet: <strong>{player.academyGraduationYear}</strong>
                     </span>
                   </div>
 
                   {/* Scout Pull-Quote */}
-                  <p className="text-xs text-zinc-300 font-mono italic bg-white/[0.02] p-2.5 rounded-lg border border-white/5">
+                  <p className="text-xs text-[#51483f] font-mono italic bg-white/[0.02] p-2.5 rounded-lg border border-[#ded2c3]">
                     "{player.scoutOpinion}"
                   </p>
 
                   {/* Actions */}
-                  <div className="pt-2 border-t border-white/10 flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
+                  <div className="pt-2 border-t border-[#d5c8b9] flex items-center justify-end gap-2" onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => handlePromote(player.id)}
-                      className="px-4 py-2 text-xs font-mono font-black uppercase rounded-xl bg-[#b8ff3d] hover:bg-[#a6ec31] text-[#050806] transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(184,255,61,0.3)]"
+                      className="px-4 py-2 text-xs font-mono font-black uppercase rounded-xl bg-[#9b2529] hover:bg-[#751b21] text-white transition-all flex items-center gap-1.5 shadow-[0_0_12px_rgba(184,255,61,0.3)]"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
                       A Takıma Yükselt
@@ -441,35 +441,35 @@ export default function AcademyPage() {
 
       {/* 4. INTAKE HISTORY COLLAPSIBLE DRAWER */}
       {academyFacilities.intakeHistory && academyFacilities.intakeHistory.length > 0 && (
-        <div className="bg-[#090d0a] rounded-2xl border border-white/10 p-5 space-y-4 shadow-xl">
+        <div className="bg-[#fffaf2] rounded-2xl border border-[#d5c8b9] p-5 space-y-4 shadow-xl">
           <button
             onClick={() => setShowIntakeArchive(!showIntakeArchive)}
             className="w-full flex items-center justify-between text-left"
           >
             <div className="flex items-center gap-2.5">
-              <Calendar className="w-4 h-4 text-[#4FE4FF]" />
-              <h3 className="text-sm font-black uppercase tracking-wider text-white font-sport">
+              <Calendar className="w-4 h-4 text-[#32635a]" />
+              <h3 className="text-sm font-black uppercase tracking-wider text-[#201d1a] font-sport">
                 GEÇMİŞ YILLIK GENÇ ALIM ARŞİVİ ({academyFacilities.intakeHistory.length} DÖNEM)
               </h3>
             </div>
             <ChevronDown
-              className={`w-4 h-4 text-zinc-400 transition-transform ${showIntakeArchive ? 'rotate-180' : ''}`}
+              className={`w-4 h-4 text-[#62574f] transition-transform ${showIntakeArchive ? 'rotate-180' : ''}`}
             />
           </button>
 
           {showIntakeArchive && (
-            <div className="space-y-3 pt-3 border-t border-white/10">
+            <div className="space-y-3 pt-3 border-t border-[#d5c8b9]">
               {academyFacilities.intakeHistory.map((batch) => (
-                <div key={batch.id} className="p-4 bg-[#050706] rounded-xl border border-white/10 space-y-1 font-mono text-xs">
+                <div key={batch.id} className="p-4 bg-[#eee4d8] rounded-xl border border-[#d5c8b9] space-y-1 font-mono text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-white uppercase">
+                    <span className="font-bold text-[#201d1a] uppercase">
                       {batch.seasonYear} Sezonu Genç Alımı ({batch.date})
                     </span>
-                    <span className="text-[#b8ff3d] font-bold">
+                    <span className="text-[#8e2c31] font-bold">
                       {batch.players.length} Futbolcu Katıldı
                     </span>
                   </div>
-                  <p className="text-zinc-400">{batch.intakeSummary}</p>
+                  <p className="text-[#62574f]">{batch.intakeSummary}</p>
                 </div>
               ))}
             </div>
