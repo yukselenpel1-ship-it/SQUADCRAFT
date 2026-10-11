@@ -337,8 +337,8 @@ export function DraftLiveMatchModal({
   const awayPlayersList = engineState?.away?.players ? Object.values(engineState.away.players) : [];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-3 md:p-4 bg-[#050806]/90 backdrop-blur-md animate-in fade-in duration-200 select-none font-sans overflow-x-hidden">
-      <div className="sc-panel border border-white/10 max-w-5xl w-full h-full sm:h-[94vh] flex flex-col shadow-2xl relative overflow-hidden rounded-none sm:rounded-2xl">
+    <div className="sc-draft-live-editorial fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-3 md:p-4 bg-[#33241f]/65 backdrop-blur-md animate-in fade-in duration-200 font-sans overflow-x-hidden">
+      <div className="sc-draft-live-shell sc-panel border border-[#c9b5a2] max-w-5xl w-full h-full sm:h-[94vh] flex flex-col shadow-2xl relative overflow-hidden rounded-none sm:rounded-2xl">
         {/* Top Glow Light */}
         <div
           className={`h-[2.5px] w-full bg-gradient-to-r ${
@@ -349,7 +349,7 @@ export function DraftLiveMatchModal({
         />
 
         {/* Header Broadcast Scoreboard */}
-        <div className="bg-[#0d120f]/95 border-b border-white/10 px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4 shrink-0">
+        <div className="sc-draft-live-toolbar bg-[#f2e7dc] border-b border-[#c9b5a2] px-3 sm:px-6 py-2.5 sm:py-3.5 flex items-center justify-between gap-2 sm:gap-4 shrink-0">
           <div className="flex items-center gap-2 sm:gap-3 truncate">
             {/* Red pulsing CANLI badge */}
             <span className="px-2.5 py-0.5 rounded-full bg-red-600 text-white text-[10px] font-black uppercase tracking-wider flex items-center gap-1 animate-pulse shadow-md">
@@ -429,7 +429,7 @@ export function DraftLiveMatchModal({
         </div>
 
         {/* Big Teams Score Banner (Mobile-first responsive) */}
-        <div className="bg-[#05080E] border-b border-zinc-800 px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between shrink-0 gap-2">
+        <div className="sc-draft-live-scoreboard bg-[#f8f0e7] border-b border-[#c9b5a2] px-3 sm:px-6 py-3 sm:py-4 flex items-center justify-between shrink-0 gap-2">
           {/* Home Team */}
           <div className="flex items-center gap-2 sm:gap-3.5 flex-1 min-w-0 justify-start">
             {homeClub && (
@@ -868,7 +868,7 @@ export function DraftLiveMatchModal({
         </div>
 
         {/* Footer Actions (Thumb-friendly mobile bottom bar) */}
-        <div className="bg-[#0A101A] border-t border-zinc-800 px-4 sm:px-6 py-3 flex items-center justify-between shrink-0 gap-3">
+        <div className="sc-draft-live-footer bg-[#e9ded1] border-t border-[#c9b5a2] px-4 sm:px-6 py-3 flex items-center justify-between shrink-0 gap-3">
           <button
             onClick={onClose}
             className="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-bold uppercase transition"
