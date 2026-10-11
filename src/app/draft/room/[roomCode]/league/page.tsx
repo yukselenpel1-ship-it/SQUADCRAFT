@@ -1027,37 +1027,25 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
   };
 
   return (
-    <div className="relative min-h-screen bg-[#050806] text-zinc-100 flex flex-col justify-between overflow-x-hidden select-none font-sans">
-      {/* ==================================================================== */}
-      {/* 1. HIGH-CONTRAST STADIUM ARENA BACKGROUND (FULL VIEWPORT)            */}
-      {/* ==================================================================== */}
-      <div
-        className="fixed inset-0 pointer-events-none z-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url('/images/bg-fc-arena.jpg')` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-b from-[#050806]/85 via-[#050806]/90 to-[#050806]" />
-        <div className="absolute inset-0 bg-radial from-transparent via-[#050806]/50 to-[#050806]" />
-      </div>
-
-      {/* Top Stadium Light Beam */}
-      <div className="relative z-30 h-[2px] w-full bg-gradient-to-r from-transparent via-[#b7ff35]/80 via-[#4FE4FF]/60 to-transparent shadow-[0_0_15px_#b7ff35]" />
+    <div className="sc-draft-league-editorial relative min-h-screen bg-[#f2ede3] text-[#29231e] flex flex-col justify-between overflow-x-hidden font-inter">
+      <div aria-hidden="true" className="fixed inset-0 pointer-events-none z-0 sc-draft-league-backdrop" />
 
       {/* ==================================================================== */}
       {/* 2. SQUADCRAFT ORIGINAL LEAGUE COMMAND CENTER TOP HUD                 */}
       {/* ==================================================================== */}
-      <header className="relative z-20 w-full border-b border-zinc-800 bg-[#070D14]/95 backdrop-blur-md px-4 sm:px-8 py-3 shadow-2xl">
+      <header className="relative z-20 w-full border-b border-[#d2c1b0] bg-[#e8ded2]/95 backdrop-blur-md px-4 sm:px-8 py-3 shadow-2xl">
         <div className="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
           {/* Left: Brand Plate & Back Button */}
           <div className="flex items-center gap-3.5">
             <button
               onClick={handleLeaveRoom}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#e9ded1] hover:bg-[#e5d8c8] border border-[#c9b5a2] text-[#52463d] hover:text-[#29231e] text-xs font-bold uppercase tracking-wider transition-all"
             >
-              <LogOut className="w-3.5 h-3.5 text-[#b7ff35]" />
+              <LogOut className="w-3.5 h-3.5 text-[#962a31]" />
               <span className="hidden sm:inline">ODADAN AYRIL</span>
             </button>
 
-            <div className="h-6 w-px bg-zinc-800 hidden sm:block" />
+            <div className="h-6 w-px bg-[#e5d8c8] hidden sm:block" />
 
             <Link href="/" className="flex items-center gap-2.5 group">
               <div className="relative h-8 sm:h-9 w-11 sm:w-13 flex items-center justify-center">
@@ -1072,10 +1060,10 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               </div>
               <div className="flex flex-col justify-center">
                 <div className="flex items-center gap-1.5 font-black uppercase italic tracking-tighter text-lg sm:text-xl leading-none">
-                  <span className="text-white group-hover:text-zinc-100 transition-colors">SQUADCRAFT</span>
-                  <span className="text-[#b7ff35]">26</span>
+                  <span className="text-[#29231e] group-hover:text-[#29231e] transition-colors">SQUADCRAFT</span>
+                  <span className="text-[#962a31]">26</span>
                 </div>
-                <span className="text-[9px] font-ibm font-bold tracking-widest text-[#4FE4FF] uppercase mt-0.5">
+                <span className="text-[11px] font-ibm font-bold tracking-widest text-[#326a63] uppercase mt-0.5">
                   LEAGUE COMMAND CENTER
                 </span>
               </div>
@@ -1083,51 +1071,51 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
           </div>
 
           {/* Center: Live Match Stats & Room Status */}
-          <div className="hidden lg:flex items-center gap-3 bg-zinc-950/80 border border-zinc-800 px-4 py-1.5">
+          <div className="hidden lg:flex items-center gap-3 bg-[#f7efe4] border border-[#d2c1b0] px-4 py-1.5">
             <div className="flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${isSeasonComplete ? 'bg-[#FFB800]' : 'bg-[#b7ff35]'} animate-pulse`} />
-              <span className="text-xs font-black uppercase tracking-wider text-white font-barlow">
+              <span className={`w-2 h-2 rounded-full ${isSeasonComplete ? 'bg-[#FFB800]' : 'bg-[#9b2529]'} animate-pulse`} />
+              <span className="text-xs font-black uppercase tracking-wider text-[#29231e] font-barlow">
                 {room.name}
               </span>
             </div>
-            <span className="px-2 py-0.5 bg-[#FFB800]/20 border border-[#FFB800]/50 text-[#FFB800] text-[10px] font-ibm font-black uppercase tracking-wider">
+            <span className="px-2 py-0.5 bg-[#FFB800]/20 border border-[#FFB800]/50 text-[#FFB800] text-[12px] font-ibm font-black uppercase tracking-wider">
               SEZON {currentSeasonNum}
             </span>
             <span className="text-zinc-600">|</span>
-            <span className={`text-[11px] font-ibm font-bold uppercase ${isSeasonComplete ? 'text-[#FFB800]' : 'text-[#b7ff35]'}`}>
+            <span className={`text-[11px] font-ibm font-bold uppercase ${isSeasonComplete ? 'text-[#FFB800]' : 'text-[#962a31]'}`}>
               {isSeasonComplete ? '🏆 SEZON ŞAMPİYONLUĞU' : `⚽ HAFTA ${currentMatchweek} / ${totalMatchweeks}`}
             </span>
             <span className="text-zinc-600">|</span>
-            <span className="text-[11px] font-ibm font-bold text-zinc-400 uppercase">
+            <span className="text-[11px] font-ibm font-bold text-[#66594f] uppercase">
               {clubs.length} KULÜP • {completedFixtures.length}/{fixtures.length} MAÇ (%{progressPercent})
             </span>
           </div>
 
           {/* Right: Telemetry & Room Code Badge */}
           <div className="flex items-center gap-2 sm:gap-3">
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-zinc-950 border border-zinc-800 text-[10px] font-ibm font-bold text-zinc-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#b7ff35]" />
+            <div className="hidden md:flex items-center gap-2 px-3 py-1 bg-[#f7efe4] border border-[#d2c1b0] text-[12px] font-ibm font-bold text-[#52463d]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#9b2529]" />
               <span>SUNUCU: AKTİF</span>
               <span className="text-zinc-600">•</span>
-              <span className="text-[#4FE4FF]">14ms TR</span>
+              <span className="text-[#326a63]">14ms TR</span>
             </div>
 
             {isHost && (
               <button
                 onClick={handleRepairRoom}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-zinc-700 hover:border-zinc-500 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-[#c9b5a2] hover:border-zinc-500 text-[#312923] hover:text-[#29231e] text-xs font-bold uppercase tracking-wider transition-all"
                 title="Oda ve lig verisini senkronize et"
               >
-                <RefreshCw className="w-3.5 h-3.5 text-[#4FE4FF]" />
+                <RefreshCw className="w-3.5 h-3.5 text-[#326a63]" />
                 <span>Odayı Onar</span>
               </button>
             )}
 
             <button
               onClick={() => setIsFeedbackOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-zinc-700 hover:border-zinc-500 text-zinc-200 hover:text-white text-xs font-bold uppercase tracking-wider transition-all"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-[#c9b5a2] hover:border-zinc-500 text-[#312923] hover:text-[#29231e] text-xs font-bold uppercase tracking-wider transition-all"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-[#b7ff35]" />
+              <MessageSquare className="w-3.5 h-3.5 text-[#962a31]" />
               <span>Geri Bildirim</span>
             </button>
 
@@ -1136,14 +1124,14 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               onClick={handleCopyCode}
               className={`flex items-center gap-2 px-4 py-2 border text-xs font-ibm font-bold transition shadow-lg ${
                 copiedCode
-                  ? 'bg-[#b7ff35] text-black border-[#b7ff35] shadow-[#b7ff35]/20'
-                  : 'bg-zinc-950 hover:bg-zinc-900 border-zinc-700 text-[#b7ff35]'
+                  ? 'bg-[#9b2529] text-white border-[#a44a50] shadow-[#b7ff35]/20'
+                  : 'bg-[#f7efe4] hover:bg-[#e9ded1] border-[#c9b5a2] text-[#962a31]'
               }`}
               title="Kodu Kopyalamak İçin Tıklayın"
             >
-              <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-sans font-bold">ODA:</span>
+              <span className="text-[12px] uppercase tracking-wider text-[#66594f] font-sans font-bold">ODA:</span>
               <span className="font-black text-sm tracking-wider">{roomCode}</span>
-              {copiedCode ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-[#b7ff35]" />}
+              {copiedCode ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5 text-[#962a31]" />}
             </button>
           </div>
         </div>
@@ -1152,12 +1140,12 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
       {/* ALERT BANNERS */}
       {statusMessage && (
         <div className="relative z-20 max-w-[1600px] w-full mx-auto px-4 sm:px-8 mt-3">
-          <div className="p-3.5 bg-emerald-950/90 border border-[#b7ff35]/70 text-[#b7ff35] text-xs font-bold flex items-center justify-between shadow-xl">
+          <div className="p-3.5 bg-emerald-950/90 border border-[#a44a50]/70 text-[#962a31] text-xs font-bold flex items-center justify-between shadow-xl">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 shrink-0" />
               <span>{statusMessage}</span>
             </div>
-            <button onClick={() => setStatusMessage(null)} className="text-[#b7ff35] hover:text-white px-2 py-0.5">✕</button>
+            <button onClick={() => setStatusMessage(null)} className="text-[#962a31] hover:text-[#29231e] px-2 py-0.5">✕</button>
           </div>
         </div>
       )}
@@ -1168,7 +1156,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
               <span>{errorMessage}</span>
             </div>
-            <button onClick={() => setErrorMessage(null)} className="text-rose-400 hover:text-white px-2 py-0.5">✕</button>
+            <button onClick={() => setErrorMessage(null)} className="text-rose-400 hover:text-[#29231e] px-2 py-0.5">✕</button>
           </div>
         </div>
       )}
@@ -1177,28 +1165,28 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
       {/* 3. HERO MATCHWEEK COMMAND STRIP                                      */}
       {/* ==================================================================== */}
       <div className="relative z-20 max-w-[1600px] w-full mx-auto px-4 sm:px-8 mt-4">
-        <div className="bg-[#070D14]/95 border border-zinc-800 p-4 sm:p-5 shadow-2xl backdrop-blur-md">
+        <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-4 sm:p-5 shadow-2xl backdrop-blur-md">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 bg-zinc-950 border border-zinc-700 flex items-center justify-center text-[#b7ff35] font-bold text-base shadow-inner">
+              <div className="w-12 h-12 bg-[#f7efe4] border border-[#c9b5a2] flex items-center justify-center text-[#962a31] font-bold text-base shadow-inner">
                 <Calendar className="w-6 h-6" />
               </div>
               <div>
                 <div className="flex items-center gap-2.5">
-                  <span className="text-[10px] font-ibm font-black px-2 py-0.5 bg-[#FFB800]/20 border border-[#FFB800]/50 text-[#FFB800] uppercase tracking-wider">
+                  <span className="text-[12px] font-ibm font-black px-2 py-0.5 bg-[#FFB800]/20 border border-[#FFB800]/50 text-[#FFB800] uppercase tracking-wider">
                     SEZON {currentSeasonNum}
                   </span>
-                  <span className="text-sm sm:text-base font-black text-white uppercase italic tracking-wider font-barlow">
+                  <span className="text-sm sm:text-base font-black text-[#29231e] uppercase italic tracking-wider font-barlow">
                     {isSeasonComplete ? 'LİG SEZONU TAMAMLANDI' : `HAFTA ${currentMatchweek} / ${totalMatchweeks} İLERLEMESİ`}
                   </span>
                   {!isSeasonComplete && (
-                    <span className="text-[10px] font-ibm font-black px-2.5 py-0.5 bg-[#b7ff35]/10 border border-[#b7ff35]/30 text-[#b7ff35] uppercase">
+                    <span className="text-[12px] font-ibm font-black px-2.5 py-0.5 bg-[#9b2529]/10 border border-[#a44a50]/30 text-[#962a31] uppercase">
                       %{progressPercent} TAMAMLANDI
                     </span>
                   )}
                 </div>
-                <div className="text-xs text-zinc-400 mt-1">
-                  Bu hafta oynanan: <span className="font-bold text-white">{currentWeekCompleted.length}</span> / <span className="font-bold text-white">{currentWeekFixtures.length}</span> Karşılaşma
+                <div className="text-xs text-[#66594f] mt-1">
+                  Bu hafta oynanan: <span className="font-bold text-[#29231e]">{currentWeekCompleted.length}</span> / <span className="font-bold text-[#29231e]">{currentWeekFixtures.length}</span> Karşılaşma
                 </div>
               </div>
             </div>
@@ -1206,9 +1194,9 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
             {/* Broadcast Action CTAs */}
             <div className="flex items-center gap-3 w-full md:w-auto justify-end flex-wrap">
               {/* Match Speed Selector */}
-              <div className="flex items-center gap-1.5 bg-zinc-950/90 border border-zinc-800 px-3 py-2 text-xs">
-                <span className="text-[10px] font-ibm font-bold text-zinc-400 uppercase flex items-center gap-1">
-                  <Zap className="w-3.5 h-3.5 text-[#b7ff35]" />
+              <div className="flex items-center gap-1.5 bg-[#f7efe4]/90 border border-[#d2c1b0] px-3 py-2 text-xs">
+                <span className="text-[12px] font-ibm font-bold text-[#66594f] uppercase flex items-center gap-1">
+                  <Zap className="w-3.5 h-3.5 text-[#962a31]" />
                   <span>HIZ:</span>
                 </span>
                 {([1, 2, 3, 4] as const).map((spd) => {
@@ -1221,10 +1209,10 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                       data-testid={`speed-btn-${spd}x`}
                       className={`px-2 py-0.5 font-ibm text-[11px] font-black transition-all ${
                         isSelected
-                          ? 'bg-[#b7ff35] text-black shadow-sm'
+                          ? 'bg-[#9b2529] text-white shadow-sm'
                           : isHost
-                          ? 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-                          : 'text-zinc-500 hover:text-zinc-300'
+                          ? 'text-[#66594f] hover:text-[#29231e] hover:bg-[#e5d8c8]'
+                          : 'text-[#77695e] hover:text-[#52463d]'
                       }`}
                       title={isHost ? `Maç hızını ${spd}x yap` : `Hızı ${spd}x yap`}
                     >
@@ -1242,7 +1230,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                         const target = myNextFixture || fixtures.find((f) => f.round === currentMatchweek);
                         if (target) handleOpenLiveMatch(target);
                       }}
-                      className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 text-white font-black text-xs uppercase tracking-wider transition shadow-lg shadow-rose-600/30 flex items-center justify-center gap-2 animate-pulse active:scale-95"
+                      className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 text-[#29231e] font-black text-xs uppercase tracking-wider transition shadow-lg shadow-rose-600/30 flex items-center justify-center gap-2 animate-pulse active:scale-95"
                     >
                       <Radio className="w-4 h-4" />
                       <span>🔴 CANLI MAÇ YAYININA GİRİŞ YAP</span>
@@ -1262,8 +1250,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                         onClick={() => handleToggleReady(!isCurrentMemberReady)}
                         className={`w-full sm:w-auto px-6 py-3 font-black text-xs uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2 active:scale-95 ${
                           isCurrentMemberReady
-                            ? 'bg-zinc-900 border-2 border-amber-500/60 text-amber-300'
-                            : 'bg-gradient-to-r from-[#b7ff35] to-[#00D485] hover:from-[#9bea27] text-black border-2 border-[#b7ff35] shadow-[0_0_15px_rgba(183, 255, 53,0.3)]'
+                            ? 'bg-[#e9ded1] border-2 border-amber-500/60 text-amber-300'
+                            : 'bg-gradient-to-r from-[#b7ff35] to-[#00D485] hover:from-[#9bea27] text-black border-2 border-[#a44a50] shadow-[0_0_15px_rgba(183, 255, 53,0.3)]'
                         }`}
                       >
                         {isCurrentMemberReady ? (
@@ -1284,10 +1272,10 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                           onClick={handleSimulateRemainingInWeek}
                           disabled={isSimulatingWeek}
                           data-testid="simulate-week-btn"
-                          className="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 hover:text-white font-bold text-xs uppercase tracking-wider transition flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-4 py-3 bg-[#e9ded1] hover:bg-[#e5d8c8] border border-[#c9b5a2] text-[#312923] hover:text-[#29231e] font-bold text-xs uppercase tracking-wider transition flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                           title="Haftanın maçlarını Match Engine ile tamamla"
                         >
-                          <Play className={`w-3.5 h-3.5 text-[#17e5c2] ${isSimulatingWeek ? 'animate-spin' : ''}`} />
+                          <Play className={`w-3.5 h-3.5 text-[#326a63] ${isSimulatingWeek ? 'animate-spin' : ''}`} />
                           <span>
                             {isSimulatingWeek
                               ? `SİMÜLE EDİLİYOR (${simulationProgress?.current || 0}/${simulationProgress?.total || 0})...`
@@ -1337,7 +1325,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
           </div>
 
           {/* Progress Bar Line */}
-          <div className="w-full bg-zinc-950 h-2 border border-zinc-800 mt-4">
+          <div className="w-full bg-[#f7efe4] h-2 border border-[#d2c1b0] mt-4">
             <div
               className="bg-gradient-to-r from-[#b7ff35] via-[#4FE4FF] to-[#FFB800] h-full transition-all duration-700 shadow-[0_0_10px_#b7ff35]"
               style={{ width: `${progressPercent}%` }}
@@ -1354,7 +1342,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
           <div className="bg-gradient-to-r from-amber-950/90 via-[#070D14] to-amber-950/90 border-2 border-[#FFB800] p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-5">
-                <div className="w-20 h-20 bg-zinc-950 border-2 border-[#FFB800] flex items-center justify-center text-4xl shadow-lg animate-bounce">
+                <div className="w-20 h-20 bg-[#f7efe4] border-2 border-[#FFB800] flex items-center justify-center text-4xl shadow-lg animate-bounce">
                   👑
                 </div>
                 <div>
@@ -1362,10 +1350,10 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     <Sparkles className="w-4 h-4" />
                     <span>SQUADCRAFT DRAFT LİGİ ŞAMPİYONU</span>
                   </div>
-                  <h2 className="text-3xl sm:text-4xl font-black text-white italic tracking-wide uppercase mt-1">
+                  <h2 className="text-3xl sm:text-4xl font-black text-[#29231e] italic tracking-wide uppercase mt-1">
                     {awards.championClubName}
                   </h2>
-                  <p className="text-xs text-zinc-300 mt-1">
+                  <p className="text-xs text-[#52463d] mt-1">
                     Sezon boyunca gösterilen üstün taktiksel performans ve lig puanı ile şampiyonluk kupasını kazandı!
                   </p>
                 </div>
@@ -1389,44 +1377,44 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
             {/* Awards Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
               {awards.topScorer && (
-                <div className="bg-zinc-950 p-3.5 border border-[#FFB800]/40">
-                  <div className="text-[#FFB800] text-[10px] font-black uppercase tracking-wider mb-1">⚽ Gol Kralı</div>
-                  <div className="font-black text-white text-xs truncate">{awards.topScorer.playerName}</div>
+                <div className="bg-[#f7efe4] p-3.5 border border-[#FFB800]/40">
+                  <div className="text-[#FFB800] text-[12px] font-black uppercase tracking-wider mb-1">⚽ Gol Kralı</div>
+                  <div className="font-black text-[#29231e] text-xs truncate">{awards.topScorer.playerName}</div>
                   <div className="text-[#FFB800] font-ibm font-black text-sm mt-0.5">{awards.topScorer.goals} Gol</div>
                 </div>
               )}
               {awards.topAssists && (
-                <div className="bg-zinc-950 p-3.5 border border-[#4FE4FF]/40">
-                  <div className="text-[#4FE4FF] text-[10px] font-black uppercase tracking-wider mb-1">🎯 Asist Kralı</div>
-                  <div className="font-black text-white text-xs truncate">{awards.topAssists.playerName}</div>
-                  <div className="text-[#4FE4FF] font-ibm font-black text-sm mt-0.5">{awards.topAssists.assists} Asist</div>
+                <div className="bg-[#f7efe4] p-3.5 border border-[#4FE4FF]/40">
+                  <div className="text-[#326a63] text-[12px] font-black uppercase tracking-wider mb-1">🎯 Asist Kralı</div>
+                  <div className="font-black text-[#29231e] text-xs truncate">{awards.topAssists.playerName}</div>
+                  <div className="text-[#326a63] font-ibm font-black text-sm mt-0.5">{awards.topAssists.assists} Asist</div>
                 </div>
               )}
               {awards.bestRating && (
-                <div className="bg-zinc-950 p-3.5 border border-[#b7ff35]/40">
-                  <div className="text-[#b7ff35] text-[10px] font-black uppercase tracking-wider mb-1">⭐ Sezonun MVP'si</div>
-                  <div className="font-black text-white text-xs truncate">{awards.bestRating.playerName}</div>
-                  <div className="text-[#b7ff35] font-ibm font-black text-sm mt-0.5">{awards.bestRating.rating} / 10</div>
+                <div className="bg-[#f7efe4] p-3.5 border border-[#a44a50]/40">
+                  <div className="text-[#962a31] text-[12px] font-black uppercase tracking-wider mb-1">⭐ Sezonun MVP'si</div>
+                  <div className="font-black text-[#29231e] text-xs truncate">{awards.bestRating.playerName}</div>
+                  <div className="text-[#962a31] font-ibm font-black text-sm mt-0.5">{awards.bestRating.rating} / 10</div>
                 </div>
               )}
               {awards.bestGoalkeeper && (
-                <div className="bg-zinc-950 p-3.5 border border-purple-500/40">
-                  <div className="text-purple-400 text-[10px] font-black uppercase tracking-wider mb-1">🧤 En İyi Kaleci</div>
-                  <div className="font-black text-white text-xs truncate">{awards.bestGoalkeeper.playerName}</div>
+                <div className="bg-[#f7efe4] p-3.5 border border-purple-500/40">
+                  <div className="text-purple-400 text-[12px] font-black uppercase tracking-wider mb-1">🧤 En İyi Kaleci</div>
+                  <div className="font-black text-[#29231e] text-xs truncate">{awards.bestGoalkeeper.playerName}</div>
                   <div className="text-purple-300 font-ibm font-black text-sm mt-0.5">{awards.bestGoalkeeper.cleanSheets} Maç Gol Yemedi</div>
                 </div>
               )}
               {awards.bestAttack && (
-                <div className="bg-zinc-950 p-3.5 border border-orange-500/40">
-                  <div className="text-orange-400 text-[10px] font-black uppercase tracking-wider mb-1">🔥 En İyi Hücum</div>
-                  <div className="font-black text-white text-xs truncate">{awards.bestAttack.clubName}</div>
+                <div className="bg-[#f7efe4] p-3.5 border border-orange-500/40">
+                  <div className="text-orange-400 text-[12px] font-black uppercase tracking-wider mb-1">🔥 En İyi Hücum</div>
+                  <div className="font-black text-[#29231e] text-xs truncate">{awards.bestAttack.clubName}</div>
                   <div className="text-orange-300 font-ibm font-black text-sm mt-0.5">{awards.bestAttack.goalsFor} Gol</div>
                 </div>
               )}
               {awards.bestDefense && (
-                <div className="bg-zinc-950 p-3.5 border border-blue-500/40">
-                  <div className="text-blue-400 text-[10px] font-black uppercase tracking-wider mb-1">🛡️ En İyi Savunma</div>
-                  <div className="font-black text-white text-xs truncate">{awards.bestDefense.clubName}</div>
+                <div className="bg-[#f7efe4] p-3.5 border border-blue-500/40">
+                  <div className="text-blue-400 text-[12px] font-black uppercase tracking-wider mb-1">🛡️ En İyi Savunma</div>
+                  <div className="font-black text-[#29231e] text-xs truncate">{awards.bestDefense.clubName}</div>
                   <div className="text-blue-300 font-ibm font-black text-sm mt-0.5">{awards.bestDefense.goalsAgainst} Yenilen</div>
                 </div>
               )}
@@ -1439,7 +1427,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
       {/* 5. BROADCAST NAVIGATION TAB RIBBON                                   */}
       {/* ==================================================================== */}
       <div className="relative z-20 max-w-[1600px] w-full mx-auto px-4 sm:px-8 mt-4">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-zinc-800 no-scrollbar">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[#d2c1b0] no-scrollbar">
           {[
             { id: 'overview', label: 'Genel Bakış', icon: BarChart3 },
             { id: 'squad', label: `Kadrom (${mySquad.length}/18)`, icon: Users },
@@ -1457,11 +1445,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                 onClick={() => setActiveTab(tab.id as TabType)}
                 className={`px-5 py-2.5 text-xs font-black uppercase tracking-wider transition-all duration-200 shrink-0 flex items-center gap-2 ${
                   isActive
-                    ? 'bg-[#b7ff35] text-black shadow-lg shadow-[#b7ff35]/20'
-                    : 'bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
+                    ? 'bg-[#9b2529] text-white shadow-lg shadow-[#b7ff35]/20'
+                    : 'bg-[#f7efe4] border border-[#d2c1b0] text-[#66594f] hover:text-[#29231e] hover:border-[#c9b5a2]'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-black' : 'text-zinc-400'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-black' : 'text-[#66594f]'}`} />
                 <span>{tab.label}</span>
               </button>
             );
@@ -1501,11 +1489,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               {/* Left 8 Cols: Spotlight Matchday & Results */}
               <div className="lg:col-span-8 space-y-5">
                 {/* Matchday Spotlight Card */}
-                <div className="bg-[#070D14]/95 border border-zinc-800 p-4 sm:p-6 shadow-2xl relative overflow-hidden">
-                  <div className="flex items-center justify-between border-b border-zinc-800 pb-3.5 mb-5">
+                <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-4 sm:p-6 shadow-2xl relative overflow-hidden">
+                  <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3.5 mb-5">
                     <div className="flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-[#b7ff35]" />
-                      <h3 className="text-sm font-black text-white uppercase italic tracking-wider font-barlow">
+                      <Zap className="w-4 h-4 text-[#962a31]" />
+                      <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider font-barlow">
                         {myNextFixture
                           ? `SIRADAKİ KARŞILAŞMA (HAFTA ${myNextFixture.round})`
                           : isSeasonComplete
@@ -1514,7 +1502,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                       </h3>
                     </div>
                     {myNextFixture && (
-                      <span className="text-[10px] px-3 py-1 bg-zinc-950 border border-zinc-800 text-[#b7ff35] font-ibm font-black uppercase">
+                      <span className="text-[12px] px-3 py-1 bg-[#f7efe4] border border-[#d2c1b0] text-[#962a31] font-ibm font-black uppercase">
                         {myNextFixture.status === 'COMPLETED'
                           ? 'TAMAMLANDI'
                           : room.liveMatchweek?.status === 'LIVE'
@@ -1533,27 +1521,27 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                         const awayClub = clubs.find((c: DraftClub) => c.id === myNextFixture.awayClubId);
 
                         return (
-                          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-4 sm:p-6 bg-zinc-950/80 border border-zinc-800">
+                          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-4 sm:p-6 bg-[#f7efe4] border border-[#d2c1b0]">
                             {/* Home Club */}
                             <div className="text-center space-y-2.5 flex-1 max-w-[200px]">
                               <div className="flex justify-center">
                                 {homeClub && <BadgePreview badge={homeClub.badge} clubCode={homeClub.code} size={76} />}
                               </div>
-                              <div className="text-sm sm:text-base font-black text-white uppercase italic tracking-wide truncate">
+                              <div className="text-sm sm:text-base font-black text-[#29231e] uppercase italic tracking-wide truncate">
                                 {homeClub?.name}
                               </div>
-                              <div className="text-xs text-zinc-400 font-bold">Menajer: {homeClub?.managerName}</div>
+                              <div className="text-xs text-[#66594f] font-bold">Menajer: {homeClub?.managerName}</div>
                             </div>
 
                             {/* Center Score / VS */}
                             <div className="text-center space-y-3 flex-1">
-                              <div className="text-3xl sm:text-4xl font-black text-white font-ibm tracking-widest">
+                              <div className="text-3xl sm:text-4xl font-black text-[#29231e] font-ibm tracking-widest">
                                 {myNextFixture.status === 'COMPLETED' ? (
-                                  <span className="text-[#b7ff35]">
+                                  <span className="text-[#962a31]">
                                     {myNextFixture.homeScore} - {myNextFixture.awayScore}
                                   </span>
                                 ) : (
-                                  <span className="text-[#4FE4FF]">
+                                  <span className="text-[#326a63]">
                                     VS
                                   </span>
                                 )}
@@ -1565,15 +1553,15 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                                     setSelectedFixture(myNextFixture);
                                     setIsReportModalOpen(true);
                                   }}
-                                  className="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 text-xs font-bold uppercase tracking-wider border border-zinc-700 transition flex items-center gap-1.5 mx-auto"
+                                  className="px-5 py-2.5 bg-[#e9ded1] hover:bg-[#e5d8c8] text-[#312923] text-xs font-bold uppercase tracking-wider border border-[#c9b5a2] transition flex items-center gap-1.5 mx-auto"
                                 >
-                                  <Eye className="w-3.5 h-3.5 text-[#4FE4FF]" />
+                                  <Eye className="w-3.5 h-3.5 text-[#326a63]" />
                                   <span>MAÇ RAPORU</span>
                                 </button>
                               ) : room.liveMatchweek?.status === 'LIVE' ? (
                                 <button
                                   onClick={() => handleOpenLiveMatch(myNextFixture)}
-                                  className="px-6 py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 text-white font-black text-xs uppercase tracking-wider transition shadow-lg shadow-rose-600/30 flex items-center gap-2 animate-pulse mx-auto active:scale-95"
+                                  className="px-6 py-3 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 text-[#29231e] font-black text-xs uppercase tracking-wider transition shadow-lg shadow-rose-600/30 flex items-center gap-2 animate-pulse mx-auto active:scale-95"
                                 >
                                   <Radio className="w-4 h-4" />
                                   <span>CANLI MAÇI İZLE</span>
@@ -1588,8 +1576,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                                   onClick={() => handleToggleReady(!isCurrentMemberReady)}
                                   className={`px-6 py-3 font-black text-xs uppercase tracking-wider transition flex items-center justify-center gap-2 mx-auto active:scale-95 ${
                                     isCurrentMemberReady
-                                      ? 'bg-zinc-900 border-2 border-amber-500/60 text-amber-300'
-                                      : 'bg-gradient-to-r from-[#b7ff35] to-[#00D485] hover:from-[#9bea27] text-black border-2 border-[#b7ff35] shadow-[0_0_15px_rgba(183, 255, 53,0.3)]'
+                                      ? 'bg-[#e9ded1] border-2 border-amber-500/60 text-amber-300'
+                                      : 'bg-gradient-to-r from-[#b7ff35] to-[#00D485] hover:from-[#9bea27] text-black border-2 border-[#a44a50] shadow-[0_0_15px_rgba(183, 255, 53,0.3)]'
                                   }`}
                                 >
                                   {isCurrentMemberReady ? (
@@ -1612,32 +1600,32 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                               <div className="flex justify-center">
                                 {awayClub && <BadgePreview badge={awayClub.badge} clubCode={awayClub.code} size={76} />}
                               </div>
-                              <div className="text-sm sm:text-base font-black text-white uppercase italic tracking-wide truncate">
+                              <div className="text-sm sm:text-base font-black text-[#29231e] uppercase italic tracking-wide truncate">
                                 {awayClub?.name}
                               </div>
-                              <div className="text-xs text-zinc-400 font-bold">Menajer: {awayClub?.managerName}</div>
+                              <div className="text-xs text-[#66594f] font-bold">Menajer: {awayClub?.managerName}</div>
                             </div>
                           </div>
                         );
                       })()}
                     </div>
                   ) : (
-                    <div className="text-center py-10 text-zinc-400 text-xs bg-zinc-950 border border-zinc-800">
+                    <div className="text-center py-10 text-[#66594f] text-xs bg-[#f7efe4] border border-[#d2c1b0]">
                       Lig fikstüründeki tüm karşılaşmalar tamamlandı! Şampiyonluk podyumunu yukarıda inceleyebilirsiniz.
                     </div>
                   )}
                 </div>
 
               {/* Recent Match Results */}
-              <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
-                    <Activity className="w-4 h-4 text-[#4FE4FF]" />
+              <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-6 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3">
+                  <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+                    <Activity className="w-4 h-4 text-[#326a63]" />
                     <span>SON KARŞILAŞMALAR</span>
                   </h3>
                   <button
                     onClick={() => setActiveTab('fixtures')}
-                    className="text-xs font-bold text-[#b7ff35] hover:underline flex items-center gap-1 uppercase"
+                    className="text-xs font-bold text-[#962a31] hover:underline flex items-center gap-1 uppercase"
                   >
                     <span>Tüm Fikstür</span>
                     <ChevronRight className="w-3 h-3" />
@@ -1646,7 +1634,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
                 <div className="space-y-2.5">
                   {completedFixtures.length === 0 ? (
-                    <div className="text-xs text-zinc-500 text-center py-6">Henüz tamamlanan maç bulunmuyor.</div>
+                    <div className="text-xs text-[#77695e] text-center py-6">Henüz tamamlanan maç bulunmuyor.</div>
                   ) : (
                     completedFixtures
                       .slice(-4)
@@ -1662,22 +1650,22 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                               setSelectedFixture(f);
                               setIsReportModalOpen(true);
                             }}
-                            className="p-3.5 bg-zinc-950/80 border border-zinc-800 flex items-center justify-between text-xs hover:border-[#b7ff35]/60 cursor-pointer transition shadow-sm"
+                            className="p-3.5 bg-[#f7efe4] border border-[#d2c1b0] flex items-center justify-between text-xs hover:border-[#a44a50]/60 cursor-pointer transition shadow-sm"
                           >
                             <div className="flex items-center gap-2.5 truncate flex-1">
-                              <span className="text-[10px] font-ibm text-zinc-500 font-bold px-2 py-0.5 bg-zinc-900 border border-zinc-800">
+                              <span className="text-[12px] font-ibm text-[#77695e] font-bold px-2 py-0.5 bg-[#e9ded1] border border-[#d2c1b0]">
                                 H{f.round}
                               </span>
                               {h && <BadgePreview badge={h.badge} clubCode={h.code} size={22} />}
-                              <span className="font-black text-white truncate uppercase">{h?.name}</span>
+                              <span className="font-black text-[#29231e] truncate uppercase">{h?.name}</span>
                             </div>
 
-                            <div className="px-4 py-1 bg-zinc-900 border border-zinc-700 font-ibm font-black text-[#b7ff35] text-sm">
+                            <div className="px-4 py-1 bg-[#e9ded1] border border-[#c9b5a2] font-ibm font-black text-[#962a31] text-sm">
                               {f.homeScore} - {f.awayScore}
                             </div>
 
                             <div className="flex items-center gap-2.5 truncate justify-end flex-1">
-                              <span className="font-black text-white truncate uppercase">{a?.name}</span>
+                              <span className="font-black text-[#29231e] truncate uppercase">{a?.name}</span>
                               {a && <BadgePreview badge={a.badge} clubCode={a.code} size={22} />}
                             </div>
                           </div>
@@ -1690,15 +1678,15 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
             {/* Right 4 Cols: Standings Preview */}
             <div className="lg:col-span-4 space-y-5">
-              <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+              <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-6 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3">
+                  <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
                     <Trophy className="w-4 h-4 text-[#FFB800]" />
                     <span>PUAN DURUMU</span>
                   </h3>
                   <button
                     onClick={() => setActiveTab('standings')}
-                    className="text-xs font-bold text-[#b7ff35] hover:underline flex items-center gap-1 uppercase"
+                    className="text-xs font-bold text-[#962a31] hover:underline flex items-center gap-1 uppercase"
                   >
                     <span>Detaylı Tablo</span>
                     <ChevronRight className="w-3 h-3" />
@@ -1715,26 +1703,26 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                         key={st.clubId}
                         className={`p-3 flex items-center justify-between border transition ${
                           isMine
-                            ? 'bg-[#b7ff35]/10 border-[#b7ff35]/60 shadow-[0_0_15px_rgba(183, 255, 53,0.15)]'
-                            : 'bg-zinc-950/80 border-zinc-800'
+                            ? 'bg-[#9b2529]/10 border-[#a44a50]/60 shadow-[0_0_15px_rgba(183, 255, 53,0.15)]'
+                            : 'bg-[#f7efe4] border-[#d2c1b0]'
                         }`}
                       >
                         <div className="flex items-center gap-2.5 truncate">
                           <span
                             className={`w-5 text-center font-ibm font-black ${
-                              st.rank === 1 ? 'text-[#FFB800]' : st.rank <= 3 ? 'text-[#b7ff35]' : 'text-zinc-400'
+                              st.rank === 1 ? 'text-[#FFB800]' : st.rank <= 3 ? 'text-[#962a31]' : 'text-[#66594f]'
                             }`}
                           >
                             {st.rank}
                           </span>
                           {club && <BadgePreview badge={club.badge} clubCode={club.code} size={24} />}
-                          <span className="font-black text-white truncate uppercase">
-                            {st.clubName} {isMine && <span className="text-[10px] text-[#b7ff35] font-black">(SEN)</span>}
+                          <span className="font-black text-[#29231e] truncate uppercase">
+                            {st.clubName} {isMine && <span className="text-[12px] text-[#962a31] font-black">(SEN)</span>}
                           </span>
                         </div>
                         <div className="flex items-center gap-3 font-ibm font-bold">
-                          <span className="text-zinc-400 text-[11px]">{st.played}M</span>
-                          <span className="text-[#b7ff35] text-xs px-2.5 py-0.5 bg-zinc-900 border border-zinc-700 font-black">
+                          <span className="text-[#66594f] text-[11px]">{st.played}M</span>
+                          <span className="text-[#962a31] text-xs px-2.5 py-0.5 bg-[#e9ded1] border border-[#c9b5a2] font-black">
                             {st.points}P
                           </span>
                         </div>
@@ -1754,50 +1742,50 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         {activeTab === 'squad' && (
           <div className="space-y-5">
             {/* Squad Summary Card */}
-            <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl flex flex-wrap items-center justify-between gap-4">
+            <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-6 shadow-2xl flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 {myClub && <BadgePreview badge={myClub.badge} clubCode={myClub.code} size={56} />}
                 <div>
-                  <h3 className="text-base sm:text-lg font-black text-white uppercase italic tracking-wide flex items-center gap-2 font-barlow">
+                  <h3 className="text-base sm:text-lg font-black text-[#29231e] uppercase italic tracking-wide flex items-center gap-2 font-barlow">
                     <span>{myClub?.name || 'Kulübüm'}</span>
-                    <span className="text-[11px] font-ibm px-2.5 py-0.5 bg-[#b7ff35]/10 text-[#b7ff35] border border-[#b7ff35]/40 font-bold">
+                    <span className="text-[11px] font-ibm px-2.5 py-0.5 bg-[#9b2529]/10 text-[#962a31] border border-[#a44a50]/40 font-bold">
                       {mySquad.length} / 18 OYUNCU
                     </span>
                   </h3>
-                  <p className="text-xs text-zinc-400 mt-0.5">
-                    Menajer: <span className="text-white font-bold">{myClub?.managerName}</span> • Formasyon: <span className="text-[#b7ff35] font-ibm font-bold">{formation}</span>
+                  <p className="text-xs text-[#66594f] mt-0.5">
+                    Menajer: <span className="text-[#29231e] font-bold">{myClub?.managerName}</span> • Formasyon: <span className="text-[#962a31] font-ibm font-bold">{formation}</span>
                   </p>
                 </div>
               </div>
 
               {/* Squad OVR Stats */}
               <div className="flex items-center gap-3">
-                <div className="px-4 py-2 bg-zinc-950 border border-zinc-800 text-center">
-                  <div className="text-[10px] text-zinc-400 uppercase font-black">İlk 11 Gücü</div>
-                  <div className="text-base font-ibm font-black text-[#b7ff35]">{xiAvgOvr} OVR</div>
+                <div className="px-4 py-2 bg-[#f7efe4] border border-[#d2c1b0] text-center">
+                  <div className="text-[12px] text-[#66594f] uppercase font-black">İlk 11 Gücü</div>
+                  <div className="text-base font-ibm font-black text-[#962a31]">{xiAvgOvr} OVR</div>
                 </div>
-                <div className="px-4 py-2 bg-zinc-950 border border-zinc-800 text-center">
-                  <div className="text-[10px] text-zinc-400 uppercase font-black">Kadro Ort.</div>
-                  <div className="text-base font-ibm font-black text-[#4FE4FF]">{teamAvgOvr} OVR</div>
+                <div className="px-4 py-2 bg-[#f7efe4] border border-[#d2c1b0] text-center">
+                  <div className="text-[12px] text-[#66594f] uppercase font-black">Kadro Ort.</div>
+                  <div className="text-base font-ibm font-black text-[#326a63]">{teamAvgOvr} OVR</div>
                 </div>
-                <div className="px-4 py-2 bg-zinc-950 border border-zinc-800 text-center">
-                  <div className="text-[10px] text-zinc-400 uppercase font-black">Yedek Gücü</div>
-                  <div className="text-base font-ibm font-black text-zinc-300">{benchAvgOvr} OVR</div>
+                <div className="px-4 py-2 bg-[#f7efe4] border border-[#d2c1b0] text-center">
+                  <div className="text-[12px] text-[#66594f] uppercase font-black">Yedek Gücü</div>
+                  <div className="text-base font-ibm font-black text-[#52463d]">{benchAvgOvr} OVR</div>
                 </div>
               </div>
             </div>
 
             {/* Positional Filters & View Mode */}
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-1.5 bg-zinc-950 p-1.5 border border-zinc-800">
+              <div className="flex items-center gap-1.5 bg-[#f7efe4] p-1.5 border border-[#d2c1b0]">
                 {(['ALL', 'GK', 'DEF', 'MID', 'ATT'] as SquadPositionFilter[]).map((pos) => (
                   <button
                     key={pos}
                     onClick={() => setSquadPosFilter(pos)}
                     className={`px-3.5 py-1.5 text-xs font-black uppercase transition ${
                       squadPosFilter === pos
-                        ? 'bg-[#b7ff35] text-black shadow-md'
-                        : 'text-zinc-400 hover:text-white'
+                        ? 'bg-[#9b2529] text-white shadow-md'
+                        : 'text-[#66594f] hover:text-[#29231e]'
                     }`}
                   >
                     {pos === 'ALL' ? 'Tümü' : pos === 'DEF' ? 'Savunma' : pos === 'MID' ? 'Orta Saha' : pos === 'ATT' ? 'Hücum' : 'Kaleci'}
@@ -1805,11 +1793,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                 ))}
               </div>
 
-              <div className="flex items-center gap-1 bg-zinc-950 p-1.5 border border-zinc-800">
+              <div className="flex items-center gap-1 bg-[#f7efe4] p-1.5 border border-[#d2c1b0]">
                 <button
                   onClick={() => setSquadViewMode('grid')}
                   className={`px-3 py-1.5 text-xs font-bold uppercase transition ${
-                    squadViewMode === 'grid' ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white'
+                    squadViewMode === 'grid' ? 'bg-[#e5d8c8] text-[#29231e]' : 'text-[#66594f] hover:text-[#29231e]'
                   }`}
                 >
                   Kart Görünümü
@@ -1817,7 +1805,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                 <button
                   onClick={() => setSquadViewMode('table')}
                   className={`px-3 py-1.5 text-xs font-bold uppercase transition ${
-                    squadViewMode === 'table' ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white'
+                    squadViewMode === 'table' ? 'bg-[#e5d8c8] text-[#29231e]' : 'text-[#66594f] hover:text-[#29231e]'
                   }`}
                 >
                   Tablo Görünümü
@@ -1835,8 +1823,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                   return (
                     <div
                       key={player.id}
-                      className={`bg-[#070D14]/95 border p-4 shadow-xl transition-all duration-200 flex flex-col justify-between space-y-3 ${
-                        isStarter ? 'border-zinc-800 hover:border-[#b7ff35]/60' : 'border-zinc-900 opacity-80'
+                      className={`bg-[#e8ded2]/95 border p-4 shadow-xl transition-all duration-200 flex flex-col justify-between space-y-3 ${
+                        isStarter ? 'border-[#d2c1b0] hover:border-[#a44a50]/60' : 'border-zinc-900 opacity-80'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -1845,11 +1833,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                             {player.overall}
                           </div>
                           <div>
-                            <div className="text-xs font-black text-white uppercase truncate max-w-[140px]">
+                            <div className="text-xs font-black text-[#29231e] uppercase truncate max-w-[140px]">
                               {player.firstName} {player.lastName}
                             </div>
-                            <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-zinc-400 font-bold">
-                              <span className="px-1.5 py-0.5 bg-zinc-950 border border-zinc-800 text-[#b7ff35]">
+                            <div className="flex items-center gap-1.5 mt-0.5 text-[12px] text-[#66594f] font-bold">
+                              <span className="px-1.5 py-0.5 bg-[#f7efe4] border border-[#d2c1b0] text-[#962a31]">
                                 {player.position}
                               </span>
                               <span>{player.nationality}</span>
@@ -1859,47 +1847,47 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                           </div>
                         </div>
 
-                        <span className={`px-2 py-0.5 text-[9px] font-ibm font-black uppercase ${isStarter ? 'bg-[#b7ff35] text-black' : 'bg-zinc-800 text-zinc-400'}`}>
+                        <span className={`px-2 py-0.5 text-[11px] font-ibm font-black uppercase ${isStarter ? 'bg-[#9b2529] text-white' : 'bg-[#e5d8c8] text-[#66594f]'}`}>
                           {isStarter ? 'İLK 11' : 'YEDEK'}
                         </span>
                       </div>
 
                       {/* 6 Core Attributes Grid */}
-                      <div className="grid grid-cols-3 gap-1.5 text-center text-[10px] font-ibm bg-zinc-950 p-2.5 border border-zinc-800">
-                        <div className="p-1 bg-zinc-900 border border-zinc-800">
-                          <div className="text-zinc-500 text-[9px] font-bold">HIZ</div>
-                          <div className="font-black text-white">{player.attributes.pace}</div>
+                      <div className="grid grid-cols-3 gap-1.5 text-center text-[12px] font-ibm bg-[#f7efe4] p-2.5 border border-[#d2c1b0]">
+                        <div className="p-1 bg-[#e9ded1] border border-[#d2c1b0]">
+                          <div className="text-[#77695e] text-[11px] font-bold">HIZ</div>
+                          <div className="font-black text-[#29231e]">{player.attributes.pace}</div>
                         </div>
-                        <div className="p-1 bg-zinc-900 border border-zinc-800">
-                          <div className="text-zinc-500 text-[9px] font-bold">ŞUT</div>
-                          <div className="font-black text-white">{player.attributes.finishing}</div>
+                        <div className="p-1 bg-[#e9ded1] border border-[#d2c1b0]">
+                          <div className="text-[#77695e] text-[11px] font-bold">ŞUT</div>
+                          <div className="font-black text-[#29231e]">{player.attributes.finishing}</div>
                         </div>
-                        <div className="p-1 bg-zinc-900 border border-zinc-800">
-                          <div className="text-zinc-500 text-[9px] font-bold">PAS</div>
-                          <div className="font-black text-white">{player.attributes.passing}</div>
+                        <div className="p-1 bg-[#e9ded1] border border-[#d2c1b0]">
+                          <div className="text-[#77695e] text-[11px] font-bold">PAS</div>
+                          <div className="font-black text-[#29231e]">{player.attributes.passing}</div>
                         </div>
-                        <div className="p-1 bg-zinc-900 border border-zinc-800">
-                          <div className="text-zinc-500 text-[9px] font-bold">DRİ</div>
-                          <div className="font-black text-white">{player.attributes.dribbling}</div>
+                        <div className="p-1 bg-[#e9ded1] border border-[#d2c1b0]">
+                          <div className="text-[#77695e] text-[11px] font-bold">DRİ</div>
+                          <div className="font-black text-[#29231e]">{player.attributes.dribbling}</div>
                         </div>
-                        <div className="p-1 bg-zinc-900 border border-zinc-800">
-                          <div className="text-zinc-500 text-[9px] font-bold">SAV</div>
-                          <div className="font-black text-white">{player.attributes.tackling}</div>
+                        <div className="p-1 bg-[#e9ded1] border border-[#d2c1b0]">
+                          <div className="text-[#77695e] text-[11px] font-bold">SAV</div>
+                          <div className="font-black text-[#29231e]">{player.attributes.tackling}</div>
                         </div>
-                        <div className="p-1 bg-zinc-900 border border-zinc-800">
-                          <div className="text-zinc-500 text-[9px] font-bold">FİZ</div>
-                          <div className="font-black text-white">{player.attributes.strength}</div>
+                        <div className="p-1 bg-[#e9ded1] border border-[#d2c1b0]">
+                          <div className="text-[#77695e] text-[11px] font-bold">FİZ</div>
+                          <div className="font-black text-[#29231e]">{player.attributes.strength}</div>
                         </div>
                       </div>
 
                       {/* Condition Bar */}
                       <div className="space-y-1">
-                        <div className="flex items-center justify-between text-[10px]">
-                          <span className="text-zinc-400 font-bold uppercase">Kondisyon</span>
-                          <span className="text-[#b7ff35] font-ibm font-bold">%100</span>
+                        <div className="flex items-center justify-between text-[12px]">
+                          <span className="text-[#66594f] font-bold uppercase">Kondisyon</span>
+                          <span className="text-[#962a31] font-ibm font-bold">%100</span>
                         </div>
-                        <div className="w-full bg-zinc-950 h-1.5 border border-zinc-800">
-                          <div className="bg-[#b7ff35] h-full w-full" />
+                        <div className="w-full bg-[#f7efe4] h-1.5 border border-[#d2c1b0]">
+                          <div className="bg-[#9b2529] h-full w-full" />
                         </div>
                       </div>
                     </div>
@@ -1908,9 +1896,9 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               </div>
             ) : (
               /* Broadcast Table View */
-              <div className="bg-[#070D14]/95 border border-zinc-800 p-5 shadow-2xl overflow-x-auto">
+              <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-5 shadow-2xl overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                  <thead className="bg-[#f7efe4] text-[#66594f] border-b border-[#d2c1b0]">
                     <tr>
                       <th className="py-3 px-3">OVR</th>
                       <th className="py-3 px-3">Futbolcu</th>
@@ -1932,36 +1920,36 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     {filteredSquad.map((player: Player) => {
                       const isStarter = customLineupIds.includes(player.id);
                       return (
-                        <tr key={player.id} className="hover:bg-zinc-900/50 transition">
+                        <tr key={player.id} className="hover:bg-[#e9ded1]/50 transition">
                           <td className="py-3 px-3 font-bold">
-                            <span className="px-2 py-0.5 text-xs font-black bg-emerald-950 text-[#b7ff35] border border-emerald-500/40 font-ibm">
+                            <span className="px-2 py-0.5 text-xs font-black bg-emerald-950 text-[#962a31] border border-emerald-500/40 font-ibm">
                               {player.overall}
                             </span>
                           </td>
-                          <td className="py-3 px-3 font-black text-white uppercase">
+                          <td className="py-3 px-3 font-black text-[#29231e] uppercase">
                             {player.firstName} {player.lastName}
                           </td>
                           <td className="py-3 px-2">
-                            <span className={`px-2 py-0.5 text-[9px] font-ibm font-black ${isStarter ? 'bg-[#b7ff35] text-black' : 'bg-zinc-800 text-zinc-400'}`}>
+                            <span className={`px-2 py-0.5 text-[11px] font-ibm font-black ${isStarter ? 'bg-[#9b2529] text-white' : 'bg-[#e5d8c8] text-[#66594f]'}`}>
                               {isStarter ? 'İLK 11' : 'YEDEK'}
                             </span>
                           </td>
                           <td className="py-3 px-2">
-                            <span className="px-2 py-0.5 bg-zinc-950 text-zinc-300 font-bold text-[10px] border border-zinc-800">
+                            <span className="px-2 py-0.5 bg-[#f7efe4] text-[#52463d] font-bold text-[12px] border border-[#d2c1b0]">
                               {player.position}
                             </span>
                           </td>
-                          <td className="py-3 px-2 text-zinc-400">{player.age}</td>
-                          <td className="py-3 px-2 text-zinc-400">{player.nationality}</td>
-                          <td className="py-3 px-2 text-zinc-400">{player.preferredFoot}</td>
-                          <td className="py-3 px-2 text-center text-zinc-300 font-ibm font-bold">{player.attributes.pace}</td>
-                          <td className="py-3 px-2 text-center text-zinc-300 font-ibm font-bold">{player.attributes.finishing}</td>
-                          <td className="py-3 px-2 text-center text-zinc-300 font-ibm font-bold">{player.attributes.passing}</td>
-                          <td className="py-3 px-2 text-center text-zinc-300 font-ibm font-bold">{player.attributes.dribbling}</td>
-                          <td className="py-3 px-2 text-center text-zinc-300 font-ibm font-bold">{player.attributes.tackling}</td>
-                          <td className="py-3 px-2 text-center text-zinc-300 font-ibm font-bold">{player.attributes.strength}</td>
+                          <td className="py-3 px-2 text-[#66594f]">{player.age}</td>
+                          <td className="py-3 px-2 text-[#66594f]">{player.nationality}</td>
+                          <td className="py-3 px-2 text-[#66594f]">{player.preferredFoot}</td>
+                          <td className="py-3 px-2 text-center text-[#52463d] font-ibm font-bold">{player.attributes.pace}</td>
+                          <td className="py-3 px-2 text-center text-[#52463d] font-ibm font-bold">{player.attributes.finishing}</td>
+                          <td className="py-3 px-2 text-center text-[#52463d] font-ibm font-bold">{player.attributes.passing}</td>
+                          <td className="py-3 px-2 text-center text-[#52463d] font-ibm font-bold">{player.attributes.dribbling}</td>
+                          <td className="py-3 px-2 text-center text-[#52463d] font-ibm font-bold">{player.attributes.tackling}</td>
+                          <td className="py-3 px-2 text-center text-[#52463d] font-ibm font-bold">{player.attributes.strength}</td>
                           <td className="py-3 px-3 text-right">
-                            <span className="text-[#b7ff35] font-ibm font-bold">%100</span>
+                            <span className="text-[#962a31] font-ibm font-bold">%100</span>
                           </td>
                         </tr>
                       );
@@ -1980,15 +1968,15 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
           <div className="space-y-5">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
               {/* Tactical Controls (5 cols) */}
-              <div className="lg:col-span-5 bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-5">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3.5">
-                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
-                    <Sliders className="w-4 h-4 text-[#b7ff35]" />
+              <div className="lg:col-span-5 bg-[#e8ded2]/95 border border-[#d2c1b0] p-6 shadow-2xl space-y-5">
+                <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3.5">
+                  <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+                    <Sliders className="w-4 h-4 text-[#962a31]" />
                     <span>TAKTIKSEL TALİMATLAR</span>
                   </h3>
                   <button
                     onClick={handleAutoBestXI}
-                    className="px-3 py-1 bg-[#b7ff35]/10 border border-[#b7ff35]/40 hover:bg-[#b7ff35]/20 text-[#b7ff35] text-xs font-black uppercase transition flex items-center gap-1.5"
+                    className="px-3 py-1 bg-[#9b2529]/10 border border-[#a44a50]/40 hover:bg-[#9b2529]/20 text-[#962a31] text-xs font-black uppercase transition flex items-center gap-1.5"
                   >
                     <Zap className="w-3.5 h-3.5" />
                     <span>En İyi 11</span>
@@ -1997,11 +1985,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
                 <div className="space-y-4 text-xs">
                   <div>
-                    <label className="block text-zinc-300 font-bold uppercase mb-1.5">Diziliş (Formasyon)</label>
+                    <label className="block text-[#52463d] font-bold uppercase mb-1.5">Diziliş (Formasyon)</label>
                     <select
                       value={formation}
                       onChange={(e) => handleFormationChange(e.target.value as Formation)}
-                      className="w-full bg-zinc-950 border border-zinc-700 p-3 text-white focus:outline-none focus:border-[#b7ff35] font-bold"
+                      className="w-full bg-[#f7efe4] border border-[#c9b5a2] p-3 text-[#29231e] focus:outline-none focus:border-[#a44a50] font-bold"
                     >
                       <option value="4-3-3">4-3-3 (Hücum & Kanat Organizasyonları)</option>
                       <option value="4-2-3-1">4-2-3-1 (Dengeli & Modern Geçiş)</option>
@@ -2017,11 +2005,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
                   <div className="grid grid-cols-2 gap-3.5">
                     <div>
-                      <label className="block text-zinc-300 font-bold uppercase mb-1.5">Oyun Anlayışı</label>
+                      <label className="block text-[#52463d] font-bold uppercase mb-1.5">Oyun Anlayışı</label>
                       <select
                         value={mentality}
                         onChange={(e) => setMentality(e.target.value as Mentality)}
-                        className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#b7ff35] font-semibold"
+                        className="w-full bg-[#f7efe4] border border-[#c9b5a2] p-2.5 text-[#29231e] focus:outline-none focus:border-[#a44a50] font-semibold"
                       >
                         <option value="Çok Savunmacı">Çok Savunmacı</option>
                         <option value="Savunmacı">Savunmacı</option>
@@ -2032,11 +2020,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     </div>
 
                     <div>
-                      <label className="block text-zinc-300 font-bold uppercase mb-1.5">Tempo</label>
+                      <label className="block text-[#52463d] font-bold uppercase mb-1.5">Tempo</label>
                       <select
                         value={tempo}
                         onChange={(e) => setTempo(e.target.value as Tempo)}
-                        className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#b7ff35] font-semibold"
+                        className="w-full bg-[#f7efe4] border border-[#c9b5a2] p-2.5 text-[#29231e] focus:outline-none focus:border-[#a44a50] font-semibold"
                       >
                         <option value="Çok Düşük">Çok Düşük</option>
                         <option value="Düşük">Düşük</option>
@@ -2049,11 +2037,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
                   <div className="grid grid-cols-2 gap-3.5">
                     <div>
-                      <label className="block text-zinc-300 font-bold uppercase mb-1.5">Pres Şiddeti</label>
+                      <label className="block text-[#52463d] font-bold uppercase mb-1.5">Pres Şiddeti</label>
                       <select
                         value={pressing}
                         onChange={(e) => setPressing(e.target.value as Pressing)}
-                        className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#b7ff35] font-semibold"
+                        className="w-full bg-[#f7efe4] border border-[#c9b5a2] p-2.5 text-[#29231e] focus:outline-none focus:border-[#a44a50] font-semibold"
                       >
                         <option value="Hafif">Hafif</option>
                         <option value="Orta">Orta</option>
@@ -2063,11 +2051,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     </div>
 
                     <div>
-                      <label className="block text-zinc-300 font-bold uppercase mb-1.5">Pas Tercihi</label>
+                      <label className="block text-[#52463d] font-bold uppercase mb-1.5">Pas Tercihi</label>
                       <select
                         value={passingStyle}
                         onChange={(e) => setPassingStyle(e.target.value as PassingStyle)}
-                        className="w-full bg-zinc-950 border border-zinc-700 p-2.5 text-white focus:outline-none focus:border-[#b7ff35] font-semibold"
+                        className="w-full bg-[#f7efe4] border border-[#c9b5a2] p-2.5 text-[#29231e] focus:outline-none focus:border-[#a44a50] font-semibold"
                       >
                         <option value="Kısa">Kısa Pas</option>
                         <option value="Karışık">Karışık</option>
@@ -2088,15 +2076,15 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               </div>
 
               {/* 2D Pitch Visualizer (7 cols) */}
-              <div className="lg:col-span-7 bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl flex flex-col justify-between">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
-                    <Layers className="w-4 h-4 text-[#b7ff35]" />
+              <div className="lg:col-span-7 bg-[#e8ded2]/95 border border-[#d2c1b0] p-6 shadow-2xl flex flex-col justify-between">
+                <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3">
+                  <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+                    <Layers className="w-4 h-4 text-[#962a31]" />
                     <span>SAHA DİZİLİŞ GÖRSELİ</span>
                   </h3>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-zinc-400">Değiştirmek için oyuncuya tıkla</span>
-                    <span className="text-xs font-ibm font-black text-[#b7ff35] px-3 py-1 bg-zinc-950 border border-zinc-800">
+                    <span className="text-[12px] text-[#66594f]">Değiştirmek için oyuncuya tıkla</span>
+                    <span className="text-xs font-ibm font-black text-[#962a31] px-3 py-1 bg-[#f7efe4] border border-[#d2c1b0]">
                       {formation}
                     </span>
                   </div>
@@ -2148,11 +2136,11 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     const isCompatible = isSlotCompatible(player.position, slot.role);
 
                     const getPosBadgeColor = () => {
-                      if (slot.role === 'GK') return 'bg-purple-600 text-white border-purple-300';
+                      if (slot.role === 'GK') return 'bg-purple-600 text-[#29231e] border-purple-300';
                       if (['CB', 'LB', 'RB', 'LWB', 'RWB', 'DC', 'DL', 'DR'].includes(slot.role))
                         return 'bg-[#4FE4FF] text-black border-cyan-300';
                       if (['DM', 'CM', 'CAM', 'LM', 'RM', 'DMC', 'MC', 'AMC', 'ML', 'MR'].includes(slot.role))
-                        return 'bg-[#b7ff35] text-black border-emerald-300';
+                        return 'bg-[#9b2529] text-white border-emerald-300';
                       return 'bg-[#FFB800] text-black border-amber-300';
                     };
 
@@ -2172,7 +2160,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                       >
                         {/* MEVKİ DIŞI Warning Pill */}
                         {!isCompatible && (
-                          <span className="mb-0.5 px-1.5 py-0.5 bg-rose-600 text-white font-black text-[8px] tracking-wider rounded uppercase shadow-lg animate-pulse whitespace-nowrap border border-rose-400">
+                          <span className="mb-0.5 px-1.5 py-0.5 bg-rose-600 text-[#29231e] font-black text-[11px] tracking-wider rounded uppercase shadow-lg animate-pulse whitespace-nowrap border border-rose-400">
                             MEVKİ DIŞI
                           </span>
                         )}
@@ -2181,7 +2169,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                         <div
                           className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full font-ibm font-black text-xs flex items-center justify-center border-2 shadow-xl transition-all ${
                             isSelected
-                              ? 'bg-rose-500 text-white border-white ring-4 ring-[#b7ff35] shadow-[0_0_20px_#b7ff35] animate-bounce scale-110'
+                              ? 'bg-rose-500 text-[#29231e] border-white ring-4 ring-[#b7ff35] shadow-[0_0_20px_#b7ff35] animate-bounce scale-110'
                               : !isCompatible
                               ? 'bg-rose-950 text-rose-200 border-rose-500 ring-2 ring-rose-500/80 shadow-rose-900/50'
                               : getPosBadgeColor()
@@ -2192,14 +2180,14 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
                         {/* Player Name and Slot Role Label */}
                         <div className="flex flex-col items-center mt-0.5 pointer-events-none">
-                          <span className="text-[9px] sm:text-[10px] font-black text-white uppercase truncate max-w-[84px] bg-black/90 px-1.5 py-0.5 border border-zinc-800 rounded shadow-md">
+                          <span className="text-[11px] sm:text-[12px] font-black text-[#29231e] uppercase truncate max-w-[84px] bg-black/90 px-1.5 py-0.5 border border-[#d2c1b0] rounded shadow-md">
                             {player.lastName}
                           </span>
                           <span
-                            className={`text-[8px] font-ibm font-bold px-1 rounded mt-0.5 ${
+                            className={`text-[11px] font-ibm font-bold px-1 rounded mt-0.5 ${
                               !isCompatible
                                 ? 'text-rose-300 bg-rose-950/90 border border-rose-700 font-black'
-                                : 'text-zinc-300 bg-zinc-950/90 border border-zinc-800'
+                                : 'text-[#52463d] bg-[#f7efe4]/90 border border-[#d2c1b0]'
                             }`}
                           >
                             {player.position} ({slot.role})
@@ -2210,7 +2198,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                   })}
                 </div>
 
-                <div className="text-center text-[11px] font-bold text-zinc-400">
+                <div className="text-center text-[11px] font-bold text-[#66594f]">
                   {selectedStarterId ? (
                     <div className="flex items-center justify-center gap-3">
                       <span className="text-[#FFB800] animate-pulse">
@@ -2218,7 +2206,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                       </span>
                       <button
                         onClick={() => setSelectedStarterId(null)}
-                        className="px-2 py-0.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] font-bold uppercase rounded border border-zinc-600 transition"
+                        className="px-2 py-0.5 bg-[#e5d8c8] hover:bg-zinc-700 text-[#52463d] text-[12px] font-bold uppercase rounded border border-zinc-600 transition"
                       >
                         İptal
                       </button>
@@ -2231,13 +2219,13 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
             </div>
 
             {/* Substitutes & Bench Swapping Rack */}
-            <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
-                  <Users className="w-4 h-4 text-[#4FE4FF]" />
+            <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-6 shadow-2xl space-y-4">
+              <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3">
+                <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+                  <Users className="w-4 h-4 text-[#326a63]" />
                   <span>YEDEKLER KULÜBESİ ({activeBench.length} OYUNCU)</span>
                 </h3>
-                <span className="text-xs text-zinc-400 font-bold">
+                <span className="text-xs text-[#66594f] font-bold">
                   {selectedStarterId ? '👉 Oyuna almak için aşağıdaki yedeğe tıkla' : 'Değişiklik için önce sahadan oyuncu seçin'}
                 </span>
               </div>
@@ -2253,10 +2241,10 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                       onClick={() => handleBenchPlayerClick(player.id)}
                       className={`p-3 border flex items-center justify-between transition cursor-pointer rounded ${
                         selectedStarterId
-                          ? 'bg-zinc-950 hover:bg-[#b7ff35]/15 border-[#b7ff35]/50 hover:border-[#b7ff35] shadow-[0_0_10px_rgba(183, 255, 53,0.15)] ring-1 ring-[#b7ff35]/30'
+                          ? 'bg-[#f7efe4] hover:bg-[#9b2529]/15 border-[#a44a50]/50 hover:border-[#a44a50] shadow-[0_0_10px_rgba(183, 255, 53,0.15)] ring-1 ring-[#b7ff35]/30'
                           : isSelectedBench
-                          ? 'bg-zinc-900 border-[#4FE4FF] ring-2 ring-[#4FE4FF]'
-                          : 'bg-zinc-950 border-zinc-800 hover:border-zinc-700'
+                          ? 'bg-[#e9ded1] border-[#4FE4FF] ring-2 ring-[#4FE4FF]'
+                          : 'bg-[#f7efe4] border-[#d2c1b0] hover:border-[#c9b5a2]'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 truncate">
@@ -2264,17 +2252,17 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                           {player.overall}
                         </div>
                         <div className="truncate">
-                          <div className="text-xs font-black text-white uppercase truncate max-w-[120px]">
+                          <div className="text-xs font-black text-[#29231e] uppercase truncate max-w-[120px]">
                             {player.firstName} {player.lastName}
                           </div>
-                          <div className="text-[10px] text-zinc-400 font-bold">
-                            <span className="text-[#b7ff35] font-ibm">{player.position}</span> • {player.age} Yaş
+                          <div className="text-[12px] text-[#66594f] font-bold">
+                            <span className="text-[#962a31] font-ibm">{player.position}</span> • {player.age} Yaş
                           </div>
                         </div>
                       </div>
 
                       {selectedStarterId && (
-                        <button className="px-2.5 py-1 bg-[#b7ff35] hover:bg-[#00D485] text-black text-[10px] font-black uppercase tracking-wider flex items-center gap-1 shadow-md rounded">
+                        <button className="px-2.5 py-1 bg-[#9b2529] hover:bg-[#00D485] text-black text-[12px] font-black uppercase tracking-wider flex items-center gap-1 shadow-md rounded">
                           <Repeat className="w-3 h-3" />
                           <span>AL</span>
                         </button>
@@ -2293,14 +2281,14 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         {activeTab === 'fixtures' && (
           <div className="space-y-5">
             {/* Filter Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 bg-[#070D14]/95 border border-zinc-800 p-4 shadow-2xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-[#e8ded2]/95 border border-[#d2c1b0] p-4 shadow-2xl">
               <div className="flex items-center gap-1.5 overflow-x-auto max-w-full pb-1">
                 <button
                   onClick={() => setSelectedWeekFilter('ALL')}
                   className={`px-3.5 py-1.5 text-xs font-black uppercase transition shrink-0 ${
                     selectedWeekFilter === 'ALL'
-                      ? 'bg-[#b7ff35] text-black shadow-md'
-                      : 'bg-zinc-950 text-zinc-400 hover:text-white border border-zinc-800'
+                      ? 'bg-[#9b2529] text-white shadow-md'
+                      : 'bg-[#f7efe4] text-[#66594f] hover:text-[#29231e] border border-[#d2c1b0]'
                   }`}
                 >
                   Tüm Haftalar
@@ -2311,8 +2299,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     onClick={() => setSelectedWeekFilter(w)}
                     className={`px-3.5 py-1.5 text-xs font-black uppercase transition shrink-0 ${
                       selectedWeekFilter === w
-                        ? 'bg-[#b7ff35] text-black shadow-md'
-                        : 'bg-zinc-950 text-zinc-400 hover:text-white border border-zinc-800'
+                        ? 'bg-[#9b2529] text-white shadow-md'
+                        : 'bg-[#f7efe4] text-[#66594f] hover:text-[#29231e] border border-[#d2c1b0]'
                     }`}
                   >
                     Hafta {w}
@@ -2324,8 +2312,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                 onClick={() => setShowOnlyMyFixtures(!showOnlyMyFixtures)}
                 className={`px-4 py-1.5 text-xs font-black uppercase transition flex items-center gap-1.5 border ${
                   showOnlyMyFixtures
-                    ? 'bg-[#b7ff35]/10 text-[#b7ff35] border-[#b7ff35]/50'
-                    : 'bg-zinc-950 text-zinc-400 border-zinc-800 hover:text-white'
+                    ? 'bg-[#9b2529]/10 text-[#962a31] border-[#a44a50]/50'
+                    : 'bg-[#f7efe4] text-[#66594f] border-[#d2c1b0] hover:text-[#29231e]'
                 }`}
               >
                 <UserCheck className="w-3.5 h-3.5" />
@@ -2341,18 +2329,18 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               if (weekFixtures.length === 0) return null;
 
               return (
-                <div key={weekNum} className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
-                  <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                    <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
-                      <Calendar className="w-4 h-4 text-[#b7ff35]" />
+                <div key={weekNum} className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-6 shadow-2xl space-y-4">
+                  <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3">
+                    <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+                      <Calendar className="w-4 h-4 text-[#962a31]" />
                       <span>HAFTA {weekNum}</span>
                       {weekNum === currentMatchweek && (
-                        <span className="text-[10px] px-2.5 py-0.5 bg-emerald-950 text-[#b7ff35] border border-emerald-500/50 font-black animate-pulse">
+                        <span className="text-[12px] px-2.5 py-0.5 bg-emerald-950 text-[#962a31] border border-emerald-500/50 font-black animate-pulse">
                           ŞU ANKİ HAFTA
                         </span>
                       )}
                     </h3>
-                    <span className="text-xs text-zinc-400 font-ibm font-bold">
+                    <span className="text-xs text-[#66594f] font-ibm font-bold">
                       {weekFixtures.filter((f) => f.status === 'COMPLETED').length} / {weekFixtures.length} Tamamlandı
                     </span>
                   </div>
@@ -2368,19 +2356,19 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                           key={f.id}
                           className={`p-4 border transition-all duration-200 flex items-center justify-between gap-3 ${
                             isUserMatch
-                              ? 'bg-zinc-950 border-[#b7ff35]/60 shadow-[0_0_15px_rgba(183, 255, 53,0.15)]'
+                              ? 'bg-[#f7efe4] border-[#a44a50]/60 shadow-[0_0_15px_rgba(183, 255, 53,0.15)]'
                               : f.status === 'COMPLETED'
-                              ? 'bg-zinc-950/60 border-zinc-800'
-                              : 'bg-zinc-950/80 border-zinc-800'
+                              ? 'bg-[#f7efe4]/60 border-[#d2c1b0]'
+                              : 'bg-[#f7efe4] border-[#d2c1b0]'
                           }`}
                         >
                           <div className="flex items-center gap-3 truncate flex-1">
                             <div className="space-y-1.5 truncate">
-                              <div className="text-xs font-black text-white uppercase truncate flex items-center gap-2">
+                              <div className="text-xs font-black text-[#29231e] uppercase truncate flex items-center gap-2">
                                 {homeClub && <BadgePreview badge={homeClub.badge} clubCode={homeClub.code} size={20} />}
                                 <span className="truncate">{homeClub?.name}</span>
                               </div>
-                              <div className="text-xs font-black text-zinc-300 uppercase truncate flex items-center gap-2">
+                              <div className="text-xs font-black text-[#52463d] uppercase truncate flex items-center gap-2">
                                 {awayClub && <BadgePreview badge={awayClub.badge} clubCode={awayClub.code} size={20} />}
                                 <span className="truncate">{awayClub?.name}</span>
                               </div>
@@ -2394,30 +2382,30 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                                   setSelectedFixture(f);
                                   setIsReportModalOpen(true);
                                 }}
-                                className="font-ibm font-black text-sm text-[#b7ff35] bg-zinc-900 hover:bg-zinc-800 px-3.5 py-1.5 border border-zinc-700 hover:border-[#b7ff35]/50 transition"
+                                className="font-ibm font-black text-sm text-[#962a31] bg-[#e9ded1] hover:bg-[#e5d8c8] px-3.5 py-1.5 border border-[#c9b5a2] hover:border-[#a44a50]/50 transition"
                               >
                                 {f.homeScore} - {f.awayScore}
                               </button>
                             ) : room.liveMatchweek?.status === 'LIVE' && f.round === room.liveMatchweek.matchweek ? (
                               <button
                                 onClick={() => handleOpenLiveMatch(f)}
-                                className="px-3 py-1.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 text-white font-black text-xs uppercase tracking-wider transition animate-pulse flex items-center gap-1.5"
+                                className="px-3 py-1.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 text-[#29231e] font-black text-xs uppercase tracking-wider transition animate-pulse flex items-center gap-1.5"
                               >
                                 <Radio className="w-3.5 h-3.5" />
                                 <span>CANLI İZLE</span>
                               </button>
                             ) : (
                               <div className="flex items-center gap-1.5">
-                                <span className="text-[10px] font-ibm text-zinc-400 px-2.5 py-1 bg-zinc-950 border border-zinc-800">
+                                <span className="text-[12px] font-ibm text-[#66594f] px-2.5 py-1 bg-[#f7efe4] border border-[#d2c1b0]">
                                   ⏳ Beklemede
                                 </span>
                                 {isHost && (
                                   <button
                                     onClick={() => handleFastSimulateFixture(f.id)}
-                                    className="px-2.5 py-1 bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 hover:border-[#4FE4FF] text-zinc-300 hover:text-white font-ibm text-[10px] uppercase font-bold transition flex items-center gap-1"
+                                    className="px-2.5 py-1 bg-[#e9ded1] hover:bg-[#e5d8c8] border border-[#c9b5a2] hover:border-[#4FE4FF] text-[#52463d] hover:text-[#29231e] font-ibm text-[12px] uppercase font-bold transition flex items-center gap-1"
                                     title="Bu maçı Match Engine ile anında simüle et"
                                   >
-                                    <Play className="w-3 h-3 text-[#4FE4FF]" />
+                                    <Play className="w-3 h-3 text-[#326a63]" />
                                     <span>Simüle</span>
                                   </button>
                                 )}
@@ -2438,20 +2426,20 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         {/* TAB 5: PUAN DURUMU (STANDINGS TABLE)                               */}
         {/* ================================================================== */}
         {activeTab === 'standings' && (
-          <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-5">
-            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-              <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+          <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-6 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3">
+              <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
                 <Trophy className="w-4 h-4 text-[#FFB800]" />
                 <span>RESMİ LİG PUAN DURUMU</span>
               </h3>
-              <span className="text-xs font-ibm font-bold text-zinc-400">
+              <span className="text-xs font-ibm font-bold text-[#66594f]">
                 {completedFixtures.length} / {fixtures.length} Karşılaşma Oynandı
               </span>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                <thead className="bg-[#f7efe4] text-[#66594f] border-b border-[#d2c1b0]">
                   <tr>
                     <th className="py-3 px-3">Sıra</th>
                     <th className="py-3 px-3">Kulüp & Menajer</th>
@@ -2474,8 +2462,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     return (
                       <tr
                         key={st.clubId}
-                        className={`hover:bg-zinc-900/50 transition ${
-                          isMine ? 'bg-[#b7ff35]/10' : ''
+                        className={`hover:bg-[#e9ded1]/50 transition ${
+                          isMine ? 'bg-[#9b2529]/10' : ''
                         }`}
                       >
                         <td className="py-3 px-3 font-ibm font-black">
@@ -2485,41 +2473,41 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                               <span>1</span>
                             </span>
                           ) : st.rank <= 3 ? (
-                            <span className="text-[#b7ff35]">{st.rank}</span>
+                            <span className="text-[#962a31]">{st.rank}</span>
                           ) : (
-                            <span className="text-zinc-400">{st.rank}</span>
+                            <span className="text-[#66594f]">{st.rank}</span>
                           )}
                         </td>
                         <td className="py-3 px-3">
                           <div className="flex items-center gap-2.5">
                             {club && <BadgePreview badge={club.badge} clubCode={club.code} size={24} />}
                             <div>
-                              <span className="font-black text-white uppercase">
-                                {st.clubName} {isMine && <span className="text-[10px] text-[#b7ff35] font-black">(SEN)</span>}
+                              <span className="font-black text-[#29231e] uppercase">
+                                {st.clubName} {isMine && <span className="text-[12px] text-[#962a31] font-black">(SEN)</span>}
                               </span>
-                              <span className="text-[10px] text-zinc-400 font-bold block">{club?.managerName}</span>
+                              <span className="text-[12px] text-[#66594f] font-bold block">{club?.managerName}</span>
                             </div>
                           </div>
                         </td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-ibm font-bold">{st.played}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-ibm font-bold">{st.won}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-ibm font-bold">{st.drawn}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-ibm font-bold">{st.lost}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-ibm">{st.goalsFor}</td>
-                        <td className="py-3 px-2 text-center text-zinc-300 font-ibm">{st.goalsAgainst}</td>
-                        <td className="py-3 px-2 text-center font-bold text-zinc-200 font-ibm">{st.goalDifference}</td>
-                        <td className="py-3 px-3 text-right font-black text-[#b7ff35] text-sm font-ibm">{st.points}</td>
+                        <td className="py-3 px-2 text-center text-[#52463d] font-ibm font-bold">{st.played}</td>
+                        <td className="py-3 px-2 text-center text-[#52463d] font-ibm font-bold">{st.won}</td>
+                        <td className="py-3 px-2 text-center text-[#52463d] font-ibm font-bold">{st.drawn}</td>
+                        <td className="py-3 px-2 text-center text-[#52463d] font-ibm font-bold">{st.lost}</td>
+                        <td className="py-3 px-2 text-center text-[#52463d] font-ibm">{st.goalsFor}</td>
+                        <td className="py-3 px-2 text-center text-[#52463d] font-ibm">{st.goalsAgainst}</td>
+                        <td className="py-3 px-2 text-center font-bold text-[#312923] font-ibm">{st.goalDifference}</td>
+                        <td className="py-3 px-3 text-right font-black text-[#962a31] text-sm font-ibm">{st.points}</td>
                         <td className="py-3 px-3 text-right">
                           <div className="flex items-center justify-end gap-1">
                             {st.form.map((res: 'W' | 'D' | 'L', i: number) => (
                               <span
                                 key={i}
-                                className={`w-4 h-4 rounded text-[9px] font-black flex items-center justify-center shadow-sm ${
+                                className={`w-4 h-4 rounded text-[11px] font-black flex items-center justify-center shadow-sm ${
                                   res === 'W'
-                                    ? 'bg-[#b7ff35] text-black'
+                                    ? 'bg-[#9b2529] text-white'
                                     : res === 'D'
                                     ? 'bg-[#FFB800] text-black'
-                                    : 'bg-rose-600 text-white'
+                                    : 'bg-rose-600 text-[#29231e]'
                                 }`}
                               >
                                 {res}
@@ -2544,43 +2532,43 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         {/* ================================================================== */}
         {activeTab === 'players' && (
           <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#070D14]/95 border border-zinc-800 p-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-[#e8ded2]/95 border border-[#d2c1b0] p-4">
               <div>
-                <h2 className="text-base font-black text-white uppercase italic tracking-wider font-barlow flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-[#b7ff35]" />
+                <h2 className="text-base font-black text-[#29231e] uppercase italic tracking-wider font-barlow flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-[#962a31]" />
                   <span>SEZON {currentSeasonNum} OYUNCU İSTATİSTİKLERİ VE LİDERLER</span>
                 </h2>
-                <p className="text-xs text-zinc-400 mt-1">
+                <p className="text-xs text-[#66594f] mt-1">
                   Tamamlanan {completedFixtures.length} karşılaşmanın gerçek Match Engine verilerinden türetilmiştir.
                 </p>
               </div>
-              <span className="text-[11px] font-ibm font-bold text-zinc-400 px-3 py-1 bg-zinc-950 border border-zinc-800">
+              <span className="text-[11px] font-ibm font-bold text-[#66594f] px-3 py-1 bg-[#f7efe4] border border-[#d2c1b0]">
                 GÜNCEL VERİ
               </span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* 1. GOL KRALLIĞI */}
-              <div className="bg-[#070D14]/95 border border-zinc-800 p-5 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+              <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3">
+                  <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
                     <span className="text-lg">⚽</span>
                     <span>GOL KRALLIĞI</span>
                   </h3>
-                  <span className="text-[10px] font-ibm font-bold text-[#FFB800] uppercase bg-amber-950/40 px-2 py-0.5 border border-[#FFB800]/30">
+                  <span className="text-[12px] font-ibm font-bold text-[#FFB800] uppercase bg-amber-950/40 px-2 py-0.5 border border-[#FFB800]/30">
                     TOPLAM {topScorers.filter((p) => p.goals > 0).length} GOLCÜ
                   </span>
                 </div>
 
                 {topScorers.length === 0 || topScorers.every((p) => p.goals === 0 && p.appearances === 0) ? (
-                  <div className="text-zinc-400 text-xs py-10 text-center space-y-1">
+                  <div className="text-[#66594f] text-xs py-10 text-center space-y-1">
                     <div className="text-lg">⚽</div>
                     <div>Maçlar oynandıkça goller listelenecektir.</div>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                      <thead className="bg-[#f7efe4] text-[#66594f] border-b border-[#d2c1b0]">
                         <tr>
                           <th className="py-2.5 px-2 text-center w-8">#</th>
                           <th className="py-2.5 px-2">Futbolcu</th>
@@ -2596,22 +2584,22 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                           return (
                             <tr
                               key={p.playerId}
-                              className={`transition ${isTop ? 'bg-amber-950/20 text-[#FFB800]' : 'hover:bg-zinc-900/50 text-zinc-200'}`}
+                              className={`transition ${isTop ? 'bg-amber-950/20 text-[#FFB800]' : 'hover:bg-[#e9ded1]/50 text-[#312923]'}`}
                             >
                               <td className="py-2.5 px-2 text-center font-black">
                                 {idx === 0 ? '👑' : `${idx + 1}`}
                               </td>
                               <td className="py-2.5 px-2 font-sans">
-                                <div className="font-bold text-white truncate max-w-[130px]">{p.playerName}</div>
-                                <div className="text-[10px] text-zinc-500 font-ibm">{p.position}</div>
+                                <div className="font-bold text-[#29231e] truncate max-w-[130px]">{p.playerName}</div>
+                                <div className="text-[12px] text-[#77695e] font-ibm">{p.position}</div>
                               </td>
                               <td className="py-2.5 px-2 font-sans">
                                 <div className="flex items-center gap-1.5 truncate max-w-[110px]" title={p.clubName}>
                                   {club && <BadgePreview badge={club.badge} clubCode={club.code} size={14} />}
-                                  <span className="truncate text-zinc-300 text-[11px]">{p.clubName}</span>
+                                  <span className="truncate text-[#52463d] text-[11px]">{p.clubName}</span>
                                 </div>
                               </td>
-                              <td className="py-2.5 px-2 text-center text-zinc-400 font-bold">{p.appearances}</td>
+                              <td className="py-2.5 px-2 text-center text-[#66594f] font-bold">{p.appearances}</td>
                               <td className="py-2.5 px-2 text-right font-black text-[#FFB800] text-sm">
                                 {p.goals}
                               </td>
@@ -2625,26 +2613,26 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               </div>
 
               {/* 2. ASİST LİDERLİĞİ */}
-              <div className="bg-[#070D14]/95 border border-zinc-800 p-5 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+              <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3">
+                  <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
                     <span className="text-lg">🎯</span>
                     <span>ASİST LİDERLİĞİ</span>
                   </h3>
-                  <span className="text-[10px] font-ibm font-bold text-[#4FE4FF] uppercase bg-cyan-950/40 px-2 py-0.5 border border-[#4FE4FF]/30">
+                  <span className="text-[12px] font-ibm font-bold text-[#326a63] uppercase bg-cyan-950/40 px-2 py-0.5 border border-[#4FE4FF]/30">
                     TOPLAM {topAssists.filter((p) => p.assists > 0).length} ASİSTÇİ
                   </span>
                 </div>
 
                 {topAssists.length === 0 || topAssists.every((p) => p.assists === 0 && p.appearances === 0) ? (
-                  <div className="text-zinc-400 text-xs py-10 text-center space-y-1">
+                  <div className="text-[#66594f] text-xs py-10 text-center space-y-1">
                     <div className="text-lg">🎯</div>
                     <div>Maçlar oynandıkça asistler listelenecektir.</div>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                      <thead className="bg-[#f7efe4] text-[#66594f] border-b border-[#d2c1b0]">
                         <tr>
                           <th className="py-2.5 px-2 text-center w-8">#</th>
                           <th className="py-2.5 px-2">Futbolcu</th>
@@ -2660,23 +2648,23 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                           return (
                             <tr
                               key={p.playerId}
-                              className={`transition ${isTop ? 'bg-cyan-950/20 text-[#4FE4FF]' : 'hover:bg-zinc-900/50 text-zinc-200'}`}
+                              className={`transition ${isTop ? 'bg-cyan-950/20 text-[#326a63]' : 'hover:bg-[#e9ded1]/50 text-[#312923]'}`}
                             >
                               <td className="py-2.5 px-2 text-center font-black">
                                 {idx === 0 ? '👑' : `${idx + 1}`}
                               </td>
                               <td className="py-2.5 px-2 font-sans">
-                                <div className="font-bold text-white truncate max-w-[130px]">{p.playerName}</div>
-                                <div className="text-[10px] text-zinc-500 font-ibm">{p.position}</div>
+                                <div className="font-bold text-[#29231e] truncate max-w-[130px]">{p.playerName}</div>
+                                <div className="text-[12px] text-[#77695e] font-ibm">{p.position}</div>
                               </td>
                               <td className="py-2.5 px-2 font-sans">
                                 <div className="flex items-center gap-1.5 truncate max-w-[110px]" title={p.clubName}>
                                   {club && <BadgePreview badge={club.badge} clubCode={club.code} size={14} />}
-                                  <span className="truncate text-zinc-300 text-[11px]">{p.clubName}</span>
+                                  <span className="truncate text-[#52463d] text-[11px]">{p.clubName}</span>
                                 </div>
                               </td>
-                              <td className="py-2.5 px-2 text-center text-zinc-400 font-bold">{p.appearances}</td>
-                              <td className="py-2.5 px-2 text-right font-black text-[#4FE4FF] text-sm">
+                              <td className="py-2.5 px-2 text-center text-[#66594f] font-bold">{p.appearances}</td>
+                              <td className="py-2.5 px-2 text-right font-black text-[#326a63] text-sm">
                                 {p.assists}
                               </td>
                             </tr>
@@ -2689,26 +2677,26 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               </div>
 
               {/* 3. EN YÜKSEK REYTİNGLER */}
-              <div className="bg-[#070D14]/95 border border-zinc-800 p-5 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+              <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3">
+                  <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
                     <span className="text-lg">⭐</span>
                     <span>EN YÜKSEK REYTİNGLER</span>
                   </h3>
-                  <span className="text-[10px] font-ibm font-bold text-[#b7ff35] uppercase bg-emerald-950/40 px-2 py-0.5 border border-[#b7ff35]/30">
+                  <span className="text-[12px] font-ibm font-bold text-[#962a31] uppercase bg-emerald-950/40 px-2 py-0.5 border border-[#a44a50]/30">
                     MİN. 1 MAÇ
                   </span>
                 </div>
 
                 {bestRatings.length === 0 ? (
-                  <div className="text-zinc-400 text-xs py-10 text-center space-y-1">
+                  <div className="text-[#66594f] text-xs py-10 text-center space-y-1">
                     <div className="text-lg">⭐</div>
                     <div>Maçlar oynandıkça reytingler listelenecektir.</div>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                      <thead className="bg-[#f7efe4] text-[#66594f] border-b border-[#d2c1b0]">
                         <tr>
                           <th className="py-2.5 px-2 text-center w-8">#</th>
                           <th className="py-2.5 px-2">Futbolcu</th>
@@ -2724,23 +2712,23 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                           return (
                             <tr
                               key={p.playerId}
-                              className={`transition ${isTop ? 'bg-emerald-950/20 text-[#b7ff35]' : 'hover:bg-zinc-900/50 text-zinc-200'}`}
+                              className={`transition ${isTop ? 'bg-emerald-950/20 text-[#962a31]' : 'hover:bg-[#e9ded1]/50 text-[#312923]'}`}
                             >
                               <td className="py-2.5 px-2 text-center font-black">
                                 {idx === 0 ? '👑' : `${idx + 1}`}
                               </td>
                               <td className="py-2.5 px-2 font-sans">
-                                <div className="font-bold text-white truncate max-w-[130px]">{p.playerName}</div>
-                                <div className="text-[10px] text-zinc-500 font-ibm">{p.position}</div>
+                                <div className="font-bold text-[#29231e] truncate max-w-[130px]">{p.playerName}</div>
+                                <div className="text-[12px] text-[#77695e] font-ibm">{p.position}</div>
                               </td>
                               <td className="py-2.5 px-2 font-sans">
                                 <div className="flex items-center gap-1.5 truncate max-w-[110px]" title={p.clubName}>
                                   {club && <BadgePreview badge={club.badge} clubCode={club.code} size={14} />}
-                                  <span className="truncate text-zinc-300 text-[11px]">{p.clubName}</span>
+                                  <span className="truncate text-[#52463d] text-[11px]">{p.clubName}</span>
                                 </div>
                               </td>
-                              <td className="py-2.5 px-2 text-center text-zinc-400 font-bold">{p.appearances}</td>
-                              <td className="py-2.5 px-2 text-right font-black text-[#b7ff35] text-sm">
+                              <td className="py-2.5 px-2 text-center text-[#66594f] font-bold">{p.appearances}</td>
+                              <td className="py-2.5 px-2 text-right font-black text-[#962a31] text-sm">
                                 {p.averageRating.toFixed(2)}
                               </td>
                             </tr>
@@ -2762,25 +2750,25 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
           <div className="space-y-6">
             {/* Archived Past Seasons if any */}
             {roomState.seasonHistory && roomState.seasonHistory.length > 0 && (
-              <div className="bg-[#070D14]/95 border border-[#FFB800]/50 p-6 shadow-2xl space-y-4">
-                <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
-                  <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+              <div className="bg-[#e8ded2]/95 border border-[#FFB800]/50 p-6 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-[#d2c1b0] pb-3">
+                  <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
                     <Trophy className="w-4 h-4 text-[#FFB800]" />
                     <span>GEÇMİŞ SEZONLAR ARŞİVİ ({roomState.seasonHistory.length} SEZON)</span>
                   </h3>
-                  <span className="text-[10px] font-ibm font-bold text-[#FFB800] uppercase bg-amber-950/50 px-2.5 py-1 border border-[#FFB800]/40">
+                  <span className="text-[12px] font-ibm font-bold text-[#FFB800] uppercase bg-amber-950/50 px-2.5 py-1 border border-[#FFB800]/40">
                     KAYITLI SEZONLAR
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {roomState.seasonHistory.map((past) => (
-                    <div key={past.seasonNumber} className="bg-zinc-950 border border-zinc-800 p-4 space-y-3">
-                      <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                    <div key={past.seasonNumber} className="bg-[#f7efe4] border border-[#d2c1b0] p-4 space-y-3">
+                      <div className="flex items-center justify-between border-b border-[#d2c1b0]/80 pb-2">
                         <span className="text-xs font-black text-[#FFB800] font-ibm uppercase">
                           SEZON {past.seasonNumber}
                         </span>
-                        <span className="text-[10px] text-zinc-500 font-ibm">
+                        <span className="text-[12px] text-[#77695e] font-ibm">
                           {new Date(past.completedAt).toLocaleDateString('tr-TR')}
                         </span>
                       </div>
@@ -2790,32 +2778,32 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                           👑
                         </div>
                         <div>
-                          <div className="text-[10px] text-zinc-400 font-bold uppercase">ŞAMPİYON</div>
-                          <div className="font-black text-white text-sm uppercase">{past.championClubName}</div>
-                          <div className="text-[10px] text-zinc-400">Menajer: {past.championManagerName}</div>
+                          <div className="text-[12px] text-[#66594f] font-bold uppercase">ŞAMPİYON</div>
+                          <div className="font-black text-[#29231e] text-sm uppercase">{past.championClubName}</div>
+                          <div className="text-[12px] text-[#66594f]">Menajer: {past.championManagerName}</div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-3 gap-2 pt-1 border-t border-zinc-900 text-[11px] font-ibm">
                         {past.topScorer && (
-                          <div className="bg-zinc-900/60 p-2 border border-zinc-800">
-                            <div className="text-[9px] text-[#FFB800] font-bold">⚽ GOL KRALI</div>
-                            <div className="font-bold text-white truncate text-[10px] mt-0.5">{past.topScorer.playerName}</div>
+                          <div className="bg-[#e9ded1]/60 p-2 border border-[#d2c1b0]">
+                            <div className="text-[11px] text-[#FFB800] font-bold">⚽ GOL KRALI</div>
+                            <div className="font-bold text-[#29231e] truncate text-[12px] mt-0.5">{past.topScorer.playerName}</div>
                             <div className="text-[#FFB800] font-black">{past.topScorer.goals} Gol</div>
                           </div>
                         )}
                         {past.topAssists && (
-                          <div className="bg-zinc-900/60 p-2 border border-zinc-800">
-                            <div className="text-[9px] text-[#4FE4FF] font-bold">🎯 ASİST</div>
-                            <div className="font-bold text-white truncate text-[10px] mt-0.5">{past.topAssists.playerName}</div>
-                            <div className="text-[#4FE4FF] font-black">{past.topAssists.assists} Asist</div>
+                          <div className="bg-[#e9ded1]/60 p-2 border border-[#d2c1b0]">
+                            <div className="text-[11px] text-[#326a63] font-bold">🎯 ASİST</div>
+                            <div className="font-bold text-[#29231e] truncate text-[12px] mt-0.5">{past.topAssists.playerName}</div>
+                            <div className="text-[#326a63] font-black">{past.topAssists.assists} Asist</div>
                           </div>
                         )}
                         {past.mvp && (
-                          <div className="bg-zinc-900/60 p-2 border border-zinc-800">
-                            <div className="text-[9px] text-[#b7ff35] font-bold">⭐ MVP</div>
-                            <div className="font-bold text-white truncate text-[10px] mt-0.5">{past.mvp.playerName}</div>
-                            <div className="text-[#b7ff35] font-black">{past.mvp.rating}</div>
+                          <div className="bg-[#e9ded1]/60 p-2 border border-[#d2c1b0]">
+                            <div className="text-[11px] text-[#962a31] font-bold">⭐ MVP</div>
+                            <div className="font-bold text-[#29231e] truncate text-[12px] mt-0.5">{past.mvp.playerName}</div>
+                            <div className="text-[#962a31] font-black">{past.mvp.rating}</div>
                           </div>
                         )}
                       </div>
@@ -2826,10 +2814,10 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
             )}
 
             {/* Draft Selection Timeline */}
-            <div className="bg-[#070D14]/95 border border-zinc-800 p-6 shadow-2xl space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800 pb-3">
-                <h3 className="text-sm font-black text-white uppercase italic tracking-wider flex items-center gap-2 font-barlow">
-                  <History className="w-4 h-4 text-[#b7ff35]" />
+            <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-6 shadow-2xl space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#d2c1b0] pb-3">
+                <h3 className="text-sm font-black text-[#29231e] uppercase italic tracking-wider flex items-center gap-2 font-barlow">
+                  <History className="w-4 h-4 text-[#962a31]" />
                   <span>DRAFT SEÇİM KAYITLARI (TOPLAM {roomState.draftState?.picks.length || 0} SEÇİM)</span>
                 </h3>
 
@@ -2837,7 +2825,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               <select
                 value={historyClubFilter}
                 onChange={(e) => setHistoryClubFilter(e.target.value)}
-                className="bg-zinc-950 border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 font-bold uppercase focus:outline-none focus:border-[#b7ff35]"
+                className="bg-[#f7efe4] border border-[#c9b5a2] px-3 py-1.5 text-xs text-[#52463d] font-bold uppercase focus:outline-none focus:border-[#a44a50]"
               >
                 <option value="ALL">Tüm Kulüpler</option>
                 {clubs.map((c: DraftClub) => (
@@ -2850,7 +2838,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-zinc-950 text-zinc-400 border-b border-zinc-800">
+                <thead className="bg-[#f7efe4] text-[#66594f] border-b border-[#d2c1b0]">
                   <tr>
                     <th className="py-3 px-3">Sıra</th>
                     <th className="py-3 px-2">Tur</th>
@@ -2867,25 +2855,25 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     const club = clubs.find((c: DraftClub) => c.id === pick.clubId);
 
                     return (
-                      <tr key={pick.id} className="hover:bg-zinc-900/50 transition">
-                        <td className="py-3 px-3 font-ibm text-zinc-500 font-bold">#{pick.globalPickNumber}</td>
-                        <td className="py-3 px-2 text-zinc-400 font-ibm font-bold">Tur {pick.round}</td>
-                        <td className="py-3 px-2 font-black text-white uppercase">
+                      <tr key={pick.id} className="hover:bg-[#e9ded1]/50 transition">
+                        <td className="py-3 px-3 font-ibm text-[#77695e] font-bold">#{pick.globalPickNumber}</td>
+                        <td className="py-3 px-2 text-[#66594f] font-ibm font-bold">Tur {pick.round}</td>
+                        <td className="py-3 px-2 font-black text-[#29231e] uppercase">
                           <div className="flex items-center gap-2">
                             {club && <BadgePreview badge={club.badge} clubCode={club.code} size={18} />}
                             <span>{club?.name}</span>
                           </div>
                         </td>
-                        <td className="py-3 px-2 font-bold text-zinc-200 uppercase">
+                        <td className="py-3 px-2 font-bold text-[#312923] uppercase">
                           {player ? `${player.firstName} ${player.lastName}` : pick.playerId}
                         </td>
                         <td className="py-3 px-2">
-                          <span className="px-2 py-0.5 bg-zinc-950 border border-zinc-800 text-[#b7ff35] font-bold text-[10px]">
+                          <span className="px-2 py-0.5 bg-[#f7efe4] border border-[#d2c1b0] text-[#962a31] font-bold text-[12px]">
                             {player?.position || '--'}
                           </span>
                         </td>
                         <td className="py-3 px-2 font-black text-[#FFB800] font-ibm">{player?.overall || '--'}</td>
-                        <td className="py-3 px-3 text-right text-[10px] text-zinc-400 font-bold uppercase">
+                        <td className="py-3 px-3 text-right text-[12px] text-[#66594f] font-bold uppercase">
                           {pick.isAutoPick ? '🤖 Otomatik' : '👤 Manuel'}
                         </td>
                       </tr>
@@ -2902,15 +2890,15 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
       {/* Rematch Confirmation Modal */}
       {isRematchModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-[#070D14] border-2 border-[#FFB800] max-w-md w-full p-6 shadow-2xl space-y-5 text-center">
+          <div className="bg-[#fffaf3] border-2 border-[#FFB800] max-w-md w-full p-6 shadow-2xl space-y-5 text-center">
             <div className="w-14 h-14 mx-auto bg-amber-950/60 border border-[#FFB800]/50 rounded-2xl flex items-center justify-center text-2xl shadow-lg">
               🔄
             </div>
             <div>
-              <h3 className="text-lg font-black text-white uppercase italic tracking-wider font-barlow">
+              <h3 className="text-lg font-black text-[#29231e] uppercase italic tracking-wider font-barlow">
                 YENİ SEZON BAŞLAT
               </h3>
-              <p className="text-xs text-zinc-300 mt-2 leading-relaxed">
+              <p className="text-xs text-[#52463d] mt-2 leading-relaxed">
                 Mevcut kadrolar ve oyuncular korunacak. Puan durumu, fikstür ve sezon istatistikleri sıfırlanarak yeni sezon başlayacak.
               </p>
             </div>
@@ -2918,7 +2906,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
               <button
                 type="button"
                 onClick={() => setIsRematchModalOpen(false)}
-                className="w-1/2 py-2.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-700 font-black text-xs uppercase tracking-wider transition"
+                className="w-1/2 py-2.5 bg-[#e9ded1] hover:bg-[#e5d8c8] text-[#52463d] border border-[#c9b5a2] font-black text-xs uppercase tracking-wider transition"
               >
                 İPTAL
               </button>
@@ -2937,8 +2925,8 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
       {/* ==================================================================== */}
       {/* 7. FOOTER BROADCAST HUD                                              */}
       {/* ==================================================================== */}
-      <footer className="relative z-20 w-full border-t border-zinc-900 bg-[#050806]/95 py-3 px-4 sm:px-8 text-center text-xs text-zinc-500 font-ibm">
-        SquadCraft <span className="text-[#b7ff35] font-bold">{SQUADCRAFT_VERSION}</span> • Broadcast Draft & League Command Center
+      <footer className="relative z-20 w-full border-t border-zinc-900 bg-[#f2e9dc]/95 py-3 px-4 sm:px-8 text-center text-xs text-[#77695e] font-ibm">
+        SquadCraft <span className="text-[#962a31] font-bold">{SQUADCRAFT_VERSION}</span> • Broadcast Draft & League Command Center
       </footer>
 
       {/* Live Interactive Match Simulation Modal */}
