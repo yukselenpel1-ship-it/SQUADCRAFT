@@ -1103,7 +1103,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
             {isHost && (
               <button
                 onClick={handleRepairRoom}
-                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-[#c9b5a2] hover:border-zinc-500 text-[#312923] hover:text-[#29231e] text-xs font-bold uppercase tracking-wider transition-all"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#f4e9dc] hover:bg-[#ead5c9] border border-[#c9b5a2] hover:border-[#9b2529] text-[#382b25] hover:text-[#7f252b] text-xs font-bold uppercase tracking-wider transition-all"
                 title="Oda ve lig verisini senkronize et"
               >
                 <RefreshCw className="w-3.5 h-3.5 text-[#326a63]" />
@@ -1113,7 +1113,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
             <button
               onClick={() => setIsFeedbackOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#101520] hover:bg-[#151D2C] border border-[#c9b5a2] hover:border-zinc-500 text-[#312923] hover:text-[#29231e] text-xs font-bold uppercase tracking-wider transition-all"
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-[#f4e9dc] hover:bg-[#ead5c9] border border-[#c9b5a2] hover:border-[#9b2529] text-[#382b25] hover:text-[#7f252b] text-xs font-bold uppercase tracking-wider transition-all"
             >
               <MessageSquare className="w-3.5 h-3.5 text-[#962a31]" />
               <span>Geri Bildirim</span>
@@ -2136,12 +2136,12 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                     const isCompatible = isSlotCompatible(player.position, slot.role);
 
                     const getPosBadgeColor = () => {
-                      if (slot.role === 'GK') return 'bg-purple-600 text-[#29231e] border-purple-300';
+                      if (slot.role === 'GK') return 'bg-[#e7d2f0] text-[#4c245d] border-[#b897ce]';
                       if (['CB', 'LB', 'RB', 'LWB', 'RWB', 'DC', 'DL', 'DR'].includes(slot.role))
-                        return 'bg-[#4FE4FF] text-black border-cyan-300';
+                        return 'bg-[#d9e9f2] text-[#21516f] border-[#8ab5cc]';
                       if (['DM', 'CM', 'CAM', 'LM', 'RM', 'DMC', 'MC', 'AMC', 'ML', 'MR'].includes(slot.role))
-                        return 'bg-[#9b2529] text-white border-emerald-300';
-                      return 'bg-[#FFB800] text-black border-amber-300';
+                        return 'bg-[#9b2529] text-white border-[#e5b3b5]';
+                      return 'bg-[#f3d794] text-[#533b14] border-[#b88c35]';
                     };
 
                     return (
@@ -2160,7 +2160,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                       >
                         {/* MEVKİ DIŞI Warning Pill */}
                         {!isCompatible && (
-                          <span className="mb-0.5 px-1.5 py-0.5 bg-rose-600 text-[#29231e] font-black text-[11px] tracking-wider rounded uppercase shadow-lg animate-pulse whitespace-nowrap border border-rose-400">
+                          <span className="mb-0.5 px-1.5 py-0.5 bg-rose-600 text-white font-black text-[11px] tracking-wider rounded uppercase shadow-lg animate-pulse whitespace-nowrap border border-rose-400">
                             MEVKİ DIŞI
                           </span>
                         )}
@@ -2180,7 +2180,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
 
                         {/* Player Name and Slot Role Label */}
                         <div className="flex flex-col items-center mt-0.5 pointer-events-none">
-                          <span className="text-[11px] sm:text-[12px] font-black text-[#29231e] uppercase truncate max-w-[84px] bg-black/90 px-1.5 py-0.5 border border-[#d2c1b0] rounded shadow-md">
+                          <span className="text-[11px] sm:text-[12px] font-black text-[#241e1b] uppercase truncate max-w-[112px] bg-[#fffaf2]/95 px-2 py-1 border border-[#d2c1b0] rounded shadow-md">
                             {player.lastName}
                           </span>
                           <span
