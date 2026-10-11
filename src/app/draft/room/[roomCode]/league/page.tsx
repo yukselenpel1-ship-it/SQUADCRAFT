@@ -1740,7 +1740,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
         {/* TAB 2: KADROM (SQUAD ROSTER)                                       */}
         {/* ================================================================== */}
         {activeTab === 'squad' && (
-          <div className="space-y-5">
+          <div className="sc-league-squad-readable space-y-5">
             {/* Squad Summary Card */}
             <div className="bg-[#e8ded2]/95 border border-[#d2c1b0] p-6 shadow-2xl flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-4">
@@ -1823,13 +1823,13 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                   return (
                     <div
                       key={player.id}
-                      className={`bg-[#e8ded2]/95 border p-4 shadow-xl transition-all duration-200 flex flex-col justify-between space-y-3 ${
-                        isStarter ? 'border-[#d2c1b0] hover:border-[#a44a50]/60' : 'border-zinc-900 opacity-80'
+                      className={`sc-league-squad-player bg-[#fffaf3] border p-4 shadow-sm transition-all duration-200 flex flex-col justify-between space-y-3 ${
+                        isStarter ? 'border-[#d2c1b0] hover:border-[#a44a50]/60' : 'border-[#cdbdaa] opacity-100'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <div className={`w-12 h-12 bg-gradient-to-br ${ovrStyle} font-ibm font-black text-lg flex items-center justify-center border shadow-md shrink-0`}>
+                          <div className={`sc-league-squad-ovr w-12 h-12 font-ibm font-black text-lg flex items-center justify-center border shadow-sm shrink-0 ${player.overall >= 85 ? 'sc-ovr-elite' : player.overall >= 70 ? 'sc-ovr-mid' : 'sc-ovr-standard'}`}>
                             {player.overall}
                           </div>
                           <div>
@@ -1847,7 +1847,7 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
                           </div>
                         </div>
 
-                        <span className={`px-2 py-0.5 text-[11px] font-ibm font-black uppercase ${isStarter ? 'bg-[#9b2529] text-white' : 'bg-[#e5d8c8] text-[#66594f]'}`}>
+                        <span className={`sc-league-squad-status px-2 py-1 text-[11px] font-ibm font-black uppercase ${isStarter ? 'sc-league-starter' : 'sc-league-bench'}`}>
                           {isStarter ? 'İLK 11' : 'YEDEK'}
                         </span>
                       </div>
