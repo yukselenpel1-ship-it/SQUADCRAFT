@@ -173,12 +173,9 @@ export default function NewCareerPage() {
   }, [currentStep, router]);
 
   return (
-    <div className="relative min-h-screen w-full bg-[#05080E] text-[#F2F6FA] flex flex-col justify-between overflow-x-hidden font-sans antialiased selection:bg-[#B7FF3C] selection:text-[#05080E]">
+    <div className="sc-career-genesis-editorial relative min-h-screen w-full bg-[#f2ede3] text-[#29231e] flex flex-col justify-between overflow-x-hidden font-sans antialiased">
       {/* 1. SHARED CINEMATIC STADIUM ENVIRONMENT */}
-      <CinematicStadiumBackdrop
-        currentStep={currentStep}
-        clubPrimaryColor={highlightedClub.primaryColor}
-      />
+      <div aria-hidden="true" className="sc-career-genesis-backdrop fixed inset-0 pointer-events-none" />
 
       {/* 2. GAME PAGE HEADER */}
       <CareerGenesisHeader currentStep={currentStep} />
@@ -234,9 +231,9 @@ export default function NewCareerPage() {
         </div>
 
         {/* 3-Column Layout on Desktop */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="sc-career-genesis-grid grid grid-cols-1 lg:grid-cols-12 gap-4 xl:gap-5 items-start min-w-0">
           {/* Left Column (3 cols): Career Progress Rail */}
-          <div className="hidden lg:block lg:col-span-3 sticky top-20">
+          <div className="hidden lg:block lg:col-span-3 min-w-0">
             <CareerProgressRail
               currentStep={currentStep}
               onSelectStep={setCurrentStep}
@@ -245,7 +242,7 @@ export default function NewCareerPage() {
           </div>
 
           {/* Center Column (6 cols): Active Step Experience */}
-          <div className="lg:col-span-6 bg-[#080E17]/95 border border-white/10 rounded-[4px] p-5 sm:p-7 shadow-2xl backdrop-blur-md min-h-[580px] flex flex-col justify-between">
+          <div className="lg:col-span-6 min-w-0 bg-[#fffaf2] border border-white/10 rounded-[4px] p-5 sm:p-7 shadow-2xl backdrop-blur-md min-h-[520px] flex flex-col justify-between">
             {/* Step Content */}
             <div>
               {currentStep === 1 && (

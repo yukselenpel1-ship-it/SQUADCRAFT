@@ -1067,3 +1067,46 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 .sc-draft-league-editorial .sc-league-champion-banner > div:last-child > div {
  background:#fffaf2!important;color:#342923!important;border-color:#d0b998!important;
 }
+
+
+/* Career Genesis, all five setup stages: editorial palette and responsive fit. */
+.sc-career-genesis-editorial {background:#f2ede3!important;color:#29231e!important;min-width:0;}
+.sc-career-genesis-editorial .sc-career-genesis-backdrop {background:radial-gradient(ellipse at 12% 18%,rgba(151,43,48,.06),transparent 42%),linear-gradient(130deg,#f7f1e8,#ece1d5);}
+.sc-career-genesis-editorial > header {background:#e8ded1!important;border-color:#cbb8a5!important;color:#29231e!important;padding:10px clamp(12px,3vw,35px)!important;}
+.sc-career-genesis-editorial > header > div {max-width:1500px;min-width:0;gap:12px;flex-wrap:wrap;}
+.sc-career-genesis-editorial > header > div > div {min-width:0;max-width:100%;}
+.sc-career-genesis-editorial > header [class*="bg-[#09111C]"]{background:#f2e6d9!important;border-color:#c8b7a6!important;}
+.sc-career-genesis-editorial > main {max-width:1500px; padding:clamp(12px,2vw,24px)!important;min-width:0;}
+.sc-career-genesis-editorial .sc-career-genesis-grid > * {min-width:0;}
+.sc-career-genesis-editorial .sc-career-genesis-grid > :nth-child(2){padding:clamp(16px,2vw,28px)!important;}
+.sc-career-genesis-editorial > footer {background:#e8ded1!important;border-color:#c9b6a3!important;color:#514438!important;}
+.sc-career-genesis-editorial [class*="bg-[#080E17]"],
+.sc-career-genesis-editorial [class*="bg-[#050910]"],
+.sc-career-genesis-editorial [class*="bg-[#070D14]"],
+.sc-career-genesis-editorial [class*="bg-[#09111C]"]{background:#fffaf2!important;color:#29231e!important;border-color:#d1c0b0!important;}
+.sc-career-genesis-editorial [class*="bg-white/[0.02]"],
+.sc-career-genesis-editorial [class*="bg-white/[0.03]"]{background:#f4e8db!important;border-color:#d1c0b0!important;}
+.sc-career-genesis-editorial [class*="border-white/"]{border-color:#d0bfaf!important;}
+.sc-career-genesis-editorial [class*="text-[#F2F6FA]"],
+.sc-career-genesis-editorial [class*="text-[#C1CEDC]"],
+.sc-career-genesis-editorial [class*="text-white"]{color:#2b231e!important;}
+.sc-career-genesis-editorial [class*="text-[#7A8B9E]"],
+.sc-career-genesis-editorial [class*="text-[#91A2B4]"]{color:#67594c!important;}
+.sc-career-genesis-editorial [class*="text-[#B7FF3C]"]{color:#962830!important;}
+.sc-career-genesis-editorial [class*="text-[#38D8FF]"]{color:#386d68!important;}
+.sc-career-genesis-editorial [class*="bg-[#B7FF3C]"]{background:#9b2529!important;color:#fffaf2!important;}
+.sc-career-genesis-editorial [class*="border-[#B7FF3C]"]{border-color:#9b2529!important;}
+.sc-career-genesis-editorial [class*="bg-[#B7FF3C]/12"]{background:#f2dfd9!important;}
+.sc-career-genesis-editorial :is(input,select,textarea){background:#fffdf8!important;color:#29231e!important;border-color:#c5b2a0!important;}
+.sc-career-genesis-editorial :is(input,textarea)::placeholder{color:#77695c!important;}
+.sc-career-genesis-editorial :is(h1,h2,h3){color:#251e1a!important;letter-spacing:0;line-height:1.2;}
+.sc-career-genesis-editorial [class*="text-[9px]"],
+.sc-career-genesis-editorial [class*="text-[10px]"]{font-size:11px!important;}
+.sc-career-genesis-editorial .font-condensed {letter-spacing:0;line-height:1.25;}
+.sc-career-genesis-editorial button:disabled{opacity:.62;}
+.sc-career-genesis-editorial :is(button,a,input,select):focus-visible{outline:3px solid #9b2529;outline-offset:2px;}
+.sc-career-genesis-editorial button[class*="bg-[#B7FF3C]"] :is(span,svg){color:#fffaf2!important;}
+.sc-career-genesis-editorial button[class*="bg-[#B7FF3C]"]:hover{background:#782027!important;color:#fffaf2!important;}
+.sc-career-genesis-editorial .sc-career-genesis-grid button{min-height:38px;}
+@media (max-width:1199px) and (min-width:1024px){.sc-career-genesis-editorial .sc-career-genesis-grid{gap:12px!important;}.sc-career-genesis-editorial > header > div{justify-content:center;}}
+@media(max-width:767px){.sc-career-genesis-editorial > header > div{justify-content:space-between;}.sc-career-genesis-editorial .sc-career-genesis-grid button{min-height:42px;}.sc-career-genesis-editorial > main{padding:12px!important;}}
