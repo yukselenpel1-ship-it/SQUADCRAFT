@@ -76,7 +76,7 @@ export function StepClubSelection({
               onClick={() => setSelectedClubId(club.id)}
               className={`p-3.5 rounded-[4px] border-2 cursor-pointer transition-all duration-200 flex flex-col justify-between ${
                 isSelected
-                  ? 'bg-[#B7FF3C]/10 border-[#B7FF3C] shadow-[0_4px_20px_rgba(183,255,60,0.22)]'
+                  ? 'bg-[#f3e2db] border-[#a33a42] shadow-[0_3px_12px_rgba(100,45,44,0.10)]'
                   : 'bg-[#050910] border-white/10 hover:border-white/20 hover:bg-[#070D14]'
               }`}
             >
