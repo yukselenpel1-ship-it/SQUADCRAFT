@@ -389,7 +389,7 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
             </div>
 
             {/* Name Tag */}
-            <span className="mt-0.5 px-1 py-0.2 rounded text-[7px] sm:text-[8px] font-bold bg-black/95 text-white border border-zinc-700 truncate max-w-[55px] text-center">
+            <span className="mt-0.5 px-1 py-0.2 rounded text-[10px] sm:text-[11px] font-extrabold bg-[#fff9ed] text-[#231b17] border border-[#c1aa8d] shadow-sm truncate max-w-[75px] text-center">
               {pim.player.lastName}
             </span>
 
@@ -464,7 +464,7 @@ export const TacticalRadarPitch: React.FC<TacticalRadarPitchProps> = ({
             </div>
 
             {/* Name Tag */}
-            <span className="mt-0.5 px-1 py-0.2 rounded text-[7px] sm:text-[8px] font-bold bg-black/95 text-zinc-200 border border-zinc-700 truncate max-w-[55px] text-center">
+            <span className="mt-0.5 px-1 py-0.2 rounded text-[10px] sm:text-[11px] font-extrabold bg-[#fff9ed] text-[#231b17] border border-[#c1aa8d] shadow-sm truncate max-w-[75px] text-center">
               {pim.player.lastName}
             </span>
 
