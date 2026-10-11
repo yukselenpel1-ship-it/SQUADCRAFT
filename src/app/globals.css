@@ -948,3 +948,51 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 .sc-draft-league-editorial main button{min-height:36px;}
 @media(max-width:767px){.sc-draft-league-editorial main button{min-height:40px;}}
 @media(prefers-reduced-motion:reduce){.sc-draft-league-editorial *{transition-duration:.01ms!important;animation-duration:.01ms!important;}}
+
+
+/* League > Kadrom: ensure player ratings and badges remain legible on paper. */
+.sc-draft-league-editorial .sc-league-squad-readable .sc-league-squad-player {
+ background:#fffaf2 !important;border:1px solid #cbb9a8 !important;
+ color:#28221d !important;opacity:1 !important;border-radius:10px;
+}
+.sc-draft-league-editorial .sc-league-squad-readable .sc-league-squad-player:hover {
+ border-color:#9b2529 !important;box-shadow:0 6px 18px rgba(77,43,33,.12) !important;
+}
+.sc-draft-league-editorial .sc-league-squad-readable .sc-league-squad-ovr {
+ background:#e8ded3 !important;border:1px solid #baa999 !important;color:#302721 !important;
+ border-radius:8px;text-shadow:none;
+}
+.sc-draft-league-editorial .sc-league-squad-readable .sc-ovr-elite {
+ background:#f3db96 !important;border-color:#bb9229 !important;color:#49310b !important;
+}
+.sc-draft-league-editorial .sc-league-squad-readable .sc-ovr-mid {
+ background:#efe5d6 !important;color:#72352d !important;
+}
+.sc-draft-league-editorial .sc-league-squad-readable .sc-league-squad-status {
+ display:inline-flex;align-items:center;justify-content:center;min-height:24px;
+ border-radius:5px;white-space:nowrap;font-size:11px;font-weight:800;
+}
+.sc-draft-league-editorial .sc-league-squad-readable .sc-league-starter {
+ background:#9b2529 !important;color:#fffaf2 !important;border:1px solid #9b2529 !important;
+}
+.sc-draft-league-editorial .sc-league-squad-readable .sc-league-bench {
+ background:#e9ddd0 !important;color:#59473a !important;border:1px solid #c9b8a7 !important;
+}
+.sc-draft-league-editorial .sc-league-squad-readable .sc-league-squad-player .grid.grid-cols-3 > div {
+ background:#f4ecdf !important;border-color:#d2c1b0 !important;
+}
+.sc-draft-league-editorial .sc-league-squad-readable .sc-league-squad-player .grid.grid-cols-3 > div > div:first-child {
+ color:#69594c !important;font-size:11px !important;
+}
+.sc-draft-league-editorial .sc-league-squad-readable .sc-league-squad-player .grid.grid-cols-3 > div > div:last-child {
+ color:#26211d !important;font-weight:800 !important;font-size:13px !important;
+}
+.sc-draft-league-editorial .sc-league-squad-readable button {font-size:12px;min-height:38px;}
+.sc-draft-league-editorial .sc-league-squad-readable button[class*="bg-[#9b2529]"] {
+ background:#9b2529 !important;color:#fffaf2 !important;
+}
+.sc-draft-league-editorial header button[class*="bg-[#070D14]"],
+.sc-draft-league-editorial header button[class*="bg-zinc-900"],
+.sc-draft-league-editorial header a[class*="bg-zinc-900"] {
+ background:#f3e9dd !important;border-color:#cdb9a6 !important;color:#302721 !important;
+}
