@@ -1339,18 +1339,18 @@ export default function DraftLeagueHubPage({ params }: LeaguePageProps) {
       {/* ==================================================================== */}
       {isSeasonComplete && awards && (
         <div className="relative z-20 max-w-[1600px] w-full mx-auto px-4 sm:px-8 mt-4">
-          <div className="bg-gradient-to-r from-amber-950/90 via-[#070D14] to-amber-950/90 border-2 border-[#FFB800] p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
+          <div className="sc-league-champion-banner bg-gradient-to-r from-[#f8e8c8] via-[#fff7e9] to-[#f8e8c8] border-2 border-[#c29a42] rounded-xl p-6 sm:p-8 shadow-2xl backdrop-blur-md space-y-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-5">
                 <div className="w-20 h-20 bg-[#f7efe4] border-2 border-[#FFB800] flex items-center justify-center text-4xl shadow-lg animate-bounce">
                   👑
                 </div>
                 <div>
-                  <div className="text-xs font-black text-[#FFB800] uppercase tracking-widest flex items-center gap-1.5">
+                  <div className="text-xs font-black text-[#83591a] uppercase tracking-wide flex items-center gap-1.5">
                     <Sparkles className="w-4 h-4" />
                     <span>SQUADCRAFT DRAFT LİGİ ŞAMPİYONU</span>
                   </div>
-                  <h2 className="text-3xl sm:text-4xl font-black text-[#29231e] italic tracking-wide uppercase mt-1">
+                  <h2 className="text-2xl sm:text-4xl font-black text-[#63262a] tracking-normal uppercase mt-1 break-words leading-tight">
                     {awards.championClubName}
                   </h2>
                   <p className="text-xs text-[#52463d] mt-1">
