@@ -895,3 +895,56 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
  height:min(740px,calc(100dvh - 180px))!important;min-height:410px!important;
  }
 }
+
+
+/* Draft League command center — shared Career editorial surfaces. */
+.sc-draft-league-editorial {background:#f2ede3!important;color:#29231e!important;font-size:14px;line-height:1.5;}
+.sc-draft-league-editorial .sc-draft-league-backdrop {
+ background:radial-gradient(ellipse at 12% 10%,rgba(150,48,55,.07),transparent 48%),
+ radial-gradient(ellipse at 88% 82%,rgba(130,92,65,.08),transparent 48%),
+ linear-gradient(145deg,#f8f2ea,#efe6dc);
+}
+.sc-draft-league-editorial header,
+.sc-draft-league-editorial footer {background:#e9ded1!important;color:#382e27!important;border-color:#cbb8a5!important;}
+.sc-draft-league-editorial .sc-panel,
+.sc-draft-league-editorial main > section,
+.sc-draft-league-editorial main [class*="bg-[#070D14]"] {
+ background:#fffaf2!important;color:#29231e!important;border-color:#d0beab!important;
+ box-shadow:0 4px 14px rgba(64,43,29,.08)!important;
+}
+.sc-draft-league-editorial [class*="bg-[#090d0a]"],
+.sc-draft-league-editorial [class*="bg-[#05090F]"],
+.sc-draft-league-editorial [class*="bg-[#050806]"],
+.sc-draft-league-editorial [class*="bg-[#0d120f]"],
+.sc-draft-league-editorial [class*="bg-[#070D14]"],
+.sc-draft-league-editorial [class*="bg-zinc-950"],
+.sc-draft-league-editorial [class*="bg-zinc-900"] {
+ background:#f5ebdf!important;color:#29231e!important;border-color:#d3bfae!important;
+}
+.sc-draft-league-editorial [class*="bg-emerald-950"],
+.sc-draft-league-editorial [class*="bg-green-950"]{background:#e9ece1!important;color:#305a46!important;}
+.sc-draft-league-editorial [class*="bg-amber-950"]{background:#efe3cd!important;color:#7b592b!important;}
+.sc-draft-league-editorial [class*="text-white"],
+.sc-draft-league-editorial [class*="text-zinc-100"],
+.sc-draft-league-editorial [class*="text-zinc-200"]{color:#29231e!important;}
+.sc-draft-league-editorial [class*="text-zinc-400"],
+.sc-draft-league-editorial [class*="text-zinc-500"]{color:#65584d!important;}
+.sc-draft-league-editorial :is(h1,h2,h3,h4){color:#27211e!important;font-style:normal;letter-spacing:0;line-height:1.25;}
+.sc-draft-league-editorial :is(input,select,textarea) {
+ background:#fffaf2!important;color:#29231e!important;border-color:#c5b29e!important;
+}
+.sc-draft-league-editorial :is(input,textarea)::placeholder{color:#786b60!important;}
+.sc-draft-league-editorial [class*="text-[8px]"],
+.sc-draft-league-editorial [class*="text-[9px]"],
+.sc-draft-league-editorial [class*="text-[10px]"]{font-size:11px!important;}
+.sc-draft-league-editorial button[class*="bg-[#9b2529]"] {
+ background:#982831!important;color:#fffaf3!important;border-color:#982831!important;
+}
+.sc-draft-league-editorial button[class*="bg-[#9b2529]"] :is(span,svg) {color:#fffaf3!important;}
+.sc-draft-league-editorial button[class*="bg-[#9b2529]"]:not(:disabled):hover{background:#741c25!important;}
+.sc-draft-league-editorial button:not(:disabled):hover{border-color:#9b2529!important;}
+.sc-draft-league-editorial :is(button,a,input,select):focus-visible{outline:3px solid #982831;outline-offset:2px;}
+.sc-draft-league-editorial button:disabled{opacity:.63;cursor:not-allowed;}
+.sc-draft-league-editorial main button{min-height:36px;}
+@media(max-width:767px){.sc-draft-league-editorial main button{min-height:40px;}}
+@media(prefers-reduced-motion:reduce){.sc-draft-league-editorial *{transition-duration:.01ms!important;animation-duration:.01ms!important;}}
