@@ -1073,17 +1073,17 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
       {/* ==================================================================== */}
       {/* 2. MAIN 3-COLUMN DRAFT ARENA (DESKTOP) & TABBED (MOBILE)             */}
       {/* ==================================================================== */}
-      <main className="relative z-20 max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 my-auto flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
+      <main className="sc-draft-pick-grid relative z-20 max-w-[1600px] w-full mx-auto px-3 sm:px-6 py-4 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
         {/* ================================================================== */}
         {/* COLUMN 1: PLAYER POOL & SMART PRESET FILTERS (5 Cols)              */}
         {/* ================================================================== */}
         <div
-          className={`lg:col-span-5 sc-panel border border-[#d1c2b2] flex flex-col justify-between h-[720px] shadow-2xl rounded-2xl overflow-hidden ${
+          className={`sc-draft-pick-pool lg:col-span-5 sc-panel border border-[#d1c2b2] flex flex-col justify-between h-[720px] shadow-2xl rounded-2xl overflow-hidden ${
             mobileTab !== 'pool' ? 'hidden lg:flex' : 'flex'
           }`}
         >
           {/* Top Search & Filter Bar */}
-          <div className="p-3 border-b border-[#d0c0b0] space-y-2.5 bg-[#05090F]">
+          <div className="p-3 border-b border-[#d0c0b0] space-y-2.5 bg-[#fffaf2]">
             {/* Search Input & Sort Dropdown */}
             <div className="flex items-center gap-2">
               <div className="relative flex-1">
@@ -1198,7 +1198,7 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
           </div>
 
           {/* Scrollable Player List (Windowed Virtualization) */}
-          <div className="overflow-y-auto space-y-1 p-2 flex-1 custom-scrollbar">
+          <div className="sc-draft-player-scroll overflow-y-auto space-y-1 p-2 flex-1 min-h-0 custom-scrollbar">
             {filteredPlayers.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-2">
                 <Search className="w-8 h-8 text-zinc-600" />
@@ -1238,8 +1238,8 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
                         isSelected
                           ? 'bg-[#e6d8c8]/90 border-[#b7ff35] shadow-md shadow-[#b7ff35]/10'
                           : isExceeded
-                          ? 'bg-[#05090F]/50 border-[#d0c0b0]/50 opacity-60 hover:opacity-90'
-                          : 'bg-[#05090F]/80 border-[#d0c0b0]/80 hover:bg-[#e6d8c8]/60 hover:border-[#c5b09e]'
+                          ? 'bg-[#eee3d6] border-[#d0c0b0] opacity-70 hover:opacity-90'
+                          : 'bg-[#fffaf2] border-[#d0c0b0] hover:bg-[#f3e4dc] hover:border-[#9b2529]'
                       }`}
                     >
                       {/* Left: Position & Player Info */}
@@ -1346,14 +1346,14 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
         {/* COLUMN 2: SQUADCRAFT PLAYER SCOUTING SPOTLIGHT (4 Cols)             */}
         {/* ================================================================== */}
         <div
-          className={`lg:col-span-4 sc-panel border-2 border-[#FFB800]/50 sc-glow-gold flex flex-col justify-between h-[720px] p-5 shadow-2xl rounded-2xl ${
+          className={`sc-draft-pick-spotlight lg:col-span-4 sc-panel border-2 border-[#FFB800]/50 sc-glow-gold flex flex-col justify-between h-[720px] p-5 shadow-2xl rounded-2xl ${
             mobileTab !== 'card' ? 'hidden lg:flex' : 'flex'
           }`}
         >
           {activeSpotlightPlayer ? (
             <div className="space-y-4 flex-1 flex flex-col justify-between">
               {/* Top Tactical Scouting Card */}
-              <div className="relative p-5 bg-gradient-to-b from-[#1C1605]/95 via-[#090d0a]/95 to-[#0d120f]/95 border-2 border-[#FFB800]/60 shadow-xl overflow-hidden rounded-xl">
+              <div className="relative p-5 bg-gradient-to-b from-[#f4e9dc] via-[#fffaf2] to-[#f4e9dc] border-2 border-[#FFB800]/60 shadow-xl overflow-hidden rounded-xl">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFB800]/10 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="relative flex items-center justify-between">
