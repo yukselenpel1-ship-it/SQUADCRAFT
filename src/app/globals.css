@@ -996,3 +996,17 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 .sc-draft-league-editorial header a[class*="bg-zinc-900"] {
  background:#f3e9dd !important;border-color:#cdb9a6 !important;color:#302721 !important;
 }
+
+
+/* League tactics: labels on the intentionally dark tactical pitch must be legible. */
+.sc-draft-league-editorial .sc-league-tactics-pitch .sc-league-pitch-name {
+ color:#241e1b!important;background:#fffaf2!important;
+ border:1px solid #bcaa98!important;box-shadow:0 2px 6px rgba(0,0,0,.25);
+ font-size:12px!important;line-height:1.2;max-width:120px;
+}
+.sc-draft-league-editorial header button[class*="bg-[#101520]"] {
+ background:#f4e9dc!important;color:#382b25!important;border-color:#c9b5a2!important;
+}
+.sc-draft-league-editorial header button[class*="bg-[#101520]"]:hover {
+ background:#ead5c9!important;color:#7f252b!important;border-color:#9b2529!important;
+}
