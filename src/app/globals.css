@@ -1051,3 +1051,19 @@ input[type="range"].sc-slider::-webkit-slider-thumb:hover {
 .sc-draft-live-editorial .sc-draft-live-shell > div:not(.sc-draft-live-scoreboard):not(.sc-draft-live-toolbar):not(.sc-draft-live-footer) [class*="bg-[#05080E]"] {background:#f8f0e7!important;}
 .sc-draft-live-editorial :is(button,a):focus-visible{outline:3px solid #9b2529;outline-offset:2px;}
 @media(max-width:639px){.sc-draft-live-editorial .sc-draft-live-toolbar{flex-wrap:wrap;row-gap:8px;}}
+
+
+/* Draft League champion podium: do not inherit the former black/neon presentation. */
+.sc-draft-league-editorial .sc-league-champion-banner {
+ background:linear-gradient(115deg,#f7e5c3,#fff9ef,#f3e0bc)!important;
+ color:#332721!important;border:2px solid #b98d40!important;
+ box-shadow:0 8px 24px rgba(80,49,31,.12)!important;
+}
+.sc-draft-league-editorial .sc-league-champion-banner h2 {
+ color:#70262c!important;font-size:clamp(22px,3.2vw,38px)!important;
+ letter-spacing:0;line-height:1.15;overflow-wrap:anywhere;
+}
+.sc-draft-league-editorial .sc-league-champion-banner p {color:#55473c!important;font-size:13px;}
+.sc-draft-league-editorial .sc-league-champion-banner > div:last-child > div {
+ background:#fffaf2!important;color:#342923!important;border-color:#d0b998!important;
+}
