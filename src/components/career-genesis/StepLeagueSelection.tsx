@@ -66,7 +66,7 @@ export function StepLeagueSelection({ leagueSize, setLeagueSize }: Step2Props) {
               onClick={() => setLeagueSize(l.size)}
               className={`p-5 rounded-[4px] border-2 cursor-pointer transition-all duration-200 flex flex-col md:flex-row md:items-center justify-between gap-4 ${
                 isSelected
-                  ? 'bg-[#B7FF3C]/10 border-[#B7FF3C] shadow-[0_4px_24px_rgba(183,255,60,0.18)]'
+                  ? 'bg-[#f3e2db] border-[#a33a42] shadow-[0_3px_12px_rgba(100,45,44,0.10)]'
                   : 'bg-[#050910] border-white/10 hover:border-white/20 hover:bg-[#070D14]'
               }`}
             >

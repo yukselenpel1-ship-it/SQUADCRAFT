@@ -168,7 +168,7 @@ export function StepManagerProfile({
                   onClick={() => setDifficulty(item.id)}
                   className={`p-4 rounded-[4px] border-2 cursor-pointer transition-all duration-200 flex flex-col justify-between ${
                     isSelected
-                      ? `${item.borderColor} ${item.badgeBg} shadow-[0_4px_24px_rgba(0,0,0,0.6)]`
+                      ? 'bg-[#f3e2db] border-[#a33a42] shadow-[0_3px_12px_rgba(100,45,44,0.10)]'
                       : 'border-white/10 bg-[#050910] hover:border-white/20 hover:bg-[#070D14]'
                   }`}
                 >
