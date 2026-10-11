@@ -879,14 +879,14 @@ function LiveDraftContent({ roomCode }: { roomCode: string }) {
 
             {/* Manager Live Budget Widget */}
             {currentClub && (
-              <div className="flex items-center gap-2.5 px-3 py-1 bg-gradient-to-r from-emerald-950/60 to-zinc-950 border border-emerald-500/40 rounded shadow-md">
-                <div className="w-7 h-7 rounded bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-[#95292f]">
+              <div className="flex items-center gap-2.5 px-3 py-1 bg-[#f1e5d8] border border-[#cbb7a6] rounded-lg shadow-sm">
+                <div className="w-7 h-7 rounded bg-[#ead6ca] border border-[#d0b2a3] flex items-center justify-center text-[#95292f]">
                   <Coins className="w-4 h-4" />
                 </div>
                 <div className="flex flex-col">
                   <div className="text-[11px] font-ibm text-[#65574d] uppercase tracking-wider flex items-center gap-1.5">
                     <span>KALAN BÜTÇE</span>
-                    <span className="text-emerald-400 font-bold">({remainingPicks} seçim)</span>
+                    <span className="text-[#376c61] font-bold">({remainingPicks} seçim)</span>
                   </div>
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-sm font-black font-ibm text-[#95292f]">
